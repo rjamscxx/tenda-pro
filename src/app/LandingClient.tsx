@@ -145,32 +145,18 @@ const FEATURES = [
   },
   {
     icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-ink-3">
-        <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-        <circle cx="8" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.5"/>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-accent">
+        <rect x="1.5" y="3.5" width="13" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M5 7.5h6M8 6v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M4 12.5v1.5M12 12.5v1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
       </svg>
     ),
-    iconBg: 'bg-surface-3',
-    title: 'AI Nightly Digest',
-    body: "Claude reads your day's numbers every night and sends a plain-language summary: what sold, what cost you, and what to watch tomorrow.",
+    iconBg: 'bg-accent-dim',
+    title: 'Point of Sale',
+    body: 'Fast sale entry with an item picker, channel selector, and automatic food cost calculation. Log a full transaction in under 30 seconds.',
   },
 ]
 
-
-const AI_EXCHANGES = [
-  {
-    user: "What was my revenue this week?",
-    ai: "This week you made ₱94,200 — up 14% from last week. Your busiest day was Saturday (₱22,450). Dine-in led at 62% of sales.",
-  },
-  {
-    user: "Which dish has the best margin?",
-    ai: "Your highest-margin item is Iced Matcha Latte at 74% gross margin. Mushroom Pasta is the lowest at 38% — worth reviewing that recipe's food cost.",
-  },
-  {
-    user: "How much did we waste this month?",
-    ai: "₱2,840 in estimated waste — mostly Chicken Breast (spoilage) and Cooking Oil (overuse). That's 1.5% of revenue. Industry average is 4–10%, so you're actually doing well.",
-  },
-]
 
 const THEMES = [
   { id: 'sage-dark',  label: 'Sage',       canvas: '#0E1714', accent: '#58C098' },
@@ -190,11 +176,10 @@ const THEMES = [
 ]
 
 const NAV_LINKS = [
-  { label: 'Features',  href: '#features' },
+  { label: 'Features',   href: '#features' },
   { label: 'Operations', href: '#ops-section' },
-  { label: 'AI',        href: '#ai-section' },
-  { label: 'Themes',    href: '#themes' },
-  { label: 'Pricing',   href: '#pricing' },
+  { label: 'Themes',     href: '#themes' },
+  { label: 'Pricing',    href: '#pricing' },
 ]
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -209,7 +194,6 @@ function smoothScrollTo(href: string) {
 
 export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const [scrolled, setScrolled]       = useState(false)
-  const [aiIdx, setAiIdx]             = useState(0)
   const [activeTheme, setActiveTheme] = useState('sage-dark')
 
   // Nav scroll state
@@ -217,14 +201,6 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
     const handler = () => setScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
-  }, [])
-
-  // AI chat cycle
-  useEffect(() => {
-    const id = setInterval(() => {
-      setAiIdx(i => (i + 1) % AI_EXCHANGES.length)
-    }, 4000)
-    return () => clearInterval(id)
   }, [])
 
   // GSAP animations
@@ -237,8 +213,8 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
       document.querySelectorAll<HTMLElement>(
         '.hero-word, .hero-badge-el, .hero-sub-el, .hero-ctas-el, .hero-note-el, ' +
         '.hero-mock, .trust-item, .feature-card, .inventory-copy, .inventory-mock, ' +
-        '.ai-section-headline .word, .ai-chat-mock, .ai-tool-pill, .lp-fade-up, ' +
-        '.pain-card, .step-card, .ss-card, .ops-card, .pricing-card, .cta-block, .theme-card'
+        '.lp-fade-up, .pain-card, .step-card, .ss-card, .ops-card, .pricing-card, ' +
+        '.cta-block, .theme-card'
       ).forEach(el => { el.style.opacity = '1' })
       return
     }
@@ -309,23 +285,6 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
           scrollTrigger: { trigger: '#inventory-section', start: 'top 78%' } }
       )
 
-      // ── AI section ────────────────────────────────────────
-      gsap.fromTo('.ai-section-headline .word',
-        { y: 36, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.05, duration: 0.8, ease: 'expo.out',
-          scrollTrigger: { trigger: '#ai-section', start: 'top 78%' } }
-      )
-      gsap.fromTo('.ai-chat-mock',
-        { y: 28, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.85, ease: 'expo.out',
-          scrollTrigger: { trigger: '#ai-section', start: 'top 72%' } }
-      )
-      gsap.fromTo('.ai-tool-pill',
-        { y: 14, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.05, duration: 0.55, ease: 'expo.out',
-          scrollTrigger: { trigger: '#ai-section', start: 'top 65%' } }
-      )
-
       // ── Theme picker cards ────────────────────────────────
       gsap.fromTo('.theme-card',
         { y: 20, opacity: 0, scale: 0.92 },
@@ -391,8 +350,6 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
       ScrollTrigger.getAll().forEach(t => t.kill())
     }
   }, [])
-
-  const ex = AI_EXCHANGES[aiIdx]
 
   return (
     <div className="min-h-[100dvh] bg-canvas overflow-x-hidden" data-theme={activeTheme}>
@@ -683,7 +640,7 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
               {
                 step: '03',
                 title: 'Watch your numbers',
-                body: 'Dashboard updates in real-time. Your AI assistant answers questions about revenue, margins, and waste — in plain language.',
+                body: 'Dashboard updates in real-time. Revenue, food cost %, inventory levels, and waste — all in one view, always current.',
                 icon: (
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-accent">
                     <path d="M2 13L6 9l3 3 4-5 5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -942,71 +899,35 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
         </div>
       </section>
 
-      {/* ── AI Section ───────────────────────────────────────────────────────── */}
-      <section id="ai-section" className="py-24 px-4 border-t border-hair">
+      {/* ── Reports section ──────────────────────────────────────────────────── */}
+      <section id="reports-section" className="py-24 px-4 border-t border-hair">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-16 items-center">
 
-          {/* Left: Chat mock */}
-          <div className="ai-chat-mock relative order-2 lg:order-1" style={{ opacity: 0 }}>
-            <div className="absolute inset-0 bg-accent/6 rounded-3xl blur-3xl pointer-events-none" />
-            <div className="relative glass rounded-2xl overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]">
-              <div className="px-5 py-4 border-b border-hair flex items-center gap-2.5">
-                <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                <p className="text-[11px] font-semibold text-ink-3">Sizzle AI · powered by Claude</p>
-              </div>
-              <div className="p-4 space-y-3 min-h-[280px]">
-                {AI_EXCHANGES.map((ex, i) => (
-                  <div key={i} className={`transition-all duration-500 ${i === aiIdx ? 'opacity-100' : 'opacity-0 absolute pointer-events-none'}`}>
-                    <div className="flex justify-end mb-2">
-                      <div className="max-w-[80%] bg-surface-3 rounded-xl rounded-br-sm px-3 py-2 text-xs text-ink-2">
-                        {ex.user}
-                      </div>
-                    </div>
-                    <div className="flex justify-start">
-                      <div className="max-w-[85%] bg-accent-tint border border-accent/15 rounded-xl rounded-bl-sm px-3 py-2 text-xs text-ink leading-relaxed">
-                        {ex.ai}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="px-4 pb-4">
-                <div className="flex items-center gap-2 bg-surface-2 rounded-xl px-3 py-2.5 border border-hair">
-                  <span className="text-xs text-ink-4 flex-1">Ask Sizzle anything…</span>
-                  <div className="w-6 h-6 rounded-lg bg-accent flex items-center justify-center">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <path d="M1 5h8M5 1l4 4-4 4" stroke="var(--canvas)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* Left: Report mock */}
+          <div className="relative order-2 lg:order-1 lp-fade-up">
+            <div className="absolute -inset-6 bg-accent/6 rounded-3xl blur-3xl pointer-events-none" />
+            <AppFrame url="sizzle.app/reports" height={400}>
+              <ReportsMock />
+            </AppFrame>
           </div>
 
           {/* Right: Copy */}
-          <div className="order-1 lg:order-2 space-y-6">
-            <p className="text-xs text-accent font-semibold uppercase tracking-widest">Sizzle AI</p>
-            <h2 className="ai-section-headline text-[clamp(2rem,3.5vw,3rem)] font-semibold tracking-tighter text-ink leading-tight">
-              {['Ask', 'Sizzle', 'anything', 'about', 'your', 'business.'].map((w, i) => (
-                <span key={i} className="word inline-block mr-[0.2em]" style={{ opacity: 0 }}>{w}</span>
-              ))}
+          <div className="order-1 lg:order-2 space-y-6 lp-fade-up">
+            <p className="text-xs text-accent font-semibold uppercase tracking-widest">Reports &amp; P&amp;L</p>
+            <h2 className="text-[clamp(2rem,3.5vw,3rem)] font-semibold tracking-tighter text-ink leading-tight">
+              Know your numbers.<br />Every month.
             </h2>
             <p className="text-base text-ink-3 leading-relaxed max-w-[44ch]">
-              Connected to your live data — sales, food cost, inventory, waste, payroll.
-              No typing SQL. No exporting. Just ask in plain language.
+              Six-month trend table, expense breakdown by category, top-selling dishes —
+              all in one view. Export to CSV whenever your accountant asks.
             </p>
-            <div className="flex flex-wrap gap-2">
-              {['Revenue this week', 'Best-margin dish', 'Food cost %', 'Low stock items', 'Waste this month', 'Payroll summary'].map(pill => (
-                <span key={pill} className="ai-tool-pill px-3 py-1.5 rounded-full border border-hair text-xs text-ink-3 font-medium" style={{ opacity: 0 }}>
-                  {pill}
-                </span>
-              ))}
-            </div>
-            <ul className="space-y-3">
+            <ul className="space-y-3.5">
               {[
-                'Powered by Claude (Anthropic) — state-of-the-art reasoning',
-                'Tool-calling pattern — reads your data, never guesses',
-                'Nightly digest email every morning',
+                '6-month revenue and expense trends',
+                'Gross profit and food cost % per period',
+                'Top dishes by revenue and margin',
+                'Channel breakdown — dine-in, takeout, delivery',
+                'One-click CSV export',
               ].map(item => (
                 <li key={item} className="flex items-start gap-3 text-sm text-ink-3">
                   <svg className="w-4 h-4 text-accent mt-0.5 shrink-0" viewBox="0 0 16 16" fill="none">
@@ -1134,17 +1055,14 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
             <div className="pricing-card relative glass rounded-2xl p-7 space-y-6 overflow-hidden border border-accent/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" style={{ opacity: 0 }}>
               <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent via-accent-2 to-accent" />
               <div>
-                <div className="flex items-center gap-2.5">
-                  <p className="text-xs font-semibold text-ink-3 uppercase tracking-widest">Pro</p>
-                  <span className="text-[10px] bg-accent text-canvas px-2 py-0.5 rounded-full font-semibold">Coming soon</span>
-                </div>
+                <p className="text-xs font-semibold text-ink-3 uppercase tracking-widest">Pro</p>
                 <p className="text-4xl font-semibold tracking-tighter text-ink mt-2">
-                  ₱499<span className="text-lg text-ink-4 font-normal">/mo</span>
+                  ₱1,499<span className="text-lg text-ink-4 font-normal">/mo</span>
                 </p>
                 <p className="text-xs text-ink-4 mt-1">Per business, billed monthly.</p>
               </div>
               <ul className="space-y-3 text-sm text-ink-3">
-                {['Everything in Starter', 'Multiple businesses', 'AI chat assistant (unlimited)', 'Employees & payroll', 'Waste log', 'AI nightly digest email', 'Priority support'].map(f => (
+                {['Everything in Starter', 'Multiple businesses', 'Employees & payroll', 'Waste log', 'Payroll management', 'Priority support'].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
                     <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 14 14" fill="none">
                       <path d="M2.5 7.5L5.5 10.5 11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1153,9 +1071,15 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
                   </li>
                 ))}
               </ul>
-              <button disabled className="w-full py-2.5 btn-primary rounded-xl text-sm font-semibold opacity-70 cursor-not-allowed">
-                Notify me when available
-              </button>
+              {isLoggedIn ? (
+                <Link href="/settings" className="block w-full py-2.5 text-center btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform">
+                  Upgrade to Pro
+                </Link>
+              ) : (
+                <Link href="/signup" className="block w-full py-2.5 text-center btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform">
+                  Get started
+                </Link>
+              )}
             </div>
 
           </div>
@@ -1223,10 +1147,10 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
               <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Product</p>
               <ul className="space-y-2.5 text-sm text-ink-4">
                 {[
-                  { label: 'Features', href: '#features' },
+                  { label: 'Features',   href: '#features' },
                   { label: 'Operations', href: '#ops-section' },
-                  { label: 'AI Assistant', href: '#ai-section' },
-                  { label: 'Pricing', href: '#pricing' },
+                  { label: 'Reports',    href: '#reports-section' },
+                  { label: 'Pricing',    href: '#pricing' },
                 ].map(l => (
                   <li key={l.label}>
                     <a href={l.href} className="hover:text-ink transition-colors">{l.label}</a>
