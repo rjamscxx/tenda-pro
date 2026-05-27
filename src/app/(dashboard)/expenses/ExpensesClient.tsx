@@ -5,6 +5,7 @@ import Modal from '@/components/ui/Modal'
 import { createExpense, updateExpense, deleteExpense } from './actions'
 import { formatCurrency, formatDate, parseCents, todayISO } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
+import EmptyState from '@/components/ui/EmptyState'
 
 const CATEGORIES = [
   { value: 'ingredients', label: 'Ingredients' },
@@ -256,17 +257,18 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
       {/* List */}
       <div className="flex-1 overflow-y-auto min-h-0">
         {displayed.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 gap-3">
-            <div className="w-12 h-12 rounded-full bg-surface-2 flex items-center justify-center">
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" className="text-ink-4">
-                <path d="M3 6L8 12l4-4 7 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          <EmptyState
+            icon={
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <path d="M4 8L9 14l5-5 8 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </div>
-            <div className="text-center">
-              <p className="text-sm font-medium text-ink-2">No expenses {period !== 'all' ? 'in this period' : 'yet'}</p>
-              <p className="text-xs text-ink-4 mt-0.5">{period !== 'all' ? 'Try a wider date range' : 'Track costs to see your real profit margin'}</p>
-            </div>
-          </div>
+            }
+            title={period !== 'all' ? 'No expenses in this period' : 'No expenses yet'}
+            body={period !== 'all'
+              ? 'Try a wider date range or log a new expense.'
+              : 'Track every cost — ingredients, labor, rent, utilities — to see your real profit margin.'}
+            action={period === 'all' ? { label: '+ Log expense', onClick: openAdd } : undefined}
+          />
         ) : (
           <table className="w-full text-sm">
             <thead className="sticky top-0 bg-canvas/90 backdrop-blur-sm z-10">

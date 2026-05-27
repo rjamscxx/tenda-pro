@@ -5,6 +5,7 @@ import Modal from '@/components/ui/Modal'
 import { createDish, updateDish, deleteDish, saveRecipe, toggleDishActive, toggleSoldOut } from './dishActions'
 import { formatCurrency, parseCents } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
+import EmptyState from '@/components/ui/EmptyState'
 
 const DISH_CATEGORIES = ['Mains', 'Starters', 'Sides', 'Drinks', 'Desserts', 'Snacks', 'Other']
 
@@ -184,18 +185,17 @@ export default function DishesClient({
       {/* Dish list */}
       <div className="flex-1 overflow-y-auto">
         {dishes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 gap-3">
-            <div className="w-12 h-12 rounded-full bg-surface-2 flex items-center justify-center">
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" className="text-ink-4">
-                <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.8"/>
-                <path d="M7 11h8M11 7v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+          <EmptyState
+            icon={
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <circle cx="13" cy="13" r="9" stroke="currentColor" strokeWidth="1.6"/>
+                <path d="M8 13h10M13 8v10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
               </svg>
-            </div>
-            <div className="text-center">
-              <p className="text-sm font-medium text-ink-2">No dishes yet</p>
-              <p className="text-xs text-ink-4 mt-0.5">Add your first dish to track food costs and margins</p>
-            </div>
-          </div>
+            }
+            title="No dishes yet"
+            body="Add your menu items, attach ingredients, and Sizzle calculates your food cost and gross margin automatically."
+            action={{ label: '+ Add dish', onClick: openAddDish }}
+          />
         ) : (
           <table className="w-full text-sm">
             <thead className="sticky top-0 bg-canvas/90 backdrop-blur-sm z-10">

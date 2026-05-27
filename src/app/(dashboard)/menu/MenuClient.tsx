@@ -7,6 +7,7 @@ import { formatCurrency, parseCents } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
 import DishesClient, { type DishData, type IngredientOption } from './DishesClient'
 import EngineeringTab from './EngineeringTab'
+import EmptyState from '@/components/ui/EmptyState'
 
 const UNITS = ['pcs', 'kg', 'g', 'L', 'mL', 'cup', 'tbsp', 'tsp', 'pack', 'bottle', 'box', 'can', 'sachet']
 
@@ -170,19 +171,18 @@ export default function MenuClient({
           {/* Ingredients list */}
           <div className="flex-1 overflow-y-auto">
             {ingredients.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-64 gap-3">
-                <div className="w-12 h-12 rounded-full bg-surface-2 flex items-center justify-center">
-                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" className="text-ink-4">
-                    <rect x="3" y="6" width="16" height="13" rx="2" stroke="currentColor" strokeWidth="1.8"/>
-                    <path d="M7 6V5a2 2 0 014 0v1M11 6V5a2 2 0 014 0v1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                    <path d="M7 11h8M7 14h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              <EmptyState
+                icon={
+                  <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                    <rect x="3" y="7" width="20" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.6"/>
+                    <path d="M9 7V6a4 4 0 018 0v1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                    <path d="M8 13h10M8 17h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                   </svg>
-                </div>
-                <div className="text-center">
-                  <p className="text-sm font-medium text-ink-2">No ingredients yet</p>
-                  <p className="text-xs text-ink-4 mt-0.5">Add your first one to start tracking costs</p>
-                </div>
-              </div>
+                }
+                title="No ingredients yet"
+                body="Add your ingredients with unit costs. Sizzle uses them to calculate the real food cost of every dish."
+                action={{ label: '+ Add ingredient', onClick: openAdd }}
+              />
             ) : (
               <table className="w-full text-sm">
                 <thead>

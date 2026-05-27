@@ -6,6 +6,7 @@ import type { EmployeeInput } from './actions'
 import Modal from '@/components/ui/Modal'
 import { formatCurrency, formatDate, todayISO } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
+import EmptyState from '@/components/ui/EmptyState'
 
 interface Employee {
   id: string
@@ -181,17 +182,18 @@ export default function EmployeesClient({ employees }: Props) {
       {/* Table */}
       <div className="flex-1 overflow-y-auto">
         {displayed.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-48 text-ink-4 gap-2">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <circle cx="14" cy="12" r="6" stroke="currentColor" strokeWidth="1.6" opacity=".4"/>
-              <path d="M2 32c0-6.63 5.37-12 12-12s12 5.37 12 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" opacity=".4"/>
-              <path d="M26 17a5 5 0 100-10M32 32c0-4.97-2.69-9.3-6.75-11.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" opacity=".4"/>
-            </svg>
-            <p className="text-[13px]">No employees yet</p>
-            <button className="text-[12px] text-accent hover:underline" onClick={openAdd}>
-              Add your first employee
-            </button>
-          </div>
+          <EmptyState
+            icon={
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <circle cx="10" cy="8" r="4.5" stroke="currentColor" strokeWidth="1.6"/>
+                <path d="M1 24c0-4.97 4.03-9 9-9s9 4.03 9 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                <path d="M19 11a3.5 3.5 0 100-7M24 24c0-3.7-2.02-6.94-5-8.66" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            }
+            title="No employees yet"
+            body="Add staff with daily or monthly pay rates. Track labor costs alongside your food cost."
+            action={{ label: '+ Add employee', onClick: openAdd }}
+          />
         ) : (
           <table className="w-full text-[13px]">
             <thead className="sticky top-0 bg-canvas z-10">

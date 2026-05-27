@@ -5,6 +5,7 @@ import { logWaste, deleteWaste } from './actions'
 import Modal from '@/components/ui/Modal'
 import { formatCurrency, formatDate, todayISO } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
+import EmptyState from '@/components/ui/EmptyState'
 
 type Period = 'today' | 'week' | 'month' | 'all'
 type WasteReason = 'spoilage' | 'overcooked' | 'dropped' | 'expired' | 'other'
@@ -154,15 +155,18 @@ export default function WasteClient({ wasteLogs, ingredients }: Props) {
       {/* Table */}
       <div className="flex-1 overflow-y-auto">
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-48 text-ink-4 gap-2">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <path d="M5.5 10.5h25M14 10.5V7.5h8v3M13 10.5l1 18h8l1-18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" opacity=".4"/>
-            </svg>
-            <p className="text-[13px]">No waste logged for this period</p>
-            <button className="text-[12px] text-accent hover:underline" onClick={() => setModalOpen(true)}>
-              Log your first entry
-            </button>
-          </div>
+          <EmptyState
+            icon={
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <path d="M4 7.5h18M10 7.5V6a2 2 0 014 0v1.5M9.5 7.5l1 16h5l1-16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            }
+            title={period === 'all' ? 'No waste logged yet' : 'No waste for this period'}
+            body={period === 'all'
+              ? 'Track spoilage, dropped plates, and expired stock to see your real food cost.'
+              : 'Try a wider date range or log a new entry.'}
+            action={period === 'all' ? { label: 'Log first entry', onClick: () => setModalOpen(true) } : undefined}
+          />
         ) : (
           <table className="w-full text-[13px]">
             <thead className="sticky top-0 bg-canvas z-10">

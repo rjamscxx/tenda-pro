@@ -5,6 +5,7 @@ import { createPayrollRun, deletePayrollRun, logPayrollAsExpense } from './actio
 import Modal from '@/components/ui/Modal'
 import { formatCurrency, formatDate, todayISO } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
+import EmptyState from '@/components/ui/EmptyState'
 
 interface PayrollItem {
   id: string
@@ -224,22 +225,25 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
       {/* Runs List */}
       <div className="flex-1 overflow-y-auto">
         {runs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-48 text-ink-4 gap-2">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <rect x="3" y="10" width="30" height="22" rx="3" stroke="currentColor" strokeWidth="1.6" opacity=".4"/>
-              <path d="M12 10V8h12v2M18 19v1m0 3v1" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity=".4"/>
-              <circle cx="18" cy="21" r="3.5" stroke="currentColor" strokeWidth="1.4" opacity=".4"/>
-            </svg>
-            <p className="text-[13px]">No payroll runs yet</p>
-            {activeEmployees.length === 0 && (
-              <p className="text-[12px]">Add employees first in the Employees page.</p>
-            )}
-            {activeEmployees.length > 0 && (
-              <button className="text-[12px] text-accent hover:underline" onClick={openModal}>
-                Create your first payroll run
-              </button>
-            )}
-          </div>
+          <EmptyState
+            icon={
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <rect x="2" y="8" width="22" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.6"/>
+                <path d="M9 8V6.5h8V8M13 14v1m0 2.5v1" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                <circle cx="13" cy="15" r="2.5" stroke="currentColor" strokeWidth="1.4"/>
+              </svg>
+            }
+            title="No payroll runs yet"
+            body={activeEmployees.length === 0
+              ? 'Add your employees first, then come back to process payroll.'
+              : 'Process your first payroll run to track labor costs by period.'}
+            action={activeEmployees.length > 0
+              ? { label: 'Create payroll run', onClick: openModal }
+              : undefined}
+            secondaryAction={activeEmployees.length === 0
+              ? { label: 'Go to Employees →', href: '/employees' }
+              : undefined}
+          />
         ) : (
           <div className="divide-y divide-hair">
             {runs.map(run => (
