@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import { sales, expenses, ingredients, saleItems, dishes, wasteLogs } from '@/lib/db/schema'
-import { and, desc, eq, gte, lt, sql } from 'drizzle-orm'
+import { and, count, desc, eq, gte, lt, sql } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { formatCurrency } from '@/lib/utils'
 import CashflowChart, { type ChartPoint } from './CashflowChart'
@@ -43,7 +43,7 @@ export default async function DashboardPage() {
   // ── Queries (7 consolidated) ──────────────────────────────────────────────
   const todayDateStr = todayStart.toLocaleDateString('en-CA')
 
-  const [salesAgg, expensesAgg, allIngredients, chartSalesRows, chartExpensesRows, topDishesRows, todayWasteRows] = await Promise.all([
+  const [salesAgg, expensesAgg, allIngredients, chartSalesRows, chartExpensesRows, topDishesRows, todayWasteRows, dishCountRows] = await Promise.all([
     // 1. All sales KPIs in one pass
     db.select({
       todayRevenue:     sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${todayStart} and ${sales.soldAt} < ${tomorrowStart} then ${sales.total}::bigint else 0 end), 0)`,
@@ -90,6 +90,9 @@ export default async function DashboardPage() {
     // 7. Today's waste total
     db.select({ total: sql<string>`coalesce(sum(${wasteLogs.estimatedCost}), 0)` })
       .from(wasteLogs).where(and(eq(wasteLogs.venueId, venue.id), eq(wasteLogs.wastedAt, todayDateStr))),
+
+    // 8. Getting-started: dish count (ingredients already in allIngredients)
+    db.select({ c: count() }).from(dishes).where(eq(dishes.venueId, venue.id)),
   ])
 
   // ── KPI calculations ───────────────────────────────────────────────────────
@@ -182,6 +185,40 @@ export default async function DashboardPage() {
     },
   ]
 
+  // ── Getting started checklist ─────────────────────────────────────────────
+  const gettingStarted = [
+    {
+      key:  'ingredients',
+      done: allIngredients.length > 0,
+      title: 'Add ingredients',
+      body:  'Enter the items you cook with and their unit costs.',
+      href:  '/menu',
+    },
+    {
+      key:  'dishes',
+      done: dishCountRows[0].c > 0,
+      title: 'Create your first dish',
+      body:  'Build your menu and link ingredients to calculate food cost.',
+      href:  '/menu',
+    },
+    {
+      key:  'sale',
+      done: revenueMonth > 0 || revenueLastMonth > 0,
+      title: 'Log your first sale',
+      body:  'Record a sale via the POS or the Sales page.',
+      href:  '/pos',
+    },
+    {
+      key:  'expense',
+      done: totalExpensesMonth > 0,
+      title: 'Log an expense',
+      body:  'Track costs to start seeing your real profit margin.',
+      href:  '/expenses',
+    },
+  ]
+  const doneCount      = gettingStarted.filter(s => s.done).length
+  const showChecklist  = doneCount < gettingStarted.length
+
   const todayStr = new Date().toLocaleDateString('en-US', {
     timeZone: tz, weekday: 'long', month: 'long', day: 'numeric',
   })
@@ -225,6 +262,84 @@ export default async function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* ── Getting started checklist ──────────────────────────────────────── */}
+      {showChecklist && (
+        <div className="card-enter card-d1 glass rounded-xl border border-accent/20 overflow-hidden">
+          {/* Header */}
+          <div className="px-5 py-3.5 border-b border-hair flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-6 h-6 rounded-lg bg-accent-dim flex items-center justify-center shrink-0">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="text-accent">
+                  <path d="M2 6.5L5 9.5 11 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <p className="text-sm font-semibold text-ink">Getting started</p>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <div className="flex gap-1">
+                {gettingStarted.map(s => (
+                  <div
+                    key={s.key}
+                    className="w-5 h-1 rounded-full"
+                    style={{ background: s.done ? 'var(--accent)' : 'var(--surface-3)' }}
+                  />
+                ))}
+              </div>
+              <span className="text-[11px] text-ink-4 tabular">{doneCount}/{gettingStarted.length}</span>
+            </div>
+          </div>
+
+          {/* Steps */}
+          <div className="divide-y divide-hair">
+            {gettingStarted.map((step, i) => (
+              <div
+                key={step.key}
+                className={`flex items-center gap-4 px-5 py-3.5 transition-colors ${
+                  step.done ? 'opacity-50' : 'hover:bg-surface-2/40'
+                }`}
+              >
+                {/* Check circle */}
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                  step.done
+                    ? 'border-accent bg-accent-dim'
+                    : 'border-hair-2 bg-transparent'
+                }`}>
+                  {step.done && (
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                      <path d="M1.5 5L3.5 7 8.5 2.5" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                  {!step.done && (
+                    <span className="text-[9px] font-bold text-ink-4">{i + 1}</span>
+                  )}
+                </div>
+
+                {/* Copy */}
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-medium leading-tight ${step.done ? 'text-ink-3 line-through' : 'text-ink'}`}>
+                    {step.title}
+                  </p>
+                  {!step.done && (
+                    <p className="text-[11px] text-ink-4 mt-0.5 leading-snug">{step.body}</p>
+                  )}
+                </div>
+
+                {/* CTA */}
+                {!step.done && (
+                  <Link
+                    href={step.href}
+                    className="shrink-0 text-xs text-accent font-medium hover:underline flex items-center gap-1 group"
+                  >
+                    Go
+                    <span className="group-hover:translate-x-0.5 transition-transform">→</span>
+                  </Link>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
