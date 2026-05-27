@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import { requireVenue } from '@/lib/queries/auth'
-import { isPro, hasUsedTrial, getDailyTokenBudget, getTokensUsedToday } from '@/lib/plan'
+import { hasUsedTrial } from '@/lib/plan'
 import { db } from '@/lib/db'
 import { auditLogs } from '@/lib/db/schema'
 import { eq, desc } from 'drizzle-orm'
@@ -14,10 +14,8 @@ export default async function SettingsPage() {
     requireVenue(),
   ])
 
-  const theme         = cookieStore.get('sizzle-theme')?.value ?? 'sage-dark'
-  const trialUsed     = hasUsedTrial(account)
-  const tokensUsed    = getTokensUsedToday(account)
-  const tokenBudget   = getDailyTokenBudget(account)
+  const theme     = cookieStore.get('sizzle-theme')?.value ?? 'sage-dark'
+  const trialUsed = hasUsedTrial(account)
 
   const recentActivity = await db
     .select({
@@ -44,8 +42,6 @@ export default async function SettingsPage() {
         plan={account.plan}
         planExpiresAt={account.planExpiresAt?.toISOString() ?? null}
         trialUsed={trialUsed}
-        tokensUsed={tokensUsed}
-        tokenBudget={tokenBudget}
         venue={{
           name: venue.name,
           timezone: venue.timezone,

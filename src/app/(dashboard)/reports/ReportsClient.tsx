@@ -25,17 +25,9 @@ export interface MonthData {
   topDishes: TopDish[]
 }
 
-export interface DigestEntry {
-  date: string
-  digestJson: { revenue: number; expenses: number; profit: number; margin: number | null; saleCount: number; dayLabel?: string }
-  insights: Array<{ title: string; body: string; type?: string }>
-  generatedAt: string | null
-}
-
 interface Props {
   months: MonthData[]
   currentMonth: string
-  digests: DigestEntry[]
 }
 
 const CATEGORY_COLOR: Record<string, string> = {
@@ -111,8 +103,8 @@ function BarRow({ label, amount, pct, colorClass }: { label: string; amount: num
   )
 }
 
-export default function ReportsClient({ months, currentMonth, digests }: Props) {
-  const [mainTab, setMainTab] = useState<'monthly' | 'digests'>('monthly')
+export default function ReportsClient({ months, currentMonth }: Props) {
+  const [mainTab, setMainTab] = useState<'monthly'>('monthly')
   const [selected, setSelected] = useState(currentMonth)
   const data = months.find(m => m.month === selected) ?? months[months.length - 1]
   const isCurrentMonth = data.month === currentMonth
@@ -156,9 +148,7 @@ export default function ReportsClient({ months, currentMonth, digests }: Props) 
         <div>
           <h1 className="text-xl font-semibold text-ink tracking-tight">Reports</h1>
           <p className="text-sm text-ink-4 mt-0.5">
-            {mainTab === 'monthly' ? (
-              <>{data.label}{isCurrentMonth && <span className="ml-2 text-accent text-xs font-semibold">current</span>}</>
-            ) : 'Daily AI-generated digests'}
+            {data.label}{isCurrentMonth && <span className="ml-2 text-accent text-xs font-semibold">current</span>}
           </p>
         </div>
         {mainTab === 'monthly' && <button onClick={downloadCSV} className="px-4 py-2 btn-primary rounded-lg text-sm flex items-center gap-2 shrink-0">
@@ -169,22 +159,6 @@ export default function ReportsClient({ months, currentMonth, digests }: Props) 
         </button>}
       </div>
 
-      {/* Top-level tabs */}
-      <div className="flex gap-6 border-b border-hair">
-        {(['monthly', 'digests'] as const).map(t => (
-          <button
-            key={t}
-            onClick={() => setMainTab(t)}
-            className={`py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
-              mainTab === t ? 'border-accent text-ink' : 'border-transparent text-ink-3 hover:text-ink-2'
-            }`}
-          >
-            {t === 'monthly' ? 'Monthly P&L' : `Daily Digests (${digests.length})`}
-          </button>
-        ))}
-      </div>
-
-      {mainTab === 'digests' && <DigestsTab digests={digests} />}
       {mainTab === 'monthly' && <>
 
       {/* Month pills */}
@@ -364,106 +338,3 @@ export default function ReportsClient({ months, currentMonth, digests }: Props) 
   )
 }
 
-// ── Digests tab ────────────────────────────────────────────────────────────────
-
-function DigestsTab({ digests }: { digests: DigestEntry[] }) {
-  if (digests.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center space-y-2">
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="text-ink-4 opacity-40">
-          <circle cx="20" cy="20" r="17" stroke="currentColor" strokeWidth="2"/>
-          <path d="M20 12v9l5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <p className="text-sm text-ink-4">No digests yet. They&apos;re generated nightly by the cron job.</p>
-      </div>
-    )
-  }
-
-  return (
-    <div className="space-y-4">
-      {digests.map(d => {
-        const dateLabel = new Date(d.date + 'T00:00:00+08:00').toLocaleDateString('en-PH', {
-          weekday: 'long', month: 'long', day: 'numeric',
-        })
-        const profit = d.digestJson.profit
-        return (
-          <details key={d.date} className="glass card-glow rounded-xl overflow-hidden group">
-            <summary className="flex items-center gap-4 px-5 py-4 cursor-pointer list-none select-none hover:bg-surface/30 transition-colors">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-ink">{dateLabel}</p>
-                <p className="text-xs text-ink-4 mt-0.5">{d.digestJson.saleCount} sale{d.digestJson.saleCount !== 1 ? 's' : ''}</p>
-              </div>
-              <div className="flex items-center gap-6 shrink-0">
-                <div className="text-right hidden sm:block">
-                  <p className="text-[10px] text-ink-4 uppercase tracking-widest">Revenue</p>
-                  <p className="text-sm tabular font-semibold text-ink">{formatCurrency(d.digestJson.revenue)}</p>
-                </div>
-                <div className="text-right hidden sm:block">
-                  <p className="text-[10px] text-ink-4 uppercase tracking-widest">Profit</p>
-                  <p className={`text-sm tabular font-semibold ${profit >= 0 ? 'text-success' : 'text-danger'}`}>
-                    {profit < 0 ? '−' : ''}{formatCurrency(Math.abs(profit))}
-                  </p>
-                </div>
-                {d.digestJson.margin !== null && (
-                  <div className="text-right">
-                    <p className="text-[10px] text-ink-4 uppercase tracking-widest">Margin</p>
-                    <p className={`text-sm tabular font-semibold ${d.digestJson.margin >= 30 ? 'text-success' : 'text-warn'}`}>
-                      {d.digestJson.margin.toFixed(1)}%
-                    </p>
-                  </div>
-                )}
-                <svg className="w-4 h-4 text-ink-4 group-open:rotate-180 transition-transform duration-200" viewBox="0 0 16 16" fill="none">
-                  <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-            </summary>
-
-            <div className="px-5 pb-5 pt-1 space-y-4 border-t border-hair">
-              {/* KPI row */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                {[
-                  { label: 'Revenue', value: formatCurrency(d.digestJson.revenue) },
-                  { label: 'Expenses', value: formatCurrency(d.digestJson.expenses) },
-                  { label: 'Profit',   value: `${profit < 0 ? '−' : ''}${formatCurrency(Math.abs(profit))}`, colored: true, pos: profit >= 0 },
-                  { label: 'Margin',   value: d.digestJson.margin !== null ? `${d.digestJson.margin.toFixed(1)}%` : '—', colored: d.digestJson.margin !== null, pos: (d.digestJson.margin ?? 0) >= 30 },
-                ].map(({ label, value, colored, pos }) => (
-                  <div key={label} className="rounded-lg bg-surface-2 border border-hair px-3 py-2.5">
-                    <p className="text-[10px] text-ink-4 uppercase tracking-widest font-medium">{label}</p>
-                    <p className={`text-base tabular font-semibold mt-1 ${colored ? (pos ? 'text-success' : 'text-danger') : 'text-ink'}`}>
-                      {value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* AI Insights */}
-              {d.insights.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-[11px] font-semibold text-ink-4 uppercase tracking-widest flex items-center gap-1.5">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-accent">
-                      <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1.3"/>
-                      <path d="M4.5 6l1.5 1.5L7.5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    AI Insights
-                  </p>
-                  <div className="space-y-2">
-                    {d.insights.map((ins, i) => (
-                      <div key={i} className="rounded-lg border border-hair bg-surface/40 px-4 py-3">
-                        <p className="text-sm font-medium text-ink">{ins.title}</p>
-                        <p className="text-sm text-ink-3 mt-0.5">{ins.body}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {d.insights.length === 0 && (
-                <p className="text-xs text-ink-4 italic">No AI insights generated for this day.</p>
-              )}
-            </div>
-          </details>
-        )
-      })}
-    </div>
-  )
-}

@@ -55,3 +55,5 @@ public/screenshots/
 '[index*'
 'console.log*'
 0
+
+.vercel

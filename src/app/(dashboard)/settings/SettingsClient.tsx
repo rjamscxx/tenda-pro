@@ -104,14 +104,12 @@ interface Props {
   plan: 'free' | 'pro'
   planExpiresAt: string | null
   trialUsed: boolean
-  tokensUsed: number
-  tokenBudget: number
   venue: { name: string; timezone: string; monthlyRevenueGoal: number; monthlyExpenseBudget: number; vatRegistered: boolean; dailyRevenueTarget: number; foodCostTarget: number }
   profile: { fullName: string; email: string }
   recentActivity: ActivityEntry[]
 }
 
-export default function SettingsClient({ initialTheme, plan, planExpiresAt, trialUsed, tokensUsed, tokenBudget, venue, profile, recentActivity }: Props) {
+export default function SettingsClient({ initialTheme, plan, planExpiresAt, trialUsed, venue, profile, recentActivity }: Props) {
   const [active, setActive] = useState(initialTheme)
   const [isPending, startTransition] = useTransition()
   const isPro = plan === 'pro' && (!planExpiresAt || new Date(planExpiresAt) > new Date())
@@ -360,7 +358,6 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 ['Payroll Runs', true],
                 ['CSV Exports', true],
                 ['Daily Email Digest', true],
-                ['15× more AI messages', true],
                 ['Menu Engineering', true],
               ] as [string, boolean][]).map(([label, pro]) => (
                 <div key={label} className="flex items-center gap-2 text-sm">
@@ -413,28 +410,6 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
           </div>
         )}
 
-        {/* AI token usage meter */}
-        <div className="rounded-xl border border-hair bg-surface/40 p-4 space-y-2.5">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-medium text-ink-3 uppercase tracking-wider">AI Messages Today</p>
-            <span className="text-xs tabular text-ink-4">
-              {tokensUsed.toLocaleString()} / {tokenBudget.toLocaleString()} tokens
-            </span>
-          </div>
-          <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                tokensUsed / tokenBudget > 0.85 ? 'bg-warn' : 'bg-accent'
-              }`}
-              style={{ width: `${Math.min(100, (tokensUsed / tokenBudget) * 100)}%` }}
-            />
-          </div>
-          <p className="text-[11px] text-ink-4">
-            {isPro
-              ? 'Pro plan: 150,000 tokens/day. Resets at midnight.'
-              : 'Free plan: 10,000 tokens/day. Upgrade for 15× more.'}
-          </p>
-        </div>
       </section>
 
       {/* ── Appearance ───────────────────────────────────────────────── */}

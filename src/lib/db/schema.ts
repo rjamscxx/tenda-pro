@@ -23,8 +23,6 @@ export const accounts = pgTable('accounts', {
   plan:            planEnum('plan').notNull().default('free'),
   planExpiresAt:   timestamp('plan_expires_at', { withTimezone: true }),
   trialStartedAt:  timestamp('trial_started_at', { withTimezone: true }),
-  aiTokensToday:   integer('ai_tokens_today').notNull().default(0),
-  aiTokensDate:    date('ai_tokens_date'),
   createdAt:       timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
@@ -158,20 +156,6 @@ export const auditLogs = pgTable('audit_logs', {
   index('audit_logs_created_at_idx').on(t.createdAt),
 ])
 
-// ── Daily Digest (AI insight cache) ──────────────────────────────────────────
-
-export const dailyDigests = pgTable('daily_digests', {
-  id:            uuid('id').primaryKey().defaultRandom(),
-  venueId:       uuid('venue_id').notNull().references(() => venues.id, { onDelete: 'cascade' }),
-  date:          date('date').notNull(),
-  digestJson:    jsonb('digest_json').notNull(),   // raw KPIs + deltas + anomalies
-  insightsJson:  jsonb('insights_json'),            // AI-generated insight cards
-  generatedAt:   timestamp('generated_at', { withTimezone: true }),
-  createdAt:     timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-}, (t) => [
-  index('daily_digests_venue_date_idx').on(t.venueId, t.date),
-])
-
 // ── Employees ─────────────────────────────────────────────────────────────────
 
 export const employees = pgTable('employees', {
@@ -258,7 +242,6 @@ export const venuesRelations = relations(venues, ({ one, many }) => ({
   dishes:       many(dishes),
   sales:        many(sales),
   expenses:     many(expenses),
-  dailyDigests: many(dailyDigests),
   employees:    many(employees),
   payrollRuns:  many(payrollRuns),
   wasteLogs:    many(wasteLogs),

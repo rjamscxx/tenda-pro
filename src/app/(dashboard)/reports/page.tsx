@@ -1,8 +1,8 @@
 import { db } from '@/lib/db'
-import { sales, expenses, saleItems, dishes, wasteLogs, dailyDigests } from '@/lib/db/schema'
-import { and, desc, eq, gte } from 'drizzle-orm'
+import { sales, expenses, saleItems, dishes, wasteLogs } from '@/lib/db/schema'
+import { and, eq, gte } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
-import ReportsClient, { type MonthData, type DigestEntry } from './ReportsClient'
+import ReportsClient, { type MonthData } from './ReportsClient'
 
 export const metadata = { title: 'Reports — Sizzle' }
 
@@ -110,32 +110,9 @@ export default async function ReportsPage() {
     }
   })
 
-  // Fetch last 60 daily digests
-  const digestRows = await db
-    .select({
-      date:         dailyDigests.date,
-      digestJson:   dailyDigests.digestJson,
-      insightsJson: dailyDigests.insightsJson,
-      generatedAt:  dailyDigests.generatedAt,
-    })
-    .from(dailyDigests)
-    .where(eq(dailyDigests.venueId, venue.id))
-    .orderBy(desc(dailyDigests.date))
-    .limit(60)
-
-  type RawDigest = { revenue: number; expenses: number; profit: number; margin: number | null; saleCount: number; dayLabel: string }
-  type RawInsight = { title: string; body: string; type?: string }[]
-
-  const digests: DigestEntry[] = digestRows.map(r => ({
-    date:       r.date,
-    digestJson: r.digestJson as RawDigest,
-    insights:   (r.insightsJson ?? []) as RawInsight,
-    generatedAt: r.generatedAt?.toISOString() ?? null,
-  }))
-
   return (
     <div className="p-6 max-w-7xl mx-auto w-full">
-      <ReportsClient months={monthlyData} currentMonth={currentMonth} digests={digests} />
+      <ReportsClient months={monthlyData} currentMonth={currentMonth} />
     </div>
   )
 }

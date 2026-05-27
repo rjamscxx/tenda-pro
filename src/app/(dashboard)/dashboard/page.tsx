@@ -1,9 +1,8 @@
 import { db } from '@/lib/db'
-import { sales, expenses, ingredients, saleItems, dishes, wasteLogs, dailyDigests } from '@/lib/db/schema'
+import { sales, expenses, ingredients, saleItems, dishes, wasteLogs } from '@/lib/db/schema'
 import { and, desc, eq, gte, lt, sql } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { formatCurrency } from '@/lib/utils'
-import DashboardClient from './DashboardClient'
 import CashflowChart, { type ChartPoint } from './CashflowChart'
 import EodSummary from './EodSummary'
 import Link from 'next/link'
@@ -44,13 +43,11 @@ export default async function DashboardPage() {
   // ── Queries ────────────────────────────────────────────────────────────────
   const todayDateStr = todayStart.toLocaleDateString('en-CA')
 
-  const yesterdayStr = yesterdayStart.toLocaleDateString('en-CA')
-
   const [
     todaySalesRows, yesterdaySalesRows, monthSalesRows, lastMonthSalesRows,
     monthIngredientRows, monthExpenseRows, allIngredients,
     chartSalesRows, chartExpensesRows, topDishesRows,
-    todayTxCountRows, todayExpenseRows, todayWasteRows, digestRows,
+    todayTxCountRows, todayExpenseRows, todayWasteRows,
   ] = await Promise.all([
     db.select({ total: sql<string>`coalesce(sum(${sales.total}), 0)` })
       .from(sales)
@@ -113,15 +110,7 @@ export default async function DashboardPage() {
     db.select({ total: sql<string>`coalesce(sum(${wasteLogs.estimatedCost}), 0)` })
       .from(wasteLogs)
       .where(and(eq(wasteLogs.venueId, venue.id), eq(wasteLogs.wastedAt, todayDateStr))),
-
-    db.select({ digestJson: dailyDigests.digestJson, date: dailyDigests.date })
-      .from(dailyDigests)
-      .where(and(eq(dailyDigests.venueId, venue.id), eq(dailyDigests.date, yesterdayStr)))
-      .limit(1),
   ])
-
-  type DigestJson = { revenue: number; expenses: number; profit: number; margin: number | null; saleCount: number; dayLabel: string }
-  const digest = (digestRows[0]?.digestJson ?? null) as DigestJson | null
 
   // ── KPI calculations ───────────────────────────────────────────────────────
   const revenueToday       = Number(todaySalesRows[0].total)
@@ -217,21 +206,7 @@ export default async function DashboardPage() {
     timeZone: tz, weekday: 'long', month: 'long', day: 'numeric',
   })
 
-  // ── Context-aware AI suggestions ──────────────────────────────────────────
-  const aiSuggestions: string[] = []
-  if (lowStockCount > 0)
-    aiSuggestions.push(`What ingredients are running low? (${lowStockCount} item${lowStockCount !== 1 ? 's' : ''})`)
   const foodCostThreshold = venue.foodCostTarget ?? 35
-  if (foodCostPct !== null && foodCostPct > foodCostThreshold)
-    aiSuggestions.push(`Why is my food cost at ${foodCostPct.toFixed(1)}% this month?`)
-  if (revenueToday === 0)
-    aiSuggestions.push("I have no sales today — what should I check?")
-  else
-    aiSuggestions.push("What was my revenue today?")
-  if (aiSuggestions.length < 4)
-    aiSuggestions.push("What are my top-selling dishes this week?")
-  if (aiSuggestions.length < 4)
-    aiSuggestions.push("Show me this month's profit summary")
 
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto w-full space-y-5">
@@ -403,48 +378,11 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* Yesterday's digest */}
-      {digest && (
-        <div className="card-enter card-d4 glass card-glow rounded-xl px-5 py-4">
-          <div className="flex items-center gap-2 mb-3">
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="text-accent shrink-0">
-              <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1.3"/>
-              <path d="M6.5 4v3l2 1.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Yesterday&apos;s Recap</p>
-            <span className="text-[11px] text-ink-4 ml-auto">{digest.dayLabel}</span>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="rounded-lg bg-surface-2 border border-hair px-3 py-2.5">
-              <p className="text-[10px] text-ink-4 uppercase tracking-widest font-medium">Revenue</p>
-              <p className="text-base tabular font-semibold text-ink mt-1">{formatCurrency(digest.revenue)}</p>
-              <p className="text-[10px] text-ink-4 mt-0.5">{digest.saleCount} sale{digest.saleCount !== 1 ? 's' : ''}</p>
-            </div>
-            <div className="rounded-lg bg-surface-2 border border-hair px-3 py-2.5">
-              <p className="text-[10px] text-ink-4 uppercase tracking-widest font-medium">Expenses</p>
-              <p className="text-base tabular font-semibold text-ink mt-1">{formatCurrency(digest.expenses)}</p>
-            </div>
-            <div className="rounded-lg bg-surface-2 border border-hair px-3 py-2.5">
-              <p className="text-[10px] text-ink-4 uppercase tracking-widest font-medium">Profit</p>
-              <p className={`text-base tabular font-semibold mt-1 ${digest.profit >= 0 ? 'text-success' : 'text-danger'}`}>
-                {digest.profit < 0 ? '−' : ''}{formatCurrency(Math.abs(digest.profit))}
-              </p>
-            </div>
-            <div className="rounded-lg bg-surface-2 border border-hair px-3 py-2.5">
-              <p className="text-[10px] text-ink-4 uppercase tracking-widest font-medium">Margin</p>
-              <p className={`text-base tabular font-semibold mt-1 ${digest.margin === null ? 'text-ink-4' : digest.margin >= 30 ? 'text-success' : digest.margin < 0 ? 'text-danger' : 'text-warn'}`}>
-                {digest.margin !== null ? `${digest.margin.toFixed(1)}%` : '—'}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Chart + AI row */}
-      <div className="card-enter card-d5 grid grid-cols-1 lg:grid-cols-5 gap-4">
+      {/* Chart + Top Sellers row */}
+      <div className="card-enter card-d5 grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {/* Cashflow chart */}
-        <div className="lg:col-span-3 glass card-glow rounded-xl p-5 flex flex-col gap-4">
+        <div className="lg:col-span-2 glass card-glow rounded-xl p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">30-Day Cashflow</p>
@@ -464,28 +402,25 @@ export default async function DashboardPage() {
           <CashflowChart data={chartData} />
         </div>
 
-        {/* Top sellers + AI chat */}
-        <div className="lg:col-span-2 flex flex-col gap-4">
+        {/* Top sellers */}
+        <div className="glass card-glow rounded-xl p-4 space-y-3">
+          <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Today&apos;s Top Sellers</p>
           {topDishesRows.length > 0 ? (
-            <div className="glass card-glow rounded-xl p-4 space-y-3">
-              <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Today&apos;s Top Sellers</p>
-              <div className="space-y-2.5">
-                {topDishesRows.map((dish, i) => (
-                  <div key={dish.dishId ?? i} className="flex items-center gap-2.5 group">
-                    <span className={`text-[10px] font-bold w-4 tabular shrink-0 ${i === 0 ? 'text-accent' : 'text-ink-4'}`}>{i + 1}</span>
-                    <span className="flex-1 text-[13px] text-ink truncate">{dish.dishName}</span>
-                    <span className="text-[11px] tabular text-ink-4">{Number(dish.totalQty)}×</span>
-                    <span className="text-[13px] tabular font-semibold text-accent">{formatCurrency(Number(dish.totalRevenue))}</span>
-                  </div>
-                ))}
-              </div>
+            <div className="space-y-2.5">
+              {topDishesRows.map((dish, i) => (
+                <div key={dish.dishId ?? i} className="flex items-center gap-2.5">
+                  <span className={`text-[10px] font-bold w-4 tabular shrink-0 ${i === 0 ? 'text-accent' : 'text-ink-4'}`}>{i + 1}</span>
+                  <span className="flex-1 text-[13px] text-ink truncate">{dish.dishName}</span>
+                  <span className="text-[11px] tabular text-ink-4">{Number(dish.totalQty)}×</span>
+                  <span className="text-[13px] tabular font-semibold text-accent">{formatCurrency(Number(dish.totalRevenue))}</span>
+                </div>
+              ))}
             </div>
           ) : (
-            <div className="glass rounded-xl p-4 flex items-center justify-center text-sm text-ink-4">
+            <div className="flex items-center justify-center py-8 text-sm text-ink-4">
               No sales logged today yet
             </div>
           )}
-          <DashboardClient suggestions={aiSuggestions} />
         </div>
       </div>
 
