@@ -1,5 +1,6 @@
 {
   "alias": ["sizzle-app-v1.vercel.app"],
+  "regions": ["syd1"],
   "crons": [
     {
       "path": "/api/cron/recurring-expenses",
