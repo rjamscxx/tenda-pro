@@ -23,7 +23,7 @@ export default async function OnboardingPage() {
         }}
         aria-hidden="true"
       />
-      <div className="relative z-10 w-full max-w-sm glass glow rounded-2xl p-8 space-y-8">
+      <div className="relative z-10 w-full max-w-md glass glow rounded-2xl p-8 space-y-8">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5 mb-4">
             <SizzleLogo size={22} />
