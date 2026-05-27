@@ -1,27 +1,20 @@
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
 import SizzleLogo from '@/components/ui/SizzleLogo'
-import SignupForm from './SignupForm'
+import ForgotPasswordForm from './ForgotPasswordForm'
 
-export const metadata = { title: 'Create account — Sizzle' }
+export const metadata = { title: 'Reset password — Sizzle' }
 
-export default async function SignupPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (user) redirect('/dashboard')
-
+export default function ForgotPasswordPage() {
   return (
     <div className="w-full max-w-sm space-y-4">
-      {/* Back link */}
       <Link
-        href="/"
+        href="/login"
         className="inline-flex items-center gap-1.5 text-xs text-ink-4 hover:text-ink-2 transition-colors"
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
           <path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        Back to home
+        Back to sign in
       </Link>
 
       <div className="glass glow rounded-2xl p-8 space-y-8">
@@ -31,11 +24,11 @@ export default async function SignupPage() {
             <span className="font-semibold text-[17px] tracking-tight gradient-text">Sizzle</span>
           </div>
           <div className="space-y-1">
-            <h1 className="text-2xl font-semibold text-ink">Start for free</h1>
-            <p className="text-sm text-ink-3">Track sales, costs, and staff — all in one place.</p>
+            <h1 className="text-2xl font-semibold text-ink">Forgot your password?</h1>
+            <p className="text-sm text-ink-3">Enter your email and we&apos;ll send a reset link.</p>
           </div>
         </div>
-        <SignupForm />
+        <ForgotPasswordForm />
       </div>
     </div>
   )

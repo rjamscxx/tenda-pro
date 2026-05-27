@@ -1,25 +1,26 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-const SUPABASE_ERRORS: Record<string, string> = {
-  'Invalid login credentials': 'Incorrect email or password.',
-  'Email not confirmed':        'Please confirm your email before signing in.',
-}
-
-function friendlyError(msg: string): string {
-  return SUPABASE_ERRORS[msg] ?? msg
-}
-
-export default function LoginForm() {
+export default function ResetPasswordForm() {
   const router = useRouter()
-  const [email, setEmail]       = useState('')
-  const [password, setPassword] = useState('')
-  const [showPass, setShowPass] = useState(false)
-  const [error, setError]       = useState('')
-  const [loading, setLoading]   = useState(false)
+  const [password, setPassword]     = useState('')
+  const [showPass, setShowPass]     = useState(false)
+  const [ready, setReady]           = useState(false)
+  const [error, setError]           = useState('')
+  const [loading, setLoading]       = useState(false)
+
+  // Supabase puts the recovery token in the URL hash.
+  // Auth state change fires with event=PASSWORD_RECOVERY once it's parsed.
+  useEffect(() => {
+    const supabase = createClient()
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') setReady(true)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -27,49 +28,44 @@ export default function LoginForm() {
     setError('')
 
     const supabase = createClient()
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+    const { error: updateError } = await supabase.auth.updateUser({ password })
 
-    if (signInError) {
-      setError(friendlyError(signInError.message))
+    if (updateError) {
+      setError(updateError.message)
       setLoading(false)
       return
     }
 
-    router.refresh()
     router.push('/dashboard')
+  }
+
+  if (!ready) {
+    return (
+      <div className="space-y-4 text-center py-4">
+        <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin mx-auto" />
+        <p className="text-sm text-ink-3">Verifying reset link…</p>
+        <p className="text-xs text-ink-4">
+          If nothing happens,{' '}
+          <a href="/forgot-password" className="text-accent hover:underline">request a new link</a>.
+        </p>
+      </div>
+    )
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1">
-        <label className="text-xs font-medium text-ink-3 uppercase tracking-wider">Email</label>
-        <input
-          type="email"
-          required
-          autoComplete="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-lg bg-surface border border-hair text-ink text-sm placeholder:text-ink-4 focus:outline-none focus:border-accent transition-colors"
-          placeholder="you@example.com"
-        />
-      </div>
-
-      <div className="space-y-1">
-        <div className="flex items-center justify-between">
-          <label className="text-xs font-medium text-ink-3 uppercase tracking-wider">Password</label>
-          <a href="/forgot-password" className="text-[11px] text-ink-4 hover:text-accent transition-colors">
-            Forgot password?
-          </a>
-        </div>
+        <label className="text-xs font-medium text-ink-3 uppercase tracking-wider">New password</label>
         <div className="relative">
           <input
             type={showPass ? 'text' : 'password'}
             required
-            autoComplete="current-password"
+            minLength={8}
+            autoComplete="new-password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             className="w-full px-3 py-2.5 pr-10 rounded-lg bg-surface border border-hair text-ink text-sm placeholder:text-ink-4 focus:outline-none focus:border-accent transition-colors"
-            placeholder="••••••••"
+            placeholder="8+ characters"
           />
           <button
             type="button"
@@ -101,13 +97,8 @@ export default function LoginForm() {
         disabled={loading}
         className="w-full py-2.5 btn-primary rounded-lg text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {loading ? 'Signing in…' : 'Sign in'}
+        {loading ? 'Updating…' : 'Set new password'}
       </button>
-
-      <p className="text-center text-sm text-ink-3">
-        No account?{' '}
-        <a href="/signup" className="text-accent hover:underline">Create one free</a>
-      </p>
     </form>
   )
 }
