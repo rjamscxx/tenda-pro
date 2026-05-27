@@ -1,26 +1,806 @@
 @import "tailwindcss";
 
+/* ── Theme 1: Sage Dark (default) ─────────────────────────────────────────── */
+:root,
+[data-theme="sage-dark"] {
+  --canvas:      #0E1714;
+  --canvas-2:    #121D19;
+  --sidebar:     #131E1A;
+  --surface:     #18231F;
+  --surface-2:   #1E2A25;
+  --surface-3:   #243029;
+
+  --ink:         #ECE6D5;
+  --ink-2:       #B4BDB4;
+  --ink-3:       #929B93;
+  --ink-4:       #5C655F;
+
+  --hair:        #28332E;
+  --hair-2:      #212C27;
+
+  --accent:      #58C098;
+  --accent-2:    #79D1AE;
+  --accent-dim:  rgba(88, 192, 152, 0.12);
+  --accent-tint: rgba(88, 192, 152, 0.22);
+  --accent-glow: rgba(88, 192, 152, 0.18);
+  --accent-end:  #3DA87A;
+
+  --danger:      #E48865;
+  --danger-dim:  rgba(228, 136, 101, 0.12);
+  --warn:        #E8C96A;
+  --warn-dim:    rgba(232, 201, 106, 0.12);
+  --success:     #58C098;
+  --success-dim: rgba(88, 192, 152, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #0E1714 0%, #121F1A 50%, #0E1714 100%);
+}
+
+/* ── Theme 2: Sage Light ───────────────────────────────────────────────────── */
+[data-theme="sage-light"] {
+  --canvas:      #F4F0E7;
+  --canvas-2:    #EDE8DE;
+  --sidebar:     #E8E3D9;
+  --surface:     #FFFFFF;
+  --surface-2:   #F7F4EE;
+  --surface-3:   #EDE8DE;
+
+  --ink:         #1A2420;
+  --ink-2:       #3D5048;
+  --ink-3:       #647A72;
+  --ink-4:       #9AADA7;
+
+  --hair:        #D8D2C6;
+  --hair-2:      #E4DFDA;
+
+  --accent:      #1F5F4A;
+  --accent-2:    #2D7A61;
+  --accent-dim:  rgba(31, 95, 74, 0.10);
+  --accent-tint: rgba(31, 95, 74, 0.18);
+  --accent-glow: rgba(31, 95, 74, 0.12);
+  --accent-end:  #174D3A;
+
+  --danger:      #B2492E;
+  --danger-dim:  rgba(178, 73, 46, 0.10);
+  --warn:        #875800;
+  --warn-dim:    rgba(135, 88, 0, 0.10);
+  --success:     #1F5F4A;
+  --success-dim: rgba(31, 95, 74, 0.10);
+
+  --gradient-hero: linear-gradient(135deg, #F4F0E7 0%, #EAE5DB 50%, #F4F0E7 100%);
+}
+
+/* ── Theme 3: Espresso ─────────────────────────────────────────────────────── */
+[data-theme="espresso"] {
+  --canvas:      #1A1410;
+  --canvas-2:    #201A15;
+  --sidebar:     #1E1811;
+  --surface:     #26201A;
+  --surface-2:   #2D261F;
+  --surface-3:   #342D25;
+
+  --ink:         #F0E8DA;
+  --ink-2:       #C4B49E;
+  --ink-3:       #9A8A78;
+  --ink-4:       #655A4D;
+
+  --hair:        #3A3028;
+  --hair-2:      #302820;
+
+  --accent:      #D9A876;
+  --accent-2:    #E8BF92;
+  --accent-dim:  rgba(217, 168, 118, 0.12);
+  --accent-tint: rgba(217, 168, 118, 0.22);
+  --accent-glow: rgba(217, 168, 118, 0.18);
+  --accent-end:  #B8824E;
+
+  --danger:      #D67659;
+  --danger-dim:  rgba(214, 118, 89, 0.12);
+  --warn:        #E8C96A;
+  --warn-dim:    rgba(232, 201, 106, 0.12);
+  --success:     #7DC48A;
+  --success-dim: rgba(125, 196, 138, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #1A1410 0%, #221912 50%, #1A1410 100%);
+}
+
+/* ── Theme 4: Citrus ───────────────────────────────────────────────────────── */
+[data-theme="citrus"] {
+  --canvas:      #0F1410;
+  --canvas-2:    #141A14;
+  --sidebar:     #131913;
+  --surface:     #1A211A;
+  --surface-2:   #202820;
+  --surface-3:   #272F27;
+
+  --ink:         #EEF0D8;
+  --ink-2:       #B8BEA0;
+  --ink-3:       #8A9078;
+  --ink-4:       #586050;
+
+  --hair:        #2C3528;
+  --hair-2:      #242C20;
+
+  --accent:      #C9E663;
+  --accent-2:    #D8F07A;
+  --accent-dim:  rgba(201, 230, 99, 0.12);
+  --accent-tint: rgba(201, 230, 99, 0.22);
+  --accent-glow: rgba(201, 230, 99, 0.18);
+  --accent-end:  #A8C240;
+
+  --danger:      #F0B065;
+  --danger-dim:  rgba(240, 176, 101, 0.12);
+  --warn:        #F0D060;
+  --warn-dim:    rgba(240, 208, 96, 0.12);
+  --success:     #78D68A;
+  --success-dim: rgba(120, 214, 138, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #0F1410 0%, #141B10 50%, #0F1410 100%);
+}
+
+/* ── Theme 5: Crimson — Steakhouse / Italian ──────────────────────────────── */
+[data-theme="crimson"] {
+  --canvas:      #14100F;
+  --canvas-2:    #1A1513;
+  --sidebar:     #181210;
+  --surface:     #201A18;
+  --surface-2:   #272019;
+  --surface-3:   #2E2620;
+
+  --ink:         #F0E8E0;
+  --ink-2:       #C0AEAA;
+  --ink-3:       #967878;
+  --ink-4:       #5A4848;
+
+  --hair:        #3A2828;
+  --hair-2:      #302020;
+
+  --accent:      #DC2626;
+  --accent-2:    #EF4444;
+  --accent-dim:  rgba(220, 38, 38, 0.12);
+  --accent-tint: rgba(220, 38, 38, 0.22);
+  --accent-glow: rgba(220, 38, 38, 0.18);
+  --accent-end:  #B91C1C;
+
+  --danger:      #E48865;
+  --danger-dim:  rgba(228, 136, 101, 0.12);
+  --warn:        #F0C060;
+  --warn-dim:    rgba(240, 192, 96, 0.12);
+  --success:     #78C488;
+  --success-dim: rgba(120, 196, 136, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #14100F 0%, #1C1210 50%, #14100F 100%);
+}
+
+/* ── Theme 6: Ocean — Seafood / Beach Bar ─────────────────────────────────── */
+[data-theme="ocean"] {
+  --canvas:      #060D14;
+  --canvas-2:    #091218;
+  --sidebar:     #081118;
+  --surface:     #0D1820;
+  --surface-2:   #121E28;
+  --surface-3:   #182530;
+
+  --ink:         #DCF0F8;
+  --ink-2:       #9AB8C8;
+  --ink-3:       #708898;
+  --ink-4:       #405060;
+
+  --hair:        #1A2E3C;
+  --hair-2:      #132430;
+
+  --accent:      #0EA5E9;
+  --accent-2:    #38BDF8;
+  --accent-dim:  rgba(14, 165, 233, 0.12);
+  --accent-tint: rgba(14, 165, 233, 0.22);
+  --accent-glow: rgba(14, 165, 233, 0.18);
+  --accent-end:  #0284C7;
+
+  --danger:      #F87171;
+  --danger-dim:  rgba(248, 113, 113, 0.12);
+  --warn:        #FCD34D;
+  --warn-dim:    rgba(252, 211, 77, 0.12);
+  --success:     #34D399;
+  --success-dim: rgba(52, 211, 153, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #060D14 0%, #0A1520 50%, #060D14 100%);
+}
+
+/* ── Theme 7: Rose — Bakery / Patisserie ──────────────────────────────────── */
+[data-theme="rose"] {
+  --canvas:      #150C10;
+  --canvas-2:    #1C1118;
+  --sidebar:     #1A1016;
+  --surface:     #221520;
+  --surface-2:   #2A1B28;
+  --surface-3:   #312030;
+
+  --ink:         #F8ECF4;
+  --ink-2:       #D0A8C8;
+  --ink-3:       #A07890;
+  --ink-4:       #684860;
+
+  --hair:        #3E2038;
+  --hair-2:      #341830;
+
+  --accent:      #E879A6;
+  --accent-2:    #F099C0;
+  --accent-dim:  rgba(232, 121, 166, 0.12);
+  --accent-tint: rgba(232, 121, 166, 0.22);
+  --accent-glow: rgba(232, 121, 166, 0.18);
+  --accent-end:  #DB2777;
+
+  --danger:      #F87171;
+  --danger-dim:  rgba(248, 113, 113, 0.12);
+  --warn:        #FCD34D;
+  --warn-dim:    rgba(252, 211, 77, 0.12);
+  --success:     #6EE7B7;
+  --success-dim: rgba(110, 231, 183, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #150C10 0%, #1E1018 50%, #150C10 100%);
+}
+
+/* ── Theme 8: Ember — BBQ / Grill ─────────────────────────────────────────── */
+[data-theme="ember"] {
+  --canvas:      #130A04;
+  --canvas-2:    #1A1008;
+  --sidebar:     #180E06;
+  --surface:     #1F1408;
+  --surface-2:   #281A0C;
+  --surface-3:   #301F10;
+
+  --ink:         #F8ECE0;
+  --ink-2:       #D0A880;
+  --ink-3:       #A07850;
+  --ink-4:       #684830;
+
+  --hair:        #3E2810;
+  --hair-2:      #342008;
+
+  --accent:      #F97316;
+  --accent-2:    #FB923C;
+  --accent-dim:  rgba(249, 115, 22, 0.12);
+  --accent-tint: rgba(249, 115, 22, 0.22);
+  --accent-glow: rgba(249, 115, 22, 0.18);
+  --accent-end:  #EA580C;
+
+  --danger:      #DC2626;
+  --danger-dim:  rgba(220, 38, 38, 0.12);
+  --warn:        #F59E0B;
+  --warn-dim:    rgba(245, 158, 11, 0.12);
+  --success:     #78C488;
+  --success-dim: rgba(120, 196, 136, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #130A04 0%, #1C1008 50%, #130A04 100%);
+}
+
+/* ── Theme 9: Midnight — Fine Dining / Bar ────────────────────────────────── */
+[data-theme="midnight"] {
+  --canvas:      #070714;
+  --canvas-2:    #0C0C1A;
+  --sidebar:     #0A0A18;
+  --surface:     #10111E;
+  --surface-2:   #161828;
+  --surface-3:   #1C1E30;
+
+  --ink:         #E8E8F8;
+  --ink-2:       #A8A8D8;
+  --ink-3:       #7878B0;
+  --ink-4:       #484880;
+
+  --hair:        #222250;
+  --hair-2:      #1A1A40;
+
+  --accent:      #818CF8;
+  --accent-2:    #A5B0FA;
+  --accent-dim:  rgba(129, 140, 248, 0.12);
+  --accent-tint: rgba(129, 140, 248, 0.22);
+  --accent-glow: rgba(129, 140, 248, 0.18);
+  --accent-end:  #6366F1;
+
+  --danger:      #F87171;
+  --danger-dim:  rgba(248, 113, 113, 0.12);
+  --warn:        #FCD34D;
+  --warn-dim:    rgba(252, 211, 77, 0.12);
+  --success:     #6EE7B7;
+  --success-dim: rgba(110, 231, 183, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #070714 0%, #0C0C1C 50%, #070714 100%);
+}
+
+/* ── Theme 10: Harvest — Brewery / Farm-to-Table ──────────────────────────── */
+[data-theme="harvest"] {
+  --canvas:      #14100A;
+  --canvas-2:    #1A1610;
+  --sidebar:     #181410;
+  --surface:     #201C14;
+  --surface-2:   #28221A;
+  --surface-3:   #302A20;
+
+  --ink:         #F8F0D8;
+  --ink-2:       #D0B880;
+  --ink-3:       #A09060;
+  --ink-4:       #706040;
+
+  --hair:        #3E3020;
+  --hair-2:      #342818;
+
+  --accent:      #F59E0B;
+  --accent-2:    #FBBF24;
+  --accent-dim:  rgba(245, 158, 11, 0.12);
+  --accent-tint: rgba(245, 158, 11, 0.22);
+  --accent-glow: rgba(245, 158, 11, 0.18);
+  --accent-end:  #D97706;
+
+  --danger:      #DC2626;
+  --danger-dim:  rgba(220, 38, 38, 0.12);
+  --warn:        #FACC15;
+  --warn-dim:    rgba(250, 204, 21, 0.12);
+  --success:     #78C488;
+  --success-dim: rgba(120, 196, 136, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #14100A 0%, #1C1810 50%, #14100A 100%);
+}
+
+/* ── Theme 11: Jade — Tea House / Asian ───────────────────────────────────── */
+[data-theme="jade"] {
+  --canvas:      #071010;
+  --canvas-2:    #0C1618;
+  --sidebar:     #0A1416;
+  --surface:     #101E20;
+  --surface-2:   #162628;
+  --surface-3:   #1C2E30;
+
+  --ink:         #DCF0EC;
+  --ink-2:       #90C0B8;
+  --ink-3:       #608880;
+  --ink-4:       #386858;
+
+  --hair:        #1E3C38;
+  --hair-2:      #183030;
+
+  --accent:      #10B981;
+  --accent-2:    #34D399;
+  --accent-dim:  rgba(16, 185, 129, 0.12);
+  --accent-tint: rgba(16, 185, 129, 0.22);
+  --accent-glow: rgba(16, 185, 129, 0.18);
+  --accent-end:  #059669;
+
+  --danger:      #F87171;
+  --danger-dim:  rgba(248, 113, 113, 0.12);
+  --warn:        #FCD34D;
+  --warn-dim:    rgba(252, 211, 77, 0.12);
+  --success:     #10B981;
+  --success-dim: rgba(16, 185, 129, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #071010 0%, #0C1618 50%, #071010 100%);
+}
+
+/* ── Theme 12: Slate — Modern Café ────────────────────────────────────────── */
+[data-theme="slate"] {
+  --canvas:      #0E1017;
+  --canvas-2:    #13161E;
+  --sidebar:     #11141C;
+  --surface:     #181B24;
+  --surface-2:   #1E222C;
+  --surface-3:   #242834;
+
+  --ink:         #E0E4F0;
+  --ink-2:       #A0A8C0;
+  --ink-3:       #707898;
+  --ink-4:       #485070;
+
+  --hair:        #2A3048;
+  --hair-2:      #22283C;
+
+  --accent:      #14B8A6;
+  --accent-2:    #2DD4BF;
+  --accent-dim:  rgba(20, 184, 166, 0.12);
+  --accent-tint: rgba(20, 184, 166, 0.22);
+  --accent-glow: rgba(20, 184, 166, 0.18);
+  --accent-end:  #0D9488;
+
+  --danger:      #F87171;
+  --danger-dim:  rgba(248, 113, 113, 0.12);
+  --warn:        #FCD34D;
+  --warn-dim:    rgba(252, 211, 77, 0.12);
+  --success:     #34D399;
+  --success-dim: rgba(52, 211, 153, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #0E1017 0%, #141820 50%, #0E1017 100%);
+}
+
+/* ── Theme 13: Terracotta — Mediterranean ────────────────────────────────── */
+[data-theme="terracotta"] {
+  --canvas:      #140C08;
+  --canvas-2:    #1C1210;
+  --sidebar:     #1A1010;
+  --surface:     #221814;
+  --surface-2:   #2A1E1A;
+  --surface-3:   #322520;
+
+  --ink:         #F8F0E8;
+  --ink-2:       #D0B8A8;
+  --ink-3:       #A08878;
+  --ink-4:       #705848;
+
+  --hair:        #3E2820;
+  --hair-2:      #342018;
+
+  --accent:      #C2613B;
+  --accent-2:    #D4784E;
+  --accent-dim:  rgba(194, 97, 59, 0.12);
+  --accent-tint: rgba(194, 97, 59, 0.22);
+  --accent-glow: rgba(194, 97, 59, 0.18);
+  --accent-end:  #A0512E;
+
+  --danger:      #DC2626;
+  --danger-dim:  rgba(220, 38, 38, 0.12);
+  --warn:        #F59E0B;
+  --warn-dim:    rgba(245, 158, 11, 0.12);
+  --success:     #78C488;
+  --success-dim: rgba(120, 196, 136, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #140C08 0%, #1C1410 50%, #140C08 100%);
+}
+
+/* ── Theme 14: Ivory — Premium Brunch / Pastry ────────────────────────────── */
+[data-theme="ivory"] {
+  --canvas:      #FAFAF7;
+  --canvas-2:    #F4F4EF;
+  --sidebar:     #F0EFE8;
+  --surface:     #FFFFFF;
+  --surface-2:   #F8F7F2;
+  --surface-3:   #F0EFEA;
+
+  --ink:         #2C2218;
+  --ink-2:       #5A4838;
+  --ink-3:       #8A7868;
+  --ink-4:       #B0A090;
+
+  --hair:        #E0D8CC;
+  --hair-2:      #EAE4DC;
+
+  --accent:      #8B5E3C;
+  --accent-2:    #A8754E;
+  --accent-dim:  rgba(139, 94, 60, 0.10);
+  --accent-tint: rgba(139, 94, 60, 0.18);
+  --accent-glow: rgba(139, 94, 60, 0.12);
+  --accent-end:  #6B4020;
+
+  --danger:      #B2492E;
+  --danger-dim:  rgba(178, 73, 46, 0.10);
+  --warn:        #875800;
+  --warn-dim:    rgba(135, 88, 0, 0.10);
+  --success:     #2D7A61;
+  --success-dim: rgba(45, 122, 97, 0.10);
+
+  --gradient-hero: linear-gradient(135deg, #FAFAF7 0%, #F4F0E8 50%, #FAFAF7 100%);
+}
+
+/* ── Global tokens (theme-independent) ────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Border radius scale */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  20px;
+  --radius-full: 9999px;
+
+  /* Z-index scale */
+  --z-base:     1;
+  --z-sticky:   10;
+  --z-tooltip:  20;
+  --z-dropdown: 30;
+  --z-overlay:  40;
+  --z-modal:    50;
 }
 
+/* ── Tailwind theme bridge ─────────────────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-outfit);
+  --font-mono: var(--font-mono);
+
+  --color-canvas:      var(--canvas);
+  --color-canvas-2:    var(--canvas-2);
+  --color-sidebar:     var(--sidebar);
+  --color-surface:     var(--surface);
+  --color-surface-2:   var(--surface-2);
+  --color-surface-3:   var(--surface-3);
+  --color-ink:         var(--ink);
+  --color-ink-2:       var(--ink-2);
+  --color-ink-3:       var(--ink-3);
+  --color-ink-4:       var(--ink-4);
+  --color-hair:        var(--hair);
+  --color-hair-2:      var(--hair-2);
+  --color-accent:       var(--accent);
+  --color-accent-2:     var(--accent-2);
+  --color-accent-dim:   var(--accent-dim);
+  --color-accent-tint:  var(--accent-tint);
+  --color-accent-glow:  var(--accent-glow);
+  --color-accent-end:   var(--accent-end);
+  --color-danger:       var(--danger);
+  --color-danger-dim:   var(--danger-dim);
+  --color-warn:         var(--warn);
+  --color-warn-dim:     var(--warn-dim);
+  --color-success:      var(--success);
+  --color-success-dim:  var(--success-dim);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+html { height: 100%; }
+
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+/* Dashboard gradient background — two soft accent glows, auto-matches theme */
+.dashboard-bg {
+  background:
+    radial-gradient(ellipse 65% 45% at 85% 0%,   var(--accent-tint), transparent 70%),
+    radial-gradient(ellipse 45% 35% at 5%  100%, var(--accent-dim),  transparent 60%),
+    var(--canvas);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  letter-spacing: -0.01em;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* Mono for all numeric/financial data */
+.tabular {
+  font-family: var(--font-mono), monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Gradient & Glass Utilities ────────────────────────────────────────────── */
+
+/* Pulse animation for live indicators */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Shimmer skeleton — replaces animate-pulse */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.shimmer {
+  background: linear-gradient(90deg, var(--surface-2) 0%, var(--surface-3) 40%, var(--surface-2) 80%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* Glass card — frosted surface with accent-tinted border */
+.glass {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface) 85%, transparent),
+    color-mix(in srgb, var(--surface-2) 90%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--hair) 80%, var(--accent) 20%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Gradient text — accent sweep */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glow shadows */
+.glow {
+  box-shadow: 0 0 0 1px var(--accent-glow), 0 4px 24px var(--accent-glow), 0 1px 4px rgba(0,0,0,0.3);
+}
+.glow-sm {
+  box-shadow: 0 0 0 1px var(--accent-glow), 0 2px 12px var(--accent-glow);
+}
+
+/* Card glow with hover lift */
+.card-glow {
+  box-shadow: 0 0 0 1px var(--accent-glow), 0 4px 20px var(--accent-glow);
+  transition: box-shadow 0.2s ease;
+}
+.card-glow:hover {
+  box-shadow: 0 0 0 1px var(--accent-glow), 0 8px 32px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Gradient primary button — shimmer on hover */
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-end) 50%, var(--accent-2) 100%);
+  background-size: 200% 100%;
+  background-position: 0% 50%;
+  color: var(--canvas);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-position 0.4s ease, filter 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-primary:hover:not(:disabled) {
+  background-position: 100% 50%;
+  filter: brightness(1.05);
+  box-shadow: 0 2px 20px var(--accent-glow);
+}
+.btn-primary:active:not(:disabled) {
+  filter: brightness(0.92);
+  background-position: 0% 50%;
+}
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Active nav pill */
+.nav-active {
+  background: linear-gradient(105deg, color-mix(in srgb, var(--accent) 16%, var(--surface)) 0%, color-mix(in srgb, var(--accent) 6%, transparent) 100%);
+  border-left: 2px solid var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+  padding-left: calc(0.75rem - 2px);
+  box-shadow: inset 0 0 20px var(--accent-glow), 0 1px 3px rgba(0,0,0,0.12);
+}
+.nav-item {
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* ── Form Utilities ────────────────────────────────────────────────────────── */
+
+/* Consistent input field — use in place of the repeated inline classes */
+.input-field {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--canvas);
+  border: 1px solid var(--hair);
+  color: var(--ink);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.input-field::placeholder { color: var(--ink-4); }
+
+/* Secondary / ghost button */
+.btn-secondary {
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-weight: 500;
+  font-size: 0.875rem;
+  border: 1px solid var(--hair);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--surface-3);
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.btn-secondary:active:not(:disabled) { filter: brightness(0.95); }
+.btn-secondary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Danger button */
+.btn-danger {
+  background: var(--danger-dim);
+  color: var(--danger);
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid var(--danger-dim);
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger);
+  color: var(--canvas);
+}
+.btn-danger:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── Badge Utility ─────────────────────────────────────────────────────────── */
+
+/* Base badge — pair with a color modifier e.g. badge-accent, badge-danger */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.6875rem;  /* 11px */
+  font-weight: 500;
+  line-height: 1.375rem;
+  white-space: nowrap;
+}
+.badge-accent   { background: var(--accent-dim);          color: var(--accent); }
+.badge-success  { background: var(--success-dim);         color: var(--success); }
+.badge-danger   { background: var(--danger-dim);          color: var(--danger); }
+.badge-warn     { background: var(--warn-dim);            color: var(--warn); }
+.badge-neutral  { background: var(--surface-3);           color: var(--ink-3); }
+
+/* ── Focus ring for keyboard nav ───────────────────────────────────────────── */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Page transition ───────────────────────────────────────────────────────── */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: page-enter 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Staggered card entrance ───────────────────────────────────────────────── */
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.card-enter {
+  animation: card-enter 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.card-d0 { animation-delay: 0ms;   }
+.card-d1 { animation-delay: 55ms;  }
+.card-d2 { animation-delay: 110ms; }
+.card-d3 { animation-delay: 165ms; }
+.card-d4 { animation-delay: 220ms; }
+.card-d5 { animation-delay: 275ms; }
+
+/* ── Spinner (for nav pending state) ──────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 0.7s linear infinite;
+}
+
+/* ── Landing page animations ────────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.lp-fade-up {
+  animation: fade-up 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lp-fade-in {
+  animation: fade-in 0.5s ease both;
+}
+.lp-d1 { animation-delay: 80ms; }
+.lp-d2 { animation-delay: 160ms; }
+.lp-d3 { animation-delay: 240ms; }
+.lp-d4 { animation-delay: 320ms; }
+.lp-d5 { animation-delay: 400ms; }
+.lp-d6 { animation-delay: 480ms; }
+
+/* Staggered children */
+.lp-stagger > * { animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.lp-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.lp-stagger > *:nth-child(2) { animation-delay: 80ms; }
+.lp-stagger > *:nth-child(3) { animation-delay: 160ms; }
+.lp-stagger > *:nth-child(4) { animation-delay: 240ms; }
+.lp-stagger > *:nth-child(5) { animation-delay: 320ms; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }

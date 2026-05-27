@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<!--
+  Sizzle — Marketing Landing Page
+  ================================
+  Techniques applied:
+  01. 6-layer parallax depth system (depth-0 → depth-5)
+  02. Split-word converge entrance (hero headline)
+  03. Floating loop on mock cards (6-14s)
+  04. Clip-path inset(100%) reveal — every section
+  05. Word-by-word scroll lighting (AI section)
+  06. Pinned scrub timeline — AI section (200vh)
+  07. Cascading stagger — feature cards
+  08. Perspective tilt on mock dashboard
+  09. prefers-reduced-motion (WCAG AA mandatory)
+  10. Mobile coarse-pointer reduced effects
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizzle — One Dashboard for Your Restaurant</title>
+  <meta name="description" content="Revenue, food cost, recipes, waste, payroll. Sizzle puts your whole café on one screen." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset + Root ─────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      /* Canvas */
+      --canvas:      #080808;
+      --surface:     #111111;
+      --surface-2:   #161616;
+      --surface-3:   #1e1e1e;
+      --border:      #1e1e1e;
+      --border-2:    #2a2a2a;
+      /* Text */
+      --text:        #ffffff;
+      --text-2:      #888888;
+      --text-3:      #444444;
+      /* Brand accent (Sizzle sage — used sparingly) */
+      --brand:       #4ade80;
+      --brand-dim:   rgba(74, 222, 128, 0.12);
+      --brand-glow:  rgba(74, 222, 128, 0.06);
+      /* Sizing */
+      --nav-h:       60px;
+      --radius-sm:   8px;
+      --radius:      12px;
+      --radius-lg:   16px;
+      --radius-xl:   24px;
+      /* Type scale */
+      --display:     clamp(2.8rem, 7vw, 6.5rem);
+      --h1:          clamp(2rem, 4.5vw, 4rem);
+      --h2:          clamp(1.5rem, 3vw, 2.5rem);
+      --h3:          clamp(1.1rem, 2vw, 1.5rem);
+      --body:        clamp(0.9rem, 1.2vw, 1.0625rem);
+      --sm:          0.875rem;
+      --xs:          0.75rem;
+    }
+
+    body {
+      background: var(--canvas);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: var(--body);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Depth Layers ─────────────────────────────────────────────────────── */
+    .scene {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .layer.depth-4,
+    .layer.depth-hero-text { pointer-events: auto; }
+
+    /* ── Navigation ───────────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.25rem, 4vw, 3rem);
+      z-index: 100;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(8, 8, 8, 0.92);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .nav-logo-mark {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--brand) 0%, #22c55e 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; color: #080808;
+    }
+    .nav-logo-name {
+      font-size: 16px; font-weight: 700; letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: clamp(1rem, 2.5vw, 2rem);
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-2);
+      text-decoration: none;
+      font-size: var(--sm);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn-ghost {
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-2);
+      background: transparent;
+      color: var(--text-2);
+      font-size: var(--sm);
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover {
+      border-color: #444;
+      color: var(--text);
+    }
+    .btn-primary {
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--brand);
+      color: #080808;
+      font-size: var(--sm);
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      letter-spacing: -0.01em;
+    }
+    .btn-primary:hover {
+      background: #6ee7a0;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(74, 222, 128, 0.25);
+    }
+
+    /* ── Section 1: Hero ──────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: var(--nav-h);
+    }
+
+    /* depth-0: Grid texture */
+    #hero .depth-0 {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 44px 44px;
+      background-position: -1px -1px;
+      opacity: 0;
+      will-change: transform;
+    }
+
+    /* depth-1: Glow blobs */
+    #hero .depth-1 {
+      will-change: transform;
+    }
+    .glow-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+    }
+    .glow-blob-1 {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, var(--brand-glow) 0%, transparent 70%);
+      top: -150px; right: -100px;
+    }
+    .glow-blob-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,255,255,0.025) 0%, transparent 70%);
+      bottom: 0; left: 10%;
+    }
+
+    /* depth-2: Secondary floating cards */
+    #hero .depth-2 {
+      will-change: transform;
+    }
+
+    /* depth-3: Primary dashboard card */
+    #hero .depth-3 {
+      will-change: transform;
+    }
+
+    /* depth-5: Grain overlay */
+    #hero .depth-5 {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      background-size: 200px;
+      opacity: 0.4;
+    }
+
+    /* Hero content layout */
+    .hero-inner {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 5vw, 4rem);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 5vw, 6rem);
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-text-col { position: relative; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      border: 1px solid rgba(74, 222, 128, 0.25);
+      background: var(--brand-dim);
+      font-size: var(--xs);
+      font-weight: 600;
+      color: var(--brand);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(16px);
+      margin-bottom: 1.5rem;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--brand);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    .hero-headline {
+      font-size: var(--display);
+      font-weight: 800;
+      line-height: 1.03;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-headline .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    .hero-headline .line-break { display: block; }
+    .hero-headline .accent { color: var(--brand); }
+
+    .hero-sub {
+      font-size: var(--h3);
+      font-weight: 400;
+      color: var(--text-2);
+      line-height: 1.5;
+      max-width: 440px;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    .btn-hero-primary {
+      padding: 14px 28px;
+      border-radius: 10px;
+      background: var(--brand);
+      color: #080808;
+      font-size: var(--sm);
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-hero-primary:hover {
+      background: #6ee7a0;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(74, 222, 128, 0.3);
+    }
+    .btn-hero-ghost {
+      padding: 14px 24px;
+      border-radius: 10px;
+      border: 1px solid var(--border-2);
+      background: transparent;
+      color: var(--text-2);
+      font-size: var(--sm);
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .btn-hero-ghost:hover {
+      border-color: #444;
+      color: var(--text);
+    }
+    .btn-arrow {
+      transition: transform 0.2s;
+    }
+    .btn-hero-ghost:hover .btn-arrow { transform: translateX(3px); }
+
+    .hero-social-proof {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+    }
+    .avatar-stack {
+      display: flex;
+    }
+    .avatar-stack img, .avatar-placeholder {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--canvas);
+      margin-left: -8px;
+      background: var(--surface-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-2);
+    }
+    .avatar-stack .avatar-placeholder:first-child { margin-left: 0; }
+    .social-proof-text {
+      font-size: var(--xs);
+      color: var(--text-3);
+    }
+    .social-proof-text strong { color: var(--text-2); }
+
+    /* Hero visual col — mock cards */
+    .hero-visual-col {
+      position: relative;
+      height: clamp(400px, 55vw, 640px);
+      opacity: 0;
+    }
+
+    /* ── Mock Dashboard Cards ─────────────────────────────────────────────── */
+    .mock-card {
+      position: absolute;
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-lg);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 24px 48px rgba(0,0,0,0.6),
+        0 8px 16px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+    .mock-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Primary large card — dashboard overview */
+    .mock-main {
+      width: clamp(280px, 42vw, 480px);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-2deg);
+      animation: float-main 10s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    /* Secondary KPI cards */
+    .mock-kpi-1 {
+      width: clamp(140px, 20vw, 200px);
+      top: 8%; left: 4%;
+      transform: rotate(3deg);
+      animation: float-kpi-1 8s ease-in-out infinite;
+    }
+    .mock-kpi-2 {
+      width: clamp(150px, 22vw, 220px);
+      bottom: 10%; right: 2%;
+      transform: rotate(-4deg);
+      animation: float-kpi-2 12s ease-in-out infinite;
+    }
+    .mock-ai {
+      width: clamp(160px, 24vw, 240px);
+      bottom: 6%; left: -2%;
+      transform: rotate(2deg);
+      animation: float-kpi-1 9s ease-in-out infinite reverse;
+    }
+
+    /* Card content */
+    .card-header {
+      padding: 14px 16px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .card-window-dots {
+      display: flex; gap: 5px;
+    }
+    .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+    }
+    .dot-r { background: #3d1515; }
+    .dot-y { background: #3a2e10; }
+    .dot-g { background: #143d1e; }
+    .card-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .card-body { padding: 0 16px 16px; }
+
+    .kpi-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .kpi-value {
+      font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .kpi-label {
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .kpi-delta {
+      font-size: 10px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .kpi-delta.up { color: var(--brand); }
+    .kpi-delta.down { color: #f87171; }
+    .kpi-delta.neutral { color: var(--text-3); }
+
+    .mini-chart {
+      margin-top: 10px;
+      height: 36px;
+    }
+    .mini-chart svg { width: 100%; height: 100%; }
+
+    /* Sparkline row cards */
+    .card-sm-value {
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+    .card-sm-label {
+      font-size: 9px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+    }
+
+    /* AI chat card */
+    .ai-message {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .ai-message.user-msg {
+      background: var(--surface-3);
+      color: var(--text-2);
+      margin-left: 20px;
+    }
+    .ai-message.ai-msg {
+      background: var(--brand-dim);
+      border: 1px solid rgba(74, 222, 128, 0.15);
+      color: var(--text);
+      margin-right: 20px;
+    }
+    .ai-typing {
+      display: flex; gap: 3px; align-items: center;
+      padding: 10px 12px;
+    }
+    .ai-typing span {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--brand);
+      animation: blink 1.2s ease-in-out infinite;
+    }
+    .ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    /* The big main mock card */
+    .mock-main-nav {
+      display: flex;
+      gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .mock-nav-item {
+      font-size: 9.5px;
+      font-weight: 600;
+      color: var(--text-3);
+      padding: 3px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+    .mock-nav-item.active {
+      background: var(--surface-3);
+      color: var(--text-2);
+    }
+    .mock-kpis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 12px 14px;
+    }
+    .mock-kpi-cell {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+    }
+    .mock-kpi-cell .val {
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+    .mock-kpi-cell .lbl {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-3);
+      margin-bottom: 3px;
+    }
+    .mock-kpi-cell .dlt {
+      font-size: 9px;
+      font-weight: 600;
+    }
+    .mock-kpi-cell .dlt.up { color: var(--brand); }
+    .mock-kpi-cell .dlt.dn { color: #f87171; }
+
+    .mock-chart-area {
+      padding: 10px 14px 14px;
+    }
+    .mock-chart-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
+    .mock-chart-svg {
+      width: 100%; height: 60px;
+      overflow: visible;
+    }
+
+    /* ── Float keyframes ──────────────────────────────────────────────────── */
+    @keyframes float-main {
+      0%, 100% { transform: translate(-50%, -50%) rotate(-2deg) translateY(0px); }
+      33%       { transform: translate(-50%, -50%) rotate(-2deg) translateY(-10px); }
+      66%       { transform: translate(-50%, -50%) rotate(-2deg) translateY(4px); }
+    }
+    @keyframes float-kpi-1 {
+      0%, 100% { transform: rotate(3deg) translateY(0px); }
+      50%       { transform: rotate(3deg) translateY(-14px); }
+    }
+    @keyframes float-kpi-2 {
+      0%, 100% { transform: rotate(-4deg) translateY(0px); }
+      40%       { transform: rotate(-4deg) translateY(-10px); }
+      80%       { transform: rotate(-4deg) translateY(5px); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50%       { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    /* ── Section 2: Pain ──────────────────────────────────────────────────── */
+    #pain {
+      padding: clamp(5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 4rem);
+      clip-path: inset(0 0 0 0);
+    }
+    .pain-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .section-eyebrow {
+      font-size: var(--xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      margin-bottom: 1rem;
+    }
+    .section-headline {
+      font-size: var(--h1);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      margin-bottom: 1.25rem;
+    }
+    .section-body {
+      font-size: var(--body);
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    .pain-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .pain-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    .pain-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px;
+    }
+    .pain-text h4 {
+      font-size: var(--sm);
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .pain-text p {
+      font-size: var(--xs);
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+    .pain-text .strikethrough {
+      text-decoration: line-through;
+      color: var(--text-3);
+    }
+
+    /* ── Section 3: Features ──────────────────────────────────────────────── */
+    #features {
+      padding: clamp(5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 4rem);
+      border-top: 1px solid var(--border);
+    }
+    .features-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .features-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 4rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+    .feature-card {
+      background: var(--canvas);
+      padding: 2rem;
+      transition: background 0.2s;
+      opacity: 0;
+      transform: translateY(40px);
+      border: none;
+      cursor: default;
+    }
+    .feature-card:hover {
+      background: var(--surface);
+    }
+    .feature-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      font-size: 20px;
+    }
+    .feature-name {
+      font-size: var(--sm);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+    }
+    .feature-desc {
+      font-size: var(--xs);
+      color: var(--text-3);
+      line-height: 1.6;
+    }
+
+    /* ── Section 4: AI ────────────────────────────────────────────────────── */
+    #ai {
+      position: relative;
+      border-top: 1px solid var(--border);
+    }
+    .ai-pin-content {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 4rem);
+      text-align: center;
+      position: relative;
+    }
+    .ai-glow {
+      position: absolute;
+      width: 800px; height: 400px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, var(--brand-glow) 0%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+    }
+    .ai-headline {
+      font-size: clamp(2rem, 5vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      max-width: 720px;
+      margin-bottom: 3rem;
+    }
+    .ai-word {
+      display: inline-block;
+      color: var(--text-3);
+      transition: color 0.15s, opacity 0.15s;
+      margin: 0 2px;
+    }
+    .ai-word.lit {
+      color: var(--text);
+    }
+
+    .ai-demo {
+      max-width: 500px;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+    }
+    .ai-demo-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-demo-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--brand);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    .ai-demo-title {
+      font-size: var(--xs);
+      font-weight: 600;
+      color: var(--text-2);
+    }
+    .ai-demo-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ai-bubble {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: var(--xs);
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    .ai-bubble.user {
+      align-self: flex-end;
+      background: var(--surface-3);
+      color: var(--text-2);
+      border-radius: 12px 12px 3px 12px;
+    }
+    .ai-bubble.assistant {
+      align-self: flex-start;
+      background: var(--brand-dim);
+      border: 1px solid rgba(74, 222, 128, 0.2);
+      color: var(--text);
+      border-radius: 12px 12px 12px 3px;
+    }
+    .ai-sub {
+      margin-top: 2rem;
+      font-size: var(--sm);
+      color: var(--text-3);
+      opacity: 0;
+    }
+    .ai-tools {
+      margin-top: 3rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      opacity: 0;
+    }
+    .ai-tool-badge {
+      padding: 5px 12px;
+      border-radius: 100px;
+      border: 1px solid var(--border-2);
+      font-size: var(--xs);
+      color: var(--text-3);
+      font-weight: 500;
+    }
+
+    /* ── Section 5: Pricing ───────────────────────────────────────────────── */
+    #pricing {
+      padding: clamp(5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 4rem);
+      border-top: 1px solid var(--border);
+    }
+    .pricing-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .pricing-card {
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .pricing-card.free {
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+    }
+    .pricing-card.pro {
+      background: var(--surface);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      box-shadow: 0 0 60px rgba(74, 222, 128, 0.06);
+      position: relative;
+    }
+    .pricing-badge-pro {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--brand);
+      color: #080808;
+      font-size: var(--xs);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+    }
+    .pricing-tier {
+      font-size: var(--xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      margin-bottom: 1rem;
+    }
+    .pricing-amount {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 0.25rem;
+    }
+    .pricing-period {
+      font-size: var(--sm);
+      color: var(--text-3);
+      margin-bottom: 1.75rem;
+    }
+    .pricing-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .pricing-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: var(--sm);
+      color: var(--text-2);
+    }
+    .check-icon {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .check-icon.ok { background: var(--brand-dim); color: var(--brand); }
+    .check-icon.dim { background: var(--surface-2); color: var(--text-3); }
+    .pricing-cta {
+      display: block;
+      text-align: center;
+      padding: 13px;
+      border-radius: var(--radius);
+      font-size: var(--sm);
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .pricing-cta.free-cta {
+      border: 1px solid var(--border-2);
+      color: var(--text-2);
+    }
+    .pricing-cta.free-cta:hover { border-color: #444; color: var(--text); }
+    .pricing-cta.pro-cta {
+      background: var(--brand);
+      color: #080808;
+    }
+    .pricing-cta.pro-cta:hover {
+      background: #6ee7a0;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(74, 222, 128, 0.3);
+    }
+
+    /* ── Section 6: CTA + Footer ──────────────────────────────────────────── */
+    #cta-footer {
+      padding: clamp(5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 4rem) 4rem;
+      border-top: 1px solid var(--border);
+    }
+    .cta-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .cta-headline {
+      font-size: var(--h1);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .cta-sub {
+      font-size: var(--body);
+      color: var(--text-2);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+    }
+    .cta-form {
+      display: flex;
+      gap: 10px;
+      max-width: 400px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    .cta-input {
+      flex: 1;
+      padding: 13px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-2);
+      background: var(--surface);
+      color: var(--text);
+      font-size: var(--sm);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .cta-input:focus { border-color: rgba(74, 222, 128, 0.4); }
+    .cta-input::placeholder { color: var(--text-3); }
+    .cta-btn {
+      padding: 13px 22px;
+      border-radius: var(--radius);
+      background: var(--brand);
+      color: #080808;
+      font-size: var(--sm);
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .cta-btn:hover {
+      background: #6ee7a0;
+      transform: translateY(-1px);
+    }
+    .cta-note {
+      margin-top: 1rem;
+      font-size: var(--xs);
+      color: var(--text-3);
+      opacity: 0;
+    }
+
+    .footer-divider {
+      margin-top: 5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-2);
+      font-size: var(--sm);
+      font-weight: 600;
+    }
+    .footer-logo {
+      width: 22px; height: 22px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, var(--brand), #22c55e);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: #080808;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    .footer-links a {
+      font-size: var(--xs);
+      color: var(--text-3);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text-2); }
+    .footer-copy {
+      font-size: var(--xs);
+      color: var(--text-3);
+    }
+
+    /* ── Responsive ───────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero-text-col { order: 1; }
+      .hero-visual-col { order: 2; height: 300px; }
+      .hero-sub { margin: 0 auto 2rem; }
+      .hero-actions { justify-content: center; }
+      .hero-social-proof { justify-content: center; }
+      .mock-main { width: 260px; }
+      .mock-kpi-1, .mock-kpi-2 { display: none; }
+      .pain-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      nav .nav-links { display: none; }
+      .footer-divider { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ── Reduced Motion (WCAG AA — mandatory) ─────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .mock-main,
+      .mock-kpi-1,
+      .mock-kpi-2,
+      .mock-ai { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ────────────────────────────────────────────────────────── -->
+  <nav id="main-nav" role="navigation" aria-label="Main">
+    <a href="/" class="nav-logo" aria-label="Sizzle home">
+      <div class="nav-logo-mark" aria-hidden="true">S</div>
+      <span class="nav-logo-name">Sizzle</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#ai">AI</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="/login" class="btn-ghost">Log in</a>
+      <a href="/signup" class="btn-primary">Get started</a>
+    </div>
+  </nav>
+
+  <!-- ── Section 1: Hero ───────────────────────────────────────────────────── -->
+  <section class="scene" id="hero" aria-labelledby="hero-headline">
+
+    <!-- depth-0: Grid texture -->
+    <div class="layer depth-0" id="hero-grid" aria-hidden="true"></div>
+
+    <!-- depth-1: Glow blobs -->
+    <div class="layer depth-1" id="hero-glow" aria-hidden="true">
+      <div class="glow-blob glow-blob-1"></div>
+      <div class="glow-blob glow-blob-2"></div>
+    </div>
+
+    <!-- depth-2: Secondary KPI cards -->
+    <div class="layer depth-2" aria-hidden="true" style="display:contents">
+      <!-- These are absolutely positioned inside hero-visual-col -->
+    </div>
+
+    <!-- depth-4: Content -->
+    <div class="layer depth-4" style="position:relative; z-index:10">
+      <div class="hero-inner">
+
+        <!-- Left: Text -->
+        <div class="hero-text-col">
+          <div class="hero-badge" id="hero-badge" aria-label="Now available">
+            <span class="hero-badge-dot" aria-hidden="true"></span>
+            Now available in the Philippines
+          </div>
+
+          <h1 class="hero-headline" id="hero-headline">
+            <span class="word">One</span>
+            <span class="word">screen</span>
+            <span class="line-break"></span>
+            <span class="word">for</span>
+            <span class="word">every</span>
+            <span class="line-break"></span>
+            <span class="word accent">number.</span>
+          </h1>
+
+          <p class="hero-sub" id="hero-sub">
+            Revenue, food cost, recipes, waste, staff, payroll.
+            Sizzle replaces the spreadsheets and sticky notes with
+            one dashboard built for café owners.
+          </p>
+
+          <div class="hero-actions" id="hero-actions">
+            <a href="/signup" class="btn-hero-primary">Start free today</a>
+            <a href="#features" class="btn-hero-ghost">
+              See all features
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <div class="hero-social-proof" id="hero-social">
+            <div class="avatar-stack" aria-hidden="true">
+              <div class="avatar-placeholder">L</div>
+              <div class="avatar-placeholder">R</div>
+              <div class="avatar-placeholder">A</div>
+              <div class="avatar-placeholder">M</div>
+            </div>
+            <p class="social-proof-text">
+              <strong>Trusted by café owners</strong> across Luzon &amp; Visayas
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Visual mock -->
+        <div class="hero-visual-col" id="hero-visual" aria-hidden="true">
+
+          <!-- Secondary: Revenue card (top left) -->
+          <div class="mock-card mock-kpi-1" data-depth="2">
+            <div class="card-header">
+              <div class="card-window-dots">
+                <div class="dot dot-r"></div>
+                <div class="dot dot-y"></div>
+                <div class="dot dot-g"></div>
+              </div>
+              <span class="card-title">Revenue</span>
+            </div>
+            <div class="card-body">
+              <div class="card-sm-label">Today</div>
+              <div class="card-sm-value">₱18,450</div>
+              <div class="kpi-delta up" style="margin-top:4px">↑ 12.4%</div>
+              <div class="mini-chart">
+                <svg viewBox="0 0 120 36" fill="none" preserveAspectRatio="none">
+                  <path d="M0 28 L15 22 L30 25 L50 10 L70 16 L90 6 L120 12"
+                    stroke="rgba(74,222,128,0.5)" stroke-width="1.5" fill="none"/>
+                  <path d="M0 28 L15 22 L30 25 L50 10 L70 16 L90 6 L120 12 L120 36 L0 36Z"
+                    fill="rgba(74,222,128,0.07)"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Primary: Main dashboard card (center) -->
+          <div class="mock-card mock-main" data-depth="3">
+            <div class="mock-main-nav">
+              <span class="mock-nav-item active">Dashboard</span>
+              <span class="mock-nav-item">Sales</span>
+              <span class="mock-nav-item">Menu</span>
+              <span class="mock-nav-item">Staff</span>
+            </div>
+            <div class="mock-kpis-grid">
+              <div class="mock-kpi-cell">
+                <div class="lbl">Revenue / Month</div>
+                <div class="val">₱284K</div>
+                <div class="dlt up">↑ 8.2%</div>
+              </div>
+              <div class="mock-kpi-cell">
+                <div class="lbl">Food Cost</div>
+                <div class="val">28.3%</div>
+                <div class="dlt up">↓ 1.4%</div>
+              </div>
+              <div class="mock-kpi-cell">
+                <div class="lbl">Gross Margin</div>
+                <div class="val">71.7%</div>
+                <div class="dlt up">Good</div>
+              </div>
+              <div class="mock-kpi-cell">
+                <div class="lbl">Low Stock</div>
+                <div class="val" style="color:#f87171">3</div>
+                <div class="dlt dn">Items</div>
+              </div>
+            </div>
+            <div class="mock-chart-area">
+              <div class="mock-chart-label">30-day Revenue vs Expenses</div>
+              <svg class="mock-chart-svg" viewBox="0 0 320 60" fill="none" preserveAspectRatio="none">
+                <!-- Revenue line -->
+                <path d="M0 48 L20 44 L40 38 L60 42 L80 28 L100 32 L120 22 L140 26 L160 18 L180 24 L200 14 L220 18 L240 10 L260 16 L280 8 L320 12"
+                  stroke="rgba(74,222,128,0.7)" stroke-width="1.5" fill="none"/>
+                <path d="M0 48 L20 44 L40 38 L60 42 L80 28 L100 32 L120 22 L140 26 L160 18 L180 24 L200 14 L220 18 L240 10 L260 16 L280 8 L320 12 L320 60 L0 60Z"
+                  fill="rgba(74,222,128,0.06)"/>
+                <!-- Expenses line -->
+                <path d="M0 54 L20 52 L40 50 L60 53 L80 48 L100 50 L120 46 L140 49 L160 44 L180 47 L200 43 L220 46 L240 42 L260 45 L280 40 L320 44"
+                  stroke="rgba(248,113,113,0.5)" stroke-width="1.2" fill="none" stroke-dasharray="3 2"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Secondary: Food cost card (bottom right) -->
+          <div class="mock-card mock-kpi-2" data-depth="2">
+            <div class="card-header">
+              <div class="card-window-dots">
+                <div class="dot dot-r"></div>
+                <div class="dot dot-y"></div>
+                <div class="dot dot-g"></div>
+              </div>
+              <span class="card-title">Waste Log</span>
+            </div>
+            <div class="card-body">
+              <div class="card-sm-label">This month</div>
+              <div class="card-sm-value" style="color:#f87171">₱2,840</div>
+              <div class="kpi-delta neutral" style="margin-top:4px">6 entries</div>
+            </div>
+          </div>
+
+          <!-- AI Chat card (bottom left) -->
+          <div class="mock-card mock-ai" data-depth="2">
+            <div class="card-header">
+              <div class="card-window-dots">
+                <div class="dot dot-r"></div>
+                <div class="dot dot-y"></div>
+                <div class="dot dot-g"></div>
+              </div>
+              <span class="card-title" style="color: rgba(74,222,128,0.7)">Sizzle AI</span>
+            </div>
+            <div class="card-body" style="padding-top:0">
+              <div class="ai-message user-msg">What's my best-selling dish?</div>
+              <div class="ai-message ai-msg">Your top seller this week is Iced Matcha Latte — sold 148 cups, generating ₱8,880 at a 74% margin. 🍵</div>
+              <div class="ai-typing">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+
+          <!--
+            SCREENSHOT PLACEHOLDER:
+            To use a real app screenshot instead of the mock cards above,
+            replace the .mock-main div with:
+
+            <img
+              src="your-dashboard-screenshot.png"
+              alt="Sizzle dashboard showing KPI overview"
+              class="mock-main"
+              style="object-fit: cover; border-radius: 16px;"
+              data-depth="3"
+            />
+          -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- depth-5: Grain -->
+    <div class="layer depth-5" aria-hidden="true"></div>
+
+  </section>
+
+
+  <!-- ── Section 2: Pain ───────────────────────────────────────────────────── -->
+  <section id="pain" aria-labelledby="pain-headline">
+    <div class="pain-inner">
+      <div>
+        <p class="section-eyebrow">The problem</p>
+        <h2 class="section-headline" id="pain-headline">
+          You're running<br/>your café on three<br/>different apps.
+        </h2>
+        <p class="section-body">
+          Square for sales. QuickBooks for expenses. A notebook for recipes.
+          And none of them talk to each other — so you're always doing the maths
+          yourself at midnight.
+        </p>
+      </div>
+      <div class="pain-stack">
+        <div class="pain-item" data-pain>
+          <div class="pain-icon" aria-hidden="true">📊</div>
+          <div class="pain-text">
+            <h4><span class="strikethrough">Export from Square, paste into Excel</span></h4>
+            <p>Manual CSV exports, broken formulas, a week-old number when you check it.</p>
+          </div>
+        </div>
+        <div class="pain-item" data-pain>
+          <div class="pain-icon" aria-hidden="true">🧾</div>
+          <div class="pain-text">
+            <h4><span class="strikethrough">No idea what your food cost actually is</span></h4>
+            <p>You know what you paid for ingredients, not what you used per dish.</p>
+          </div>
+        </div>
+        <div class="pain-item" data-pain>
+          <div class="pain-icon" aria-hidden="true">📝</div>
+          <div class="pain-text">
+            <h4><span class="strikethrough">Staff hours tracked in a group chat</span></h4>
+            <p>Payroll is a whole weekend of adding up screenshots from Messenger.</p>
+          </div>
+        </div>
+        <div class="pain-item" data-pain>
+          <div class="pain-icon" aria-hidden="true">🗑️</div>
+          <div class="pain-text">
+            <h4><span class="strikethrough">Waste is a gut feeling, not a number</span></h4>
+            <p>You don't log it, so you can't reduce it. Food cost looks fine until it isn't.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── Section 3: Features ───────────────────────────────────────────────── -->
+  <section id="features" aria-labelledby="features-headline">
+    <div class="features-inner">
+      <div class="features-header">
+        <p class="section-eyebrow">Everything in one place</p>
+        <h2 class="section-headline" id="features-headline">
+          Every tool your café actually needs.
+        </h2>
+      </div>
+      <div class="features-grid" role="list">
+        <div class="feature-card" role="listitem" data-feature>
+          <div class="feature-icon" aria-hidden="true">📈</div>
+          <div class="feature-name">Sales Dashboard</div>
+          <div class="feature-desc">Log sales by channel (dine-in, delivery, takeout). See revenue today, this week, this month — with a 30-day cashflow chart.</div>
+        </div>
+        <div class="feature-card" role="listitem" data-feature>
+          <div class="feature-icon" aria-hidden="true">🍽️</div>
+          <div class="feature-name">Recipe & Margin Calculator</div>
+          <div class="feature-desc">Build dish recipes from your ingredient list. Sizzle calculates food cost per dish and gross margin automatically.</div>
+        </div>
+        <div class="feature-card" role="listitem" data-feature>
+          <div class="feature-icon" aria-hidden="true">📦</div>
+          <div class="feature-name">Inventory Tracking</div>
+          <div class="feature-desc">Stock levels update automatically when a sale is logged. Low-stock alerts surface on your dashboard before you run out.</div>
+        </div>
+        <div class="feature-card" role="listitem" data-feature>
+          <div class="feature-icon" aria-hidden="true">🗑️</div>
+          <div class="feature-name">Waste Log</div>
+          <div class="feature-desc">Track spoilage, dropped plates, expired stock. See your estimated loss per month — so you can actually cut it down.</div>
+        </div>
+        <div class="feature-card" role="listitem" data-feature>
+          <div class="feature-icon" aria-hidden="true">👥</div>
+          <div class="feature-name">Employees & Payroll</div>
+          <div class="feature-desc">Manage staff records with daily or monthly pay rates. Process payroll runs, track deductions, and see your total labor cost.</div>
+        </div>
+        <div class="feature-card" role="listitem" data-feature>
+          <div class="feature-icon" aria-hidden="true">💸</div>
+          <div class="feature-name">Expense Tracking</div>
+          <div class="feature-desc">Log rent, utilities, marketing, and other costs. Mark recurring expenses once — Sizzle auto-generates them each month.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── Section 4: AI ─────────────────────────────────────────────────────── -->
+  <section id="ai" aria-labelledby="ai-headline">
+    <div class="ai-pin-content" id="ai-pin-inner">
+
+      <div class="ai-glow" aria-hidden="true"></div>
+
+      <h2 class="ai-headline" id="ai-headline" aria-label="Ask Sizzle anything about your business">
+        <span class="ai-word">Ask</span>
+        <span class="ai-word">Sizzle</span>
+        <span class="ai-word">anything</span>
+        <span class="ai-word">about</span>
+        <span class="ai-word">your</span>
+        <span class="ai-word">business.</span>
+      </h2>
+
+      <div class="ai-demo" role="region" aria-label="AI chat demonstration">
+        <div class="ai-demo-header">
+          <div class="ai-demo-dot" aria-hidden="true"></div>
+          <span class="ai-demo-title">Sizzle AI · powered by Claude</span>
+        </div>
+        <div class="ai-demo-body">
+          <div class="ai-bubble user" id="ai-q1">What was my revenue this week?</div>
+          <div class="ai-bubble assistant" id="ai-a1">
+            This week you made <strong>₱94,200</strong> — up 14% from last week. Your busiest day was Saturday (₱22,450). Dine-in led at 62% of sales.
+          </div>
+          <div class="ai-bubble user" id="ai-q2">Which dish has the best margin?</div>
+          <div class="ai-bubble assistant" id="ai-a2">
+            Your highest-margin item is the <strong>Iced Matcha Latte</strong> at 74% gross margin. Your Mushroom Pasta is the lowest at 38% — worth reviewing that recipe's food cost.
+          </div>
+        </div>
+      </div>
+
+      <p class="ai-sub" id="ai-sub">
+        Connected to your real data. No typing SQL. No exports.
+      </p>
+
+      <div class="ai-tools" id="ai-tools" aria-label="AI capabilities">
+        <span class="ai-tool-badge">Revenue summary</span>
+        <span class="ai-tool-badge">Food cost analysis</span>
+        <span class="ai-tool-badge">Top-selling dishes</span>
+        <span class="ai-tool-badge">Low stock alerts</span>
+        <span class="ai-tool-badge">Expense breakdown</span>
+        <span class="ai-tool-badge">Profit margin</span>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── Section 5: Pricing ─────────────────────────────────────────────────── -->
+  <section id="pricing" aria-labelledby="pricing-headline">
+    <div class="pricing-inner">
+      <div class="pricing-header">
+        <p class="section-eyebrow">Simple pricing</p>
+        <h2 class="section-headline" id="pricing-headline">Start free. Grow when you're ready.</h2>
+      </div>
+      <div class="pricing-grid">
+
+        <div class="pricing-card free" data-pricing>
+          <p class="pricing-tier">Free</p>
+          <p class="pricing-amount">₱0</p>
+          <p class="pricing-period">Forever, 1 venue</p>
+          <ul class="pricing-features">
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> Dashboard & KPIs</li>
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> Sales logging</li>
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> Menu & recipes</li>
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> Inventory tracking</li>
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> Expense tracking</li>
+            <li><span class="check-icon dim" aria-hidden="true">—</span> <span style="color:var(--text-3)">AI assistant (limited)</span></li>
+            <li><span class="check-icon dim" aria-hidden="true">—</span> <span style="color:var(--text-3)">Payroll (Pro)</span></li>
+          </ul>
+          <a href="/signup" class="pricing-cta free-cta">Get started free</a>
+        </div>
+
+        <div class="pricing-card pro" data-pricing>
+          <span class="pricing-badge-pro">Most popular</span>
+          <p class="pricing-tier" style="color:var(--brand)">Pro</p>
+          <p class="pricing-amount">₱1,490</p>
+          <p class="pricing-period">per month · billed monthly</p>
+          <ul class="pricing-features">
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> Everything in Free</li>
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> <strong>Unlimited AI assistant</strong></li>
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> Employees & payroll</li>
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> Waste Log</li>
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> Nightly AI digest email</li>
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> CSV export</li>
+            <li><span class="check-icon ok" aria-hidden="true">✓</span> Priority support</li>
+          </ul>
+          <a href="/signup?plan=pro" class="pricing-cta pro-cta">Start 14-day free trial</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── Section 6: CTA + Footer ───────────────────────────────────────────── -->
+  <section id="cta-footer">
+    <div class="cta-inner">
+      <h2 class="cta-headline" id="cta-headline">Your café deserves better than a spreadsheet.</h2>
+      <p class="cta-sub" id="cta-sub">
+        Join café owners who replaced three tools with one dashboard.
+        Free to start. No credit card required.
+      </p>
+      <form class="cta-form" id="cta-form" onsubmit="handleCtaSubmit(event)">
+        <input
+          type="email"
+          class="cta-input"
+          placeholder="your@email.com"
+          required
+          aria-label="Email address"
+          autocomplete="email"
+        />
+        <button type="submit" class="cta-btn">Get started</button>
+      </form>
+      <p class="cta-note" id="cta-note">Free forever plan available · No credit card needed</p>
+    </div>
+
+    <div class="footer-divider" style="max-width:1200px; margin:0 auto;">
+      <a href="/" class="footer-brand">
+        <div class="footer-logo">S</div>
+        Sizzle
+      </a>
+      <ul class="footer-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="/login">Login</a></li>
+      </ul>
+      <p class="footer-copy">© 2026 Sizzle. Built for the Philippines.</p>
+    </div>
+  </section>
+
+
+  <!-- ── GSAP + ScrollTrigger ───────────────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+  <script>
+    // ── Setup ─────────────────────────────────────────────────────────────────
+    gsap.registerPlugin(ScrollTrigger)
+
+    const isMobile   = window.matchMedia('(max-width: 768px)').matches
+    const isTouch    = window.matchMedia('(pointer: coarse)').matches
+    const noMotion   = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // ── Nav scroll state ──────────────────────────────────────────────────────
+    const nav = document.getElementById('main-nav')
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40)
+    }, { passive: true })
+
+    if (noMotion) {
+      // Reduced motion: show everything immediately
+      gsap.set([
+        '#hero-badge', '.hero-headline .word', '#hero-sub',
+        '#hero-actions', '#hero-social', '#hero-visual',
+        '#hero-grid', '.pain-item', '.feature-card',
+        '.ai-bubble', '#ai-sub', '#ai-tools',
+        '.pricing-card', '#cta-headline', '#cta-sub', '#cta-form', '#cta-note',
+        '.ai-word'
+      ], { opacity: 1, transform: 'none', color: 'var(--text)' })
+    } else {
+      // ── Hero Entrance (on load) ────────────────────────────────────────────
+      const heroTl = gsap.timeline({ delay: 0.15 })
+
+      heroTl
+        .to('#hero-grid',   { opacity: 1, duration: 1.5, ease: 'power2.out' })
+        .to('#hero-badge',  { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=1.2')
+        .to('.hero-headline .word', {
+          opacity: 1, y: 0,
+          duration: 0.7, ease: 'power3.out',
+          stagger: 0.09
+        }, '-=0.5')
+        .to('#hero-sub',     { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.3')
+        .to('#hero-actions', { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.3')
+        .to('#hero-social',  { opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=0.2')
+        .to('#hero-visual',  {
+          opacity: 1, duration: 0.8, ease: 'power2.out',
+          onStart: () => {
+            // Drop mock-main in with elastic
+            gsap.from('.mock-main', {
+              y: -60, opacity: 0, rotation: 6,
+              duration: 1.2, ease: 'elastic.out(1, 0.6)'
+            })
+            gsap.from('.mock-kpi-1', {
+              x: -40, opacity: 0,
+              duration: 0.8, ease: 'back.out(1.4)',
+              delay: 0.2
+            })
+            gsap.from('.mock-kpi-2', {
+              x: 40, opacity: 0,
+              duration: 0.8, ease: 'back.out(1.4)',
+              delay: 0.35
+            })
+            gsap.from('.mock-ai', {
+              y: 30, opacity: 0,
+              duration: 0.8, ease: 'back.out(1.4)',
+              delay: 0.45
+            })
+          }
+        }, '-=0.6')
+
+      // ── Hero Parallax on scroll ────────────────────────────────────────────
+      if (!isTouch) {
+        gsap.to('#hero-grid', {
+          yPercent: -30,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true
+          }
+        })
+        gsap.to('#hero-glow', {
+          yPercent: -15,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true
+          }
+        })
+        gsap.to('#hero-visual', {
+          yPercent: isMobile ? 0 : -20,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1
+          }
+        })
+      }
+
+      // ── Pain section: clip-path reveal + stagger ──────────────────────────
+      gsap.from('#pain', {
+        clipPath: 'inset(0 0 100% 0)',
+        duration: 1.1, ease: 'power3.inOut',
+        scrollTrigger: {
+          trigger: '#pain',
+          start: 'top 88%',
+          toggleActions: 'play none none none'
+        }
+      })
+
+      gsap.to('[data-pain]', {
+        opacity: 1, x: 0,
+        duration: 0.7, ease: 'power2.out',
+        stagger: 0.14,
+        scrollTrigger: {
+          trigger: '#pain',
+          start: 'top 70%',
+          toggleActions: 'play none none none'
+        }
+      })
+
+      // ── Features: cascade stagger ──────────────────────────────────────────
+      gsap.to('[data-feature]', {
+        opacity: 1, y: 0,
+        duration: 0.65, ease: 'power2.out',
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: '#features',
+          start: 'top 75%',
+          toggleActions: 'play none none none'
+        }
+      })
+
+      // ── AI section: pinned word-by-word lighting ───────────────────────────
+      const aiWords = document.querySelectorAll('.ai-word')
+
+      ScrollTrigger.create({
+        trigger: '#ai',
+        pin: '#ai-pin-inner',
+        start: 'top top',
+        end: '+=180%',
+        scrub: 0.8,
+        onUpdate: (self) => {
+          const p = self.progress
+
+          // Light up words (0%–40% of scroll)
+          aiWords.forEach((w, i) => {
+            const threshold = (i / aiWords.length) * 0.4
+            if (p >= threshold) {
+              w.classList.add('lit')
+            } else {
+              w.classList.remove('lit')
+            }
+          })
+
+          // Animate AI bubbles (40%–80% of scroll)
+          const chatProgress = Math.max(0, (p - 0.4) / 0.4)
+          const q1 = document.getElementById('ai-q1')
+          const a1 = document.getElementById('ai-a1')
+          const q2 = document.getElementById('ai-q2')
+          const a2 = document.getElementById('ai-a2')
+
+          setAiBubble(q1, chatProgress, 0)
+          setAiBubble(a1, chatProgress, 0.25)
+          setAiBubble(q2, chatProgress, 0.5)
+          setAiBubble(a2, chatProgress, 0.75)
+
+          // Show sub + tools (80%+)
+          const lateProgress = Math.max(0, (p - 0.8) / 0.2)
+          document.getElementById('ai-sub').style.opacity = lateProgress
+          document.getElementById('ai-tools').style.opacity = lateProgress
+        }
+      })
+
+      function setAiBubble(el, progress, threshold) {
+        if (!el) return
+        const t = Math.max(0, Math.min(1, (progress - threshold) / 0.25))
+        el.style.opacity = t
+        el.style.transform = `translateY(${(1 - t) * 12}px)`
+      }
+
+      // ── Pricing: slide up entrance ─────────────────────────────────────────
+      gsap.to('[data-pricing]', {
+        opacity: 1, y: 0,
+        duration: 0.7, ease: 'back.out(1.3)',
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: '#pricing',
+          start: 'top 75%',
+          toggleActions: 'play none none none'
+        }
+      })
+
+      // ── CTA section: staggered entrance ───────────────────────────────────
+      const ctaTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#cta-footer',
+          start: 'top 75%',
+          toggleActions: 'play none none none'
+        }
+      })
+      ctaTl
+        .to('#cta-headline', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' })
+        .to('#cta-sub',      { opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=0.3')
+        .to('#cta-form',     { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2')
+        .to('#cta-note',     { opacity: 1, duration: 0.4 }, '-=0.1')
+    }
+
+    // ── CTA Form handler ──────────────────────────────────────────────────────
+    function handleCtaSubmit(e) {
+      e.preventDefault()
+      const email = e.target.querySelector('input[type=email]').value
+      // Redirect to signup with email pre-filled
+      window.location.href = `/signup?email=${encodeURIComponent(email)}`
+    }
+  </script>
+
+</body>
+</html>

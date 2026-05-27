@@ -39,3 +39,19 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# dev artifacts
+dev_output.txt
+install_r3f.bat
+run_push.bat
+screenshot-app.mjs
+sizzle-design/
+public/screenshots/
+
+# zero-byte junk files from shell output accidents
+(''),-
+('all'),
+'[,'
+'[index*'
+'console.log*'
+0

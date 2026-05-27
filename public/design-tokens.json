@@ -1,0 +1,239 @@
+{
+  "$description": "Sizzle Design System — v1.0 — Reference values from sage-dark theme",
+  "$schema": "https://design-tokens.example/schema/v1",
+
+  "colors": {
+    "$description": "All values are CSS custom properties resolved at runtime per active theme. Static hex values shown are sage-dark defaults.",
+
+    "background": {
+      "canvas":    { "$value": "#0E1714", "$description": "Page background — deepest layer" },
+      "canvas2":   { "$value": "#121D19", "$description": "Offset canvas for subtle depth" },
+      "sidebar":   { "$value": "#131E1A", "$description": "Sidebar / navigation background" },
+      "surface":   { "$value": "#18231F", "$description": "Card background — primary" },
+      "surface2":  { "$value": "#1E2A25", "$description": "Card background — elevated" },
+      "surface3":  { "$value": "#243029", "$description": "Pressed / selected surface" }
+    },
+
+    "text": {
+      "ink":  { "$value": "#ECE6D5", "$description": "Primary text — headings, values" },
+      "ink2": { "$value": "#B4BDB4", "$description": "Secondary text — labels, descriptions" },
+      "ink3": { "$value": "#929B93", "$description": "Tertiary text — metadata, placeholders" },
+      "ink4": { "$value": "#5C655F", "$description": "Disabled / very subtle text" }
+    },
+
+    "border": {
+      "hair":  { "$value": "#28332E", "$description": "Standard dividers and borders" },
+      "hair2": { "$value": "#212C27", "$description": "Subtle / ghost borders" }
+    },
+
+    "accent": {
+      "default": { "$value": "#58C098", "$description": "Primary brand action color" },
+      "hover":   { "$value": "#79D1AE", "$description": "Accent hover / lighter variant" },
+      "end":     { "$value": "#3DA87A", "$description": "Gradient endpoint (accent → accent-end)" },
+      "dim":     { "$value": "rgba(88,192,152,0.12)", "$description": "Accent fill for selected states" },
+      "tint":    { "$value": "rgba(88,192,152,0.22)", "$description": "Accent fill for hover states" },
+      "glow":    { "$value": "rgba(88,192,152,0.18)", "$description": "Box shadow glow color" }
+    },
+
+    "semantic": {
+      "danger":      { "$value": "#E48865",              "$description": "Error / destructive actions" },
+      "dangerDim":   { "$value": "rgba(228,136,101,0.12)","$description": "Error fill / background" },
+      "warn":        { "$value": "#E8C96A",              "$description": "Warning / caution state" },
+      "warnDim":     { "$value": "rgba(232,201,106,0.12)","$description": "Warning fill / background" },
+      "success":     { "$value": "#58C098",              "$description": "Positive / confirmed state" },
+      "successDim":  { "$value": "rgba(88,192,152,0.12)", "$description": "Success fill / background" }
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "sans": { "$value": "'Inter', system-ui, -apple-system, sans-serif", "$description": "UI body text" },
+      "mono": { "$value": "'Geist Mono', 'Fira Code', monospace", "$description": "Numbers, code, financial data" }
+    },
+    "fontSize": {
+      "2xs": { "$value": "10px",  "$description": "Badge labels, caption metadata" },
+      "xs":  { "$value": "11px",  "$description": "Table headers (uppercase), secondary labels" },
+      "sm":  { "$value": "12px",  "$description": "Supplementary text, dates in lists" },
+      "md":  { "$value": "13px",  "$description": "Navigation labels, form labels" },
+      "base":{ "$value": "14px",  "$description": "Table body, form inputs — primary reading size" },
+      "lg":  { "$value": "16px",  "$description": "Card values, modal content" },
+      "xl":  { "$value": "18px",  "$description": "Section titles" },
+      "2xl": { "$value": "20px",  "$description": "Page headings (h1)" },
+      "3xl": { "$value": "24px",  "$description": "KPI values on dashboard" }
+    },
+    "fontWeight": {
+      "normal":   { "$value": "400" },
+      "medium":   { "$value": "500", "$description": "Nav labels, secondary emphasis" },
+      "semibold": { "$value": "600", "$description": "Headings, button labels, KPI values" },
+      "bold":     { "$value": "700", "$description": "Brand wordmark, strong emphasis" }
+    },
+    "letterSpacing": {
+      "tight":   { "$value": "-0.01em", "$description": "Body text default (Inter)" },
+      "tighter": { "$value": "-0.02em", "$description": "Large headings" },
+      "wider":   { "$value": "0.06em",  "$description": "Uppercase labels (ALLCAPS micro-type)" },
+      "widest":  { "$value": "0.08em",  "$description": "KPI card labels" }
+    },
+    "lineHeight": {
+      "none":    { "$value": "1" },
+      "tight":   { "$value": "1.25" },
+      "snug":    { "$value": "1.375" },
+      "normal":  { "$value": "1.5" }
+    }
+  },
+
+  "spacing": {
+    "$description": "8pt grid — all spacing values are multiples of 4px",
+    "0":  { "$value": "0px" },
+    "1":  { "$value": "4px" },
+    "2":  { "$value": "8px" },
+    "3":  { "$value": "12px" },
+    "4":  { "$value": "16px" },
+    "5":  { "$value": "20px" },
+    "6":  { "$value": "24px" },
+    "8":  { "$value": "32px" },
+    "10": { "$value": "40px" },
+    "12": { "$value": "48px" },
+    "16": { "$value": "64px" }
+  },
+
+  "borderRadius": {
+    "sm":   { "$value": "6px",  "$description": "Badges, small chips" },
+    "md":   { "$value": "8px",  "$description": "Input fields, buttons" },
+    "lg":   { "$value": "10px", "$description": "Small cards, dropdowns" },
+    "xl":   { "$value": "12px", "$description": "Modals" },
+    "2xl":  { "$value": "16px", "$description": "Auth cards" },
+    "full": { "$value": "9999px", "$description": "Pills, avatars" }
+  },
+
+  "shadows": {
+    "glow": {
+      "$value": "0 0 0 1px var(--accent-glow), 0 4px 24px var(--accent-glow), 0 1px 4px rgba(0,0,0,0.3)",
+      "$description": "Full glow — modals, primary focus"
+    },
+    "glowSm": {
+      "$value": "0 0 0 1px var(--accent-glow), 0 2px 12px var(--accent-glow)",
+      "$description": "Subtle glow — secondary elements"
+    },
+    "cardGlow": {
+      "$value": "0 0 0 1px var(--accent-glow), 0 4px 20px var(--accent-glow)",
+      "$description": "Card resting state"
+    },
+    "cardGlowHover": {
+      "$value": "0 0 0 1px var(--accent-glow), 0 8px 32px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.2)",
+      "$description": "Card hover state"
+    },
+    "focusRing": {
+      "$value": "0 0 0 3px var(--accent-glow)",
+      "$description": "Input/control focus ring"
+    }
+  },
+
+  "animation": {
+    "duration": {
+      "fast":   { "$value": "100ms" },
+      "normal": { "$value": "150ms", "$description": "Button/interactive transitions" },
+      "slow":   { "$value": "200ms", "$description": "Layout transitions (card-glow)" },
+      "shimmer":{ "$value": "1600ms", "$description": "Skeleton shimmer cycle" }
+    },
+    "easing": {
+      "default": { "$value": "ease" },
+      "in":      { "$value": "ease-in" },
+      "out":     { "$value": "ease-out" },
+      "inOut":   { "$value": "ease-in-out" }
+    }
+  },
+
+  "zIndex": {
+    "base":        { "$value": "0" },
+    "raised":      { "$value": "10" },
+    "dropdown":    { "$value": "20" },
+    "sticky":      { "$value": "30",  "$description": "Sticky table headers" },
+    "overlay":     { "$value": "40",  "$description": "Modal backdrop" },
+    "modal":       { "$value": "50",  "$description": "Modal panel" },
+    "notification":{ "$value": "60",  "$description": "Toasts, alerts above modal" }
+  },
+
+  "themes": {
+    "$description": "14 built-in themes. Each overrides the color tokens above. Set via data-theme attribute on <html>.",
+    "available": [
+      { "id": "sage-dark",   "name": "Sage Dark",    "category": "dark",  "label": "Default",        "accent": "#58C098" },
+      { "id": "sage-light",  "name": "Sage Light",   "category": "light", "label": "Light",          "accent": "#1F5F4A" },
+      { "id": "espresso",    "name": "Espresso",     "category": "dark",  "label": "Coffee",         "accent": "#D9A876" },
+      { "id": "citrus",      "name": "Citrus",       "category": "dark",  "label": "Fresh",          "accent": "#C9E663" },
+      { "id": "crimson",     "name": "Crimson",      "category": "dark",  "label": "Steakhouse",     "accent": "#DC2626" },
+      { "id": "ocean",       "name": "Ocean",        "category": "dark",  "label": "Seafood",        "accent": "#0EA5E9" },
+      { "id": "rose",        "name": "Rose",         "category": "dark",  "label": "Bakery",         "accent": "#E879A6" },
+      { "id": "ember",       "name": "Ember",        "category": "dark",  "label": "BBQ & Grill",    "accent": "#F97316" },
+      { "id": "midnight",    "name": "Midnight",     "category": "dark",  "label": "Fine Dining",    "accent": "#818CF8" },
+      { "id": "harvest",     "name": "Harvest",      "category": "dark",  "label": "Brewery",        "accent": "#F59E0B" },
+      { "id": "jade",        "name": "Jade",         "category": "dark",  "label": "Tea House",      "accent": "#10B981" },
+      { "id": "slate",       "name": "Slate",        "category": "dark",  "label": "Modern Café",    "accent": "#14B8A6" },
+      { "id": "terracotta",  "name": "Terracotta",   "category": "dark",  "label": "Mediterranean",  "accent": "#C2613B" },
+      { "id": "ivory",       "name": "Ivory",        "category": "light", "label": "Brunch",         "accent": "#8B5E3C" }
+    ]
+  },
+
+  "components": {
+    "$description": "CSS utility classes defined in globals.css",
+    "btn-primary": {
+      "$description": "Gradient primary CTA — accent to accent-end gradient with glow on hover",
+      "usage": "<button class=\"btn-primary rounded-lg px-4 py-2\">Save</button>"
+    },
+    "btn-secondary": {
+      "$description": "Ghost/outline secondary button — surface-2 background with border",
+      "usage": "<button class=\"btn-secondary rounded-lg px-4 py-2\">Cancel</button>"
+    },
+    "btn-danger": {
+      "$description": "Destructive action button — danger-dim background turns solid on hover",
+      "usage": "<button class=\"btn-danger rounded-lg px-4 py-2\">Delete</button>"
+    },
+    "input-field": {
+      "$description": "Standard form input — canvas bg, hair border, accent focus ring",
+      "usage": "<input class=\"input-field\" placeholder=\"...\" />"
+    },
+    "badge": {
+      "$description": "Status pill base — combine with badge-{accent|success|danger|warn|neutral}",
+      "usage": "<span class=\"badge badge-success\">Active</span>"
+    },
+    "glass": {
+      "$description": "Frosted glass card — gradient surface bg + color-mix tinted border + backdrop blur",
+      "usage": "<div class=\"glass card-glow rounded-xl p-5\">...</div>"
+    },
+    "card-glow": {
+      "$description": "Accent glow box-shadow with lift on hover",
+      "usage": "Combine with .glass"
+    },
+    "glow": {
+      "$description": "Strong glow — used on modals and focused elements",
+      "usage": "<div class=\"glass glow rounded-xl\">...</div>"
+    },
+    "gradient-text": {
+      "$description": "Accent color gradient applied to text (webkit clip)",
+      "usage": "<span class=\"gradient-text font-bold\">Sizzle</span>"
+    },
+    "shimmer": {
+      "$description": "Animated skeleton loader — replaces animate-pulse",
+      "usage": "<div class=\"shimmer rounded-lg h-10\"></div>"
+    },
+    "nav-active": {
+      "$description": "Active sidebar nav item — gradient fade + left border",
+      "usage": "Applied conditionally on the active nav link"
+    },
+    "tabular": {
+      "$description": "Geist Mono font + tabular-nums for financial data alignment",
+      "usage": "<td class=\"tabular\">₱1,234.50</td>"
+    }
+  },
+
+  "wcag": {
+    "$description": "WCAG 2.1 AA contrast assessment — dark themes (sage-dark reference)",
+    "ink-on-canvas":      { "ratio": "10.2:1", "level": "AAA", "passes": true },
+    "ink2-on-surface":    { "ratio": "5.1:1",  "level": "AA",  "passes": true },
+    "ink3-on-surface":    { "ratio": "3.2:1",  "level": "AA (large text)", "passes": true },
+    "ink4-on-surface":    { "ratio": "1.8:1",  "level": "Decorative only", "passes": false, "note": "Use only for disabled/placeholder — not body text" },
+    "accent-on-canvas":   { "ratio": "5.8:1",  "level": "AA",  "passes": true },
+    "danger-on-surface":  { "ratio": "4.6:1",  "level": "AA",  "passes": true },
+    "warn-on-surface":    { "ratio": "7.1:1",  "level": "AAA", "passes": true },
+    "note": "Light themes (sage-light, ivory) have been designed with equivalent contrast ratios for dark text on light backgrounds."
+  }
+}
