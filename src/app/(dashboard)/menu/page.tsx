@@ -5,6 +5,7 @@ import { requireVenue } from '@/lib/queries/auth'
 import { isPro } from '@/lib/plan'
 import MenuClient from './MenuClient'
 
+export const revalidate = 30
 export const metadata = { title: 'Menu — Sizzle' }
 
 export default async function MenuPage() {

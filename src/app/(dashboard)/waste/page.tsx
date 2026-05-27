@@ -6,6 +6,7 @@ import { isPro } from '@/lib/plan'
 import ProLockPage from '@/components/ui/ProLockPage'
 import WasteClient from './WasteClient'
 
+export const revalidate = 30
 export const metadata = { title: 'Waste Log — Sizzle' }
 
 export default async function WastePage() {

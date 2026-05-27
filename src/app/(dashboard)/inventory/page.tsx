@@ -5,6 +5,7 @@ import { requireVenue } from '@/lib/queries/auth'
 import { isPro } from '@/lib/plan'
 import InventoryClient from './InventoryClient'
 
+export const revalidate = 30
 export const metadata = { title: 'Inventory — Sizzle' }
 
 export default async function InventoryPage() {

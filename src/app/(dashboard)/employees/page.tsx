@@ -6,6 +6,7 @@ import { isPro } from '@/lib/plan'
 import ProLockPage from '@/components/ui/ProLockPage'
 import EmployeesClient from './EmployeesClient'
 
+export const revalidate = 30
 export const metadata = { title: 'Employees — Sizzle' }
 
 export default async function EmployeesPage() {

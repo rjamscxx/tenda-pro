@@ -4,6 +4,7 @@ import { and, eq, gte } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import ReportsClient, { type MonthData } from './ReportsClient'
 
+export const revalidate = 30
 export const metadata = { title: 'Reports — Sizzle' }
 
 const CATEGORY_LABELS: Record<string, string> = {
