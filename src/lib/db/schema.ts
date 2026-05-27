@@ -107,6 +107,7 @@ export const sales = pgTable('sales', {
 }, (t) => [
   index('sales_venue_idx').on(t.venueId),
   index('sales_sold_at_idx').on(t.soldAt),
+  index('sales_venue_date_idx').on(t.venueId, t.soldAt),
 ])
 
 // ── Sale Items ────────────────────────────────────────────────────────────────
@@ -137,6 +138,7 @@ export const expenses = pgTable('expenses', {
 }, (t) => [
   index('expenses_venue_idx').on(t.venueId),
   index('expenses_date_idx').on(t.expensedAt),
+  index('expenses_venue_date_idx').on(t.venueId, t.expensedAt),
 ])
 
 // ── Audit Log ─────────────────────────────────────────────────────────────────

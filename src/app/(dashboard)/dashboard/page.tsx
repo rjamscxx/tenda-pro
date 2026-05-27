@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import { sales, expenses, ingredients, saleItems, dishes, wasteLogs } from '@/lib/db/schema'
 import { and, desc, eq, gte, lt, sql } from 'drizzle-orm'
+import { unstable_cache } from 'next/cache'
 import { requireVenue } from '@/lib/queries/auth'
 import { formatCurrency } from '@/lib/utils'
 import CashflowChart, { type ChartPoint } from './CashflowChart'
@@ -40,91 +41,80 @@ export default async function DashboardPage() {
   const thirtyDaysAgo = new Date(todayStart); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29)
   const thirtyDaysAgoStr = thirtyDaysAgo.toLocaleDateString('en-CA')
 
-  // ── Queries ────────────────────────────────────────────────────────────────
+  // ── Queries (7 consolidated, cached 30s per venue+day) ───────────────────
   const todayDateStr = todayStart.toLocaleDateString('en-CA')
 
-  const [
-    todaySalesRows, yesterdaySalesRows, monthSalesRows, lastMonthSalesRows,
-    monthIngredientRows, monthExpenseRows, allIngredients,
-    chartSalesRows, chartExpensesRows, topDishesRows,
-    todayTxCountRows, todayExpenseRows, todayWasteRows,
-  ] = await Promise.all([
-    db.select({ total: sql<string>`coalesce(sum(${sales.total}), 0)` })
-      .from(sales)
-      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, todayStart), lt(sales.soldAt, tomorrowStart))),
+  const fetchData = unstable_cache(
+    async () => {
+      const [salesAgg, expensesAgg, allIngredients, chartSalesRows, chartExpensesRows, topDishesRows, todayWasteRows] = await Promise.all([
+        // 1. All sales KPIs in one pass
+        db.select({
+          todayRevenue:     sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${todayStart} and ${sales.soldAt} < ${tomorrowStart} then ${sales.total}::bigint else 0 end), 0)`,
+          todayCount:       sql<string>`count(case when ${sales.soldAt} >= ${todayStart} and ${sales.soldAt} < ${tomorrowStart} then 1 end)`,
+          yesterdayRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${yesterdayStart} and ${sales.soldAt} < ${todayStart} then ${sales.total}::bigint else 0 end), 0)`,
+          monthRevenue:     sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${monthStart} then ${sales.total}::bigint else 0 end), 0)`,
+          lastMonthRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${lastMonthStart} and ${sales.soldAt} < ${monthStart} then ${sales.total}::bigint else 0 end), 0)`,
+        }).from(sales).where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, lastMonthStart))),
 
-    db.select({ total: sql<string>`coalesce(sum(${sales.total}), 0)` })
-      .from(sales)
-      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, yesterdayStart), lt(sales.soldAt, todayStart))),
+        // 2. All expense KPIs in one pass
+        db.select({
+          ingredientCostMonth: sql<string>`coalesce(sum(case when ${expenses.category}::text = 'ingredients' then ${expenses.amount}::bigint else 0 end), 0)`,
+          totalExpensesMonth:  sql<string>`coalesce(sum(${expenses.amount}::bigint), 0)`,
+          todayExpenses:       sql<string>`coalesce(sum(case when ${expenses.expensedAt} = ${todayDateStr} then ${expenses.amount}::bigint else 0 end), 0)`,
+        }).from(expenses).where(and(eq(expenses.venueId, venue.id), gte(expenses.expensedAt, monthStartStr))),
 
-    db.select({ total: sql<string>`coalesce(sum(${sales.total}), 0)` })
-      .from(sales)
-      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, monthStart))),
+        // 3. Ingredients for low-stock check
+        db.select({ id: ingredients.id, name: ingredients.name, unit: ingredients.unit, stockQty: ingredients.stockQty, lowStockThreshold: ingredients.lowStockThreshold })
+          .from(ingredients).where(eq(ingredients.venueId, venue.id)),
 
-    db.select({ total: sql<string>`coalesce(sum(${sales.total}), 0)` })
-      .from(sales)
-      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, lastMonthStart), lt(sales.soldAt, monthStart))),
+        // 4. 30-day chart sales
+        db.select({ soldAt: sales.soldAt, total: sales.total })
+          .from(sales).where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, thirtyDaysAgo))),
 
-    db.select({ total: sql<string>`coalesce(sum(${expenses.amount}), 0)` })
-      .from(expenses)
-      .where(and(eq(expenses.venueId, venue.id), eq(expenses.category, 'ingredients'), gte(expenses.expensedAt, monthStartStr))),
+        // 5. 30-day chart expenses
+        db.select({ expensedAt: expenses.expensedAt, amount: expenses.amount })
+          .from(expenses).where(and(eq(expenses.venueId, venue.id), gte(expenses.expensedAt, thirtyDaysAgoStr))),
 
-    db.select({ total: sql<string>`coalesce(sum(${expenses.amount}), 0)` })
-      .from(expenses)
-      .where(and(eq(expenses.venueId, venue.id), gte(expenses.expensedAt, monthStartStr))),
+        // 6. Today's top dishes
+        db.select({
+          dishId:       saleItems.dishId,
+          dishName:     dishes.name,
+          totalQty:     sql<string>`sum(${saleItems.qty})::text`,
+          totalRevenue: sql<string>`sum(${saleItems.qty} * ${saleItems.unitPrice})::text`,
+        })
+          .from(saleItems)
+          .innerJoin(sales, eq(saleItems.saleId, sales.id))
+          .innerJoin(dishes, eq(saleItems.dishId, dishes.id))
+          .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, todayStart), lt(sales.soldAt, tomorrowStart)))
+          .groupBy(saleItems.dishId, dishes.name)
+          .orderBy(desc(sql`sum(${saleItems.qty})`))
+          .limit(5),
 
-    db.select({ id: ingredients.id, name: ingredients.name, unit: ingredients.unit, stockQty: ingredients.stockQty, lowStockThreshold: ingredients.lowStockThreshold })
-      .from(ingredients)
-      .where(eq(ingredients.venueId, venue.id)),
+        // 7. Today's waste total
+        db.select({ total: sql<string>`coalesce(sum(${wasteLogs.estimatedCost}), 0)` })
+          .from(wasteLogs).where(and(eq(wasteLogs.venueId, venue.id), eq(wasteLogs.wastedAt, todayDateStr))),
+      ])
+      return { salesAgg, expensesAgg, allIngredients, chartSalesRows, chartExpensesRows, topDishesRows, todayWasteRows }
+    },
+    [`dashboard-${venue.id}-${todayDateStr}`],
+    { revalidate: 30 }
+  )
 
-    db.select({ soldAt: sales.soldAt, total: sales.total })
-      .from(sales)
-      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, thirtyDaysAgo))),
-
-    db.select({ expensedAt: expenses.expensedAt, amount: expenses.amount })
-      .from(expenses)
-      .where(and(eq(expenses.venueId, venue.id), gte(expenses.expensedAt, thirtyDaysAgoStr))),
-
-    db.select({
-      dishId:       saleItems.dishId,
-      dishName:     dishes.name,
-      totalQty:     sql<string>`sum(${saleItems.qty})::text`,
-      totalRevenue: sql<string>`sum(${saleItems.qty} * ${saleItems.unitPrice})::text`,
-    })
-      .from(saleItems)
-      .innerJoin(sales, eq(saleItems.saleId, sales.id))
-      .innerJoin(dishes, eq(saleItems.dishId, dishes.id))
-      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, todayStart), lt(sales.soldAt, tomorrowStart)))
-      .groupBy(saleItems.dishId, dishes.name)
-      .orderBy(desc(sql`sum(${saleItems.qty})`))
-      .limit(5),
-
-    db.select({ count: sql<string>`count(*)::text` })
-      .from(sales)
-      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, todayStart), lt(sales.soldAt, tomorrowStart))),
-
-    db.select({ total: sql<string>`coalesce(sum(${expenses.amount}), 0)` })
-      .from(expenses)
-      .where(and(eq(expenses.venueId, venue.id), eq(expenses.expensedAt, todayDateStr))),
-
-    db.select({ total: sql<string>`coalesce(sum(${wasteLogs.estimatedCost}), 0)` })
-      .from(wasteLogs)
-      .where(and(eq(wasteLogs.venueId, venue.id), eq(wasteLogs.wastedAt, todayDateStr))),
-  ])
+  const { salesAgg, expensesAgg, allIngredients, chartSalesRows, chartExpensesRows, topDishesRows, todayWasteRows } = await fetchData()
 
   // ── KPI calculations ───────────────────────────────────────────────────────
-  const revenueToday       = Number(todaySalesRows[0].total)
-  const revenueYesterday   = Number(yesterdaySalesRows[0].total)
-  const revenueMonth       = Number(monthSalesRows[0].total)
-  const revenueLastMonth   = Number(lastMonthSalesRows[0].total)
-  const ingredientCostMonth = Number(monthIngredientRows[0].total)
-  const totalExpensesMonth  = Number(monthExpenseRows[0].total)
+  const revenueToday          = Number(salesAgg[0].todayRevenue)
+  const revenueYesterday      = Number(salesAgg[0].yesterdayRevenue)
+  const revenueMonth          = Number(salesAgg[0].monthRevenue)
+  const revenueLastMonth      = Number(salesAgg[0].lastMonthRevenue)
+  const ingredientCostMonth   = Number(expensesAgg[0].ingredientCostMonth)
+  const totalExpensesMonth    = Number(expensesAgg[0].totalExpensesMonth)
 
   const todayDelta = delta(revenueToday, revenueYesterday)
   const monthDelta = delta(revenueMonth, revenueLastMonth)
 
-  const todayTransactionCount = Number(todayTxCountRows[0].count)
-  const todayExpenses         = Number(todayExpenseRows[0].total)
+  const todayTransactionCount = Number(salesAgg[0].todayCount)
+  const todayExpenses         = Number(expensesAgg[0].todayExpenses)
   const todayWaste            = Number(todayWasteRows[0].total)
 
   const dailyTarget    = venue.dailyRevenueTarget > 0

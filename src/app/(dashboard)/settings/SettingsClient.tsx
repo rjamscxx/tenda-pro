@@ -357,8 +357,8 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 ['Employee Management', true],
                 ['Payroll Runs', true],
                 ['CSV Exports', true],
-                ['Daily Email Digest', true],
                 ['Menu Engineering', true],
+                ['Priority Support', true],
               ] as [string, boolean][]).map(([label, pro]) => (
                 <div key={label} className="flex items-center gap-2 text-sm">
                   <span className={pro ? 'text-accent' : 'text-ink-4'}>{pro ? '✓' : '–'}</span>
