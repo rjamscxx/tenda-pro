@@ -4,6 +4,7 @@ import { eq, asc, and } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import POSClient from './POSClient'
 
+export const revalidate = 30
 export const metadata = { title: 'POS — Sizzle' }
 
 export default async function POSPage() {
