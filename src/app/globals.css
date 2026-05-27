@@ -740,27 +740,27 @@ input:focus, select:focus, textarea:focus {
 
 /* ── Page transition ───────────────────────────────────────────────────────── */
 @keyframes page-enter {
-  from { opacity: 0; transform: translateY(7px); }
+  from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .page-enter {
-  animation: page-enter 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: page-enter 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ── Staggered card entrance ───────────────────────────────────────────────── */
 @keyframes card-enter {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .card-enter {
-  animation: card-enter 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: card-enter 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.card-d0 { animation-delay: 0ms;   }
-.card-d1 { animation-delay: 55ms;  }
-.card-d2 { animation-delay: 110ms; }
-.card-d3 { animation-delay: 165ms; }
-.card-d4 { animation-delay: 220ms; }
-.card-d5 { animation-delay: 275ms; }
+.card-d0 { animation-delay: 0ms;  }
+.card-d1 { animation-delay: 25ms; }
+.card-d2 { animation-delay: 50ms; }
+.card-d3 { animation-delay: 75ms; }
+.card-d4 { animation-delay: 100ms; }
+.card-d5 { animation-delay: 125ms; }
 
 /* ── Spinner (for nav pending state) ──────────────────────────────────────── */
 @keyframes spin {

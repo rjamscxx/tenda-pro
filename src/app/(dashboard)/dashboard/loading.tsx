@@ -26,9 +26,9 @@ export default function Loading() {
         ))}
       </div>
 
-      {/* Chart + AI row */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <div className="lg:col-span-3 glass rounded-xl p-5 space-y-4">
+      {/* Chart + Top Sellers row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 glass rounded-xl p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1.5">
               <div className="h-3 w-28 rounded shimmer" />
@@ -38,22 +38,11 @@ export default function Loading() {
           </div>
           <div className="h-40 w-full rounded-lg shimmer" />
         </div>
-        <div className="lg:col-span-2 flex flex-col gap-4">
-          <div className="glass rounded-xl p-4 space-y-2.5">
-            <div className="h-3 w-28 rounded shimmer" />
-            {[1, 0.85, 0.7].map((op, i) => (
-              <div key={i} className="h-5 rounded shimmer" style={{ opacity: op }} />
-            ))}
-          </div>
-          <div className="glass rounded-xl p-4 space-y-3 flex-1">
-            <div className="h-3 w-24 rounded shimmer" />
-            <div className="flex flex-wrap gap-2">
-              {[56, 80, 72, 64].map((w, i) => (
-                <div key={i} className="h-6 rounded-full shimmer" style={{ width: w, opacity: 1 - i * 0.15 }} />
-              ))}
-            </div>
-            <div className="mt-auto h-8 w-full rounded-lg shimmer opacity-60" />
-          </div>
+        <div className="glass rounded-xl p-4 space-y-3">
+          <div className="h-3 w-28 rounded shimmer" />
+          {[1, 0.85, 0.7, 0.55, 0.4].map((op, i) => (
+            <div key={i} className="h-6 rounded shimmer" style={{ opacity: op }} />
+          ))}
         </div>
       </div>
     </div>
