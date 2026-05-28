@@ -43,8 +43,9 @@ export async function addEmployee(input: EmployeeInput): Promise<{ error?: strin
     revalidatePath('/payroll')
     return {}
   } catch (e) {
-    console.error(e)
-    return { error: 'Failed to add employee' }
+    console.error('[addEmployee]', e)
+    const detail = e instanceof Error ? e.message : String(e)
+    return { error: `Failed to add employee: ${detail}` }
   }
 }
 
