@@ -26,7 +26,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </main>
       </div>
       <TrialExpiredModal trialExpired={trialExpired} />
-      {premium && <AiChatWidget />}
+      {/* Widget only mounts when both: account is Premium AND ANTHROPIC_API_KEY is
+          configured on the server. Lets us ship the code without lighting the
+          feature up until Anthropic credits are loaded. */}
+      {premium && !!process.env.ANTHROPIC_API_KEY && <AiChatWidget />}
     </ToastProvider>
   )
 }
