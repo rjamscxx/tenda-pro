@@ -1,4 +1,4 @@
-import { createHmac } from 'crypto'
+import { createHmac, timingSafeEqual } from 'crypto'
 
 const PAYMONGO_BASE = 'https://api.paymongo.com/v1'
 
@@ -67,6 +67,9 @@ export async function createCheckoutSession(opts: {
   return json.data.attributes.checkout_url
 }
 
+// Reject webhooks older than this to prevent replay attacks
+const WEBHOOK_TOLERANCE_SECONDS = 300 // 5 minutes
+
 export function verifyWebhookSignature(rawBody: string, sigHeader: string): boolean {
   const secret = process.env.PAYMONGO_WEBHOOK_SECRET
   if (!secret) throw new Error('PAYMONGO_WEBHOOK_SECRET is not set')
@@ -75,16 +78,34 @@ export function verifyWebhookSignature(rawBody: string, sigHeader: string): bool
   const parts: Record<string, string> = {}
   sigHeader.split(',').forEach(part => {
     const idx = part.indexOf('=')
-    parts[part.slice(0, idx)] = part.slice(idx + 1)
+    if (idx > 0) parts[part.slice(0, idx)] = part.slice(idx + 1)
   })
 
   const timestamp = parts['t']
   const signature = parts['te']
   if (!timestamp || !signature) return false
 
+  // Reject stale timestamps before doing any HMAC work
+  const tsSeconds = Number(timestamp)
+  if (!Number.isFinite(tsSeconds)) return false
+  const ageSeconds = Math.abs(Math.floor(Date.now() / 1000) - tsSeconds)
+  if (ageSeconds > WEBHOOK_TOLERANCE_SECONDS) return false
+
   const expected = createHmac('sha256', secret)
     .update(`${timestamp}.${rawBody}`)
     .digest('hex')
 
-  return expected === signature
+  // Constant-time compare to prevent timing attacks
+  const expectedBuf = Buffer.from(expected, 'hex')
+  const actualBuf = Buffer.from(signature, 'hex')
+  if (expectedBuf.length !== actualBuf.length) return false
+  return timingSafeEqual(expectedBuf, actualBuf)
+}
+
+// Reverse-lookup: what plan corresponds to a paid amount? Used by the webhook
+// to derive the plan from the actual amount paid instead of trusting metadata.
+export function planForAmount(amount: number): 'pro' | 'premium' | null {
+  if (amount === PLAN_AMOUNTS.pro) return 'pro'
+  if (amount === PLAN_AMOUNTS.premium) return 'premium'
+  return null
 }

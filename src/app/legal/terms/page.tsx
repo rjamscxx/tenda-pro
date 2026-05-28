@@ -103,9 +103,9 @@ export default function TermsPage() {
               <div className="rounded-xl border border-hair bg-surface-2 p-5 space-y-2">
                 <p className="text-sm font-semibold text-ink">Premium &mdash; &#8369;1,999/month</p>
                 <p className="text-sm">
-                  The Premium plan includes everything in Pro, plus support for multiple businesses
-                  under one account, AI-powered insights, advanced analytics, dedicated support, and
-                  early access to new features. Billing is monthly per account.
+                  The Premium plan includes everything in Pro, plus advanced analytics, revenue
+                  forecasting, multi-month P&amp;L reports, dedicated support, and early access to
+                  new features. Billing is monthly per account.
                 </p>
               </div>
             </div>

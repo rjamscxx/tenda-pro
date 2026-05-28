@@ -35,20 +35,23 @@ export default async function DashboardPage() {
   const yesterdayStart = new Date(todayStart); yesterdayStart.setDate(yesterdayStart.getDate() - 1)
   const monthStart    = new Date(nowLocal.getFullYear(), nowLocal.getMonth(), 1)
   const lastMonthStart = new Date(nowLocal.getFullYear(), nowLocal.getMonth() - 1, 1)
-  const monthStartStr     = monthStart.toLocaleDateString('en-CA')
-  const lastMonthStartStr = lastMonthStart.toLocaleDateString('en-CA')
+  // YYYY-MM-DD strings are compared against PG `date` columns (expenses.expensedAt,
+  // waste_logs.wastedAt) which store venue-local calendar dates. Always pass
+  // {timeZone: tz} so the comparison is correct regardless of where the function runs.
+  const monthStartStr     = monthStart.toLocaleDateString('en-CA', { timeZone: tz })
+  const lastMonthStartStr = lastMonthStart.toLocaleDateString('en-CA', { timeZone: tz })
 
   const thirtyDaysAgo = new Date(todayStart); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29)
-  const thirtyDaysAgoStr = thirtyDaysAgo.toLocaleDateString('en-CA')
+  const thirtyDaysAgoStr = thirtyDaysAgo.toLocaleDateString('en-CA', { timeZone: tz })
   const sevenDaysAgo    = new Date(todayStart); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
-  const sevenDaysAgoStr = sevenDaysAgo.toLocaleDateString('en-CA')
-  const yesterdayDateStr = yesterdayStart.toLocaleDateString('en-CA')
+  const sevenDaysAgoStr = sevenDaysAgo.toLocaleDateString('en-CA', { timeZone: tz })
+  const yesterdayDateStr = yesterdayStart.toLocaleDateString('en-CA', { timeZone: tz })
   const daysFromMonday  = (nowLocal.getDay() + 6) % 7
   const weekStart       = new Date(nowLocal.getFullYear(), nowLocal.getMonth(), nowLocal.getDate() - daysFromMonday)
   const lastWeekStart   = new Date(weekStart); lastWeekStart.setDate(lastWeekStart.getDate() - 7)
 
   // ── Queries (7 consolidated) ──────────────────────────────────────────────
-  const todayDateStr = todayStart.toLocaleDateString('en-CA')
+  const todayDateStr = todayStart.toLocaleDateString('en-CA', { timeZone: tz })
 
   const [salesAgg, expensesAgg, allIngredients, chartSalesRows, chartExpensesRows, topDishesRows, anyDish, channelRows, weekAgg] = await Promise.all([
     // 1. All sales KPIs in one pass
@@ -177,7 +180,7 @@ export default async function DashboardPage() {
   const wasteMap = new Map(wasteByDayRows.map(r => [r.wastedAt, Number(r.total)]))
   const wasteTrend = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(sevenDaysAgo); d.setDate(d.getDate() + i)
-    const dateStr = d.toLocaleDateString('en-CA')
+    const dateStr = d.toLocaleDateString('en-CA', { timeZone: tz })
     return { date: dateStr, amount: wasteMap.get(dateStr) ?? 0 }
   })
   const yesterdayWaste  = wasteMap.get(yesterdayDateStr) ?? 0
@@ -229,7 +232,7 @@ export default async function DashboardPage() {
   }
   const chartData: ChartPoint[] = Array.from({ length: 30 }, (_, i) => {
     const d = new Date(thirtyDaysAgo); d.setDate(d.getDate() + i)
-    const date = d.toLocaleDateString('en-CA')
+    const date = d.toLocaleDateString('en-CA', { timeZone: tz })
     return { date, revenue: Math.round((revMap.get(date) ?? 0) / 100), expenses: Math.round((expMap.get(date) ?? 0) / 100) }
   })
 

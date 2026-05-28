@@ -112,15 +112,15 @@ export default function PrivacyPage() {
               <li>To create and manage your account and provide access to the Service.</li>
               <li>To process your subscription, handle billing, and send payment confirmations.</li>
               <li>To operate and display your business data within the dashboard.</li>
-              <li>To generate reports, calculations, and AI-powered insights based on your data.</li>
+              <li>To generate reports, analytics, and forecasting based on your data.</li>
               <li>To send transactional emails such as password resets, billing notices, and account alerts.</li>
               <li>To diagnose bugs, monitor uptime, and improve the reliability of the platform.</li>
               <li>To communicate product updates, new features, or important service announcements.</li>
               <li>To comply with legal obligations under Philippine law.</li>
             </ul>
             <p>
-              We do not use your business data to train general-purpose AI models or sell it to advertisers.
-              When AI-powered features process your data, they do so to produce results only for your account.
+              We do not sell your business data to advertisers or share it with third parties for
+              marketing purposes. Your data is processed only to provide the Service to your account.
             </p>
           </section>
 
@@ -165,17 +165,6 @@ export default function PrivacyPage() {
                 <p className="font-medium text-ink">Resend</p>
                 <p className="text-ink-4">Transactional email delivery. Sends password reset emails, billing confirmations, and account notifications. Receives your email address and the email content only.</p>
                 <a href="https://resend.com/privacy" target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline underline-offset-2">resend.com/privacy</a>
-              </div>
-
-              <div className="rounded-xl border border-hair bg-surface-2 p-5 space-y-1.5 text-sm">
-                <p className="font-medium text-ink">OpenAI</p>
-                <p className="text-ink-4">
-                  AI-powered features on the Premium plan use the OpenAI API to generate insights from
-                  aggregated business data you have entered (e.g., revenue trends, cost summaries).
-                  Data sent to OpenAI is used only to produce your result and is not used to train OpenAI models
-                  under our API agreement.
-                </p>
-                <a href="https://openai.com/privacy" target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline underline-offset-2">openai.com/privacy</a>
               </div>
             </div>
 

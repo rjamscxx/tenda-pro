@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { expenses } from '@/lib/db/schema'
-import { and, eq, gte, lt } from 'drizzle-orm'
+import { and, eq, gte, lt, inArray } from 'drizzle-orm'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -19,10 +19,19 @@ export async function GET(req: NextRequest) {
   const monthStart  = todayStr.slice(0, 7) + '-01'
   const nextMonth   = new Date(nowManila.getFullYear(), nowManila.getMonth() + 1, 1)
   const nextMonthStart = nextMonth.toLocaleDateString('en-CA')
+  // Last day of current month (day 0 of next month rolls back)
+  const lastDayOfMonth = new Date(nowManila.getFullYear(), nowManila.getMonth() + 1, 0).getDate()
+  const isLastDay = manilaDay === lastDayOfMonth
 
-  // All recurring expense templates whose recurrenceDay = today's day
+  // Recurring expenses whose recurrenceDay = today's day, plus any recurrences
+  // pinned to a day that doesn't exist this month (e.g. day 31 in February)
+  // — fire those on the last day of the month so they aren't silently skipped.
+  const recurrenceDaysToFire = isLastDay
+    ? Array.from({ length: 31 - lastDayOfMonth + 1 }, (_, i) => lastDayOfMonth + i)
+    : [manilaDay]
+
   const templates = await db.select().from(expenses)
-    .where(and(eq(expenses.isRecurring, true), eq(expenses.recurrenceDay, manilaDay)))
+    .where(and(eq(expenses.isRecurring, true), inArray(expenses.recurrenceDay, recurrenceDaysToFire)))
 
   let created = 0
   let skipped = 0

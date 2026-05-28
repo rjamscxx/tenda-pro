@@ -18,11 +18,17 @@ function toLocalDate(d: Date | string, tz: string) {
   return new Date(d).toLocaleDateString('en-CA', { timeZone: tz })
 }
 
+// Day-of-week (0=Sun…6=Sat) for a calendar date string, independent of server tz.
+// Treats the YYYY-MM-DD string as a calendar date and reads its UTC weekday.
+function calendarDow(dateStr: string): number {
+  return new Date(dateStr + 'T00:00:00Z').getUTCDay()
+}
+
 export default async function AnalyticsPage() {
   const { venue, account } = await requireVenue()
 
   if (!checkPremium(account)) {
-    return <PremiumLockPage hasUsedTrial={!!account.trialStartedAt} />
+    return <PremiumLockPage />
   }
 
   const tz = venue.timezone || 'Asia/Manila'
@@ -34,9 +40,10 @@ export default async function AnalyticsPage() {
   const sixMonthStart = toLocalDate(d6m, tz).slice(0, 7) + '-01'
 
   const [rawSales, rawExpenses] = await Promise.all([
+    // Fetch 6 months of sales so Monthly P&L revenue is complete, not just the 90-day chart window
     db.select({ soldAt: sales.soldAt, total: sales.total })
       .from(sales)
-      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, d90))),
+      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, d6m))),
     db.select({ expensedAt: expenses.expensedAt, amount: expenses.amount, category: expenses.category })
       .from(expenses)
       .where(and(eq(expenses.venueId, venue.id), gte(expenses.expensedAt, sixMonthStart))),
@@ -59,7 +66,7 @@ export default async function AnalyticsPage() {
   const dowRevenue = [0, 0, 0, 0, 0, 0, 0]
   const dowCount   = [0, 0, 0, 0, 0, 0, 0]
   for (const { date, revenue } of dailyRevenue) {
-    const dow = new Date(date + 'T12:00:00').getDay()
+    const dow = calendarDow(date)
     dowRevenue[dow] += revenue
     dowCount[dow]++
   }
@@ -107,7 +114,7 @@ export default async function AnalyticsPage() {
   for (let i = 1; i <= 7; i++) {
     const d = new Date(now); d.setDate(d.getDate() + i)
     const date = toLocalDate(d, tz)
-    const dow  = d.getDay()
+    const dow  = calendarDow(date)
     const mid  = revenueByDow[dow]
     forecastDays.push({ date, mid, low: Math.round(mid * 0.82), high: Math.round(mid * 1.18) })
   }
