@@ -8,7 +8,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { useCountUp } from '@/hooks/useCountUp'
 import SizzleLogo from '@/components/ui/SizzleLogo'
-import Testimonials from '@/components/landing/Testimonials'
+import FounderStory from '@/components/landing/FounderStory'
+import ComparisonTable from '@/components/landing/ComparisonTable'
 import FAQ from '@/components/landing/FAQ'
 
 const HeroScene3D = dynamic(() => import('@/components/3d/HeroScene3D'), {
@@ -1196,10 +1197,17 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
         </div>
       </section>
 
-      {/* ── Testimonials ──────────────────────────────────────────────────────── */}
+      {/* ── Comparison Table ──────────────────────────────────────────────────── */}
       <section className="py-24 px-4 border-t border-hair">
         <div className="max-w-6xl mx-auto">
-          <Testimonials />
+          <ComparisonTable />
+        </div>
+      </section>
+
+      {/* ── Founder Story ─────────────────────────────────────────────────────── */}
+      <section className="py-24 px-4 border-t border-hair">
+        <div className="max-w-6xl mx-auto">
+          <FounderStory />
         </div>
       </section>
 

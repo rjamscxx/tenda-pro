@@ -5,35 +5,51 @@ import { useState } from 'react';
 const items = [
   {
     q: 'Is Sizzle really free?',
-    a: 'Yes — the Basic plan is free forever for one business with no time limit. Sales tracking, expense logging, menu with recipe costing (up to 20 dishes), inventory, and 6-month reports are all included at no cost. Pro (₱399/mo) unlocks unlimited dishes, employees, payroll, waste log, and CSV exports. Premium (₱1,999/mo) adds multiple businesses and AI-powered insights.',
+    a: 'Yes — the Basic plan is free forever for one business with no time limit. Sales tracking, expense logging, menu with recipe costing (up to 20 dishes), inventory, and 6-month reports are all included at no cost. Pro (₱399/mo) unlocks unlimited dishes, employees, payroll, waste log, and CSV exports. Premium (₱1,999/mo) adds advanced analytics, revenue forecasting, and multi-month P&L reports.',
   },
   {
     q: 'Do I need a credit card to sign up?',
-    a: 'No. You create an account with just your email. No payment information is collected until you choose to upgrade to Pro.',
+    a: 'No. You create an account with just your email. No payment information is collected until you choose to upgrade to Pro, and even then we accept GCash, Maya, GrabPay, card, and bank transfer through PayMongo.',
   },
   {
-    q: 'Is my data safe?',
-    a: 'All data is stored in a secure PostgreSQL database with row-level security — meaning your data is completely isolated from other accounts. Connections are encrypted. We never sell or share your data.',
+    q: 'How do I pay? Does it support GCash and Maya?',
+    a: 'Yes — Pro and Premium subscriptions are billed through PayMongo. You can pay with GCash, Maya, GrabPay, credit/debit card, or direct bank transfer. Billing is monthly with no contract.',
   },
   {
-    q: 'Does it work offline or on mobile?',
-    a: "Sizzle works in any modern browser on desktop, tablet, or phone. You can also install it as a PWA (progressive web app) on Android or desktop — just tap 'Install' in the Settings page. A basic offline fallback is available so you're not left with a blank screen if your connection drops.",
+    q: 'Does Sizzle issue official BIR receipts?',
+    a: 'Not yet. Sizzle handles your internal numbers — what you sold, what you spent, what your real margin is. For customer-facing official receipts you still use your existing BIR-registered receipt printer or pad. This is on the roadmap once we have enough Premium customers to justify the compliance work.',
   },
   {
-    q: 'Can I manage more than one business?',
-    a: 'Multiple venues are a Premium feature. Basic and Pro support one business each. Premium lets you manage as many businesses as you need from a single account.',
+    q: 'What if my internet goes down mid-shift?',
+    a: "Sizzle is a PWA, so the app shell stays loaded even on a flaky connection. Live sales/expense logging needs the network to talk to the database, so during a full outage we recommend the classic backup — paper sales slips you log into Sizzle once you're back online. Full offline mode is on the roadmap.",
+  },
+  {
+    q: 'Can I import my data from Excel or another tool?',
+    a: "Not yet — entries are added through the app's forms today. CSV import for ingredients, dishes, and historical sales is on the near-term roadmap. If you have specific data you need imported to get started, message me directly at rjamscxx@gmail.com and I'll help.",
+  },
+  {
+    q: 'Is my data safe? Can I export it?',
+    a: 'All data is stored in a secure PostgreSQL database (Supabase) with row-level security — your data is completely isolated from other accounts. Connections are encrypted. You can export any report to CSV from the Reports page, and Sizzle never sells or shares your data.',
+  },
+  {
+    q: 'Does it work on mobile?',
+    a: "Yes. Sizzle works in any modern browser on desktop, tablet, or phone. You can install it as a PWA on Android or desktop — tap 'Install' in the Settings page and you get a home-screen icon that opens like a native app.",
   },
   {
     q: 'How does recipe costing work?',
     a: 'You add your ingredients with their unit cost (e.g., chicken breast at ₱280/kg). Then you build a recipe — how much of each ingredient goes into one serving of a dish. Sizzle calculates the exact food cost per plate and your gross margin. When you log a sale, the recipe quantities are automatically deducted from your inventory.',
   },
   {
+    q: 'How is this different from Square or a regular POS?',
+    a: "A POS records sales. Sizzle records sales AND tells you whether you actually made money — by tracking your real food cost per dish, your expenses, your waste, and your payroll alongside your revenue. Square's strength is hardware integration and card processing; Sizzle's strength is the back-of-house numbers Square can't see.",
+  },
+  {
     q: 'Can I cancel or downgrade anytime?',
-    a: "Yes. If you're on Pro and want to go back to Starter, you can downgrade from the Settings page at any time. There are no long-term contracts or cancellation fees.",
+    a: "Yes. If you're on Pro or Premium and want to go back to Basic, you can downgrade from the Settings page at any time. There are no long-term contracts or cancellation fees. Your historical data stays intact and remains exportable.",
   },
   {
     q: 'Why is Sizzle built specifically for the Philippines?',
-    a: 'Pricing is in Philippine Peso, the workflow is designed around how local restaurants and cafés actually operate, and the default themes were chosen with Filipino café aesthetics in mind. The target revenue goals, expense categories, and even the sample data use locally relevant numbers.',
+    a: 'Pricing is in Philippine Peso, the workflow is designed around how local restaurants and cafés actually operate, and the default themes were chosen with Filipino café aesthetics in mind. Built by a Filipino indie developer, not a foreign SaaS team adapting their product.',
   },
 ];
 
