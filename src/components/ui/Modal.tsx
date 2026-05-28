@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 interface ModalProps {
   open: boolean
@@ -12,6 +13,12 @@ interface ModalProps {
 }
 
 export default function Modal({ open, onClose, title, icon, variant = 'default', children }: ModalProps) {
+  // Portal target only exists on the client. Track mount so we don't try to
+  // call createPortal during SSR.
+  const [mounted, setMounted] = useState(false)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMounted(true) }, [])
+
   useEffect(() => {
     if (!open) return
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -19,9 +26,13 @@ export default function Modal({ open, onClose, title, icon, variant = 'default',
     return () => window.removeEventListener('keydown', handler)
   }, [open, onClose])
 
-  if (!open) return null
+  if (!open || !mounted) return null
 
-  return (
+  // Render at document.body so the modal escapes any ancestor with a
+  // transform/filter/perspective that would otherwise become the containing
+  // block for our fixed positioning (e.g. the dashboard header card's
+  // .card-enter animation leaves a permanent transform).
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={onClose} />
       <div className="relative glass glow rounded-xl w-full max-w-md overflow-hidden">
@@ -49,6 +60,7 @@ export default function Modal({ open, onClose, title, icon, variant = 'default',
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
