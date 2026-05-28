@@ -17,7 +17,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",
     "@react-three/drei": "^9.122.0",
-    "@react-three/fiber": "^8.18.0",
+    "@react-three/fiber": "^9.6.1",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.106.1",
     "drizzle-orm": "^0.45.2",
