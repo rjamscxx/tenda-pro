@@ -23,6 +23,11 @@ export const accounts = pgTable('accounts', {
   plan:            planEnum('plan').notNull().default('free'),
   planExpiresAt:   timestamp('plan_expires_at', { withTimezone: true }),
   trialStartedAt:  timestamp('trial_started_at', { withTimezone: true }),
+  // Daily AI token budget tracking (Premium-only feature).
+  // aiTokensDate is the venue-local date the counter refers to; when a request
+  // arrives on a new day we reset aiTokensToday to 0 before adding.
+  aiTokensToday:   integer('ai_tokens_today').notNull().default(0),
+  aiTokensDate:    date('ai_tokens_date'),
   createdAt:       timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 

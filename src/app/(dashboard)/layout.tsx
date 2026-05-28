@@ -4,6 +4,7 @@ import MobileNav from '@/components/layout/MobileNav'
 import PageTransition from '@/components/layout/PageTransition'
 import TrialBanner from '@/components/layout/TrialBanner'
 import TrialExpiredModal from '@/components/layout/TrialExpiredModal'
+import AiChatWidget from '@/components/layout/AiChatWidget'
 import { ToastProvider } from '@/components/ui/Toast'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -25,6 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </main>
       </div>
       <TrialExpiredModal trialExpired={trialExpired} />
+      {premium && <AiChatWidget />}
     </ToastProvider>
   )
 }
