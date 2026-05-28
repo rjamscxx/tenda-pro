@@ -53,14 +53,25 @@ export default async function DashboardPage() {
   // ── Queries (7 consolidated) ──────────────────────────────────────────────
   const todayDateStr = todayStart.toLocaleDateString('en-CA', { timeZone: tz })
 
+  // Drizzle's sql`` template binds raw values without applying column type
+  // transformers, and the postgres driver rejects bare Date params. Pre-serialize
+  // the timestamp bounds we splice into sql`` templates below to ISO strings.
+  const todayStartIso     = todayStart.toISOString()
+  const tomorrowStartIso  = tomorrowStart.toISOString()
+  const yesterdayStartIso = yesterdayStart.toISOString()
+  const monthStartIso     = monthStart.toISOString()
+  const lastMonthStartIso = lastMonthStart.toISOString()
+  const weekStartIso      = weekStart.toISOString()
+  const lastWeekStartIso  = lastWeekStart.toISOString()
+
   const [salesAgg, expensesAgg, allIngredients, chartSalesRows, chartExpensesRows, topDishesRows, anyDish, channelRows, weekAgg] = await Promise.all([
     // 1. All sales KPIs in one pass
     db.select({
-      todayRevenue:     sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${todayStart} and ${sales.soldAt} < ${tomorrowStart} then ${sales.total}::bigint else 0 end), 0)`,
-      todayCount:       sql<string>`count(case when ${sales.soldAt} >= ${todayStart} and ${sales.soldAt} < ${tomorrowStart} then 1 end)`,
-      yesterdayRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${yesterdayStart} and ${sales.soldAt} < ${todayStart} then ${sales.total}::bigint else 0 end), 0)`,
-      monthRevenue:     sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${monthStart} then ${sales.total}::bigint else 0 end), 0)`,
-      lastMonthRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${lastMonthStart} and ${sales.soldAt} < ${monthStart} then ${sales.total}::bigint else 0 end), 0)`,
+      todayRevenue:     sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${todayStartIso} and ${sales.soldAt} < ${tomorrowStartIso} then ${sales.total}::bigint else 0 end), 0)`,
+      todayCount:       sql<string>`count(case when ${sales.soldAt} >= ${todayStartIso} and ${sales.soldAt} < ${tomorrowStartIso} then 1 end)`,
+      yesterdayRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${yesterdayStartIso} and ${sales.soldAt} < ${todayStartIso} then ${sales.total}::bigint else 0 end), 0)`,
+      monthRevenue:     sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${monthStartIso} then ${sales.total}::bigint else 0 end), 0)`,
+      lastMonthRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${lastMonthStartIso} and ${sales.soldAt} < ${monthStartIso} then ${sales.total}::bigint else 0 end), 0)`,
     }).from(sales).where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, lastMonthStart))),
 
     // 2. All expense KPIs + per-category MTD in one pass
@@ -119,10 +130,10 @@ export default async function DashboardPage() {
 
     // 9. This week vs last week sales
     db.select({
-      thisWeekRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${weekStart} then ${sales.total}::bigint else 0 end), 0)`,
-      thisWeekCount:   sql<string>`coalesce(count(case when ${sales.soldAt} >= ${weekStart} then 1 end), 0)`,
-      lastWeekRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${lastWeekStart} and ${sales.soldAt} < ${weekStart} then ${sales.total}::bigint else 0 end), 0)`,
-      lastWeekCount:   sql<string>`coalesce(count(case when ${sales.soldAt} >= ${lastWeekStart} and ${sales.soldAt} < ${weekStart} then 1 end), 0)`,
+      thisWeekRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${weekStartIso} then ${sales.total}::bigint else 0 end), 0)`,
+      thisWeekCount:   sql<string>`coalesce(count(case when ${sales.soldAt} >= ${weekStartIso} then 1 end), 0)`,
+      lastWeekRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${lastWeekStartIso} and ${sales.soldAt} < ${weekStartIso} then ${sales.total}::bigint else 0 end), 0)`,
+      lastWeekCount:   sql<string>`coalesce(count(case when ${sales.soldAt} >= ${lastWeekStartIso} and ${sales.soldAt} < ${weekStartIso} then 1 end), 0)`,
     }).from(sales).where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, lastWeekStart))),
   ])
 
