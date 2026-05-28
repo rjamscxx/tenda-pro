@@ -13,7 +13,7 @@ export default async function EmployeesPage() {
   const { venue, account } = await requireVenue()
 
   if (!isPro(account)) {
-    return <ProLockPage feature="Employee Management" />
+    return <ProLockPage feature="Employee Management" hasUsedTrial={!!account.trialStartedAt} />
   }
 
   const rows = await db

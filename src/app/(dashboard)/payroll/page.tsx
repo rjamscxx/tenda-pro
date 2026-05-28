@@ -13,7 +13,7 @@ export default async function PayrollPage() {
   const { venue, account } = await requireVenue()
 
   if (!isPro(account)) {
-    return <ProLockPage feature="Payroll" />
+    return <ProLockPage feature="Payroll" hasUsedTrial={!!account.trialStartedAt} />
   }
 
   const [runRows, employeeRows] = await Promise.all([

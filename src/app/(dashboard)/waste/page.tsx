@@ -13,7 +13,7 @@ export default async function WastePage() {
   const { venue, account } = await requireVenue()
 
   if (!isPro(account)) {
-    return <ProLockPage feature="Waste Log" />
+    return <ProLockPage feature="Waste Log" hasUsedTrial={!!account.trialStartedAt} />
   }
 
   const [rows, ingredientRows] = await Promise.all([

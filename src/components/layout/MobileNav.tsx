@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Sidebar from './Sidebar'
 
-export default function MobileNav({ venueName, fullName, role, isPro }: { venueName: string; fullName?: string; role?: string; isPro?: boolean }) {
+export default function MobileNav({ venueName, fullName, role, isPro, isPremium }: { venueName: string; fullName?: string; role?: string; isPro?: boolean; isPremium?: boolean }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
@@ -38,12 +38,12 @@ export default function MobileNav({ venueName, fullName, role, isPro }: { venueN
         transition-transform duration-200 ease-out
         ${open ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <Sidebar venueName={venueName} fullName={fullName} role={role} isPro={isPro} onClose={() => setOpen(false)} />
+        <Sidebar venueName={venueName} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} onClose={() => setOpen(false)} />
       </div>
 
       {/* Desktop sidebar — always visible */}
       <div className="hidden lg:block h-full shrink-0">
-        <Sidebar venueName={venueName} fullName={fullName} role={role} isPro={isPro} />
+        <Sidebar venueName={venueName} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} />
       </div>
     </>
   )

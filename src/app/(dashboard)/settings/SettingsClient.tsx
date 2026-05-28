@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { updateVenue, updateProfile, downgradeTofree, deleteAccount } from './actions'
+import { useRouter } from 'next/navigation'
+import { updateVenue, updateProfile, downgradeTofree, deleteAccount, startTrial, activatePlan } from './actions'
 import InstallButton from '@/components/layout/InstallButton'
 
 // ── Theme picker ──────────────────────────────────────────────────────────────
@@ -109,8 +110,10 @@ interface Props {
 }
 
 export default function SettingsClient({ initialTheme, plan, planExpiresAt, trialStartedAt, venue, profile, recentActivity }: Props) {
+  const router = useRouter()
   const [active, setActive] = useState(initialTheme)
   const [isPending, startTransition] = useTransition()
+  const [planLoading, setPlanLoading] = useState<'trial' | 'pro' | 'premium' | null>(null)
 
   const now = new Date()
   const isExpired = planExpiresAt ? new Date(planExpiresAt) < now : false
@@ -430,22 +433,38 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
               <li>✓ CSV exports & priority support</li>
             </ul>
             {effectivePlan !== 'pro' && (
-              <button
-                disabled={isPending}
-                onClick={async () => {
-                  startTransition(async () => {})
-                  const res = await fetch('/api/paymongo/checkout?plan=pro', { method: 'POST' })
-                  const json = await res.json() as { url?: string; error?: string }
-                  if (json.url) window.location.href = json.url
-                }}
-                className={`w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-60 ${
-                  effectivePlan === 'free'
-                    ? 'btn-primary'
-                    : 'border border-hair text-ink-3 hover:border-accent hover:text-accent transition-colors'
-                }`}
-              >
-                {effectivePlan === 'free' ? 'Upgrade to Pro — ₱399/mo →' : 'Switch to Pro — ₱399/mo'}
-              </button>
+              <div className="space-y-2">
+                {!trialStartedAt && effectivePlan === 'free' && (
+                  <button
+                    disabled={!!planLoading}
+                    onClick={async () => {
+                      setPlanLoading('trial')
+                      await startTrial()
+                      router.refresh()
+                      setPlanLoading(null)
+                    }}
+                    className="w-full py-2 rounded-lg text-sm font-semibold btn-primary disabled:opacity-60"
+                  >
+                    {planLoading === 'trial' ? 'Activating…' : 'Start 14-day free trial →'}
+                  </button>
+                )}
+                <button
+                  disabled={!!planLoading}
+                  onClick={async () => {
+                    setPlanLoading('pro')
+                    await activatePlan('pro')
+                    router.refresh()
+                    setPlanLoading(null)
+                  }}
+                  className={`w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-60 ${
+                    effectivePlan === 'free' && trialStartedAt
+                      ? 'btn-primary'
+                      : 'border border-hair text-ink-3 hover:border-accent hover:text-accent transition-colors'
+                  }`}
+                >
+                  {planLoading === 'pro' ? 'Activating…' : effectivePlan === 'free' ? 'Subscribe to Pro — ₱399/mo →' : 'Switch to Pro — ₱399/mo'}
+                </button>
+              </div>
             )}
           </div>
 
@@ -466,16 +485,16 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
             </ul>
             {effectivePlan !== 'premium' && (
               <button
-                disabled={isPending}
+                disabled={!!planLoading}
                 onClick={async () => {
-                  startTransition(async () => {})
-                  const res = await fetch('/api/paymongo/checkout?plan=premium', { method: 'POST' })
-                  const json = await res.json() as { url?: string; error?: string }
-                  if (json.url) window.location.href = json.url
+                  setPlanLoading('premium')
+                  await activatePlan('premium')
+                  router.refresh()
+                  setPlanLoading(null)
                 }}
                 className="w-full py-2 rounded-lg text-sm font-semibold bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors disabled:opacity-60"
               >
-                Upgrade to Premium — ₱1,999/mo →
+                {planLoading === 'premium' ? 'Activating…' : 'Subscribe to Premium — ₱1,999/mo →'}
               </button>
             )}
           </div>

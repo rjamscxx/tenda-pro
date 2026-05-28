@@ -68,6 +68,33 @@ export async function updateProfile(input: { fullName: string }) {
   revalidatePath('/settings')
 }
 
+export async function startTrial() {
+  const { account } = await requireVenue()
+  if (account.trialStartedAt) return { error: 'Trial already used.' }
+  const expiresAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+  await db.update(accounts).set({
+    plan: 'pro',
+    planExpiresAt: expiresAt,
+    trialStartedAt: new Date(),
+  }).where(eq(accounts.id, account.id))
+  revalidatePath('/settings')
+  revalidatePath('/(dashboard)', 'layout')
+  revalidatePath('/employees')
+  revalidatePath('/waste')
+  revalidatePath('/payroll')
+}
+
+export async function activatePlan(plan: 'pro' | 'premium') {
+  const { account } = await requireVenue()
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+  await db.update(accounts).set({ plan, planExpiresAt: expiresAt }).where(eq(accounts.id, account.id))
+  revalidatePath('/settings')
+  revalidatePath('/(dashboard)', 'layout')
+  revalidatePath('/employees')
+  revalidatePath('/waste')
+  revalidatePath('/payroll')
+}
+
 export async function downgradeTofree() {
   const { account } = await requireVenue()
   await db.update(accounts).set({ plan: 'free', planExpiresAt: null }).where(eq(accounts.id, account.id))

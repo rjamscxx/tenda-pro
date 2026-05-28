@@ -1,4 +1,8 @@
-import Link from 'next/link'
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { startTrial, activatePlan } from '@/app/(dashboard)/settings/actions'
 
 const PRO_FEATURES = [
   'Unlimited dishes & ingredients',
@@ -9,7 +13,24 @@ const PRO_FEATURES = [
   'Priority Support',
 ]
 
-export default function ProLockPage({ feature }: { feature: string }) {
+export default function ProLockPage({ feature, hasUsedTrial }: { feature: string; hasUsedTrial: boolean }) {
+  const router = useRouter()
+  const [loading, setLoading] = useState<'trial' | 'pro' | null>(null)
+
+  async function handleTrial() {
+    setLoading('trial')
+    await startTrial()
+    router.refresh()
+    setLoading(null)
+  }
+
+  async function handleActivate() {
+    setLoading('pro')
+    await activatePlan('pro')
+    router.refresh()
+    setLoading(null)
+  }
+
   return (
     <div className="flex flex-col items-center justify-center h-full min-h-[60vh] p-8">
       <div className="glass card-glow rounded-2xl p-10 max-w-md w-full space-y-6 text-center">
@@ -24,7 +45,7 @@ export default function ProLockPage({ feature }: { feature: string }) {
           </div>
           <h2 className="text-lg font-semibold text-ink">{feature}</h2>
           <p className="text-sm text-ink-4 mt-2 leading-relaxed">
-            Upgrade to Pro (₱399/mo) to unlock {feature} and all Pro features.
+            Upgrade to Pro to unlock {feature} and all Pro features.
           </p>
         </div>
 
@@ -38,13 +59,26 @@ export default function ProLockPage({ feature }: { feature: string }) {
         </div>
 
         <div className="space-y-3">
-          <Link
-            href="/settings#plan"
-            className="block w-full text-center px-6 py-3 btn-primary rounded-xl font-semibold text-sm"
-          >
-            View plans →
-          </Link>
-          <p className="text-xs text-ink-4">Pay via GCash, Maya, card, or bank transfer. Cancel anytime.</p>
+          {!hasUsedTrial ? (
+            <button
+              disabled={!!loading}
+              onClick={handleTrial}
+              className="block w-full text-center px-6 py-3 btn-primary rounded-xl font-semibold text-sm disabled:opacity-60"
+            >
+              {loading === 'trial' ? 'Activating…' : 'Start 14-day free trial →'}
+            </button>
+          ) : (
+            <button
+              disabled={!!loading}
+              onClick={handleActivate}
+              className="block w-full text-center px-6 py-3 btn-primary rounded-xl font-semibold text-sm disabled:opacity-60"
+            >
+              {loading === 'pro' ? 'Activating…' : 'Subscribe to Pro — ₱399/mo →'}
+            </button>
+          )}
+          <p className="text-xs text-ink-4">
+            {hasUsedTrial ? 'Pay via GCash, Maya, card, or bank transfer.' : '14 days free, no credit card required.'}
+          </p>
         </div>
       </div>
     </div>
