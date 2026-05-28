@@ -84,7 +84,8 @@ export async function POST(req: NextRequest) {
   // Hard cap on tool-use loops in case the model gets stuck
   const MAX_TURNS = 8
 
-  for (let turn = 0; turn < MAX_TURNS; turn++) {
+  try {
+    for (let turn = 0; turn < MAX_TURNS; turn++) {
     const response = await client.messages.create({
       model: MODEL,
       max_tokens: 1024,
@@ -149,6 +150,19 @@ export async function POST(req: NextRequest) {
       .join('\n')
       .trim()
     break
+    }
+  } catch (err) {
+    // Surface Anthropic-side issues (bad key, rate limit, model error) as clean JSON
+    console.error('[api/ai/chat] anthropic call failed', err)
+    if (err instanceof Anthropic.APIError) {
+      const userMessage =
+        err.status === 401 ? 'AI service is misconfigured (invalid API key). Contact support.' :
+        err.status === 429 ? 'AI service is rate-limited right now. Try again in a moment.' :
+        err.status === 529 ? 'AI service is overloaded. Try again in a moment.' :
+        'AI service is temporarily unavailable.'
+      return NextResponse.json({ error: userMessage }, { status: 502 })
+    }
+    return NextResponse.json({ error: 'Something went wrong while generating a response.' }, { status: 500 })
   }
 
   // Persist the usage delta against the venue-local day
