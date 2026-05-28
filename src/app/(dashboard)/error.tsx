@@ -25,10 +25,8 @@ export default function DashboardError({
         </div>
         <div className="space-y-1">
           <h2 className="text-base font-semibold text-ink">Something went wrong</h2>
-          <p className="text-sm text-ink-4">
-            {process.env.NODE_ENV === 'development'
-              ? error.message || 'An unexpected error occurred on this page.'
-              : error.digest ? `Error ID: ${error.digest}` : 'An unexpected error occurred on this page.'}
+          <p className="text-sm text-ink-4 break-all">
+            {error.message || (error.digest ? `Error ID: ${error.digest}` : 'An unexpected error occurred on this page.')}
           </p>
         </div>
         <div className="flex items-center gap-3 justify-center">
