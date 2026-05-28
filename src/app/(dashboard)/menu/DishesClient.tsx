@@ -66,9 +66,13 @@ const EMPTY_DISH_FORM = { name: '', category: 'Mains', price: '' }
 export default function DishesClient({
   dishes,
   ingredients,
+  isBasic = false,
+  dishLimit = 20,
 }: {
   dishes: DishData[]
   ingredients: IngredientOption[]
+  isBasic?: boolean
+  dishLimit?: number
 }) {
   const toast = useToast()
   const [dishOpen, setDishOpen] = useState(false)
@@ -173,13 +177,22 @@ export default function DishesClient({
     <>
       {/* Sub-header */}
       <div className="px-6 py-4 flex items-center justify-between border-b border-hair">
-        <p className="text-sm text-ink-3">{dishes.length} dishes</p>
-        <button
-          onClick={openAddDish}
-          className="px-4 py-2 btn-primary rounded-lg"
-        >
-          + Add dish
-        </button>
+        <p className="text-sm text-ink-3">
+          {dishes.length} dishes
+          {isBasic && <span className="ml-1.5 text-ink-4 text-xs">({dishes.length}/{dishLimit})</span>}
+        </p>
+        {isBasic && dishes.length >= dishLimit ? (
+          <a
+            href="/settings#plan"
+            className="px-4 py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors flex items-center gap-1.5"
+          >
+            🔒 Upgrade for more
+          </a>
+        ) : (
+          <button onClick={openAddDish} className="px-4 py-2 btn-primary rounded-lg">
+            + Add dish
+          </button>
+        )}
       </div>
 
       {/* Dish list */}

@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    name: type-check / lint / build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: install
+        run: npm ci
+
+      - name: type-check
+        run: npx tsc --noEmit
+
+      - name: lint
+        run: npm run lint
+
+      - name: build
+        run: npm run build
+        env:
+          # Next.js build requires these to be set (can be dummy values for CI)
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://placeholder' }}
+          CRON_SECRET: placeholder

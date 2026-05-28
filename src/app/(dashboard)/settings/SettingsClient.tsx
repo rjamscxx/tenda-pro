@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { updateVenue, updateProfile, downgradeTofree, startTrial } from './actions'
+import { updateVenue, updateProfile, downgradeTofree, deleteAccount } from './actions'
+import InstallButton from '@/components/layout/InstallButton'
 
 // ── Theme picker ──────────────────────────────────────────────────────────────
 
@@ -23,8 +24,6 @@ const THEMES: ThemeDef[] = [
   { id: 'harvest',     name: 'Harvest',      label: 'Brewery',       dark: true,  canvas: '#14100A', surface: '#201C14', accent: '#F59E0B', accentEnd: '#D97706', ink: '#F8F0D8' },
   { id: 'jade',        name: 'Jade',         label: 'Tea House',     dark: true,  canvas: '#071010', surface: '#101E20', accent: '#10B981', accentEnd: '#059669', ink: '#DCF0EC' },
   { id: 'slate',       name: 'Slate',        label: 'Modern Café',   dark: true,  canvas: '#0E1017', surface: '#181B24', accent: '#14B8A6', accentEnd: '#0D9488', ink: '#E0E4F0' },
-  { id: 'terracotta',  name: 'Terracotta',   label: 'Mediterranean', dark: true,  canvas: '#140C08', surface: '#221814', accent: '#C2613B', accentEnd: '#A0512E', ink: '#F8F0E8' },
-  { id: 'ivory',       name: 'Ivory',        label: 'Brunch',        dark: false, canvas: '#FAFAF7', surface: '#FFFFFF', accent: '#8B5E3C', accentEnd: '#6B4020', ink: '#2C2218' },
 ]
 
 const TIMEZONES = [
@@ -101,18 +100,25 @@ function activitySummary(entry: ActivityEntry): string {
 
 interface Props {
   initialTheme: string
-  plan: 'free' | 'pro'
+  plan: 'free' | 'pro' | 'premium'
   planExpiresAt: string | null
-  trialUsed: boolean
+  trialStartedAt: string | null
   venue: { name: string; timezone: string; monthlyRevenueGoal: number; monthlyExpenseBudget: number; vatRegistered: boolean; dailyRevenueTarget: number; foodCostTarget: number }
   profile: { fullName: string; email: string }
   recentActivity: ActivityEntry[]
 }
 
-export default function SettingsClient({ initialTheme, plan, planExpiresAt, trialUsed, venue, profile, recentActivity }: Props) {
+export default function SettingsClient({ initialTheme, plan, planExpiresAt, trialStartedAt, venue, profile, recentActivity }: Props) {
   const [active, setActive] = useState(initialTheme)
   const [isPending, startTransition] = useTransition()
-  const isPro = plan === 'pro' && (!planExpiresAt || new Date(planExpiresAt) > new Date())
+
+  const now = new Date()
+  const isExpired = planExpiresAt ? new Date(planExpiresAt) < now : false
+  const effectivePlan: 'free' | 'pro' | 'premium' = isExpired ? 'free' : plan
+  const isOnTrial = trialStartedAt !== null && !!planExpiresAt && !isExpired && plan === 'pro'
+  const trialDaysLeft = isOnTrial && planExpiresAt
+    ? Math.max(0, Math.ceil((new Date(planExpiresAt).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+    : null
 
   // Venue form
   const [venueName, setVenueName] = useState(venue.name)
@@ -130,10 +136,17 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
   const [profileState, setProfileState] = useState<SaveState>('idle')
   const [profileError, setProfileError] = useState('')
 
+  // Delete account modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+
   function applyTheme(id: string) {
     setActive(id)
     document.documentElement.setAttribute('data-theme', id)
-    document.cookie = `sizzle-theme=${id}; path=/; max-age=31536000; SameSite=Lax`
+    const secondsPerYear = 31_536_000
+    document.cookie = `sizzle-theme=${id}; path=/; max-age=${secondsPerYear}; SameSite=Lax`
   }
 
   async function handleVenueSave(e: React.FormEvent) {
@@ -165,6 +178,20 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
     await updateProfile({ fullName })
     setProfileState('saved')
     setTimeout(() => setProfileState('idle'), 2000)
+  }
+
+  async function handleDeleteAccount() {
+    if (deleteConfirmText !== 'DELETE') return
+    setIsDeleting(true)
+    setDeleteError('')
+    try {
+      await deleteAccount()
+      // Server redirect handles navigation; fall back just in case
+      window.location.href = '/'
+    } catch {
+      setDeleteError('Something went wrong. Please try again.')
+      setIsDeleting(false)
+    }
   }
 
   return (
@@ -333,83 +360,133 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
         </form>
       </section>
 
-      {/* ── Plan ─────────────────────────────────────────────────────── */}
+      {/* ── Subscription ─────────────────────────────────────────────── */}
       <section id="plan" className="glass card-glow rounded-xl p-6 space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-base font-semibold text-ink">Plan</h2>
+            <h2 className="text-base font-semibold text-ink">Subscription</h2>
             <p className="text-sm text-ink-4 mt-0.5">
-              {isPro ? 'You\'re on Sizzle Pro. All features are unlocked.' : 'You\'re on the Free plan. Upgrade to unlock Pro features.'}
+              {effectivePlan === 'premium'
+                ? 'You\'re on Sizzle Premium — all features unlocked.'
+                : effectivePlan === 'pro'
+                  ? isOnTrial
+                    ? `Pro trial — ${trialDaysLeft} day${trialDaysLeft === 1 ? '' : 's'} remaining.`
+                    : 'You\'re on Sizzle Pro — all Pro features unlocked.'
+                  : 'You\'re on the Basic plan.'}
             </p>
           </div>
-          <span className={`shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
-            isPro ? 'bg-accent/15 text-accent' : 'bg-surface-3 text-ink-3'
+          <span className={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
+            effectivePlan === 'premium' ? 'bg-warn/15 text-warn' :
+            effectivePlan === 'pro' ? 'bg-accent/15 text-accent' :
+            'bg-surface-3 text-ink-3'
           }`}>
-            {isPro ? '⚡ Pro' : 'Free'}
+            {effectivePlan === 'premium' ? '★ Premium' : effectivePlan === 'pro' ? '⚡ Pro' : 'Basic'}
           </span>
         </div>
 
-        {!isPro && (
-          <div className="rounded-xl border border-hair bg-surface/40 p-5 space-y-4">
-            <div className="grid grid-cols-2 gap-x-6 gap-y-2.5">
-              {([
-                ['Waste Log', true],
-                ['Employee Management', true],
-                ['Payroll Runs', true],
-                ['CSV Exports', true],
-                ['Menu Engineering', true],
-                ['Priority Support', true],
-              ] as [string, boolean][]).map(([label, pro]) => (
-                <div key={label} className="flex items-center gap-2 text-sm">
-                  <span className={pro ? 'text-accent' : 'text-ink-4'}>{pro ? '✓' : '–'}</span>
-                  <span className={pro ? 'text-ink' : 'text-ink-4'}>{label}</span>
-                </div>
-              ))}
+        <div className="space-y-3">
+
+          {/* Basic */}
+          <div className={`rounded-xl border p-4 space-y-2.5 ${effectivePlan === 'free' ? 'border-hair/60 bg-surface/60' : 'border-hair/40 bg-surface/20'}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <p className="font-medium text-ink text-sm">Basic</p>
+                {effectivePlan === 'free' && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-surface-3 text-ink-3 font-semibold">Current</span>}
+              </div>
+              <p className="text-sm font-semibold text-ink">Free forever</p>
             </div>
-            <div className="pt-1 space-y-2">
-              {!trialUsed && (
-                <button
-                  disabled={isPending}
-                  onClick={() => startTransition(async () => { await startTrial() })}
-                  className="w-full px-6 py-2.5 rounded-xl font-semibold text-sm border border-accent text-accent hover:bg-accent/10 transition-colors disabled:opacity-60"
-                >
-                  {isPending ? 'Starting…' : 'Start 14-day free trial →'}
-                </button>
-              )}
+            <ul className="text-xs text-ink-4 space-y-1">
+              <li>✓ Sales tracking & expense logging</li>
+              <li>✓ Menu with recipe costing (up to 20 dishes, 15 ingredients)</li>
+              <li>✓ Inventory management & 6-month reports</li>
+              <li className="text-ink-4/60">✗ Employees, payroll, waste log</li>
+              <li className="text-ink-4/60">✗ CSV exports</li>
+            </ul>
+            {effectivePlan !== 'free' && (
+              <button
+                disabled={isPending}
+                onClick={() => startTransition(() => downgradeTofree())}
+                className="text-xs text-ink-4 hover:text-danger transition-colors disabled:opacity-60"
+              >
+                {isPending ? 'Updating…' : 'Downgrade to Basic'}
+              </button>
+            )}
+          </div>
+
+          {/* Pro */}
+          <div className={`rounded-xl border p-4 space-y-2.5 ${effectivePlan === 'pro' ? 'border-accent/40 bg-accent/5' : 'border-hair/40 bg-surface/20'}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <p className="font-medium text-ink text-sm">Pro</p>
+                {effectivePlan === 'pro' && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-accent/20 text-accent font-semibold">Current</span>}
+              </div>
+              <p className="text-sm font-semibold text-accent">₱399 / month</p>
+            </div>
+            <ul className="text-xs text-ink-4 space-y-1">
+              <li>✓ Everything in Basic</li>
+              <li>✓ Unlimited dishes & ingredients</li>
+              <li>✓ Employees & payroll management</li>
+              <li>✓ Waste log tracking</li>
+              <li>✓ CSV exports & priority support</li>
+            </ul>
+            {effectivePlan !== 'pro' && (
               <button
                 disabled={isPending}
                 onClick={async () => {
                   startTransition(async () => {})
-                  const res = await fetch('/api/paymongo/checkout', { method: 'POST' })
+                  const res = await fetch('/api/paymongo/checkout?plan=pro', { method: 'POST' })
                   const json = await res.json() as { url?: string; error?: string }
                   if (json.url) window.location.href = json.url
                 }}
-                className="w-full px-6 py-3 btn-primary rounded-xl font-semibold text-sm disabled:opacity-60"
+                className={`w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-60 ${
+                  effectivePlan === 'free'
+                    ? 'btn-primary'
+                    : 'border border-hair text-ink-3 hover:border-accent hover:text-accent transition-colors'
+                }`}
               >
-                {isPending ? 'Redirecting…' : 'Upgrade to Pro — ₱1,499/mo →'}
+                {effectivePlan === 'free' ? 'Upgrade to Pro — ₱399/mo →' : 'Switch to Pro — ₱399/mo'}
               </button>
-              <p className="text-xs text-ink-4 text-center">
-                Pay via GCash, Maya, card, or bank transfer. Cancel anytime.
-              </p>
-            </div>
+            )}
           </div>
-        )}
 
-        {isPro && (
-          <div className="space-y-3">
-            <div className="rounded-xl border border-accent/20 bg-accent/5 p-4 text-sm text-ink-3">
-              All Pro features are active on your account. Payroll, Waste Log, Employees, CSV exports, daily email digests, and Menu Engineering are enabled.
+          {/* Premium */}
+          <div className={`rounded-xl border p-4 space-y-2.5 ${effectivePlan === 'premium' ? 'border-warn/40 bg-warn/5' : 'border-hair/40 bg-surface/20'}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <p className="font-medium text-ink text-sm">Premium</p>
+                {effectivePlan === 'premium' && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-warn/20 text-warn font-semibold">Current</span>}
+              </div>
+              <p className="text-sm font-semibold text-warn">₱1,999 / month</p>
             </div>
-            <button
-              disabled={isPending}
-              onClick={() => startTransition(() => downgradeTofree())}
-              className="text-xs text-ink-4 hover:text-danger transition-colors disabled:opacity-60"
-            >
-              {isPending ? 'Updating…' : 'Cancel subscription'}
-            </button>
+            <ul className="text-xs text-ink-4 space-y-1">
+              <li>✓ Everything in Pro</li>
+              <li>✓ Multiple businesses</li>
+              <li>✓ AI-powered insights & advanced analytics</li>
+              <li>✓ Dedicated support & first access to new features</li>
+            </ul>
+            {effectivePlan !== 'premium' && (
+              <button
+                disabled={isPending}
+                onClick={async () => {
+                  startTransition(async () => {})
+                  const res = await fetch('/api/paymongo/checkout?plan=premium', { method: 'POST' })
+                  const json = await res.json() as { url?: string; error?: string }
+                  if (json.url) window.location.href = json.url
+                }}
+                className="w-full py-2 rounded-lg text-sm font-semibold bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors disabled:opacity-60"
+              >
+                Upgrade to Premium — ₱1,999/mo →
+              </button>
+            )}
           </div>
-        )}
 
+        </div>
+
+        {(effectivePlan === 'pro' || effectivePlan === 'premium') && (
+          <p className="text-xs text-ink-4 text-center">
+            Pay via GCash, Maya, card, or bank transfer. Cancel anytime.
+          </p>
+        )}
       </section>
 
       {/* ── Appearance ───────────────────────────────────────────────── */}
@@ -492,6 +569,88 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
           </div>
         )}
       </section>
+
+      {/* ── Install App ──────────────────────────────────────────────── */}
+      <section className="glass card-glow rounded-xl p-6 space-y-4">
+        <div>
+          <h2 className="text-base font-semibold text-ink">Install App</h2>
+          <p className="text-sm text-ink-4 mt-0.5">Add Sizzle to your home screen for fast access — no app store needed.</p>
+        </div>
+        <InstallButton />
+      </section>
+
+      {/* ── Danger Zone ──────────────────────────────────────────────── */}
+      <section className="border border-red-500/30 bg-red-500/5 rounded-2xl p-6 space-y-4">
+        <div>
+          <h2 className="text-base font-semibold text-red-500">Danger Zone</h2>
+          <p className="text-sm text-ink-4 mt-0.5">Permanent actions that cannot be undone.</p>
+        </div>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium text-ink">Delete Account</p>
+            <p className="text-xs text-ink-4 mt-0.5">
+              Permanently deletes your account, venue, all data, and cancels access. This cannot be recovered.
+            </p>
+          </div>
+          <button
+            onClick={() => { setShowDeleteModal(true); setDeleteConfirmText(''); setDeleteError('') }}
+            className="shrink-0 px-4 py-2 rounded-lg text-sm font-semibold text-red-500 border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 transition-colors"
+          >
+            Delete Account
+          </button>
+        </div>
+      </section>
+
+      {/* ── Delete Account Modal ──────────────────────────────────────── */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => { if (!isDeleting) setShowDeleteModal(false) }}
+          />
+          <div className="relative z-10 w-full max-w-md bg-surface border border-hair rounded-2xl p-6 space-y-5 shadow-2xl">
+            <div>
+              <h3 className="text-base font-semibold text-red-500">Delete Account</h3>
+              <p className="text-sm text-ink-4 mt-1">
+                This will permanently delete your account and all associated data — venue settings, sales, expenses, dishes, ingredients, employees, and payroll records. This action is irreversible.
+              </p>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-ink-3 uppercase tracking-wider">
+                Type <span className="font-bold text-red-500">DELETE</span> to confirm
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={e => setDeleteConfirmText(e.target.value)}
+                disabled={isDeleting}
+                placeholder="DELETE"
+                className="w-full px-3 py-2.5 rounded-lg bg-canvas border border-red-500/30 text-ink text-sm focus:outline-none focus:border-red-500/60 placeholder:text-ink-4/40 disabled:opacity-50"
+                autoFocus
+              />
+            </div>
+            {deleteError && (
+              <p className="text-xs text-red-500">{deleteError}</p>
+            )}
+            <div className="flex gap-3 pt-1">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-hair text-ink-3 hover:text-ink hover:border-hair/80 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleteConfirmText !== 'DELETE' || isDeleting}
+                className="flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {isDeleting ? 'Deleting…' : 'Delete My Account'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -13,7 +13,7 @@ interface PayMongoEvent {
       data: {
         attributes: {
           status: string
-          metadata?: { account_id?: string }
+          metadata?: { account_id?: string; plan?: string }
         }
       }
     }
@@ -39,10 +39,12 @@ export async function POST(req: NextRequest) {
   const accountId = metadata?.account_id
 
   if (type === 'checkout_session.payment.paid' && accountId) {
+    const rawPlan = metadata?.plan ?? 'pro'
+    const plan: 'pro' | 'premium' = rawPlan === 'premium' ? 'premium' : 'pro'
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 30)
     await db.update(accounts)
-      .set({ plan: 'pro', planExpiresAt: expiresAt })
+      .set({ plan, planExpiresAt: expiresAt, trialStartedAt: null })
       .where(eq(accounts.id, accountId))
   }
 

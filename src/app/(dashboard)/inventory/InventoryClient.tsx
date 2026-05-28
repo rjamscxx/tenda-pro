@@ -63,10 +63,14 @@ export default function InventoryClient({
   ingredients,
   movements,
   isPro,
+  isBasic = false,
+  ingredientLimit = 15,
 }: {
   ingredients: Ingredient[]
   movements: Movement[]
   isPro: boolean
+  isBasic?: boolean
+  ingredientLimit?: number
 }) {
   const toast = useToast()
   const [tab, setTab] = useState<Tab>('stock')
@@ -281,25 +285,54 @@ export default function InventoryClient({
           <button onClick={openReceive} className="px-4 py-2 rounded-lg bg-surface-2 border border-hair text-ink-2 text-sm font-medium hover:bg-surface-3 transition-colors">
             Receive Delivery
           </button>
-          <button onClick={() => setAddOpen(true)} className="px-4 py-2 btn-primary rounded-lg">
-            + Add ingredient
-          </button>
+          {isBasic && ingredients.length >= ingredientLimit ? (
+            <a
+              href="/settings#plan"
+              className="px-4 py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors flex items-center gap-1.5"
+            >
+              🔒 Upgrade for more
+            </a>
+          ) : (
+            <button onClick={() => setAddOpen(true)} className="px-4 py-2 btn-primary rounded-lg">
+              + Add ingredient
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="px-6 border-b border-hair flex gap-5 shrink-0">
-        {(['stock', 'movements'] as Tab[]).map(t => (
+      {/* View switcher */}
+      <div className="px-6 py-2.5 border-b border-hair shrink-0">
+        <div className="inline-flex items-center gap-0.5 p-1 bg-surface-2/60 rounded-xl border border-hair/60">
           <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`py-3 text-sm font-medium border-b-2 -mb-px transition-colors capitalize ${
-              tab === t ? 'border-accent text-accent' : 'border-transparent text-ink-4 hover:text-ink-2'
+            onClick={() => setTab('stock')}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+              tab === 'stock'
+                ? 'bg-canvas text-ink shadow-sm border border-hair/50'
+                : 'text-ink-4 hover:text-ink-2'
             }`}
           >
-            {t === 'stock' ? 'Stock Levels' : 'Movements'}
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <rect x="2" y="5.5" width="9" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.2"/>
+              <path d="M2.5 5.5L6.5 2l4 3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M5 11V8h3v3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Stock Levels
           </button>
-        ))}
+          <button
+            onClick={() => setTab('movements')}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+              tab === 'movements'
+                ? 'bg-canvas text-ink shadow-sm border border-hair/50'
+                : 'text-ink-4 hover:text-ink-2'
+            }`}
+          >
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <path d="M2 4h9M8.5 2l2.5 2-2.5 2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M11 9H2M4.5 7l-2.5 2 2.5 2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Movement Log
+          </button>
+        </div>
       </div>
 
       {/* Content */}

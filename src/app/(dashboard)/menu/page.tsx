@@ -1,8 +1,8 @@
 import { db } from '@/lib/db'
-import { ingredients, dishes, sales, saleItems } from '@/lib/db/schema'
-import { eq, asc, gte, and, desc, sql } from 'drizzle-orm'
+import { ingredients, dishes } from '@/lib/db/schema'
+import { eq, asc } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
-import { isPro } from '@/lib/plan'
+import { isPro, BASIC_DISH_LIMIT, BASIC_INGREDIENT_LIMIT } from '@/lib/plan'
 import MenuClient from './MenuClient'
 
 export const revalidate = 30
@@ -10,12 +10,9 @@ export const metadata = { title: 'Menu — Sizzle' }
 
 export default async function MenuPage() {
   const { venue, account } = await requireVenue()
-  const pro = isPro(account)
+  const isBasic = !isPro(account)
 
-  const thirtyDaysAgo = new Date()
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-
-  const [ingredientRows, dishRows, salesVolumeRows] = await Promise.all([
+  const [ingredientRows, dishRows] = await Promise.all([
     db
       .select()
       .from(ingredients)
@@ -30,17 +27,6 @@ export default async function MenuPage() {
         },
       },
     }),
-    db
-      .select({
-        dishId:       saleItems.dishId,
-        totalQty:     sql<string>`coalesce(sum(${saleItems.qty}), 0)::text`,
-        totalRevenue: sql<string>`coalesce(sum(${saleItems.qty} * ${saleItems.unitPrice}), 0)::text`,
-      })
-      .from(saleItems)
-      .innerJoin(sales, eq(saleItems.saleId, sales.id))
-      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, thirtyDaysAgo)))
-      .groupBy(saleItems.dishId)
-      .orderBy(desc(sql`sum(${saleItems.qty})`)),
   ])
 
   const ingredientData = ingredientRows.map(i => ({
@@ -73,15 +59,17 @@ export default async function MenuPage() {
       })),
   }))
 
-  const salesVolumeMap = new Map<string, { qty: number; revenue: number }>(
-    salesVolumeRows
-      .filter((r): r is typeof r & { dishId: string } => r.dishId !== null)
-      .map(r => [r.dishId, { qty: Number(r.totalQty), revenue: Number(r.totalRevenue) }])
-  )
-
   return (
     <div className="flex flex-col h-full">
-      <MenuClient ingredients={ingredientData} dishes={dishData} salesVolume={salesVolumeMap} isPro={pro} />
+      <MenuClient
+        ingredients={ingredientData}
+        dishes={dishData}
+        venueId={venue.id}
+        venueName={venue.name}
+        isBasic={isBasic}
+        dishLimit={BASIC_DISH_LIMIT}
+        ingredientLimit={BASIC_INGREDIENT_LIMIT}
+      />
     </div>
   )
 }

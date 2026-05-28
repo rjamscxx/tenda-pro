@@ -5,6 +5,21 @@ import { ingredients, auditLogs } from '@/lib/db/schema'
 import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { requireVenue } from '@/lib/queries/auth'
+import { z } from 'zod'
+
+const IngredientSchema = z.object({
+  name:              z.string().min(1, 'Name is required').max(120),
+  unit:              z.string().min(1, 'Unit is required').max(30),
+  costPerUnit:       z.number().min(0).finite(),
+  lowStockThreshold: z.number().min(0).finite(),
+})
+
+const AdjustStockSchema = z.object({
+  ingredientId: z.string().uuid(),
+  delta:        z.number().finite(),
+  movementType: z.enum(['received', 'used', 'wasted', 'adjusted']),
+  reason:       z.string().max(255),
+})
 
 export async function addIngredient(input: {
   name: string
@@ -13,8 +28,9 @@ export async function addIngredient(input: {
   stockQty: number
   lowStockThreshold: number
 }) {
+  const parsed = IngredientSchema.extend({ stockQty: z.number().min(0).finite() }).safeParse(input)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input.' }
   const { venue } = await requireVenue()
-  if (!input.name.trim()) return { error: 'Name is required' }
 
   await db.insert(ingredients).values({
     venueId:           venue.id,
@@ -34,8 +50,9 @@ export async function updateIngredient(id: string, input: {
   costPerUnit: number
   lowStockThreshold: number
 }): Promise<{ error?: string }> {
+  const parsed = IngredientSchema.safeParse(input)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input.' }
   const { venue } = await requireVenue()
-  if (!input.name.trim()) return { error: 'Name is required' }
 
   const [row] = await db.select({ id: ingredients.id })
     .from(ingredients)
@@ -81,7 +98,7 @@ export async function bulkReceiveStock(items: Array<{ ingredientId: string; qty:
       const oldQty = parseFloat(ing.stockQty)
       const newQty = oldQty + item.qty
       await tx.update(ingredients).set({ stockQty: String(newQty), updatedAt: new Date() })
-        .where(eq(ingredients.id, item.ingredientId))
+        .where(and(eq(ingredients.id, item.ingredientId), eq(ingredients.venueId, venue.id)))
       await tx.insert(auditLogs).values({
         venueId: venue.id, userId: authUser.id,
         action: 'stock.received', tableName: 'ingredients', recordId: item.ingredientId,
@@ -101,6 +118,8 @@ export async function adjustStock(input: {
   movementType: 'received' | 'used' | 'wasted' | 'adjusted'
   reason: string
 }) {
+  const parsed = AdjustStockSchema.safeParse(input)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input.' }
   const { venue, authUser } = await requireVenue()
 
   const [ingredient] = await db
@@ -118,7 +137,7 @@ export async function adjustStock(input: {
     await tx
       .update(ingredients)
       .set({ stockQty: String(newQty), updatedAt: new Date() })
-      .where(eq(ingredients.id, input.ingredientId))
+      .where(and(eq(ingredients.id, input.ingredientId), eq(ingredients.venueId, venue.id)))
 
     await tx.insert(auditLogs).values({
       venueId:   venue.id,

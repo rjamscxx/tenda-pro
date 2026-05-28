@@ -6,8 +6,8 @@ import { createIngredient, updateIngredient, deleteIngredient } from './actions'
 import { formatCurrency, parseCents } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
 import DishesClient, { type DishData, type IngredientOption } from './DishesClient'
-import EngineeringTab from './EngineeringTab'
 import EmptyState from '@/components/ui/EmptyState'
+import QRModal from './QRModal'
 
 const UNITS = ['pcs', 'kg', 'g', 'L', 'mL', 'cup', 'tbsp', 'tsp', 'pack', 'bottle', 'box', 'can', 'sachet']
 
@@ -16,23 +16,28 @@ interface Ingredient extends IngredientOption {
   lowStockThreshold: string
 }
 
-interface SalesPoint { qty: number; revenue: number }
-
 const EMPTY_FORM = { name: '', unit: 'pcs', costPerUnit: '', stockQty: '0', lowStockThreshold: '0' }
 
 export default function MenuClient({
   ingredients,
   dishes,
-  salesVolume,
-  isPro,
+  venueId,
+  venueName,
+  isBasic = false,
+  dishLimit = 20,
+  ingredientLimit = 15,
 }: {
   ingredients: Ingredient[]
   dishes: DishData[]
-  salesVolume: Map<string, SalesPoint>
-  isPro: boolean
+  venueId: string
+  venueName: string
+  isBasic?: boolean
+  dishLimit?: number
+  ingredientLimit?: number
 }) {
   const toast = useToast()
-  const [tab, setTab] = useState<'dishes' | 'ingredients' | 'engineering'>('dishes')
+  const [tab, setTab] = useState<'dishes' | 'ingredients'>('dishes')
+  const [qrOpen, setQrOpen] = useState(false)
 
   // Ingredient modal state
   const [open, setOpen] = useState(false)
@@ -92,81 +97,122 @@ export default function MenuClient({
 
   return (
     <>
-      {/* Page header */}
-      <div className="px-6 py-5 border-b border-hair">
-        <h1 className="text-xl font-semibold text-ink">Menu</h1>
-        <p className="text-sm text-ink-3 mt-0.5">
-          {dishes.length} dishes · {ingredients.length} ingredients
-          {lowStock.length > 0 && <span className="ml-2 text-danger">· {lowStock.length} low stock</span>}
-        </p>
-      </div>
+      {/* Page header with integrated segment control */}
+      <div className="px-6 py-4 border-b border-hair flex items-center justify-between gap-4 shrink-0 flex-wrap">
+        <div>
+          <h1 className="text-xl font-semibold text-ink tracking-tight">Menu</h1>
+          <p className="text-sm text-ink-3 mt-0.5">
+            {dishes.length} dishes · {ingredients.length} ingredients
+            {lowStock.length > 0 && <span className="ml-2 text-danger">· {lowStock.length} low stock</span>}
+          </p>
+        </div>
 
-      {/* Tab nav */}
-      <div className="px-6 flex gap-6 border-b border-hair overflow-x-auto">
-        <button
-          onClick={() => setTab('dishes')}
-          className={`py-3 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap ${
-            tab === 'dishes' ? 'border-accent text-ink' : 'border-transparent text-ink-3 hover:text-ink-2'
-          }`}
-        >
-          Dishes ({dishes.length})
-        </button>
-        <button
-          onClick={() => setTab('ingredients')}
-          className={`py-3 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap ${
-            tab === 'ingredients' ? 'border-accent text-ink' : 'border-transparent text-ink-3 hover:text-ink-2'
-          }`}
-        >
-          Ingredients ({ingredients.length})
-        </button>
-        <button
-          onClick={() => setTab('engineering')}
-          className={`py-3 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap flex items-center gap-1.5 ${
-            tab === 'engineering' ? 'border-accent text-ink' : 'border-transparent text-ink-3 hover:text-ink-2'
-          }`}
-        >
-          Engineering
-          {!isPro && <span className="text-[10px] text-ink-4 opacity-60">🔒</span>}
-        </button>
+        {/* Segmented control */}
+        <div className="flex items-center gap-0.5 p-1 bg-surface-2/60 rounded-xl border border-hair/60 shrink-0">
+          <button
+            onClick={() => setTab('dishes')}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+              tab === 'dishes'
+                ? 'bg-canvas text-ink shadow-sm border border-hair/50'
+                : 'text-ink-4 hover:text-ink-2'
+            }`}
+          >
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <ellipse cx="6.5" cy="8.5" rx="4" ry="2" stroke="currentColor" strokeWidth="1.2"/>
+              <path d="M4.5 4.5C4.5 3.4 5.4 3 6.5 3s2 .4 2 1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+              <path d="M2.5 8.5h8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+            </svg>
+            Dishes
+            <span className={`text-[10px] font-bold px-1.5 py-px rounded-md tabular leading-none ${
+              tab === 'dishes' ? 'bg-accent/15 text-accent' : 'bg-surface-3 text-ink-4'
+            }`}>{dishes.length}</span>
+          </button>
+          <button
+            onClick={() => setTab('ingredients')}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+              tab === 'ingredients'
+                ? 'bg-canvas text-ink shadow-sm border border-hair/50'
+                : 'text-ink-4 hover:text-ink-2'
+            }`}
+          >
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <path d="M2 11C3.5 7.5 6 4.5 11 2.5 9.5 6 7 9 2 11z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 11c1.5-1.5 3-2.5 5-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+            </svg>
+            Ingredients
+            <span className={`text-[10px] font-bold px-1.5 py-px rounded-md tabular leading-none ${
+              tab === 'ingredients' ? 'bg-accent/15 text-accent' : 'bg-surface-3 text-ink-4'
+            }`}>{ingredients.length}</span>
+          </button>
+        </div>
       </div>
 
       {/* Tab content */}
       {tab === 'dishes' ? (
-        <DishesClient dishes={dishes} ingredients={ingredients} />
-      ) : tab === 'engineering' ? (
-        isPro ? (
-          <div className="p-6">
-            <div className="mb-4">
-              <h2 className="text-base font-semibold text-ink">Menu Engineering</h2>
-              <p className="text-sm text-ink-4 mt-0.5">30-day sales data. Dishes are classified by popularity vs. margin.</p>
-            </div>
-            <EngineeringTab dishes={dishes} salesVolume={salesVolume} />
+        <>
+          <DishesClient dishes={dishes} ingredients={ingredients} isBasic={isBasic} dishLimit={dishLimit} />
+          {/* QR Code button — fixed bottom-left of dishes tab */}
+          <div className="px-6 py-3 border-t border-hair flex justify-end">
+            <button
+              onClick={() => setQrOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hair text-xs font-medium text-ink-3 hover:border-accent hover:text-accent transition-colors"
+            >
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <rect x="1" y="1" width="4.5" height="4.5" rx="0.8" stroke="currentColor" strokeWidth="1.2"/>
+                <rect x="7.5" y="1" width="4.5" height="4.5" rx="0.8" stroke="currentColor" strokeWidth="1.2"/>
+                <rect x="1" y="7.5" width="4.5" height="4.5" rx="0.8" stroke="currentColor" strokeWidth="1.2"/>
+                <rect x="2.5" y="2.5" width="1.5" height="1.5" fill="currentColor"/>
+                <rect x="9" y="2.5" width="1.5" height="1.5" fill="currentColor"/>
+                <rect x="2.5" y="9" width="1.5" height="1.5" fill="currentColor"/>
+                <path d="M7.5 7.5h1.5v1.5H7.5zM10.5 7.5H12v1.5h-1.5zM7.5 10.5H9V12H7.5zM10.5 10.5H12V12h-1.5z" fill="currentColor"/>
+              </svg>
+              Menu QR Code
+            </button>
           </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-20 px-6 text-center space-y-3">
-            <span className="text-4xl">📊</span>
-            <p className="text-base font-semibold text-ink">Menu Engineering</p>
-            <p className="text-sm text-ink-4 max-w-xs">Classify your dishes into Stars, Plowhorses, Puzzles, and Dogs based on margin and popularity. Available on Pro.</p>
-            <a href="/settings#plan" className="mt-2 px-4 py-2 btn-primary rounded-lg text-sm">Upgrade to Pro →</a>
-          </div>
-        )
+          <QRModal open={qrOpen} onClose={() => setQrOpen(false)} venueId={venueId} venueName={venueName} />
+        </>
       ) : (
         <>
           {/* Ingredients sub-header */}
           <div className="px-6 py-4 flex items-center justify-between border-b border-hair">
             <p className="text-sm text-ink-3">
               {ingredients.length} ingredients
+              {isBasic && <span className="ml-1.5 text-ink-4 text-xs">({ingredients.length}/{ingredientLimit})</span>}
               {lowStock.length > 0 && (
                 <span className="ml-2 text-danger">· {lowStock.length} low stock</span>
               )}
             </p>
-            <button
-              onClick={openAdd}
-              className="px-4 py-2 btn-primary rounded-lg"
-            >
-              + Add ingredient
-            </button>
+            {isBasic && ingredients.length >= ingredientLimit ? (
+              <a
+                href="/settings#plan"
+                className="px-4 py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors flex items-center gap-1.5"
+              >
+                🔒 Upgrade for more
+              </a>
+            ) : (
+              <button onClick={openAdd} className="px-4 py-2 btn-primary rounded-lg">
+                + Add ingredient
+              </button>
+            )}
           </div>
+
+          {/* Low-stock alert banner */}
+          {lowStock.length > 0 && (
+            <div className="mx-6 mt-4 p-3 rounded-lg bg-danger/10 border border-danger/20 flex items-start gap-3">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-danger shrink-0 mt-0.5">
+                <path d="M8 2L14 13H2L8 2z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+                <path d="M8 6.5v3M8 10.5h.01" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-danger">
+                  {lowStock.length} ingredient{lowStock.length > 1 ? 's' : ''} running low
+                </p>
+                <p className="text-xs text-ink-3 mt-0.5 leading-relaxed">
+                  {lowStock.map(i => `${i.name} (${parseFloat(i.stockQty).toLocaleString()} ${i.unit} left)`).join(' · ')}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Ingredients list */}
           <div className="flex-1 overflow-y-auto">

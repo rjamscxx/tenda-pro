@@ -15,6 +15,13 @@
       "when": 1779839340191,
       "tag": "0001_careful_mysterio",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779894692908,
+      "tag": "0002_wet_banshee",
+      "breakpoints": true
     }
   ]
 }

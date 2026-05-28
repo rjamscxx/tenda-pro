@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
-    optimizePackageImports: ['gsap'],
+    optimizePackageImports: ['gsap', 'three', '@react-three/fiber', '@react-three/drei'],
   },
 
   // Turbopack is the default bundler in Next.js 16

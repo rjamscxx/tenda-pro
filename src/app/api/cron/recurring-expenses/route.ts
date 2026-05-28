@@ -7,13 +7,10 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
-  // Vercel cron sends "Authorization: Bearer <CRON_SECRET>"
+  // Always require CRON_SECRET — if unset, lock the endpoint entirely
   const cronSecret = process.env.CRON_SECRET
-  if (cronSecret) {
-    const auth = req.headers.get('authorization')
-    if (auth !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+  if (!cronSecret || req.headers.get('authorization') !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const nowManila   = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Manila' }))

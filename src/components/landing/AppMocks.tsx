@@ -461,6 +461,136 @@ export function PayrollMock() {
   )
 }
 
+// ── POS ───────────────────────────────────────────────────────────────────────
+
+export function POSMock() {
+  const items = [
+    { name: 'Iced Matcha', price: '₱185' },
+    { name: 'Cold Brew', price: '₱165' },
+    { name: 'Avocado Toast', price: '₱295' },
+    { name: 'Spam Silog', price: '₱220' },
+    { name: 'Champorado', price: '₱120' },
+    { name: 'Turon', price: '₱65' },
+  ]
+  return (
+    <MiniPage activeIdx={7}>
+      <MiniHeader title="Point of Sale" sub="Fast item picker · channel selector" action="Record Sale" />
+      <div style={{ flex: 1, overflow: 'hidden', padding: '7px 10px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+
+        <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+          {['Dine-in', 'Takeout', 'Delivery'].map((c, i) => (
+            <div key={c} style={{
+              flex: 1, textAlign: 'center', padding: '4px 0',
+              background: i === 0 ? 'var(--accent)' : 'var(--surface)',
+              border: i === 0 ? 'none' : '1px solid var(--hair)',
+              borderRadius: 5,
+              fontSize: 7, fontWeight: 700, letterSpacing: '.03em',
+              color: i === 0 ? 'var(--canvas)' : 'var(--ink-4)',
+            }}>
+              {c}
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 4, flex: 1 }}>
+          {items.map((item, i) => (
+            <div key={i} style={{
+              background: i === 0 ? 'color-mix(in srgb, var(--accent) 18%, var(--surface))' : 'var(--surface)',
+              border: i === 0 ? '1px solid var(--accent)' : '1px solid var(--hair)',
+              borderRadius: 5, padding: '6px 6px',
+              display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+            }}>
+              <span style={{ fontSize: 7.5, color: 'var(--ink)', fontWeight: 600, lineHeight: 1.2 }}>{item.name}</span>
+              <span style={{ fontSize: 9, color: i === 0 ? 'var(--accent)' : 'var(--ink-3)', fontWeight: 700, marginTop: 4 }}>{item.price}</span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{
+          background: 'var(--surface)', border: '1px solid var(--hair)',
+          borderRadius: 6, padding: '6px 8px', flexShrink: 0,
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        }}>
+          <div>
+            <div style={{ fontSize: 7, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.06em', fontWeight: 600 }}>Selected</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)', letterSpacing: '-0.02em', marginTop: 2 }}>₱185</div>
+          </div>
+          <div style={{ fontSize: 8, fontWeight: 700, color: 'var(--canvas)', background: 'var(--accent)', padding: '5px 10px', borderRadius: 4 }}>
+            Record Sale
+          </div>
+        </div>
+
+      </div>
+    </MiniPage>
+  )
+}
+
+// ── QR Menu ────────────────────────────────────────────────────────────────────
+
+export function QRMenuMock() {
+  const menuItems = [
+    { name: 'Iced Matcha Latte', price: '₱185', cat: 'Drinks' },
+    { name: 'Cold Brew Coffee',  price: '₱165', cat: 'Drinks' },
+    { name: 'Avocado Toast',     price: '₱295', cat: 'Food'   },
+    { name: 'Spam Silog',        price: '₱220', cat: 'Food'   },
+    { name: 'Champorado',        price: '₱120', cat: 'Food'   },
+  ]
+  return (
+    <div style={{
+      display: 'flex', height: '100%', fontFamily: 'system-ui,-apple-system,sans-serif',
+      overflow: 'hidden', background: 'var(--canvas)', flexDirection: 'column',
+    }}>
+      <div style={{ padding: '10px 12px 8px', borderBottom: '1px solid var(--hair)', background: 'var(--sidebar)', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink)', letterSpacing: '-0.02em' }}>Brewed Horizon Café</div>
+            <div style={{ fontSize: 7.5, color: 'var(--ink-4)', marginTop: 1 }}>Scan QR · View menu</div>
+          </div>
+          <div style={{
+            width: 28, height: 28, background: 'var(--surface-2)',
+            borderRadius: 4, border: '1px solid var(--hair)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <rect x="1" y="1" width="5" height="5" rx="1" stroke="var(--ink)" strokeWidth="1.3" opacity="0.5"/>
+              <rect x="8" y="1" width="5" height="5" rx="1" stroke="var(--ink)" strokeWidth="1.3" opacity="0.5"/>
+              <rect x="1" y="8" width="5" height="5" rx="1" stroke="var(--ink)" strokeWidth="1.3" opacity="0.5"/>
+              <rect x="9.5" y="9.5" width="2" height="2" fill="var(--accent)" rx="0.3"/>
+            </svg>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 6, marginTop: 7 }}>
+          {['All', 'Drinks', 'Food'].map((cat, i) => (
+            <div key={cat} style={{
+              fontSize: 7.5, fontWeight: 600, padding: '2px 8px', borderRadius: 12,
+              background: i === 0 ? 'var(--accent)' : 'transparent',
+              color: i === 0 ? 'var(--canvas)' : 'var(--ink-4)',
+              border: i === 0 ? 'none' : '1px solid var(--hair)',
+            }}>
+              {cat}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ flex: 1, overflow: 'hidden', padding: '6px 10px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {menuItems.map((item, i) => (
+          <div key={i} style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            padding: '5px 8px',
+            background: 'var(--surface)', border: '1px solid var(--hair)', borderRadius: 6,
+          }}>
+            <div>
+              <div style={{ fontSize: 8.5, fontWeight: 600, color: 'var(--ink)' }}>{item.name}</div>
+              <div style={{ fontSize: 7, color: 'var(--ink-4)', marginTop: 1 }}>{item.cat}</div>
+            </div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--accent)' }}>{item.price}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Inventory ──────────────────────────────────────────────────────────────────
 
 export function InventoryMock() {

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
 import LandingClient from './LandingClient'
 
 export const metadata = {
@@ -7,7 +8,8 @@ export const metadata = {
 }
 
 export default async function Page() {
-  const supabase = await createClient()
+  const [supabase, cookieStore] = await Promise.all([createClient(), cookies()])
   const { data: { user } } = await supabase.auth.getUser()
-  return <LandingClient isLoggedIn={!!user} />
+  const initialTheme = cookieStore.get('sizzle-theme')?.value ?? 'sage-dark'
+  return <LandingClient isLoggedIn={!!user} initialTheme={initialTheme} />
 }

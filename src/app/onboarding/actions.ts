@@ -18,7 +18,13 @@ export async function createVenue({ userId, venueName, fullName, theme }: Create
   if (existing.length > 0) redirect('/dashboard')
 
   try {
-    const [account] = await db.insert(accounts).values({}).returning()
+    const trialEnd = new Date()
+    trialEnd.setDate(trialEnd.getDate() + 14)
+    const [account] = await db.insert(accounts).values({
+      plan: 'pro',
+      trialStartedAt: new Date(),
+      planExpiresAt: trialEnd,
+    }).returning()
     await db.insert(users).values({
       id:        userId,
       accountId: account.id,

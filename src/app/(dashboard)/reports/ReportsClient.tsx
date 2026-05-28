@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { formatCurrency } from '@/lib/utils'
+import EmptyState from '@/components/ui/EmptyState'
 
 export interface TopDish {
   dishName: string
@@ -106,7 +107,9 @@ function BarRow({ label, amount, pct, colorClass }: { label: string; amount: num
 export default function ReportsClient({ months, currentMonth }: Props) {
   const [mainTab, setMainTab] = useState<'monthly'>('monthly')
   const [selected, setSelected] = useState(currentMonth)
+  const [sortBy, setSortBy] = useState<'revenue' | 'qty'>('revenue')
   const data = months.find(m => m.month === selected) ?? months[months.length - 1]
+  const prevMonthData = months[months.findIndex(m => m.month === selected) - 1]
   const isCurrentMonth = data.month === currentMonth
   const maxRevenue = Math.max(...months.map(m => m.revenue), 1)
 
@@ -231,31 +234,83 @@ export default function ReportsClient({ months, currentMonth }: Props) {
         </div>
       )}
 
-      {/* Best sellers */}
-      {data.topDishes.length > 0 && (
-        <div className="glass card-glow rounded-xl p-5 space-y-4">
-          <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Best Sellers</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
-            {data.topDishes.map((dish, i) => (
-              <div key={dish.dishName} className="rounded-lg bg-surface-2 border border-hair px-3 py-2.5 space-y-1">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-ink-4">#{i + 1}</span>
-                  <span className="text-xs font-medium text-ink truncate">{dish.dishName}</span>
-                </div>
-                <p className="text-sm tabular font-semibold text-accent">{formatCurrency(dish.totalRevenue)}</p>
-                <p className="text-[10px] text-ink-4 tabular">{dish.totalQty} sold</p>
+      {/* Sales Leaderboard */}
+      {data.topDishes.length > 0 && (() => {
+        const sorted = [...data.topDishes].sort((a, b) =>
+          sortBy === 'revenue' ? b.totalRevenue - a.totalRevenue : b.totalQty - a.totalQty
+        )
+        return (
+          <div className="glass card-glow rounded-xl overflow-hidden">
+            <div className="px-5 py-4 border-b border-hair flex items-center justify-between">
+              <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Sales Leaderboard</p>
+              <div className="flex gap-1 bg-surface-2 rounded-lg p-0.5">
+                <button
+                  onClick={() => setSortBy('revenue')}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${sortBy === 'revenue' ? 'bg-accent text-canvas' : 'text-ink-3 hover:text-ink'}`}
+                >
+                  Revenue
+                </button>
+                <button
+                  onClick={() => setSortBy('qty')}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${sortBy === 'qty' ? 'bg-accent text-canvas' : 'text-ink-3 hover:text-ink'}`}
+                >
+                  Qty
+                </button>
               </div>
-            ))}
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-hair text-[11px] text-ink-4 uppercase tracking-wider">
+                    <th className="px-5 py-2.5 text-left font-medium w-8">#</th>
+                    <th className="px-2 py-2.5 text-left font-medium">Dish</th>
+                    <th className="px-5 py-2.5 text-right font-medium tabular">Revenue</th>
+                    <th className="px-5 py-2.5 text-right font-medium tabular">Sold</th>
+                    <th className="px-5 py-2.5 text-right font-medium">vs Last Month</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-hair">
+                  {sorted.map((dish, i) => {
+                    const prev = prevMonthData?.topDishes.find(d => d.dishName === dish.dishName)
+                    const momPct = prev && prev.totalRevenue > 0
+                      ? ((dish.totalRevenue - prev.totalRevenue) / prev.totalRevenue) * 100
+                      : null
+                    return (
+                      <tr key={dish.dishName} className="hover:bg-surface-2 transition-colors">
+                        <td className="px-5 py-3 text-[11px] font-bold text-ink-4">{i + 1}</td>
+                        <td className="px-2 py-3 font-medium text-ink">{dish.dishName}</td>
+                        <td className="px-5 py-3 text-right tabular font-semibold text-accent">{formatCurrency(dish.totalRevenue)}</td>
+                        <td className="px-5 py-3 text-right tabular text-ink-3">{dish.totalQty}×</td>
+                        <td className="px-5 py-3 text-right">
+                          {momPct !== null ? (
+                            <span className={`inline-flex text-[10px] font-semibold tabular px-1.5 py-0.5 rounded-md ${momPct >= 0 ? 'text-success bg-success/12' : 'text-danger bg-danger/12'}`}>
+                              {momPct >= 0 ? '↑' : '↓'}{Math.abs(momPct).toFixed(0)}%
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-ink-4">new</span>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="glass card-glow rounded-xl p-5 space-y-4">
           <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Expenses by Category</p>
           {data.byCategory.length === 0 ? (
-            <p className="text-sm text-ink-4 py-6 text-center">No expenses in {data.label}</p>
+            <EmptyState
+              compact
+              icon={<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 10h14M3 6h14M3 14h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>}
+              title={`No expenses in ${data.label}`}
+              body="Log expenses to see a category breakdown here."
+            />
           ) : (
             <div className="flex items-center gap-5">
               <DonutChart data={data.byCategory} total={data.expenses} />
@@ -270,7 +325,12 @@ export default function ReportsClient({ months, currentMonth }: Props) {
         <div className="glass card-glow rounded-xl p-5 space-y-4">
           <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Revenue by Channel</p>
           {data.byChannel.length === 0 ? (
-            <p className="text-sm text-ink-4 py-6 text-center">No sales in {data.label}</p>
+            <EmptyState
+              compact
+              icon={<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 15l4-5 3 3 4-6 3 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+              title={`No sales in ${data.label}`}
+              body="Log sales via the POS or the Sales page."
+            />
           ) : (
             <div className="space-y-4">
               {data.byChannel.map(({ channel, label, amount, pct }) => (

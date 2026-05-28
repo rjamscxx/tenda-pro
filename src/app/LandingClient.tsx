@@ -6,63 +6,22 @@ import dynamic from 'next/dynamic'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
+import { useCountUp } from '@/hooks/useCountUp'
+import SizzleLogo from '@/components/ui/SizzleLogo'
+import Testimonials from '@/components/landing/Testimonials'
+import FAQ from '@/components/landing/FAQ'
 
-const HeroScene3D = dynamic(() => import('@/components/3d/HeroScene3D'), { ssr: false })
+const HeroScene3D = dynamic(() => import('@/components/3d/HeroScene3D'), {
+  ssr: false,
+  loading: () => <div className="w-full h-full rounded-2xl bg-surface-2/40 animate-pulse" />,
+})
 
 import {
   SalesMock, MenuMock, ExpensesMock, ReportsMock,
   EmployeesMock, WasteMock, PayrollMock, InventoryMock,
+  POSMock, QRMenuMock,
 } from '@/components/landing/AppMocks'
-
-// ── Browser-chrome frame wrapping each app screen ─────────────────────────────
-function AppFrame({
-  children,
-  url, height = 320,
-  className = '',
-}: {
-  children: React.ReactNode
-  url: string
-  height?: number
-  className?: string
-}) {
-  return (
-    <div className={`rounded-2xl overflow-hidden border border-white/[0.07] shadow-[0_20px_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.08)] ${className}`}>
-      {/* Window chrome — always dark like a real browser */}
-      <div className="bg-[#161a1d] border-b border-white/[0.06]">
-        {/* Tab bar */}
-        <div className="flex items-center gap-0 px-3 pt-2.5">
-          <div className="flex items-center gap-1.5 mr-3 shrink-0">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-          </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-t-md bg-[#1e2328] border border-b-0 border-white/[0.08] text-[10px] text-white/50">
-            <svg width="10" height="10" viewBox="0 0 20 20" fill="none" className="shrink-0 opacity-60">
-              <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2"/>
-              <path d="M6 10h8M10 6v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-            Sizzle
-          </div>
-          <div className="flex-1" />
-        </div>
-        {/* Address bar */}
-        <div className="flex items-center gap-2 px-3 pb-2 pt-1">
-          <div className="flex-1 flex items-center gap-2 bg-[#0e1114] rounded-md px-3 py-[5px] border border-white/[0.06]">
-            <svg width="9" height="10" viewBox="0 0 9 10" fill="none" className="shrink-0 opacity-40">
-              <rect x="1" y="4" width="7" height="6" rx="1" stroke="currentColor" strokeWidth="1.2"/>
-              <path d="M3 4V3a1.5 1.5 0 0 1 3 0v1" stroke="currentColor" strokeWidth="1.2"/>
-            </svg>
-            <span className="text-[10px] text-white/35 font-mono leading-none">{url}</span>
-          </div>
-        </div>
-      </div>
-      {/* Live themed content */}
-      <div style={{ height, overflow: 'hidden' }}>
-        {children}
-      </div>
-    </div>
-  )
-}
+import AppFrame from '@/components/landing/AppFrame'
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
@@ -155,24 +114,48 @@ const FEATURES = [
     title: 'Point of Sale',
     body: 'Fast sale entry with an item picker, channel selector, and automatic food cost calculation. Log a full transaction in under 30 seconds.',
   },
+  {
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-accent">
+        <rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.4"/>
+        <rect x="9" y="1.5" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.4"/>
+        <rect x="1.5" y="9" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.4"/>
+        <rect x="10" y="10" width="2" height="2" fill="currentColor" rx="0.3"/>
+        <path d="M9 13.5h2M12.5 12v1.5M12.5 10v1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+      </svg>
+    ),
+    iconBg: 'bg-accent-dim',
+    title: 'QR Menu Generator',
+    body: 'Every venue gets a public menu page. Share a QR code — customers scan and browse your full menu with prices. No app, no login, no printer needed.',
+  },
+  {
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-ink-3">
+        <rect x="3" y="1.5" width="10" height="13" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M5 7.5h6M5 10h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+        <path d="M6.5 5l1.5-1.5L9.5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+    iconBg: 'bg-surface-3',
+    title: 'Install as App',
+    body: 'Add Sizzle to your home screen on Android or desktop. Works as a progressive web app — fast, native-feeling, no app store required.',
+  },
 ]
 
 
 const THEMES = [
-  { id: 'sage-dark',  label: 'Sage',       canvas: '#0E1714', accent: '#58C098' },
-  { id: 'sage-light', label: 'Sage Light', canvas: '#F4F0E7', accent: '#1F5F4A' },
-  { id: 'espresso',   label: 'Espresso',   canvas: '#1A1410', accent: '#D9A876' },
-  { id: 'citrus',     label: 'Citrus',     canvas: '#0F1410', accent: '#C9E663' },
-  { id: 'crimson',    label: 'Crimson',    canvas: '#14100F', accent: '#DC2626' },
-  { id: 'ocean',      label: 'Ocean',      canvas: '#060D14', accent: '#0EA5E9' },
-  { id: 'rose',       label: 'Rose',       canvas: '#150C10', accent: '#E879A6' },
-  { id: 'ember',      label: 'Ember',      canvas: '#130A04', accent: '#F97316' },
-  { id: 'midnight',   label: 'Midnight',   canvas: '#070714', accent: '#818CF8' },
-  { id: 'harvest',    label: 'Harvest',    canvas: '#14100A', accent: '#F59E0B' },
-  { id: 'jade',       label: 'Jade',       canvas: '#071010', accent: '#10B981' },
-  { id: 'slate',      label: 'Slate',      canvas: '#0E1017', accent: '#14B8A6' },
-  { id: 'terracotta', label: 'Terracotta', canvas: '#140C08', accent: '#C2613B' },
-  { id: 'ivory',      label: 'Ivory',      canvas: '#FAFAF7', accent: '#8B5E3C' },
+  { id: 'sage-dark',   label: 'Sage',        canvas: '#0E1714', accent: '#58C098' },
+  { id: 'sage-light',  label: 'Sage Light',  canvas: '#F4F0E7', accent: '#1F5F4A' },
+  { id: 'espresso',    label: 'Espresso',    canvas: '#1A1410', accent: '#D9A876' },
+  { id: 'citrus',      label: 'Citrus',      canvas: '#0F1410', accent: '#C9E663' },
+  { id: 'crimson',     label: 'Crimson',     canvas: '#14100F', accent: '#DC2626' },
+  { id: 'ocean',       label: 'Ocean',       canvas: '#060D14', accent: '#0EA5E9' },
+  { id: 'rose',        label: 'Rose',        canvas: '#150C10', accent: '#E879A6' },
+  { id: 'ember',       label: 'Ember',       canvas: '#130A04', accent: '#F97316' },
+  { id: 'midnight',    label: 'Midnight',    canvas: '#070714', accent: '#818CF8' },
+  { id: 'harvest',     label: 'Harvest',     canvas: '#14100A', accent: '#F59E0B' },
+  { id: 'jade',        label: 'Jade',        canvas: '#071010', accent: '#10B981' },
+  { id: 'slate',       label: 'Slate',       canvas: '#0E1017', accent: '#14B8A6' },
 ]
 
 const NAV_LINKS = [
@@ -192,9 +175,11 @@ function smoothScrollTo(href: string) {
   gsap.to(window, { scrollTo: { y: target, offsetY: 80 }, duration: 0.85, ease: 'power2.inOut' })
 }
 
-export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage-dark' }: { isLoggedIn?: boolean; initialTheme?: string }) {
   const [scrolled, setScrolled]       = useState(false)
-  const [activeTheme, setActiveTheme] = useState('sage-dark')
+  const [activeTheme, setActiveTheme] = useState(initialTheme)
+  const currentTheme = THEMES.find(t => t.id === activeTheme) ?? THEMES[0]
+  const { ref: themeCountRef, count: themeCountVal } = useCountUp(12)
 
   // Nav scroll state
   useEffect(() => {
@@ -354,6 +339,43 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
   return (
     <div className="min-h-[100dvh] bg-canvas overflow-x-hidden" data-theme={activeTheme}>
 
+      {/* ── Ambient theme gradient — fixed, full-page ──────────────────────── */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+        <div style={{
+          position: 'absolute',
+          top: '-10%', right: '-5%',
+          width: '55vw', height: '55vw',
+          maxWidth: 860, maxHeight: 860,
+          borderRadius: '50%',
+          background: `radial-gradient(circle, ${currentTheme.accent}1E 0%, transparent 70%)`,
+          animation: 'sizzle-blob-1 14s ease-in-out infinite',
+          transition: 'background 0.85s ease',
+          filter: 'blur(48px)',
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: '15%', left: '-10%',
+          width: '45vw', height: '45vw',
+          maxWidth: 680, maxHeight: 680,
+          borderRadius: '50%',
+          background: `radial-gradient(circle, ${currentTheme.accent}14 0%, transparent 70%)`,
+          animation: 'sizzle-blob-2 18s ease-in-out infinite',
+          transition: 'background 0.85s ease',
+          filter: 'blur(56px)',
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: '45%', left: '42%',
+          width: '40vw', height: '40vw',
+          maxWidth: 580, maxHeight: 580,
+          borderRadius: '50%',
+          background: `radial-gradient(circle, ${currentTheme.accent}0C 0%, transparent 70%)`,
+          animation: 'sizzle-blob-3 22s ease-in-out infinite',
+          transition: 'background 0.85s ease',
+          filter: 'blur(64px)',
+        }} />
+      </div>
+
       {/* ── Floating nav ───────────────────────────────────────────────────── */}
       <nav className="fixed top-4 left-4 right-4 z-50">
         <div
@@ -364,12 +386,7 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
           }`}
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center shrink-0">
-              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-                <path d="M3 11C3 8 5 6 7 6C9 6 11 8 11 11" stroke="var(--canvas)" strokeWidth="1.7" strokeLinecap="round"/>
-                <path d="M7 6V2M5 4l2-2 2 2" stroke="var(--canvas)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
+            <SizzleLogo size={20} />
             <span className="font-semibold text-ink tracking-tight">Sizzle</span>
           </div>
 
@@ -393,10 +410,10 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
               </Link>
             ) : (
               <>
-                <Link href="/login" className="hidden sm:block text-sm text-ink-3 hover:text-ink transition-colors px-3 py-1.5">
+                <Link href="/login" className={`hidden sm:block text-sm transition-colors px-3 py-1.5 ${scrolled ? 'text-ink-3 hover:text-ink' : 'text-ink-4 hover:text-ink-3'}`}>
                   Sign in
                 </Link>
-                <Link href="/signup" className="px-4 py-2 btn-primary rounded-xl text-sm active:scale-[0.98] transition-transform">
+                <Link href="/signup" className={`px-4 py-2 rounded-xl text-sm active:scale-[0.98] transition-all duration-300 ${scrolled ? 'btn-primary' : 'border border-hair/60 text-ink-3 hover:border-accent hover:text-accent'}`}>
                   Start free
                 </Link>
               </>
@@ -408,17 +425,42 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <section id="hero-section" className="relative pt-36 pb-20 px-4 overflow-hidden">
 
-        {/* depth-1: Glow blobs (parallax targets) */}
-        <div className="hero-glow-1 pointer-events-none absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full bg-accent/5 blur-3xl" aria-hidden="true" />
-        <div className="hero-glow-2 pointer-events-none absolute top-1/2 -left-24 w-[400px] h-[400px] rounded-full bg-accent/4 blur-2xl" aria-hidden="true" />
-
-        {/* Background grid texture */}
+        {/* depth-1: Glow blobs — animated, theme-reactive */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.018]"
+          className="hero-glow-1 pointer-events-none absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full blur-3xl"
           aria-hidden="true"
           style={{
-            backgroundImage: 'linear-gradient(var(--ink) 1px, transparent 1px), linear-gradient(90deg, var(--ink) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
+            background: `radial-gradient(circle, ${currentTheme.accent}28 0%, transparent 70%)`,
+            animation: 'sizzle-blob-1 9s ease-in-out infinite',
+            transition: 'background 0.8s ease',
+          }}
+        />
+        <div
+          className="hero-glow-2 pointer-events-none absolute top-1/2 -left-24 w-[400px] h-[400px] rounded-full blur-2xl"
+          aria-hidden="true"
+          style={{
+            background: `radial-gradient(circle, ${currentTheme.accent}1C 0%, transparent 70%)`,
+            animation: 'sizzle-blob-2 12s ease-in-out infinite',
+            transition: 'background 0.8s ease',
+          }}
+        />
+        <div
+          className="hero-glow-3 pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] rounded-full blur-3xl"
+          aria-hidden="true"
+          style={{
+            background: `radial-gradient(ellipse, ${currentTheme.accent}10 0%, transparent 70%)`,
+            animation: 'sizzle-blob-3 16s ease-in-out infinite',
+            transition: 'background 0.8s ease',
+          }}
+        />
+
+        {/* Premium gradient overlay */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          aria-hidden="true"
+          style={{
+            background: `radial-gradient(ellipse 80% 55% at 50% -5%, ${currentTheme.accent}10 0%, transparent 65%)`,
+            transition: 'background 0.85s ease',
           }}
         />
 
@@ -562,12 +604,12 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
             </h2>
           </div>
 
-          {/* Asymmetric bento grid: 2fr + 1fr + 1fr on desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr] gap-5 items-start">
+          {/* Row 1: Sales (wide) + Expenses — both stretch to same height */}
+          <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-5 items-stretch">
 
-            {/* Large card — sales */}
-            <div className="feature-card glass rounded-2xl p-7 flex flex-col gap-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] md:row-span-2 lg:row-span-2" style={{ opacity: 0 }}>
-              <div className={`w-10 h-10 rounded-xl ${FEATURES[0].iconBg} flex items-center justify-center`}>
+            {/* Sales — large card with mini chart */}
+            <div className="feature-card glass rounded-2xl p-7 flex flex-col gap-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" style={{ opacity: 0 }}>
+              <div className={`w-10 h-10 rounded-xl ${FEATURES[0].iconBg} flex items-center justify-center shrink-0`}>
                 {FEATURES[0].icon}
               </div>
               <div>
@@ -588,17 +630,45 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
               </div>
             </div>
 
-            {/* Small cards */}
-            {FEATURES.slice(1).map(feat => (
-              <div key={feat.title} className="feature-card glass rounded-2xl p-6 space-y-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" style={{ opacity: 0 }}>
-                <div className={`w-9 h-9 rounded-xl ${feat.iconBg} flex items-center justify-center`}>
+            {/* Expenses — fills same height as Sales */}
+            <div className="feature-card glass rounded-2xl p-6 flex flex-col gap-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" style={{ opacity: 0 }}>
+              <div className={`w-9 h-9 rounded-xl ${FEATURES[1].iconBg} flex items-center justify-center shrink-0`}>
+                {FEATURES[1].icon}
+              </div>
+              <div>
+                <h3 className="font-semibold text-ink tracking-tight">{FEATURES[1].title}</h3>
+                <p className="text-sm text-ink-3 mt-2 leading-relaxed">{FEATURES[1].body}</p>
+              </div>
+              <div className="mt-auto space-y-2 pt-2">
+                {[
+                  { label: 'Ingredients', pct: 45 },
+                  { label: 'Labor',       pct: 30 },
+                  { label: 'Overhead',    pct: 25 },
+                ].map(({ label, pct }) => (
+                  <div key={label} className="flex items-center gap-2">
+                    <span className="text-[9px] text-ink-4 w-20 shrink-0">{label}</span>
+                    <div className="flex-1 h-1.5 bg-surface-3 rounded-full overflow-hidden">
+                      <div className="h-full rounded-full bg-warn/50" style={{ width: `${pct}%` }} />
+                    </div>
+                    <span className="text-[9px] tabular text-ink-4">{pct}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Row 2+: 8 remaining features in a perfect 4-column grid (2 rows of 4) */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {FEATURES.slice(2).map(feat => (
+              <div key={feat.title} className="feature-card glass rounded-2xl p-5 flex flex-col gap-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" style={{ opacity: 0 }}>
+                <div className={`w-9 h-9 rounded-xl ${feat.iconBg} flex items-center justify-center shrink-0`}>
                   {feat.icon}
                 </div>
-                <h3 className="font-semibold text-ink tracking-tight">{feat.title}</h3>
-                <p className="text-sm text-ink-3 leading-relaxed">{feat.body}</p>
+                <h3 className="text-sm font-semibold text-ink tracking-tight leading-snug">{feat.title}</h3>
+                <p className="text-xs text-ink-3 leading-relaxed">{feat.body}</p>
               </div>
             ))}
-
           </div>
         </div>
       </section>
@@ -666,17 +736,21 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
       {/* ── Metrics strip ─────────────────────────────────────────────────────── */}
       <div className="border-y border-hair py-16 px-4">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-hair">
-          {[
-            { value: '< 2 min', label: "to log a full day's sales",     sub: 'Quick modal — channel + item picker' },
-            { value: '14',      label: 'restaurant-specific themes',     sub: 'Espresso, Ocean, Crimson, and 11 more' },
-            { value: 'Free',    label: 'for one business, forever',      sub: 'No trial period, no credit card' },
-          ].map(stat => (
-            <div key={stat.value} className="px-8 py-10 md:first:pl-0 md:last:pr-0 lp-fade-up">
-              <p className="text-[clamp(2rem,4vw,2.8rem)] font-semibold tracking-tighter text-accent leading-none">{stat.value}</p>
-              <p className="text-sm font-medium text-ink mt-3">{stat.label}</p>
-              <p className="text-xs text-ink-4 mt-1">{stat.sub}</p>
-            </div>
-          ))}
+          <div className="px-8 py-10 md:pl-0 lp-fade-up">
+            <p className="text-[clamp(2rem,4vw,2.8rem)] font-semibold tracking-tighter text-accent leading-none">{'< 2 min'}</p>
+            <p className="text-sm font-medium text-ink mt-3">to log a full day&apos;s sales</p>
+            <p className="text-xs text-ink-4 mt-1">Quick modal — channel + item picker</p>
+          </div>
+          <div ref={themeCountRef} className="px-8 py-10 lp-fade-up">
+            <p className="text-[clamp(2rem,4vw,2.8rem)] font-semibold tracking-tighter text-accent leading-none tabular">{themeCountVal}</p>
+            <p className="text-sm font-medium text-ink mt-3">restaurant-specific themes</p>
+            <p className="text-xs text-ink-4 mt-1">Matcha, Neon, Obsidian, Sakura, and 32 more</p>
+          </div>
+          <div className="px-8 py-10 md:pr-0 lp-fade-up">
+            <p className="text-[clamp(2rem,4vw,2.8rem)] font-semibold tracking-tighter text-accent leading-none">Free</p>
+            <p className="text-sm font-medium text-ink mt-3">for one business, forever</p>
+            <p className="text-xs text-ink-4 mt-1">No trial period, no credit card</p>
+          </div>
         </div>
       </div>
 
@@ -717,6 +791,100 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
             </AppFrame>
           </div>
 
+        </div>
+      </section>
+
+      {/* ── POS + QR Menu ─────────────────────────────────────────────────────── */}
+      <section id="pos-section" className="py-24 px-4 border-t border-hair">
+        <div className="max-w-6xl mx-auto space-y-14">
+          <div className="lp-fade-up">
+            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">Speed &amp; visibility</p>
+            <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold tracking-tighter text-ink leading-tight max-w-[26ch]">
+              Fast for you. Beautiful for your customers.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+
+            {/* POS */}
+            <div className="space-y-6 lp-fade-up">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-accent-dim flex items-center justify-center shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-accent">
+                    <rect x="1.5" y="3.5" width="13" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M5 7.5h6M8 6v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M4 12.5v1.5M12 12.5v1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-ink tracking-tight">Point of Sale</h3>
+              </div>
+              <p className="text-base text-ink-3 leading-relaxed max-w-[42ch]">
+                Tap a dish, pick the channel, hit record. Food cost is calculated automatically. No clunky POS hardware — just a fast, focused interface built for real kitchen speed.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Item picker with real-time food cost per sale',
+                  'Channel selector — dine-in, takeout, delivery',
+                  'Log a full transaction in under 30 seconds',
+                  'Auto-deducts from inventory on every sale',
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-3 text-sm text-ink-3">
+                    <svg className="w-4 h-4 text-accent mt-0.5 shrink-0" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8.5L6.5 12 13 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="relative">
+                <div className="absolute -inset-4 bg-accent/5 rounded-2xl blur-2xl pointer-events-none" />
+                <AppFrame url="sizzle.app/pos" height={280}>
+                  <POSMock />
+                </AppFrame>
+              </div>
+            </div>
+
+            {/* QR Menu */}
+            <div className="space-y-6 lp-fade-up">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-accent-dim flex items-center justify-center shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-accent">
+                    <rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.4"/>
+                    <rect x="9" y="1.5" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.4"/>
+                    <rect x="1.5" y="9" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.4"/>
+                    <rect x="10" y="10" width="2" height="2" fill="currentColor" rx="0.3"/>
+                    <path d="M9 13.5h2M12.5 12v1.5M12.5 10v1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-ink tracking-tight">QR Menu Generator</h3>
+              </div>
+              <p className="text-base text-ink-3 leading-relaxed max-w-[42ch]">
+                Every venue gets a live public menu page the moment you add items. Print the QR code, stick it on the table — customers scan and see your full menu with prices, in your chosen theme.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Auto-generated — no extra setup required',
+                  'Matches your app theme (36 styles available)',
+                  'Always live — updates when you edit your menu',
+                  'Works on any phone, no app download needed',
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-3 text-sm text-ink-3">
+                    <svg className="w-4 h-4 text-accent mt-0.5 shrink-0" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8.5L6.5 12 13 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="relative">
+                <div className="absolute -inset-4 bg-accent/5 rounded-2xl blur-2xl pointer-events-none" />
+                <AppFrame url="sizzle.app/m/your-venue" height={280}>
+                  <QRMenuMock />
+                </AppFrame>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -854,13 +1022,13 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
           </div>
 
           {/* Row 1: Sales (large) + Menu */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-5">
-            <div className="ss-card group" style={{ opacity: 0 }}>
+          <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none lg:grid lg:grid-cols-[1.6fr_1fr] lg:overflow-x-visible lg:pb-0">
+            <div className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] lg:w-auto" style={{ opacity: 0 }}>
               <AppFrame url="sizzle.app/sales" height={320} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
                 <SalesMock />
               </AppFrame>
             </div>
-            <div className="ss-card group" style={{ opacity: 0 }}>
+            <div className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] lg:w-auto" style={{ opacity: 0 }}>
               <AppFrame url="sizzle.app/menu" height={320} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
                 <MenuMock />
               </AppFrame>
@@ -868,13 +1036,13 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
           </div>
 
           {/* Row 2: Expenses · Reports · Employees */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0">
             {([
               ['sizzle.app/expenses',  <ExpensesMock key="exp" />],
               ['sizzle.app/reports',   <ReportsMock  key="rep" />],
               ['sizzle.app/employees', <EmployeesMock key="emp" />],
             ] as [string, React.ReactNode][]).map(([url, mock]) => (
-              <div key={url} className="ss-card group" style={{ opacity: 0 }}>
+              <div key={url} className="ss-card group snap-start shrink-0 w-[72vw] sm:w-[50vw] md:w-auto" style={{ opacity: 0 }}>
                 <AppFrame url={url} height={220} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
                   {mock}
                 </AppFrame>
@@ -883,12 +1051,26 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
           </div>
 
           {/* Row 3: Waste · Payroll */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none md:grid md:grid-cols-2 md:overflow-x-visible md:pb-0">
             {([
               ['sizzle.app/waste',   <WasteMock   key="waste"   />],
               ['sizzle.app/payroll', <PayrollMock key="payroll" />],
             ] as [string, React.ReactNode][]).map(([url, mock]) => (
-              <div key={url} className="ss-card group" style={{ opacity: 0 }}>
+              <div key={url} className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] md:w-auto" style={{ opacity: 0 }}>
+                <AppFrame url={url} height={260} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
+                  {mock}
+                </AppFrame>
+              </div>
+            ))}
+          </div>
+
+          {/* Row 4: POS · QR Menu */}
+          <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none md:grid md:grid-cols-2 md:overflow-x-visible md:pb-0">
+            {([
+              ['sizzle.app/pos',          <POSMock   key="pos" />],
+              ['sizzle.app/m/your-venue', <QRMenuMock key="qr" />],
+            ] as [string, React.ReactNode][]).map(([url, mock]) => (
+              <div key={url} className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] md:w-auto" style={{ opacity: 0 }}>
                 <AppFrame url={url} height={260} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
                   {mock}
                 </AppFrame>
@@ -947,7 +1129,7 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
         <div className="max-w-6xl mx-auto space-y-12">
 
           <div className="lp-fade-up text-center">
-            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">14 themes</p>
+            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">12 themes</p>
             <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold tracking-tighter text-ink leading-tight">
               Your dashboard, your style.
             </h2>
@@ -961,7 +1143,10 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
             {THEMES.map(t => (
               <button
                 key={t.id}
-                onClick={() => setActiveTheme(t.id)}
+                onClick={() => {
+                  setActiveTheme(t.id)
+                  document.cookie = `sizzle-theme=${t.id};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`
+                }}
                 className="theme-card group relative flex flex-col items-center gap-2.5 p-3 rounded-2xl border transition-all duration-200 cursor-pointer"
                 style={{
                   borderColor: activeTheme === t.id ? 'var(--accent)' : 'var(--hair)',
@@ -1011,6 +1196,13 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
         </div>
       </section>
 
+      {/* ── Testimonials ──────────────────────────────────────────────────────── */}
+      <section className="py-24 px-4 border-t border-hair">
+        <div className="max-w-6xl mx-auto">
+          <Testimonials />
+        </div>
+      </section>
+
       {/* ── Pricing ──────────────────────────────────────────────────────────── */}
       <section id="pricing" className="py-24 px-4 border-t border-hair">
         <div className="max-w-6xl mx-auto">
@@ -1021,17 +1213,17 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl">
 
-            {/* Free */}
+            {/* Basic */}
             <div className="pricing-card glass rounded-2xl p-7 space-y-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" style={{ opacity: 0 }}>
               <div>
-                <p className="text-xs font-semibold text-ink-3 uppercase tracking-widest">Starter</p>
+                <p className="text-xs font-semibold text-ink-3 uppercase tracking-widest">Basic</p>
                 <p className="text-4xl font-semibold tracking-tighter text-ink mt-2">Free</p>
                 <p className="text-xs text-ink-4 mt-1">Forever. One business.</p>
               </div>
               <ul className="space-y-3 text-sm text-ink-3">
-                {['Sales & expense tracking', 'Menu with recipe costing', 'Inventory alerts', '6-month reports + CSV export', 'All 14 themes'].map(f => (
+                {['Sales & expense tracking', 'Menu with recipe costing', 'Inventory alerts', '6-month reports', 'All 12 themes'].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
                     <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 14 14" fill="none">
                       <path d="M2.5 7.5L5.5 10.5 11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1057,12 +1249,12 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
               <div>
                 <p className="text-xs font-semibold text-ink-3 uppercase tracking-widest">Pro</p>
                 <p className="text-4xl font-semibold tracking-tighter text-ink mt-2">
-                  ₱1,499<span className="text-lg text-ink-4 font-normal">/mo</span>
+                  ₱399<span className="text-lg text-ink-4 font-normal">/mo</span>
                 </p>
-                <p className="text-xs text-ink-4 mt-1">Per business, billed monthly.</p>
+                <p className="text-xs text-ink-4 mt-1">One business, billed monthly.</p>
               </div>
               <ul className="space-y-3 text-sm text-ink-3">
-                {['Everything in Starter', 'Multiple businesses', 'Employees & payroll', 'Waste log', 'Payroll management', 'Priority support'].map(f => (
+                {['Everything in Basic', 'Unlimited dishes & ingredients', 'Employees & payroll', 'Waste log tracking', 'CSV exports', 'Priority support'].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
                     <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 14 14" fill="none">
                       <path d="M2.5 7.5L5.5 10.5 11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1072,17 +1264,56 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
                 ))}
               </ul>
               {isLoggedIn ? (
-                <Link href="/settings" className="block w-full py-2.5 text-center btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform">
+                <Link href="/settings#plan" className="block w-full py-2.5 text-center btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform">
                   Upgrade to Pro
                 </Link>
               ) : (
                 <Link href="/signup" className="block w-full py-2.5 text-center btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform">
-                  Get started
+                  Start free trial
+                </Link>
+              )}
+            </div>
+
+            {/* Premium */}
+            <div className="pricing-card relative glass rounded-2xl p-7 space-y-6 overflow-hidden border border-warn/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" style={{ opacity: 0 }}>
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-warn/80 to-warn" />
+              <div>
+                <p className="text-xs font-semibold text-warn/70 uppercase tracking-widest">Premium</p>
+                <p className="text-4xl font-semibold tracking-tighter text-ink mt-2">
+                  ₱1,999<span className="text-lg text-ink-4 font-normal">/mo</span>
+                </p>
+                <p className="text-xs text-ink-4 mt-1">Unlimited businesses.</p>
+              </div>
+              <ul className="space-y-3 text-sm text-ink-3">
+                {['Everything in Pro', 'Multiple businesses', 'AI-powered insights', 'Advanced analytics', 'Dedicated support', 'First access to new features'].map(f => (
+                  <li key={f} className="flex items-center gap-2.5">
+                    <svg className="w-3.5 h-3.5 text-warn shrink-0" viewBox="0 0 14 14" fill="none">
+                      <path d="M2.5 7.5L5.5 10.5 11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              {isLoggedIn ? (
+                <Link href="/settings#plan" className="block w-full py-2.5 text-center rounded-xl text-sm font-semibold bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors active:scale-[0.98]">
+                  Upgrade to Premium
+                </Link>
+              ) : (
+                <Link href="/signup" className="block w-full py-2.5 text-center rounded-xl text-sm font-semibold bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors active:scale-[0.98]">
+                  Start free trial
                 </Link>
               )}
             </div>
 
           </div>
+          <p className="text-xs text-ink-4 mt-5">14-day Pro trial included with every new account. No credit card required.</p>
+        </div>
+      </section>
+
+      {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
+      <section className="py-24 px-4 border-t border-hair">
+        <div className="max-w-6xl mx-auto">
+          <FAQ />
         </div>
       </section>
 
@@ -1128,12 +1359,7 @@ export default function LandingClient({ isLoggedIn = false }: { isLoggedIn?: boo
             {/* Brand col */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center shrink-0">
-                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-                    <path d="M3 11C3 8 5 6 7 6C9 6 11 8 11 11" stroke="var(--canvas)" strokeWidth="1.9" strokeLinecap="round"/>
-                    <path d="M7 6V2M5 4l2-2 2 2" stroke="var(--canvas)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+                <SizzleLogo size={20} />
                 <span className="text-sm font-semibold text-ink">Sizzle</span>
               </div>
               <p className="text-sm text-ink-4 leading-relaxed max-w-[28ch]">

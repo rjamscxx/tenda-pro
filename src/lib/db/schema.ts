@@ -16,7 +16,7 @@ export const payTypeEnum = pgEnum('pay_type', ['daily', 'monthly', 'hourly'])
 
 // ── Accounts ──────────────────────────────────────────────────────────────────
 
-export const planEnum = pgEnum('plan', ['free', 'pro'])
+export const planEnum = pgEnum('plan', ['free', 'pro', 'premium'])
 
 export const accounts = pgTable('accounts', {
   id:              uuid('id').primaryKey().defaultRandom(),
@@ -49,6 +49,7 @@ export const venues = pgTable('venues', {
   vatRegistered:         boolean('vat_registered').notNull().default(false),
   dailyRevenueTarget:    integer('daily_revenue_target').notNull().default(0),   // cents; 0 = derive from monthly
   foodCostTarget:        integer('food_cost_target').notNull().default(35),      // %; "good" threshold
+  menuTheme:             text('menu_theme').notNull().default('sage-dark'),       // theme applied to /m/[venueId] public menu
   createdAt:             timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt:             timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index('venues_account_idx').on(t.accountId)])

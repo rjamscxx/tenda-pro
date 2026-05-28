@@ -6,6 +6,7 @@ import Modal from '@/components/ui/Modal'
 import { logSale, deleteSale, getSaleItems } from './actions'
 import { formatCurrency, parseCents } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
+import EmptyState from '@/components/ui/EmptyState'
 
 const CHANNELS = [
   { value: 'dine_in',  label: 'Dine-in' },
@@ -268,24 +269,22 @@ export default function SalesClient({
       {/* ── Sales list ──────────────────────────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto min-h-0">
         {displayed.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 gap-3">
-            <div className="w-12 h-12 rounded-full bg-surface-2 flex items-center justify-center">
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" className="text-ink-4">
-                <path d="M3 16L8 10l4 4 7-8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div className="text-center">
-              <p className="text-sm font-medium text-ink-2">No sales {period !== 'all' ? 'in this period' : 'yet'}</p>
-              {period !== 'all' ? (
-                <p className="text-xs text-ink-4 mt-0.5">Try a wider date range</p>
-              ) : (
-                <div className="flex items-center gap-2 mt-3 justify-center">
-                  <a href="/pos" className="px-3 py-1.5 rounded-lg bg-surface-2 border border-hair text-xs text-ink-2 hover:text-ink hover:bg-surface-3 transition-colors">Go to POS</a>
-                  <button onClick={() => { resetModal(); setOpen(true) }} className="px-3 py-1.5 rounded-lg btn-primary text-xs">Log a sale</button>
-                </div>
-              )}
-            </div>
-          </div>
+          period === 'all' ? (
+            <EmptyState
+              icon={<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M3 19L9 11l5 5 8-10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+              title="No sales yet"
+              body="Log your first sale via the POS or enter a total manually here."
+              action={{ label: '+ Log a sale', onClick: () => { resetModal(); setOpen(true) } }}
+              secondaryAction={{ label: 'Go to POS', href: '/pos' }}
+            />
+          ) : (
+            <EmptyState
+              compact
+              icon={<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 15L7 8l4 4 6-8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+              title="No sales in this period"
+              body="Try a wider date range or switch to All time."
+            />
+          )
         ) : (
           <table className="w-full text-sm">
             <thead className="sticky top-0 bg-canvas/90 backdrop-blur-sm z-10">

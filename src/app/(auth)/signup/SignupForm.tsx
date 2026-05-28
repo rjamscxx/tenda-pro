@@ -21,6 +21,7 @@ export default function SignupForm() {
   const [showPass, setShowPass]   = useState(false)
   const [error, setError]         = useState('')
   const [loading, setLoading]     = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -36,17 +37,62 @@ export default function SignupForm() {
       return
     }
 
+    // session is null when email confirmation is required
     if (!data.session) {
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
-      if (signInError) {
-        setError('Account created — check your email to confirm, then sign in.')
-        setLoading(false)
-        return
-      }
+      setEmailSent(true)
+      setLoading(false)
+      return
     }
 
+    // session exists — email confirmation disabled, go straight to onboarding
     router.refresh()
     router.push('/onboarding')
+  }
+
+  if (emailSent) {
+    return (
+      <div className="space-y-5">
+        {/* Mail icon */}
+        <div className="flex justify-center">
+          <div className="w-14 h-14 rounded-full bg-surface-2 border border-hair flex items-center justify-center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" className="text-accent"/>
+              <path d="M2 7l10 7 10-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent"/>
+            </svg>
+          </div>
+        </div>
+
+        <div className="space-y-1.5 text-center">
+          <h2 className="text-lg font-semibold text-ink">Check your inbox</h2>
+          <p className="text-sm text-ink-3 leading-relaxed">
+            We sent a verification link to{' '}
+            <span className="text-ink font-medium">{email}</span>.
+            Click the link to activate your account.
+          </p>
+        </div>
+
+        <div className="rounded-lg bg-surface-2 border border-hair px-4 py-3 text-[13px] text-ink-3 space-y-1">
+          <p>No email after a minute?</p>
+          <ul className="list-disc list-inside space-y-0.5 text-ink-4">
+            <li>Check your spam or promotions folder</li>
+            <li>Make sure you entered the right address</li>
+          </ul>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => { setEmailSent(false); setPassword('') }}
+          className="w-full py-2.5 rounded-lg border border-hair text-sm font-medium text-ink-3 hover:text-ink hover:border-accent transition-colors"
+        >
+          Use a different email
+        </button>
+
+        <p className="text-center text-sm text-ink-3">
+          Already confirmed?{' '}
+          <a href="/login" className="text-accent hover:underline">Sign in</a>
+        </p>
+      </div>
+    )
   }
 
   return (

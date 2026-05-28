@@ -2,7 +2,7 @@ import { db } from '@/lib/db'
 import { ingredients, auditLogs } from '@/lib/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
-import { isPro } from '@/lib/plan'
+import { isPro, BASIC_INGREDIENT_LIMIT } from '@/lib/plan'
 import InventoryClient from './InventoryClient'
 
 export const revalidate = 30
@@ -11,6 +11,7 @@ export const metadata = { title: 'Inventory — Sizzle' }
 export default async function InventoryPage() {
   const { venue, account } = await requireVenue()
   const pro = isPro(account)
+  const isBasic = !pro
 
   const [allIngredients, allMovements] = await Promise.all([
     db.select()
@@ -42,7 +43,7 @@ export default async function InventoryPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <InventoryClient ingredients={rows} movements={movements} isPro={pro} />
+      <InventoryClient ingredients={rows} movements={movements} isPro={pro} isBasic={isBasic} ingredientLimit={BASIC_INGREDIENT_LIMIT} />
     </div>
   )
 }

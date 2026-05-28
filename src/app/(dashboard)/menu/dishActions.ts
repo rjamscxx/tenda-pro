@@ -2,10 +2,23 @@
 
 import { revalidatePath } from 'next/cache'
 import { db } from '@/lib/db'
-import { dishes, recipeItems } from '@/lib/db/schema'
-import { and, eq } from 'drizzle-orm'
+import { dishes, recipeItems, ingredients } from '@/lib/db/schema'
+import { and, count, eq, inArray } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { writeAudit } from '@/lib/audit'
+import { isPro, BASIC_DISH_LIMIT } from '@/lib/plan'
+import { z } from 'zod'
+
+const DishSchema = z.object({
+  name:     z.string().min(1, 'Name is required.').max(120),
+  category: z.string().max(80),
+  price:    z.number().int().min(1, 'Price must be greater than 0.').max(10_000_000),
+})
+
+const RecipeItemSchema = z.object({
+  ingredientId: z.string().uuid(),
+  qty:          z.number().positive().finite(),
+})
 
 interface DishInput {
   name: string
@@ -14,8 +27,16 @@ interface DishInput {
 }
 
 export async function createDish(input: DishInput) {
-  const { dbUser, venue } = await requireVenue()
-  if (!input.name.trim()) return { error: 'Name is required.' }
+  const parsed = DishSchema.safeParse(input)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input.' }
+  const { dbUser, venue, account } = await requireVenue()
+
+  if (!isPro(account)) {
+    const [{ total }] = await db.select({ total: count() }).from(dishes).where(eq(dishes.venueId, venue.id))
+    if (total >= BASIC_DISH_LIMIT) {
+      return { error: `Basic plan is limited to ${BASIC_DISH_LIMIT} dishes. Upgrade to Pro for unlimited.` }
+    }
+  }
 
   const [row] = await db.insert(dishes).values({
     venueId: venue.id,
@@ -37,6 +58,8 @@ export async function createDish(input: DishInput) {
 }
 
 export async function updateDish(id: string, input: DishInput) {
+  const parsed = DishSchema.safeParse(input)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input.' }
   const { venue } = await requireVenue()
 
   await db.update(dishes)
@@ -106,6 +129,9 @@ export async function toggleSoldOut(id: string) {
 }
 
 export async function saveRecipe(dishId: string, items: { ingredientId: string; qty: number }[]) {
+  if (!z.string().uuid().safeParse(dishId).success) return { error: 'Invalid dish ID.' }
+  const parsedItems = z.array(RecipeItemSchema).safeParse(items)
+  if (!parsedItems.success) return { error: parsedItems.error.issues[0]?.message ?? 'Invalid recipe items.' }
   const { venue } = await requireVenue()
 
   const [dish] = await db.select().from(dishes)
@@ -116,8 +142,18 @@ export async function saveRecipe(dishId: string, items: { ingredientId: string; 
   await db.delete(recipeItems).where(eq(recipeItems.dishId, dishId))
 
   if (items.length > 0) {
+    // Verify every ingredient ID belongs to this venue before linking
+    const ingredientIds = items.map(i => i.ingredientId)
+    const venueIngredients = await db
+      .select({ id: ingredients.id })
+      .from(ingredients)
+      .where(and(eq(ingredients.venueId, venue.id), inArray(ingredients.id, ingredientIds)))
+    const validIds = new Set(venueIngredients.map(r => r.id))
+    const safeItems = items.filter(item => validIds.has(item.ingredientId))
+    if (safeItems.length < items.length) return { error: 'One or more ingredients are invalid.' }
+
     await db.insert(recipeItems).values(
-      items.map(item => ({ dishId, ingredientId: item.ingredientId, qty: String(item.qty) }))
+      safeItems.map(item => ({ dishId, ingredientId: item.ingredientId, qty: String(item.qty) }))
     )
   }
 

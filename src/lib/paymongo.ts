@@ -8,15 +8,26 @@ function authHeader(): string {
   return 'Basic ' + Buffer.from(key + ':').toString('base64')
 }
 
-// Amount in centavos (e.g. 149900 = ₱1,499)
-export const PAYMONGO_AMOUNT = parseInt(process.env.PAYMONGO_PRICE_CENTAVOS ?? '149900', 10)
+export const PLAN_AMOUNTS: Record<'pro' | 'premium', number> = {
+  pro: 39900,      // ₱399
+  premium: 199900, // ₱1,999
+}
+
+const PLAN_LABELS: Record<'pro' | 'premium', string> = {
+  pro: 'Sizzle Pro',
+  premium: 'Sizzle Premium',
+}
 
 export async function createCheckoutSession(opts: {
   email: string
   accountId: string
+  plan: 'pro' | 'premium'
   successUrl: string
   cancelUrl: string
 }): Promise<string> {
+  const amount = PLAN_AMOUNTS[opts.plan]
+  const label = PLAN_LABELS[opts.plan]
+
   const res = await fetch(`${PAYMONGO_BASE}/checkout_sessions`, {
     method: 'POST',
     headers: {
@@ -30,18 +41,18 @@ export async function createCheckoutSession(opts: {
           billing: { email: opts.email },
           line_items: [{
             currency: 'PHP',
-            amount: PAYMONGO_AMOUNT,
-            name: 'Sizzle Pro',
-            description: 'Monthly subscription — all Pro features',
+            amount,
+            name: label,
+            description: `Monthly subscription — all ${opts.plan === 'premium' ? 'Premium' : 'Pro'} features`,
             quantity: 1,
           }],
           payment_method_types: ['gcash', 'paymaya', 'card', 'grab_pay', 'billease', 'dob'],
           success_url: opts.successUrl,
           cancel_url: opts.cancelUrl,
-          metadata: { account_id: opts.accountId },
+          metadata: { account_id: opts.accountId, plan: opts.plan },
           send_email_receipt: true,
-          statement_descriptor: 'Sizzle Pro',
-          description: 'Sizzle Pro Monthly Subscription',
+          statement_descriptor: label,
+          description: `${label} Monthly Subscription`,
         },
       },
     }),

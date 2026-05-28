@@ -409,74 +409,6 @@
   --gradient-hero: linear-gradient(135deg, #0E1017 0%, #141820 50%, #0E1017 100%);
 }
 
-/* ── Theme 13: Terracotta — Mediterranean ────────────────────────────────── */
-[data-theme="terracotta"] {
-  --canvas:      #140C08;
-  --canvas-2:    #1C1210;
-  --sidebar:     #1A1010;
-  --surface:     #221814;
-  --surface-2:   #2A1E1A;
-  --surface-3:   #322520;
-
-  --ink:         #F8F0E8;
-  --ink-2:       #D0B8A8;
-  --ink-3:       #A08878;
-  --ink-4:       #705848;
-
-  --hair:        #3E2820;
-  --hair-2:      #342018;
-
-  --accent:      #C2613B;
-  --accent-2:    #D4784E;
-  --accent-dim:  rgba(194, 97, 59, 0.12);
-  --accent-tint: rgba(194, 97, 59, 0.22);
-  --accent-glow: rgba(194, 97, 59, 0.18);
-  --accent-end:  #A0512E;
-
-  --danger:      #DC2626;
-  --danger-dim:  rgba(220, 38, 38, 0.12);
-  --warn:        #F59E0B;
-  --warn-dim:    rgba(245, 158, 11, 0.12);
-  --success:     #78C488;
-  --success-dim: rgba(120, 196, 136, 0.12);
-
-  --gradient-hero: linear-gradient(135deg, #140C08 0%, #1C1410 50%, #140C08 100%);
-}
-
-/* ── Theme 14: Ivory — Premium Brunch / Pastry ────────────────────────────── */
-[data-theme="ivory"] {
-  --canvas:      #FAFAF7;
-  --canvas-2:    #F4F4EF;
-  --sidebar:     #F0EFE8;
-  --surface:     #FFFFFF;
-  --surface-2:   #F8F7F2;
-  --surface-3:   #F0EFEA;
-
-  --ink:         #2C2218;
-  --ink-2:       #5A4838;
-  --ink-3:       #8A7868;
-  --ink-4:       #B0A090;
-
-  --hair:        #E0D8CC;
-  --hair-2:      #EAE4DC;
-
-  --accent:      #8B5E3C;
-  --accent-2:    #A8754E;
-  --accent-dim:  rgba(139, 94, 60, 0.10);
-  --accent-tint: rgba(139, 94, 60, 0.18);
-  --accent-glow: rgba(139, 94, 60, 0.12);
-  --accent-end:  #6B4020;
-
-  --danger:      #B2492E;
-  --danger-dim:  rgba(178, 73, 46, 0.10);
-  --warn:        #875800;
-  --warn-dim:    rgba(135, 88, 0, 0.10);
-  --success:     #2D7A61;
-  --success-dim: rgba(45, 122, 97, 0.10);
-
-  --gradient-hero: linear-gradient(135deg, #FAFAF7 0%, #F4F0E8 50%, #FAFAF7 100%);
-}
-
 /* ── Global tokens (theme-independent) ────────────────────────────────────── */
 :root {
   /* Border radius scale */
@@ -799,6 +731,22 @@ input:focus, select:focus, textarea:focus {
 .lp-stagger > *:nth-child(3) { animation-delay: 160ms; }
 .lp-stagger > *:nth-child(4) { animation-delay: 240ms; }
 .lp-stagger > *:nth-child(5) { animation-delay: 320ms; }
+
+/* ── Ambient blob animations (landing page) ────────────────────────────────── */
+@keyframes sizzle-blob-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(30px, -20px) scale(1.08); }
+  66%       { transform: translate(-20px, 15px) scale(0.95); }
+}
+@keyframes sizzle-blob-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-25px, 20px) scale(1.06); }
+  70%       { transform: translate(15px, -12px) scale(0.97); }
+}
+@keyframes sizzle-blob-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(12px, 22px) scale(1.04); }
+}
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {

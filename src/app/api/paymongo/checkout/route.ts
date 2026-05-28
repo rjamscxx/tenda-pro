@@ -1,16 +1,19 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createCheckoutSession } from '@/lib/paymongo'
 import { requireVenue } from '@/lib/queries/auth'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 
-export async function POST() {
+export async function POST(req: NextRequest) {
   const { account, authUser } = await requireVenue()
+  const { searchParams } = new URL(req.url)
+  const plan = searchParams.get('plan') === 'premium' ? 'premium' : 'pro'
 
   try {
     const url = await createCheckoutSession({
       email: authUser.email ?? '',
       accountId: account.id,
+      plan,
       successUrl: `${APP_URL}/settings?upgraded=1#plan`,
       cancelUrl: `${APP_URL}/settings#plan`,
     })

@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { sales, expenses, saleItems, dishes, wasteLogs } from '@/lib/db/schema'
 import { and, eq, gte } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
+import Link from 'next/link'
 import ReportsClient, { type MonthData } from './ReportsClient'
 
 export const revalidate = 30
@@ -101,8 +102,8 @@ export default async function ReportsPage() {
     }
     const topDishes = [...dishMap.entries()]
       .map(([dishName, v]) => ({ dishName, ...v }))
-      .sort((a, b) => b.totalQty - a.totalQty)
-      .slice(0, 5)
+      .sort((a, b) => b.totalRevenue - a.totalRevenue)
+      .slice(0, 10)
 
     return {
       month, label: monthLabel(month), revenue, expenses: totalExp, wasteTotal, profit, margin,
@@ -110,6 +111,37 @@ export default async function ReportsPage() {
       byChannel, byCategory, topDishes,
     }
   })
+
+  const hasAnyData = monthlyData.some(m => m.revenue > 0 || m.expenses > 0)
+
+  if (!hasAnyData) {
+    return (
+      <div className="flex h-full items-center justify-center p-8">
+        <div className="max-w-sm w-full text-center space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-surface-2 border border-hair flex items-center justify-center mx-auto">
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" className="text-ink-3">
+              <path d="M4 22l6-8 5 5 6-9 5 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+              <rect x="3" y="3" width="24" height="24" rx="4" stroke="currentColor" strokeWidth="1.4" strokeDasharray="3 2"/>
+            </svg>
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-lg font-semibold text-ink tracking-tight">No data to report yet</h2>
+            <p className="text-sm text-ink-3 leading-relaxed">
+              Reports unlock once you start logging sales and expenses. It only takes a minute.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <Link href="/pos" className="px-5 py-2.5 btn-primary rounded-xl text-sm font-semibold">
+              Log a sale →
+            </Link>
+            <Link href="/expenses" className="px-5 py-2.5 rounded-xl border border-hair text-sm text-ink-2 hover:border-accent hover:text-ink transition-colors">
+              Log an expense
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto w-full">

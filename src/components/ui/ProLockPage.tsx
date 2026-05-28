@@ -1,12 +1,12 @@
 import Link from 'next/link'
 
 const PRO_FEATURES = [
-  'Waste Log & Spoilage Tracking',
+  'Unlimited dishes & ingredients',
   'Employee Management',
   'Payroll Runs',
+  'Waste Log & Spoilage Tracking',
   'CSV Exports',
-  'Daily Email Digest',
-  'Unlimited AI Messages',
+  'Priority Support',
 ]
 
 export default function ProLockPage({ feature }: { feature: string }) {
@@ -24,7 +24,7 @@ export default function ProLockPage({ feature }: { feature: string }) {
           </div>
           <h2 className="text-lg font-semibold text-ink">{feature}</h2>
           <p className="text-sm text-ink-4 mt-2 leading-relaxed">
-            Upgrade to Sizzle Pro to unlock {feature} and everything below.
+            Upgrade to Pro (₱399/mo) to unlock {feature} and all Pro features.
           </p>
         </div>
 
@@ -42,9 +42,9 @@ export default function ProLockPage({ feature }: { feature: string }) {
             href="/settings#plan"
             className="block w-full text-center px-6 py-3 btn-primary rounded-xl font-semibold text-sm"
           >
-            Upgrade to Pro →
+            View plans →
           </Link>
-          <p className="text-xs text-ink-4">No credit card required during beta.</p>
+          <p className="text-xs text-ink-4">Pay via GCash, Maya, card, or bank transfer. Cancel anytime.</p>
         </div>
       </div>
     </div>

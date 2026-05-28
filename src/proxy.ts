@@ -51,9 +51,17 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Security headers
+  const h = supabaseResponse.headers
+  h.set('X-Frame-Options', 'SAMEORIGIN')
+  h.set('X-Content-Type-Options', 'nosniff')
+  h.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  h.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  h.set('X-DNS-Prefetch-Control', 'on')
+
   return supabaseResponse
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|api/cron).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon\\.ico|sw\\.js|manifest\\.json|api/pwa-icon|api/cron).*)'],
 }
