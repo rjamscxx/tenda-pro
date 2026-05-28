@@ -894,7 +894,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
           <div className="lp-fade-up">
             <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">Operations</p>
             <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold tracking-tighter text-ink leading-tight max-w-[24ch]">
-              The stuff spreadsheets can't keep up with.
+              The stuff spreadsheets can&apos;t keep up with.
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -945,7 +945,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
               <div>
                 <h3 className="text-lg font-semibold text-ink tracking-tight">Employees</h3>
                 <p className="text-sm text-ink-3 mt-2 leading-relaxed">
-                  Add staff with daily or monthly rates. Track who's active, their roles, and see your
+                  Add staff with daily or monthly rates. Track who&apos;s active, their roles, and see your
                   estimated monthly labor cost right beside your food cost.
                 </p>
               </div>

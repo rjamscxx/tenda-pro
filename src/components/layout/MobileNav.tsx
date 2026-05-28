@@ -8,7 +8,9 @@ export default function MobileNav({ venueName, fullName, role, isPro, isPremium 
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
-  // Close on navigation
+  // Close drawer when route changes (e.g. back button, programmatic nav).
+  // setState in effect is intentional here: external signal → UI sync.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setOpen(false) }, [pathname])
 
   return (

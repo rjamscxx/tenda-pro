@@ -1,39 +1,47 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useSyncExternalStore } from 'react'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
+// External-store snapshot for "is the app running as an installed PWA".
+function subscribeStandalone(callback: () => void) {
+  if (typeof window === 'undefined') return () => {}
+  const mq = window.matchMedia('(display-mode: standalone)')
+  mq.addEventListener('change', callback)
+  window.addEventListener('appinstalled', callback)
+  return () => {
+    mq.removeEventListener('change', callback)
+    window.removeEventListener('appinstalled', callback)
+  }
+}
+function getStandaloneSnapshot() {
+  return typeof window !== 'undefined' && window.matchMedia('(display-mode: standalone)').matches
+}
+function getServerSnapshot() {
+  return false
+}
+
 export default function InstallButton() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-  const [installed, setInstalled] = useState(false)
+  const [acceptedInstall, setAcceptedInstall] = useState(false)
+  const isStandalone = useSyncExternalStore(subscribeStandalone, getStandaloneSnapshot, getServerSnapshot)
+  const installed = isStandalone || acceptedInstall
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-
-    // Already running as standalone (installed)
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setInstalled(true)
-      return
-    }
 
     const onPrompt = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e as BeforeInstallPromptEvent)
     }
-    const onInstalled = () => {
-      setInstalled(true)
-      setDeferredPrompt(null)
-    }
 
     window.addEventListener('beforeinstallprompt', onPrompt)
-    window.addEventListener('appinstalled', onInstalled)
     return () => {
       window.removeEventListener('beforeinstallprompt', onPrompt)
-      window.removeEventListener('appinstalled', onInstalled)
     }
   }, [])
 
@@ -63,7 +71,7 @@ export default function InstallButton() {
         if (!deferredPrompt) return
         await deferredPrompt.prompt()
         const { outcome } = await deferredPrompt.userChoice
-        if (outcome === 'accepted') setInstalled(true)
+        if (outcome === 'accepted') setAcceptedInstall(true)
         setDeferredPrompt(null)
       }}
       className="flex items-center gap-2 px-4 py-2.5 btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform"

@@ -13,7 +13,7 @@ const PREMIUM_FEATURES = [
   'Everything in Pro',
 ]
 
-export default function PremiumLockPage({ hasUsedTrial }: { hasUsedTrial: boolean }) {
+export default function PremiumLockPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 

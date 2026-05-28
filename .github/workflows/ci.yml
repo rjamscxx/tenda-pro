@@ -29,6 +29,21 @@ jobs:
       - name: lint
         run: npm run lint
 
+      - name: migration drift check
+        # Generates a migration from the current schema. If the result
+        # would add new SQL, the schema and committed migrations are out
+        # of sync — fail so the dev runs `npm run db:generate` and commits.
+        run: |
+          npx drizzle-kit generate --name=ci_drift_check || true
+          if git status --porcelain supabase/migrations | grep -q .; then
+            echo "::error::Schema and committed migrations are out of sync."
+            echo "Run 'npm run db:generate' locally and commit the new migration."
+            git status --porcelain supabase/migrations
+            exit 1
+          fi
+        env:
+          DATABASE_URL: postgresql://placeholder/db
+
       - name: build
         run: npm run build
         env:

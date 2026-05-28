@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateVenue, updateProfile, downgradeTofree, deleteAccount, startTrial, activatePlan } from './actions'
 import InstallButton from '@/components/layout/InstallButton'
@@ -145,11 +145,15 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState('')
 
+  // Sync the active theme to the DOM and the persistence cookie whenever it changes
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', active)
+    const secondsPerYear = 31_536_000
+    document.cookie = `sizzle-theme=${active}; path=/; max-age=${secondsPerYear}; SameSite=Lax`
+  }, [active])
+
   function applyTheme(id: string) {
     setActive(id)
-    document.documentElement.setAttribute('data-theme', id)
-    const secondsPerYear = 31_536_000
-    document.cookie = `sizzle-theme=${id}; path=/; max-age=${secondsPerYear}; SameSite=Lax`
   }
 
   async function handleVenueSave(e: React.FormEvent) {

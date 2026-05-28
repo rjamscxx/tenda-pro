@@ -1,6 +1,5 @@
 import { cookies } from 'next/headers'
 import { requireVenue } from '@/lib/queries/auth'
-import { isTrialExpired } from '@/lib/plan'
 import { db } from '@/lib/db'
 import { auditLogs } from '@/lib/db/schema'
 import { eq, desc } from 'drizzle-orm'

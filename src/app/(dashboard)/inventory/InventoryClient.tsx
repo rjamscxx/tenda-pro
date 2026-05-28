@@ -382,7 +382,7 @@ export default function InventoryClient({
                           const color = status === 'out' ? 'bg-danger' : status === 'low' ? 'bg-warn' : 'bg-success'
                           return (
                             <div className="mt-1.5 h-1 bg-surface-3 rounded-full overflow-hidden w-16 ml-auto">
-                              <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${Math.min((ing.stockQty / ing.lowStockThreshold) * 100, 100)}%` }} />
+                              <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${pct}%` }} />
                             </div>
                           )
                         })()}

@@ -50,16 +50,26 @@ const CHANNEL_COLOR: Record<string, string> = {
 function DonutChart({ data, total }: { data: Array<{ category: string; label: string; pct: number }>; total: number }) {
   const r = 40
   const circ = 2 * Math.PI * r
-  let offset = 0
   const gap = 1.5
+
+  // Pre-compute starting offsets in a single pass so the JSX map stays pure.
+  const segments = data.reduce<Array<{ category: string; pct: number; offset: number }>>(
+    (acc, { category, pct }) => {
+      const prev = acc[acc.length - 1]
+      const offset = prev ? prev.offset + (prev.pct / 100) * circ : 0
+      acc.push({ category, pct, offset })
+      return acc
+    },
+    [],
+  )
 
   return (
     <div className="relative w-32 h-32 shrink-0">
       <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
         <circle cx="50" cy="50" r={r} fill="none" stroke="var(--surface-3)" strokeWidth="12" />
-        {data.map(({ category, pct }) => {
+        {segments.map(({ category, pct, offset }) => {
           const len = Math.max(0, (pct / 100) * circ - gap)
-          const seg = (
+          return (
             <circle
               key={category}
               cx="50" cy="50" r={r}
@@ -71,8 +81,6 @@ function DonutChart({ data, total }: { data: Array<{ category: string; label: st
               strokeLinecap="butt"
             />
           )
-          offset += (pct / 100) * circ
-          return seg
         })}
       </svg>
       {/* Center label */}
@@ -105,7 +113,6 @@ function BarRow({ label, amount, pct, colorClass }: { label: string; amount: num
 }
 
 export default function ReportsClient({ months, currentMonth }: Props) {
-  const [mainTab, setMainTab] = useState<'monthly'>('monthly')
   const [selected, setSelected] = useState(currentMonth)
   const [sortBy, setSortBy] = useState<'revenue' | 'qty'>('revenue')
   const data = months.find(m => m.month === selected) ?? months[months.length - 1]
@@ -154,15 +161,15 @@ export default function ReportsClient({ months, currentMonth }: Props) {
             {data.label}{isCurrentMonth && <span className="ml-2 text-accent text-xs font-semibold">current</span>}
           </p>
         </div>
-        {mainTab === 'monthly' && <button onClick={downloadCSV} className="px-4 py-2 btn-primary rounded-lg text-sm flex items-center gap-2 shrink-0">
+        <button onClick={downloadCSV} className="px-4 py-2 btn-primary rounded-lg text-sm flex items-center gap-2 shrink-0">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M7 1v8M4 6l3 3 3-3M2 10v1.5A1.5 1.5 0 003.5 13h7A1.5 1.5 0 0012 11.5V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           Export CSV
-        </button>}
+        </button>
       </div>
 
-      {mainTab === 'monthly' && <>
+      <>
 
       {/* Month pills */}
       <div className="flex items-center gap-1.5 flex-wrap">
@@ -393,7 +400,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
         </div>
       </div>
 
-      </>}
+      </>
     </div>
   )
 }

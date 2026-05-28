@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import Modal from '@/components/ui/Modal'
 import QRCode from 'qrcode'
 
@@ -16,13 +16,10 @@ export default function QRModal({
   venueName: string
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [menuUrl, setMenuUrl] = useState('')
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setMenuUrl(`${window.location.origin}/m/${venueId}`)
-    }
-  }, [venueId])
+  // Modal only mounts after a user click, so window is always defined here
+  const menuUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/m/${venueId}`
+    : ''
 
   useEffect(() => {
     if (!open || !canvasRef.current || !menuUrl) return

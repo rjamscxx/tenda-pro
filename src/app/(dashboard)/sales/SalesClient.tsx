@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Modal from '@/components/ui/Modal'
 import { logSale, deleteSale, getSaleItems } from './actions'
@@ -100,17 +100,10 @@ export default function SalesClient({
 }) {
   const toast = useToast()
   const searchParams = useSearchParams()
-  const [open, setOpen]       = useState(false)
+  // Open via ?log=1 query is decided once at mount — lazy init avoids a setState-in-effect
+  const [open, setOpen]       = useState(() => searchParams.get('log') === '1')
   const [loading, setLoading] = useState(false)
   const [pendingDelete, setPendingDelete] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (searchParams.get('log') === '1') setOpen(true)
-    try {
-      const saved = localStorage.getItem('sizzle-sales-period') as Period | null
-      if (saved && PERIODS.some(p => p.value === saved)) setPeriod(saved)
-    } catch {}
-  }, [searchParams])
 
   const [error, setError]             = useState('')
   const [mode, setMode]               = useState<'items' | 'manual'>('items')
@@ -118,7 +111,15 @@ export default function SalesClient({
   const [note, setNote]               = useState('')
   const [manualTotal, setManualTotal] = useState('')
   const [order, setOrder]             = useState<OrderItem[]>([])
-  const [period, setPeriod]           = useState<Period>('all')
+  // Restore persisted period from localStorage on first render (client-only)
+  const [period, setPeriod]           = useState<Period>(() => {
+    if (typeof window === 'undefined') return 'all'
+    try {
+      const saved = localStorage.getItem('sizzle-sales-period') as Period | null
+      if (saved && PERIODS.some(p => p.value === saved)) return saved
+    } catch {}
+    return 'all'
+  })
   const [chanFilter, setChanFilter]   = useState<string>('all')
 
   const [detailSale, setDetailSale]       = useState<Sale | null>(null)

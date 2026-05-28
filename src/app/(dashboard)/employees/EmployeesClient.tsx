@@ -23,14 +23,6 @@ interface Props {
   employees: Employee[]
 }
 
-const EMPTY_FORM: Omit<EmployeeInput, 'payRate'> & { payRateInput: string } = {
-  fullName:      '',
-  role:          '',
-  payType:       'daily',
-  payRateInput:  '',
-  startDate:     todayISO(),
-  contactNumber: '',
-}
 
 export default function EmployeesClient({ employees }: Props) {
   const toast = useToast()

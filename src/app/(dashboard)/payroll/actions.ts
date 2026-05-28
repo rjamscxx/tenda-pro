@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { payrollRuns, payrollItems, employees, expenses } from '@/lib/db/schema'
+import { payrollRuns, payrollItems, expenses } from '@/lib/db/schema'
 import { and, eq } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { revalidatePath } from 'next/cache'
