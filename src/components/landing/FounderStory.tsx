@@ -18,7 +18,7 @@ export default function FounderStory() {
             RJ
           </div>
           <div className="min-w-0">
-            <p className="font-semibold text-ink leading-tight">Robert James Cabansay</p>
+            <p className="font-semibold text-ink leading-tight">RJ</p>
             <p className="text-xs text-ink-4 mt-0.5">Founder &amp; sole developer · Philippines</p>
           </div>
         </div>
