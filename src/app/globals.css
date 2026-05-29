@@ -81,7 +81,7 @@
   --ink:         #F0E8DA;
   --ink-2:       #C4B49E;
   --ink-3:       #9A8A78;
-  --ink-4:       #655A4D;
+  --ink-4:       #978875;
 
   --hair:        #3A3028;
   --hair-2:      #302820;
@@ -115,7 +115,7 @@
   --ink:         #EEF0D8;
   --ink-2:       #B8BEA0;
   --ink-3:       #8A9078;
-  --ink-4:       #586050;
+  --ink-4:       #838F78;
 
   --hair:        #2C3528;
   --hair-2:      #242C20;
@@ -149,7 +149,7 @@
   --ink:         #F0E8E0;
   --ink-2:       #C0AEAA;
   --ink-3:       #967878;
-  --ink-4:       #5A4848;
+  --ink-4:       #987B7B;
 
   --hair:        #3A2828;
   --hair-2:      #302020;
@@ -183,7 +183,7 @@
   --ink:         #DCF0F8;
   --ink-2:       #9AB8C8;
   --ink-3:       #708898;
-  --ink-4:       #405060;
+  --ink-4:       #6C859E;
 
   --hair:        #1A2E3C;
   --hair-2:      #132430;
@@ -217,7 +217,7 @@
   --ink:         #F8ECF4;
   --ink-2:       #D0A8C8;
   --ink-3:       #A07890;
-  --ink-4:       #684860;
+  --ink-4:       #A27296;
 
   --hair:        #3E2038;
   --hair-2:      #341830;
@@ -251,7 +251,7 @@
   --ink:         #F8ECE0;
   --ink-2:       #D0A880;
   --ink-3:       #A07850;
-  --ink-4:       #684830;
+  --ink-4:       #A57450;
 
   --hair:        #3E2810;
   --hair-2:      #342008;
@@ -285,7 +285,7 @@
   --ink:         #E8E8F8;
   --ink-2:       #A8A8D8;
   --ink-3:       #7878B0;
-  --ink-4:       #484880;
+  --ink-4:       #7373C8;
 
   --hair:        #222250;
   --hair-2:      #1A1A40;
@@ -319,7 +319,7 @@
   --ink:         #F8F0D8;
   --ink-2:       #D0B880;
   --ink-3:       #A09060;
-  --ink-4:       #706040;
+  --ink-4:       #9D885C;
 
   --hair:        #3E3020;
   --hair-2:      #342818;
@@ -353,7 +353,7 @@
   --ink:         #DCF0EC;
   --ink-2:       #90C0B8;
   --ink-3:       #608880;
-  --ink-4:       #386858;
+  --ink-4:       #50907B;
 
   --hair:        #1E3C38;
   --hair-2:      #183030;
@@ -387,7 +387,7 @@
   --ink:         #E0E4F0;
   --ink-2:       #A0A8C0;
   --ink-3:       #707898;
-  --ink-4:       #485070;
+  --ink-4:       #7581B2;
 
   --hair:        #2A3048;
   --hair-2:      #22283C;
@@ -413,7 +413,7 @@
 [data-theme="wasabi"] {
   --canvas: #0B1010; --canvas-2: #101715; --sidebar: #111814;
   --surface: #161E1B; --surface-2: #1C2622; --surface-3: #232D28;
-  --ink: #E8F0E4; --ink-2: #B2C1B2; --ink-3: #889889; --ink-4: #586259;
+  --ink: #E8F0E4; --ink-2: #B2C1B2; --ink-3: #889889; --ink-4: #818F82;
   --hair: #243029; --hair-2: #1D2722;
   --accent: #84CC16; --accent-2: #A3E635;
   --accent-dim: rgba(132,204,22,0.12); --accent-tint: rgba(132,204,22,0.22);
@@ -428,7 +428,7 @@
 [data-theme="trattoria"] {
   --canvas: #15100C; --canvas-2: #1B1410; --sidebar: #1C1612;
   --surface: #221A14; --surface-2: #2A2118; --surface-3: #33291E;
-  --ink: #F4ECD8; --ink-2: #C9B89D; --ink-3: #968671; --ink-4: #635648;
+  --ink: #F4ECD8; --ink-2: #C9B89D; --ink-3: #968671; --ink-4: #96836E;
   --hair: #2D2418; --hair-2: #261D14;
   --accent: #D97746; --accent-2: #E89368;
   --accent-dim: rgba(217,119,70,0.12); --accent-tint: rgba(217,119,70,0.22);
@@ -443,7 +443,7 @@
 [data-theme="mariachi"] {
   --canvas: #14080A; --canvas-2: #1B0C0E; --sidebar: #1E0E10;
   --surface: #251114; --surface-2: #2E161A; --surface-3: #381B20;
-  --ink: #FCE9D6; --ink-2: #D6B69B; --ink-3: #A18269; --ink-4: #6A5544;
+  --ink: #FCE9D6; --ink-2: #D6B69B; --ink-3: #A18269; --ink-4: #9E8067;
   --hair: #2F1A1D; --hair-2: #281418;
   --accent: #FBBF24; --accent-2: #FCD34D;
   --accent-dim: rgba(251,191,36,0.12); --accent-tint: rgba(251,191,36,0.22);
@@ -458,7 +458,7 @@
 [data-theme="imperial"] {
   --canvas: #100808; --canvas-2: #170B0B; --sidebar: #190C0C;
   --surface: #1F1010; --surface-2: #281414; --surface-3: #321A1A;
-  --ink: #F5E9CC; --ink-2: #D1BC8A; --ink-3: #9D8B62; --ink-4: #6A5C40;
+  --ink: #F5E9CC; --ink-2: #D1BC8A; --ink-3: #9D8B62; --ink-4: #93805B;
   --hair: #2D1818; --hair-2: #261313;
   --accent: #EAB308; --accent-2: #FACC15;
   --accent-dim: rgba(234,179,8,0.12); --accent-tint: rgba(234,179,8,0.22);
@@ -473,7 +473,7 @@
 [data-theme="saffron"] {
   --canvas: #140C04; --canvas-2: #1C1008; --sidebar: #1E120A;
   --surface: #25180D; --surface-2: #2E1E12; --surface-3: #382517;
-  --ink: #FCEACB; --ink-2: #D5BB91; --ink-3: #9E8665; --ink-4: #695843;
+  --ink: #FCEACB; --ink-2: #D5BB91; --ink-3: #9E8665; --ink-4: #9B8365;
   --hair: #322218; --hair-2: #2A1B12;
   --accent: #F97316; --accent-2: #FB923C;
   --accent-dim: rgba(249,115,22,0.12); --accent-tint: rgba(249,115,22,0.22);
@@ -488,7 +488,7 @@
 [data-theme="diner"] {
   --canvas: #080C14; --canvas-2: #0D1220; --sidebar: #0E1322;
   --surface: #131B2C; --surface-2: #182238; --surface-3: #1F2B45;
-  --ink: #E8EEF8; --ink-2: #B0BCD2; --ink-3: #7E8AA0; --ink-4: #525C70;
+  --ink: #E8EEF8; --ink-2: #B0BCD2; --ink-3: #7E8AA0; --ink-4: #7987A3;
   --hair: #1F2D45; --hair-2: #1A2538;
   --accent: #38BDF8; --accent-2: #7DD3FC;
   --accent-dim: rgba(56,189,248,0.12); --accent-tint: rgba(56,189,248,0.22);
@@ -503,7 +503,7 @@
 [data-theme="halo"] {
   --canvas: #110A18; --canvas-2: #170F20; --sidebar: #181023;
   --surface: #1E1428; --surface-2: #261A33; --surface-3: #2F213F;
-  --ink: #F2E8F5; --ink-2: #CDB7D8; --ink-3: #9B86A6; --ink-4: #645572;
+  --ink: #F2E8F5; --ink-2: #CDB7D8; --ink-3: #9B86A6; --ink-4: #947FA8;
   --hair: #2A1F38; --hair-2: #221830;
   --accent: #C084FC; --accent-2: #D8B4FE;
   --accent-dim: rgba(192,132,252,0.12); --accent-tint: rgba(192,132,252,0.22);
@@ -518,7 +518,7 @@
 [data-theme="boba"] {
   --canvas: #14100E; --canvas-2: #1B1614; --sidebar: #1C1816;
   --surface: #221C1A; --surface-2: #2A2320; --surface-3: #322A26;
-  --ink: #F8ECE6; --ink-2: #D6BFB4; --ink-3: #A28C81; --ink-4: #6A5A52;
+  --ink: #F8ECE6; --ink-2: #D6BFB4; --ink-3: #A28C81; --ink-4: #9E877C;
   --hair: #2F2520; --hair-2: #281F1A;
   --accent: #F472B6; --accent-2: #F9A8D4;
   --accent-dim: rgba(244,114,182,0.12); --accent-tint: rgba(244,114,182,0.22);
