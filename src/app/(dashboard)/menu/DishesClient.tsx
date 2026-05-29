@@ -30,6 +30,7 @@ export interface RecipeItemData {
 export interface DishData {
   id: string
   name: string
+  description: string | null
   category: string
   price: number
   isActive: boolean
@@ -61,7 +62,7 @@ function marginColor(pct: number) {
   return 'text-danger'
 }
 
-const EMPTY_DISH_FORM = { name: '', category: 'Mains', price: '' }
+const EMPTY_DISH_FORM = { name: '', description: '', category: 'Mains', price: '' }
 
 export default function DishesClient({
   dishes,
@@ -97,7 +98,7 @@ export default function DishesClient({
 
   function openEditDish(dish: DishData) {
     setEditingDish(dish)
-    setDishForm({ name: dish.name, category: dish.category, price: String(dish.price / 100) })
+    setDishForm({ name: dish.name, description: dish.description ?? '', category: dish.category, price: String(dish.price / 100) })
     setDishError('')
     setDishOpen(true)
   }
@@ -106,7 +107,7 @@ export default function DishesClient({
     e.preventDefault()
     setDishLoading(true)
     setDishError('')
-    const input = { name: dishForm.name, category: dishForm.category, price: parseCents(dishForm.price) }
+    const input = { name: dishForm.name, description: dishForm.description, category: dishForm.category, price: parseCents(dishForm.price) }
     const result = editingDish ? await updateDish(editingDish.id, input) : await createDish(input)
     if (result?.error) { setDishError(result.error); setDishLoading(false); return }
     const wasEditing = editingDish
@@ -328,6 +329,20 @@ export default function DishesClient({
               onChange={e => setDishForm(f => ({ ...f, name: e.target.value }))}
               className="w-full px-3 py-2.5 rounded-lg bg-canvas border border-hair text-ink text-sm focus:outline-none focus:border-accent transition-colors"
               placeholder="Chicken Adobo"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-ink-3 uppercase tracking-wider flex items-center justify-between">
+              <span>Description <span className="text-ink-4 normal-case text-[10px] font-normal">(optional, shown on public QR menu)</span></span>
+              <span className="tabular text-[10px] text-ink-4">{dishForm.description.length}/200</span>
+            </label>
+            <textarea
+              rows={2}
+              maxLength={200}
+              value={dishForm.description}
+              onChange={e => setDishForm(f => ({ ...f, description: e.target.value }))}
+              className="w-full px-3 py-2.5 rounded-lg bg-canvas border border-hair text-ink text-sm focus:outline-none focus:border-accent transition-colors resize-none"
+              placeholder="Slow-braised pork belly in soy and vinegar, served with garlic rice"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">

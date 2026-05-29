@@ -10,9 +10,10 @@ import { isPro, BASIC_DISH_LIMIT } from '@/lib/plan'
 import { z } from 'zod'
 
 const DishSchema = z.object({
-  name:     z.string().min(1, 'Name is required.').max(120),
-  category: z.string().max(80),
-  price:    z.number().int().min(1, 'Price must be greater than 0.').max(10_000_000),
+  name:        z.string().min(1, 'Name is required.').max(120),
+  description: z.string().max(400).optional(),
+  category:    z.string().max(80),
+  price:       z.number().int().min(1, 'Price must be greater than 0.').max(10_000_000),
 })
 
 const RecipeItemSchema = z.object({
@@ -22,6 +23,7 @@ const RecipeItemSchema = z.object({
 
 interface DishInput {
   name: string
+  description?: string
   category: string
   price: number // cents
 }
@@ -41,6 +43,7 @@ export async function createDish(input: DishInput) {
   const [row] = await db.insert(dishes).values({
     venueId: venue.id,
     name: input.name.trim(),
+    description: input.description?.trim() || null,
     category: input.category.trim() || 'Other',
     price: input.price,
   }).returning({ id: dishes.id })
@@ -63,7 +66,13 @@ export async function updateDish(id: string, input: DishInput) {
   const { venue } = await requireVenue()
 
   await db.update(dishes)
-    .set({ name: input.name.trim(), category: input.category.trim() || 'Other', price: input.price, updatedAt: new Date() })
+    .set({
+      name: input.name.trim(),
+      description: input.description?.trim() || null,
+      category: input.category.trim() || 'Other',
+      price: input.price,
+      updatedAt: new Date(),
+    })
     .where(and(eq(dishes.id, id), eq(dishes.venueId, venue.id)))
 
   revalidatePath('/menu')

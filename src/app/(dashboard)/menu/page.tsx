@@ -41,6 +41,7 @@ export default async function MenuPage() {
   const dishData = dishRows.map(d => ({
     id: d.id,
     name: d.name,
+    description: d.description,
     category: d.category,
     price: d.price,
     isActive: d.isActive,

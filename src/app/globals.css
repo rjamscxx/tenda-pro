@@ -433,6 +433,9 @@
 @theme inline {
   --font-sans: var(--font-outfit);
   --font-mono: var(--font-mono);
+  /* Used on the public QR menu for a real-restaurant typographic feel.
+     Georgia is system-installed everywhere; no extra network request. */
+  --font-serif: Georgia, 'Times New Roman', serif;
 
   --color-canvas:      var(--canvas);
   --color-canvas-2:    var(--canvas-2);

@@ -79,6 +79,7 @@ export const dishes = pgTable('dishes', {
   id:           uuid('id').primaryKey().defaultRandom(),
   venueId:      uuid('venue_id').notNull().references(() => venues.id, { onDelete: 'cascade' }),
   name:         text('name').notNull(),
+  description:  text('description'),                  // shown on the public QR menu; optional
   category:     text('category').notNull().default('Other'),
   price:        integer('price').notNull().default(0), // cents
   isActive:     boolean('is_active').notNull().default(true),
