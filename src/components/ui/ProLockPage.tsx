@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { startTrial, activatePlan } from '@/app/(dashboard)/settings/actions'
+import { startTrial } from '@/app/(dashboard)/settings/actions'
 
 const PRO_FEATURES = [
   'Unlimited dishes & ingredients',
@@ -16,6 +16,7 @@ const PRO_FEATURES = [
 export default function ProLockPage({ feature, hasUsedTrial }: { feature: string; hasUsedTrial: boolean }) {
   const router = useRouter()
   const [loading, setLoading] = useState<'trial' | 'pro' | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleTrial() {
     setLoading('trial')
@@ -24,11 +25,25 @@ export default function ProLockPage({ feature, hasUsedTrial }: { feature: string
     setLoading(null)
   }
 
+  // Route through PayMongo Checkout (test mode while PAYMONGO_SECRET_KEY is a
+  // sk_test_... key). The webhook activates the account when the test payment
+  // completes, so there's no UI shortcut.
   async function handleActivate() {
     setLoading('pro')
-    await activatePlan('pro')
-    router.refresh()
-    setLoading(null)
+    setError(null)
+    try {
+      const res = await fetch('/api/paymongo/checkout?plan=pro', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok || !data.url) {
+        setError(data.error ?? 'Could not start checkout. Try again in a moment.')
+        setLoading(null)
+        return
+      }
+      window.location.href = data.url
+    } catch {
+      setError('Network error — check your connection and try again.')
+      setLoading(null)
+    }
   }
 
   return (
@@ -79,6 +94,9 @@ export default function ProLockPage({ feature, hasUsedTrial }: { feature: string
           <p className="text-xs text-ink-4">
             {hasUsedTrial ? 'Pay via GCash, Maya, card, or bank transfer.' : '14 days free, no credit card required.'}
           </p>
+          {error && (
+            <p className="text-xs text-danger leading-snug">{error}</p>
+          )}
         </div>
       </div>
     </div>

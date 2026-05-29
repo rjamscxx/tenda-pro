@@ -1,8 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { activatePlan } from '@/app/(dashboard)/settings/actions'
 
 const PREMIUM_FEATURES = [
   'Advanced Analytics & Revenue Trends',
@@ -14,14 +12,27 @@ const PREMIUM_FEATURES = [
 ]
 
 export default function PremiumLockPage() {
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
+  // Route through PayMongo Checkout (test mode while PAYMONGO_SECRET_KEY is a
+  // sk_test_... key). The webhook activates the account after the test payment.
   async function handleActivate() {
     setLoading(true)
-    await activatePlan('premium')
-    router.refresh()
-    setLoading(false)
+    setError(null)
+    try {
+      const res = await fetch('/api/paymongo/checkout?plan=premium', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok || !data.url) {
+        setError(data.error ?? 'Could not start checkout. Try again in a moment.')
+        setLoading(false)
+        return
+      }
+      window.location.href = data.url
+    } catch {
+      setError('Network error — check your connection and try again.')
+      setLoading(false)
+    }
   }
 
   return (
@@ -60,6 +71,9 @@ export default function PremiumLockPage() {
             {loading ? 'Activating…' : 'Subscribe to Premium — ₱1,999/mo →'}
           </button>
           <p className="text-xs text-ink-4">Pay via GCash, Maya, card, or bank transfer. Cancel anytime.</p>
+          {error && (
+            <p className="text-xs text-danger leading-snug">{error}</p>
+          )}
         </div>
       </div>
     </div>

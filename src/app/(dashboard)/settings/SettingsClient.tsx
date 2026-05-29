@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { updateVenue, updateProfile, downgradeTofree, deleteAccount, startTrial, activatePlan } from './actions'
+import { updateVenue, updateProfile, downgradeTofree, deleteAccount, startTrial } from './actions'
 import InstallButton from '@/components/layout/InstallButton'
 
 // ── Theme picker ──────────────────────────────────────────────────────────────
@@ -57,6 +57,108 @@ const TIMEZONES = [
   { value: 'Europe/Paris',     label: 'Central Europe (UTC+1/+2)' },
   { value: 'Australia/Sydney', label: 'Australia — AEST (UTC+10/+11)' },
 ]
+
+// ── SubscriptionCountdown ───────────────────────────────────────────────────
+// Live-ticking countdown for the Subscription section. Trials show a
+// days-only readout (no need for seconds). Paid plans get a per-second
+// "Subscription ends in: 17d 04:23:09" ticker plus a progress bar.
+
+function pad2(n: number) {
+  return n.toString().padStart(2, '0')
+}
+
+function SubscriptionCountdown({
+  expiresAt,
+  isTrial,
+  isPremium,
+}: {
+  expiresAt: string
+  isTrial: boolean
+  isPremium: boolean
+}) {
+  const target = new Date(expiresAt).getTime()
+  // ms since epoch — reactive. Trials tick once per minute (60s) which is
+  // plenty. Paid plans tick every second for the live H:M:S display.
+  const [nowMs, setNowMs] = useState(() => Date.now())
+
+  useEffect(() => {
+    const intervalMs = isTrial ? 60_000 : 1000
+    const id = setInterval(() => setNowMs(Date.now()), intervalMs)
+    return () => clearInterval(id)
+  }, [isTrial])
+
+  const diffMs = Math.max(0, target - nowMs)
+  const totalSeconds = Math.floor(diffMs / 1000)
+  const days    = Math.floor(totalSeconds / 86400)
+  const hours   = Math.floor((totalSeconds % 86400) / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  const expires = new Date(target)
+  const expiryStr = expires.toLocaleString('en-PH', {
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: 'numeric', minute: '2-digit', hour12: true,
+  })
+
+  const urgent = diffMs <= 3 * 86400 * 1000 // ≤3 days
+  const totalWindow = isTrial ? 14 : 30
+  const pctRemaining = Math.min(100, Math.max(0, (days / totalWindow) * 100))
+
+  const barTone =
+    urgent ? 'from-danger to-danger/70' :
+    isTrial ? 'from-accent to-accent-2' :
+    isPremium ? 'from-warn to-warn/70' : 'from-accent to-accent-2'
+  const labelTone =
+    urgent ? 'text-danger' :
+    isTrial ? 'text-accent' :
+    isPremium ? 'text-warn' : 'text-accent'
+
+  return (
+    <div className={`rounded-xl border p-4 space-y-2.5 ${urgent ? 'border-danger/40 bg-danger/5' : 'border-hair/60 bg-surface/40'}`}>
+      <div className="flex items-baseline justify-between gap-3 flex-wrap">
+        <div className="min-w-0">
+          <p className="text-[10px] uppercase tracking-widest font-semibold text-ink-4">
+            {isTrial ? 'Trial ends in' : 'Subscription ends in'}
+          </p>
+          {isTrial ? (
+            <p className={`text-2xl font-bold tabular tracking-tight mt-1 ${labelTone}`}>
+              {days === 0 ? `${hours}h ${minutes}m` : `${days} ${days === 1 ? 'day' : 'days'}`}
+            </p>
+          ) : (
+            <p className={`text-2xl font-bold tabular tracking-tight mt-1 ${labelTone}`}>
+              <span>{days}d</span>{' '}
+              <span>{pad2(hours)}:{pad2(minutes)}:{pad2(seconds)}</span>
+            </p>
+          )}
+        </div>
+        <div className="text-right">
+          <p className="text-[10px] uppercase tracking-widest font-semibold text-ink-4">
+            {isTrial ? 'Then converts' : 'Ends at'}
+          </p>
+          <p className="text-xs text-ink-3 mt-1 tabular">{expiryStr}</p>
+        </div>
+      </div>
+      <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full bg-gradient-to-r ${barTone} transition-all duration-700`}
+          style={{ width: `${pctRemaining}%` }}
+        />
+      </div>
+      {urgent && diffMs > 0 && (
+        <p className="text-[11px] text-danger leading-snug">
+          {isTrial
+            ? 'Your trial ends soon. Subscribe below to keep your Pro/Premium features.'
+            : 'Your subscription ends soon. Renew below to avoid losing access.'}
+        </p>
+      )}
+      {diffMs === 0 && (
+        <p className="text-[11px] text-danger leading-snug">
+          Your subscription has ended. Renew below to restore access.
+        </p>
+      )}
+    </div>
+  )
+}
 
 // ── SaveRow ──────────────────────────────────────────────────────────────────
 
@@ -129,6 +231,29 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
   const [active, setActive] = useState(initialTheme)
   const [isPending, startTransition] = useTransition()
   const [planLoading, setPlanLoading] = useState<'trial' | 'pro' | 'premium' | null>(null)
+  const [planError, setPlanError] = useState<string | null>(null)
+
+  // Route Pro/Premium purchase through PayMongo Checkout (test mode while
+  // PAYMONGO_SECRET_KEY is a sk_test_... key). The webhook activates the
+  // account when the test payment completes — never short-circuit via
+  // activatePlan from the UI.
+  async function startCheckout(plan: 'pro' | 'premium') {
+    setPlanLoading(plan)
+    setPlanError(null)
+    try {
+      const res = await fetch(`/api/paymongo/checkout?plan=${plan}`, { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok || !data.url) {
+        setPlanError(data.error ?? 'Could not start checkout. Try again in a moment.')
+        setPlanLoading(null)
+        return
+      }
+      window.location.href = data.url
+    } catch {
+      setPlanError('Network error — check your connection and try again.')
+      setPlanLoading(null)
+    }
+  }
 
   const now = new Date()
   const isExpired = planExpiresAt ? new Date(planExpiresAt) < now : false
@@ -407,64 +532,13 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
         </div>
 
         {/* ── Countdown card — visible when on a paid plan with an expiry ── */}
-        {effectivePlan !== 'free' && planExpiresAt && (() => {
-          const expires = new Date(planExpiresAt)
-          const daysLeft = Math.max(0, Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
-          const hoursLeft = Math.max(0, Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60)))
-          const isTrialActive = isOnTrial
-          const urgent = daysLeft <= 3
-          const expiryStr = expires.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-
-          // Progress bar: trial is 14 days; paid plans renew every 30 days
-          const totalWindow = isTrialActive ? 14 : 30
-          const pctRemaining = Math.min(100, Math.max(0, (daysLeft / totalWindow) * 100))
-
-          const barTone =
-            urgent ? 'from-danger to-danger/70' :
-            isTrialActive ? 'from-accent to-accent-2' :
-            effectivePlan === 'premium' ? 'from-warn to-warn/70' : 'from-accent to-accent-2'
-
-          const labelTone =
-            urgent ? 'text-danger' :
-            isTrialActive ? 'text-accent' :
-            effectivePlan === 'premium' ? 'text-warn' : 'text-accent'
-
-          return (
-            <div className={`rounded-xl border p-4 space-y-2.5 ${urgent ? 'border-danger/40 bg-danger/5' : 'border-hair/60 bg-surface/40'}`}>
-              <div className="flex items-baseline justify-between gap-3">
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest font-semibold text-ink-4">
-                    {isTrialActive ? 'Trial ends in' : effectivePlan === 'premium' ? 'Premium renews in' : 'Pro renews in'}
-                  </p>
-                  <p className={`text-2xl font-bold tabular tracking-tight mt-1 ${labelTone}`}>
-                    {daysLeft === 0
-                      ? `${hoursLeft}h`
-                      : `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'}`}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] uppercase tracking-widest font-semibold text-ink-4">
-                    {isTrialActive ? 'Then converts' : 'Renews on'}
-                  </p>
-                  <p className="text-xs text-ink-3 mt-1 tabular">{expiryStr}</p>
-                </div>
-              </div>
-              <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full bg-gradient-to-r ${barTone} transition-all duration-700`}
-                  style={{ width: `${pctRemaining}%` }}
-                />
-              </div>
-              {urgent && (
-                <p className="text-[11px] text-danger leading-snug">
-                  {isTrialActive
-                    ? 'Your trial ends soon. Subscribe below to keep your Pro/Premium features.'
-                    : 'Your plan ends soon. Make sure your payment method is up to date.'}
-                </p>
-              )}
-            </div>
-          )
-        })()}
+        {effectivePlan !== 'free' && planExpiresAt && (
+          <SubscriptionCountdown
+            expiresAt={planExpiresAt}
+            isTrial={isOnTrial}
+            isPremium={effectivePlan === 'premium'}
+          />
+        )}
 
         <div className="space-y-3">
 
@@ -529,19 +603,14 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 )}
                 <button
                   disabled={!!planLoading}
-                  onClick={async () => {
-                    setPlanLoading('pro')
-                    await activatePlan('pro')
-                    router.refresh()
-                    setPlanLoading(null)
-                  }}
+                  onClick={() => startCheckout('pro')}
                   className={`w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-60 ${
                     effectivePlan === 'free' && trialStartedAt
                       ? 'btn-primary'
                       : 'border border-hair text-ink-3 hover:border-accent hover:text-accent transition-colors'
                   }`}
                 >
-                  {planLoading === 'pro' ? 'Activating…' : effectivePlan === 'free' ? 'Subscribe to Pro — ₱399/mo →' : 'Switch to Pro — ₱399/mo'}
+                  {planLoading === 'pro' ? 'Redirecting…' : effectivePlan === 'free' ? 'Subscribe to Pro — ₱399/mo →' : 'Switch to Pro — ₱399/mo'}
                 </button>
               </div>
             )}
@@ -565,18 +634,17 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
             {effectivePlan !== 'premium' && (
               <button
                 disabled={!!planLoading}
-                onClick={async () => {
-                  setPlanLoading('premium')
-                  await activatePlan('premium')
-                  router.refresh()
-                  setPlanLoading(null)
-                }}
+                onClick={() => startCheckout('premium')}
                 className="w-full py-2 rounded-lg text-sm font-semibold bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors disabled:opacity-60"
               >
-                {planLoading === 'premium' ? 'Activating…' : 'Subscribe to Premium — ₱1,999/mo →'}
+                {planLoading === 'premium' ? 'Redirecting…' : 'Subscribe to Premium — ₱1,999/mo →'}
               </button>
             )}
           </div>
+
+          {planError && (
+            <p className="text-xs text-danger leading-snug text-center">{planError}</p>
+          )}
 
         </div>
 
