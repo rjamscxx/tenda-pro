@@ -10,8 +10,35 @@ import SizzleLogo from '@/components/ui/SizzleLogo'
 
 const HeroScene3D = dynamic(() => import('@/components/3d/HeroScene3D'), {
   ssr: false,
-  loading: () => <div className="w-full h-full rounded-2xl bg-surface-2/40 animate-pulse" />,
+  loading: () => <HeroSceneSkeleton />,
 })
+
+function HeroSceneSkeleton() {
+  return <div className="w-full h-full rounded-2xl bg-surface-2/40 animate-pulse" />
+}
+
+// Defer the Three.js + R3F + Drei bundle until the browser is idle so the
+// initial hydration thread is free for hero text + CTAs. Uses
+// requestIdleCallback with a 1500ms timeout; falls back to setTimeout(600)
+// on browsers that don't expose it (Safari ≤ 16.3).
+function LazyHeroScene({ theme }: { theme: string }) {
+  const [shouldLoad, setShouldLoad] = useState(false)
+  useEffect(() => {
+    type IdleWin = Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
+      cancelIdleCallback?: (id: number) => void
+    }
+    const w = window as IdleWin
+    if (typeof w.requestIdleCallback === 'function') {
+      const id = w.requestIdleCallback(() => setShouldLoad(true), { timeout: 1500 })
+      return () => w.cancelIdleCallback?.(id)
+    }
+    const t = setTimeout(() => setShouldLoad(true), 600)
+    return () => clearTimeout(t)
+  }, [])
+  if (!shouldLoad) return <HeroSceneSkeleton />
+  return <HeroScene3D theme={theme} />
+}
 
 // Below-fold landing sections — code-split so their JS doesn't block hydration.
 const OwnerScene = dynamic(() => import('@/components/landing/OwnerScene'), {
@@ -555,7 +582,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
 
           {/* Right: 3D floating dashboard panel */}
           <div className="hero-mock relative h-[340px] sm:h-[420px] lg:h-[520px]" style={{ opacity: 0 }}>
-            <HeroScene3D theme={activeTheme} />
+            <LazyHeroScene theme={activeTheme} />
           </div>
         </div>
       </section>
