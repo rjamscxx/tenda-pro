@@ -259,7 +259,7 @@ export default function OwnerScene() {
                     fill
                     sizes="(min-width: 1024px) 560px, 92vw"
                     className="object-cover object-center"
-                    priority={false}
+                    priority
                   />
 
                   {/* live-data overlay shimmer */}
