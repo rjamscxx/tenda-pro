@@ -14,6 +14,33 @@ const QUICK_PROMPTS = [
   'Profit this month so far?',
 ]
 
+const POSITION_KEY = 'sizzle-ai-widget-pos'
+const BUTTON_SIZE = 48
+
+interface Position { x: number; y: number }
+
+// Load persisted position; default to bottom-right
+function loadPosition(): Position | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = localStorage.getItem(POSITION_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as Position
+    if (typeof parsed.x !== 'number' || typeof parsed.y !== 'number') return null
+    return parsed
+  } catch { return null }
+}
+
+function clampToViewport(p: Position): Position {
+  if (typeof window === 'undefined') return p
+  const maxX = Math.max(0, window.innerWidth  - BUTTON_SIZE - 8)
+  const maxY = Math.max(0, window.innerHeight - BUTTON_SIZE - 8)
+  return {
+    x: Math.max(8, Math.min(p.x, maxX)),
+    y: Math.max(8, Math.min(p.y, maxY)),
+  }
+}
+
 export default function AiChatWidget() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -22,6 +49,65 @@ export default function AiChatWidget() {
   const [error, setError] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  // Draggable button position. null = not yet measured; render falls back
+  // to the bottom-right corner via CSS so SSR matches the first paint.
+  const [position, setPosition] = useState<Position | null>(null)
+  const dragState = useRef<{ active: boolean; movedPx: number; offsetX: number; offsetY: number }>({
+    active: false, movedPx: 0, offsetX: 0, offsetY: 0,
+  })
+
+  // Hydrate position from localStorage on mount; clamp in case the viewport shrank
+  useEffect(() => {
+    const saved = loadPosition()
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (saved) setPosition(clampToViewport(saved))
+  }, [])
+
+  // Re-clamp on resize so the button doesn't drift off-screen
+  useEffect(() => {
+    function onResize() {
+      setPosition(p => (p ? clampToViewport(p) : null))
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  function onPointerDown(e: React.PointerEvent<HTMLButtonElement>) {
+    const rect = e.currentTarget.getBoundingClientRect()
+    dragState.current = {
+      active: true,
+      movedPx: 0,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
+    }
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+
+  function onPointerMove(e: React.PointerEvent<HTMLButtonElement>) {
+    if (!dragState.current.active) return
+    const next = clampToViewport({
+      x: e.clientX - dragState.current.offsetX,
+      y: e.clientY - dragState.current.offsetY,
+    })
+    dragState.current.movedPx += Math.abs(e.movementX) + Math.abs(e.movementY)
+    setPosition(next)
+  }
+
+  function onPointerUp(e: React.PointerEvent<HTMLButtonElement>) {
+    if (!dragState.current.active) return
+    const wasDrag = dragState.current.movedPx > 6
+    dragState.current.active = false
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    }
+    if (wasDrag && position) {
+      try { localStorage.setItem(POSITION_KEY, JSON.stringify(position)) } catch {}
+    } else {
+      // Treated as a click — toggle the panel
+      setOpen(o => !o)
+    }
+  }
 
   // Auto-scroll to the newest message
   useEffect(() => {
@@ -68,13 +154,38 @@ export default function AiChatWidget() {
     }
   }
 
+  // Pixel position style. When position is null, fall back to anchoring at
+  // bottom-right (matches the original layout and avoids SSR/CSR mismatch).
+  const buttonStyle: React.CSSProperties = position
+    ? { left: position.x, top: position.y, right: 'auto', bottom: 'auto' }
+    : { right: 20, bottom: 20 }
+
+  // Panel anchors to the button. If the button is on the top half of the
+  // viewport, open the panel below; otherwise open above. Same for left/right.
+  const panelStyle: React.CSSProperties = (() => {
+    if (typeof window === 'undefined') return { right: 20, bottom: 80 }
+    const buttonX = position?.x ?? (window.innerWidth  - BUTTON_SIZE - 20)
+    const buttonY = position?.y ?? (window.innerHeight - BUTTON_SIZE - 20)
+    const openRight = buttonX < window.innerWidth / 2
+    const openBelow = buttonY < window.innerHeight / 2
+    return {
+      left:   openRight ? Math.max(8, buttonX) : 'auto',
+      right:  openRight ? 'auto' : Math.max(8, window.innerWidth  - buttonX - BUTTON_SIZE),
+      top:    openBelow ? buttonY + BUTTON_SIZE + 10 : 'auto',
+      bottom: openBelow ? 'auto' : window.innerHeight - buttonY + 10,
+    }
+  })()
+
   return (
     <>
-      {/* Floating button */}
+      {/* Floating button — drag to reposition, click to toggle */}
       <button
-        onClick={() => setOpen(o => !o)}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
         aria-label={open ? 'Close Sizzle Assistant' : 'Open Sizzle Assistant'}
-        className="fixed bottom-5 right-5 z-[var(--z-dropdown)] w-12 h-12 rounded-full btn-primary shadow-lg shadow-accent/30 flex items-center justify-center active:scale-95 transition-transform"
+        style={{ ...buttonStyle, touchAction: 'none' }}
+        className="fixed z-[var(--z-dropdown)] w-12 h-12 rounded-full btn-primary shadow-lg shadow-accent/30 flex items-center justify-center active:scale-95 transition-transform cursor-grab active:cursor-grabbing"
       >
         {open ? (
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -90,9 +201,12 @@ export default function AiChatWidget() {
         )}
       </button>
 
-      {/* Chat panel */}
+      {/* Chat panel — anchors to wherever the button is */}
       {open && (
-        <div className="fixed bottom-20 right-5 z-[var(--z-dropdown)] w-[min(380px,calc(100vw-2.5rem))] h-[min(560px,calc(100vh-7rem))] glass rounded-2xl border border-hair shadow-2xl flex flex-col overflow-hidden">
+        <div
+          style={panelStyle}
+          className="fixed z-[var(--z-dropdown)] w-[min(380px,calc(100vw-2.5rem))] h-[min(560px,calc(100vh-7rem))] glass rounded-2xl border border-hair shadow-2xl flex flex-col overflow-hidden"
+        >
 
           {/* Header */}
           <div className="px-4 py-3 border-b border-hair flex items-center gap-2.5 shrink-0">

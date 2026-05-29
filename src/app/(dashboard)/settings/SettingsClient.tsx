@@ -25,6 +25,21 @@ const THEMES: ThemeDef[] = [
   { id: 'harvest',     name: 'Harvest',      label: 'Brewery',       dark: true,  canvas: '#14100A', surface: '#201C14', accent: '#F59E0B', accentEnd: '#D97706', ink: '#F8F0D8' },
   { id: 'jade',        name: 'Jade',         label: 'Tea House',     dark: true,  canvas: '#071010', surface: '#101E20', accent: '#10B981', accentEnd: '#059669', ink: '#DCF0EC' },
   { id: 'slate',       name: 'Slate',        label: 'Modern Café',   dark: true,  canvas: '#0E1017', surface: '#181B24', accent: '#14B8A6', accentEnd: '#0D9488', ink: '#E0E4F0' },
+  // ── Food-business themes ────────────────────────────────────────────────────
+  { id: 'wasabi',      name: 'Wasabi',       label: 'Japanese · Sushi', dark: true,  canvas: '#0B1010', surface: '#161E1B', accent: '#84CC16', accentEnd: '#65A30D', ink: '#E8F0E4' },
+  { id: 'trattoria',   name: 'Trattoria',    label: 'Italian',           dark: true,  canvas: '#15100C', surface: '#221A14', accent: '#D97746', accentEnd: '#B25E33', ink: '#F4ECD8' },
+  { id: 'mariachi',    name: 'Mariachi',     label: 'Mexican',           dark: true,  canvas: '#14080A', surface: '#251114', accent: '#FBBF24', accentEnd: '#D97706', ink: '#FCE9D6' },
+  { id: 'imperial',    name: 'Imperial',     label: 'Chinese Banquet',   dark: true,  canvas: '#100808', surface: '#1F1010', accent: '#EAB308', accentEnd: '#CA8A04', ink: '#F5E9CC' },
+  { id: 'saffron',     name: 'Saffron',      label: 'Indian · Curry',    dark: true,  canvas: '#140C04', surface: '#25180D', accent: '#F97316', accentEnd: '#C2410C', ink: '#FCEACB' },
+  { id: 'diner',       name: 'Diner',        label: 'American Diner',    dark: true,  canvas: '#080C14', surface: '#131B2C', accent: '#38BDF8', accentEnd: '#0284C7', ink: '#E8EEF8' },
+  { id: 'halo',        name: 'Halo',         label: 'Halo-halo · Filipino Dessert', dark: true,  canvas: '#110A18', surface: '#1E1428', accent: '#C084FC', accentEnd: '#9333EA', ink: '#F2E8F5' },
+  { id: 'boba',        name: 'Boba',         label: 'Bubble Tea · Milk Tea', dark: true,  canvas: '#14100E', surface: '#221C1A', accent: '#F472B6', accentEnd: '#DB2777', ink: '#F8ECE6' },
+  // ── Light themes ────────────────────────────────────────────────────────────
+  { id: 'cloud',       name: 'Cloud',        label: 'Minimal Light',     dark: false, canvas: '#FAFAFA', surface: '#FFFFFF', accent: '#0EA5E9', accentEnd: '#0284C7', ink: '#18181B' },
+  { id: 'linen',       name: 'Linen',        label: 'Café Light',        dark: false, canvas: '#FAF6EE', surface: '#FFFEF9', accent: '#92400E', accentEnd: '#78350F', ink: '#2A1F12' },
+  { id: 'mint',        name: 'Mint',         label: 'Fresh Light',       dark: false, canvas: '#F3FAF6', surface: '#FFFFFF', accent: '#047857', accentEnd: '#065F46', ink: '#0F2A1C' },
+  { id: 'sand',        name: 'Sand',         label: 'Warm Beige',        dark: false, canvas: '#FBF7EE', surface: '#FFFFFF', accent: '#B45309', accentEnd: '#92400E', ink: '#292014' },
+  { id: 'lavender',    name: 'Lavender',     label: 'Floral Light',      dark: false, canvas: '#F8F5FB', surface: '#FFFFFF', accent: '#7C3AED', accentEnd: '#6D28D9', ink: '#1F1430' },
 ]
 
 const TIMEZONES = [
@@ -390,6 +405,66 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
             {effectivePlan === 'premium' ? '★ Premium' : effectivePlan === 'pro' ? '⚡ Pro' : 'Basic'}
           </span>
         </div>
+
+        {/* ── Countdown card — visible when on a paid plan with an expiry ── */}
+        {effectivePlan !== 'free' && planExpiresAt && (() => {
+          const expires = new Date(planExpiresAt)
+          const daysLeft = Math.max(0, Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+          const hoursLeft = Math.max(0, Math.ceil((expires.getTime() - now.getTime()) / (1000 * 60 * 60)))
+          const isTrialActive = isOnTrial
+          const urgent = daysLeft <= 3
+          const expiryStr = expires.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+
+          // Progress bar: trial is 14 days; paid plans renew every 30 days
+          const totalWindow = isTrialActive ? 14 : 30
+          const pctRemaining = Math.min(100, Math.max(0, (daysLeft / totalWindow) * 100))
+
+          const barTone =
+            urgent ? 'from-danger to-danger/70' :
+            isTrialActive ? 'from-accent to-accent-2' :
+            effectivePlan === 'premium' ? 'from-warn to-warn/70' : 'from-accent to-accent-2'
+
+          const labelTone =
+            urgent ? 'text-danger' :
+            isTrialActive ? 'text-accent' :
+            effectivePlan === 'premium' ? 'text-warn' : 'text-accent'
+
+          return (
+            <div className={`rounded-xl border p-4 space-y-2.5 ${urgent ? 'border-danger/40 bg-danger/5' : 'border-hair/60 bg-surface/40'}`}>
+              <div className="flex items-baseline justify-between gap-3">
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest font-semibold text-ink-4">
+                    {isTrialActive ? 'Trial ends in' : effectivePlan === 'premium' ? 'Premium renews in' : 'Pro renews in'}
+                  </p>
+                  <p className={`text-2xl font-bold tabular tracking-tight mt-1 ${labelTone}`}>
+                    {daysLeft === 0
+                      ? `${hoursLeft}h`
+                      : `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'}`}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-widest font-semibold text-ink-4">
+                    {isTrialActive ? 'Then converts' : 'Renews on'}
+                  </p>
+                  <p className="text-xs text-ink-3 mt-1 tabular">{expiryStr}</p>
+                </div>
+              </div>
+              <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full bg-gradient-to-r ${barTone} transition-all duration-700`}
+                  style={{ width: `${pctRemaining}%` }}
+                />
+              </div>
+              {urgent && (
+                <p className="text-[11px] text-danger leading-snug">
+                  {isTrialActive
+                    ? 'Your trial ends soon. Subscribe below to keep your Pro/Premium features.'
+                    : 'Your plan ends soon. Make sure your payment method is up to date.'}
+                </p>
+              )}
+            </div>
+          )
+        })()}
 
         <div className="space-y-3">
 
