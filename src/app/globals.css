@@ -13,7 +13,7 @@
   --ink:         #ECE6D5;
   --ink-2:       #B4BDB4;
   --ink-3:       #929B93;
-  --ink-4:       #5C655F;
+  --ink-4:       #8E978F;  /* WCAG AA: 4.65:1 on surface, 5.12:1 on canvas */
 
   --hair:        #28332E;
   --hair-2:      #212C27;

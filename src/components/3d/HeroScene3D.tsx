@@ -126,7 +126,7 @@ export default function HeroScene3D({ theme = 'sage-dark' }: Props) {
                   <span key={c} style={{ width: 9, height: 9, borderRadius: '50%', background: c, display: 'block' }} />
                 ))}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: '5px 5px 0 0', background: '#1e2328', border: '1px solid rgba(255,255,255,0.07)', borderBottom: 'none', fontSize: 9, color: 'rgba(255,255,255,0.45)', fontFamily: 'system-ui' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: '5px 5px 0 0', background: '#1e2328', border: '1px solid rgba(255,255,255,0.07)', borderBottom: 'none', fontSize: 9, color: 'rgba(255,255,255,0.62)', fontFamily: 'system-ui' }}>
                 <svg width="8" height="8" viewBox="0 0 14 14" fill="none"><path d="M3 11C3 8 5 6 7 6C9 6 11 8 11 11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><path d="M7 6V2M5 4l2-2 2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 Sizzle
               </div>
@@ -134,7 +134,7 @@ export default function HeroScene3D({ theme = 'sage-dark' }: Props) {
             <div style={{ display: 'flex', padding: '4px 0 8px' }}>
               <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6, background: '#0e1114', borderRadius: 5, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <svg width="8" height="9" viewBox="0 0 9 10" fill="none" style={{ opacity: 0.35 }}><rect x="1" y="4" width="7" height="6" rx="1" stroke="currentColor" strokeWidth="1.2"/><path d="M3 4V3a1.5 1.5 0 013 0v1" stroke="currentColor" strokeWidth="1.2"/></svg>
-                <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.28)', fontFamily: 'monospace' }}>sizzle.app/dashboard</span>
+                <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.55)', fontFamily: 'monospace' }}>sizzle.app/dashboard</span>
               </div>
             </div>
           </div>
