@@ -254,7 +254,7 @@ export default function OwnerScene() {
                 {/* screen */}
                 <div className="relative rounded-[1.3rem] overflow-hidden bg-canvas aspect-[16/10]">
                   <Image
-                    src="/screenshots/dashboard.png"
+                    src="/landing/dashboard.png"
                     alt="Sizzle dashboard — revenue, food cost %, gross margin, 30-day cashflow, AI assistant"
                     fill
                     sizes="(min-width: 1024px) 560px, 92vw"
