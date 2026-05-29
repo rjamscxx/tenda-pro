@@ -31,6 +31,8 @@ interface Ingredient {
   stockQty: number
   lowStockThreshold: number
   costPerUnit: number
+  /** Days of stock left at current consumption pace. Premium-only; null when unavailable. */
+  daysRemaining?: number | null
 }
 
 interface Movement {
@@ -63,12 +65,14 @@ export default function InventoryClient({
   ingredients,
   movements,
   isPro,
+  isPremium = false,
   isBasic = false,
   ingredientLimit = 15,
 }: {
   ingredients: Ingredient[]
   movements: Movement[]
   isPro: boolean
+  isPremium?: boolean
   isBasic?: boolean
   ingredientLimit?: number
 }) {
@@ -376,7 +380,23 @@ export default function InventoryClient({
                     <tr key={ing.id} className="group hover:bg-surface-2 transition-colors border-l-2 border-l-transparent hover:border-l-accent">
                       <td className="px-6 py-3.5 font-medium text-ink">{ing.name}</td>
                       <td className="px-6 py-3.5 text-right tabular text-ink">
-                        <div>{fmtQty(ing.stockQty)}{' '}<span className="text-ink-4 text-xs font-normal">{ing.unit}</span></div>
+                        <div className="flex items-center justify-end gap-2">
+                          <span>{fmtQty(ing.stockQty)}{' '}<span className="text-ink-4 text-xs font-normal">{ing.unit}</span></span>
+                          {/* Premium forecast badge: days until stock runs out at current sales pace */}
+                          {isPremium && ing.daysRemaining !== null && ing.daysRemaining !== undefined && ing.stockQty > 0 && (() => {
+                            const d = ing.daysRemaining
+                            const days = Math.floor(d)
+                            const tone = d <= 2 ? 'bg-danger/15 text-danger' : d <= 5 ? 'bg-warn/15 text-warn' : 'bg-surface-3 text-ink-4'
+                            return (
+                              <span
+                                className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold tabular ${tone}`}
+                                title={`Based on the last 14 days of sales (${ing.daysRemaining.toFixed(1)} days at current pace)`}
+                              >
+                                {days <= 0 ? '<1d' : `${days}d`} left
+                              </span>
+                            )
+                          })()}
+                        </div>
                         {ing.lowStockThreshold > 0 && (() => {
                           const pct = Math.min((ing.stockQty / ing.lowStockThreshold) * 100, 100)
                           const color = status === 'out' ? 'bg-danger' : status === 'low' ? 'bg-warn' : 'bg-success'

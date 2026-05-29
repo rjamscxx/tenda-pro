@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Sidebar from './Sidebar'
 
-export default function MobileNav({ venueName, fullName, role, isPro, isPremium }: { venueName: string; fullName?: string; role?: string; isPro?: boolean; isPremium?: boolean }) {
+interface MobileNavVenue { id: string; name: string }
+
+export default function MobileNav({ venueName, venues, activeVenueId, fullName, role, isPro, isPremium }: { venueName: string; venues?: MobileNavVenue[]; activeVenueId?: string; fullName?: string; role?: string; isPro?: boolean; isPremium?: boolean }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
@@ -40,12 +42,12 @@ export default function MobileNav({ venueName, fullName, role, isPro, isPremium 
         transition-transform duration-200 ease-out
         ${open ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <Sidebar venueName={venueName} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} onClose={() => setOpen(false)} />
+        <Sidebar venueName={venueName} venues={venues} activeVenueId={activeVenueId} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} onClose={() => setOpen(false)} />
       </div>
 
       {/* Desktop sidebar — always visible */}
       <div className="hidden lg:block h-full shrink-0">
-        <Sidebar venueName={venueName} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} />
+        <Sidebar venueName={venueName} venues={venues} activeVenueId={activeVenueId} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} />
       </div>
     </>
   )

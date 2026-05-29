@@ -8,17 +8,18 @@ import AiChatWidget from '@/components/layout/AiChatWidget'
 import { ToastProvider } from '@/components/ui/Toast'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { venue, dbUser, account } = await requireVenue()
+  const { venue, venues, dbUser, account } = await requireVenue()
   const pro     = checkPro(account)
   const premium = checkPremium(account)
   const trialActive = isTrial(account)
   const daysLeft = getTrialDaysLeft(account)
   const trialExpired = isTrialExpired(account)
+  const venueList = venues.map(v => ({ id: v.id, name: v.name }))
 
   return (
     <ToastProvider>
       <div className="flex h-full">
-        <MobileNav venueName={venue.name} fullName={dbUser.fullName ?? ''} role={dbUser.role} isPro={pro} isPremium={premium} />
+        <MobileNav venueName={venue.name} venues={venueList} activeVenueId={venue.id} fullName={dbUser.fullName ?? ''} role={dbUser.role} isPro={pro} isPremium={premium} />
         <main className="flex-1 flex flex-col min-w-0 overflow-y-auto dashboard-bg">
           <div className="lg:hidden h-12 w-full shrink-0" />
           {trialActive && daysLeft !== null && <TrialBanner daysLeft={daysLeft} />}

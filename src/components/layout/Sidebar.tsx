@@ -4,6 +4,7 @@ import { useTransition } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import SizzleLogo from '@/components/ui/SizzleLogo'
+import VenueSwitcher from './VenueSwitcher'
 
 interface NavItemDef {
   href: string
@@ -144,8 +145,15 @@ function NavItem({
   )
 }
 
+interface SidebarVenue {
+  id: string
+  name: string
+}
+
 interface SidebarProps {
   venueName: string
+  venues?: SidebarVenue[]
+  activeVenueId?: string
   fullName?: string
   role?: string
   isPro?: boolean
@@ -153,7 +161,7 @@ interface SidebarProps {
   onClose?: () => void
 }
 
-export default function Sidebar({ venueName, fullName, role, isPro, isPremium, onClose }: SidebarProps) {
+export default function Sidebar({ venueName, venues, activeVenueId, fullName, role, isPro, isPremium, onClose }: SidebarProps) {
   const router = useRouter()
 
   async function handleSignOut() {
@@ -187,7 +195,11 @@ export default function Sidebar({ venueName, fullName, role, isPro, isPremium, o
             </button>
           )}
         </div>
-        <p className="text-[11px] text-ink-4 truncate leading-none pl-[28px]">{venueName}</p>
+        {venues && venues.length > 0 && activeVenueId ? (
+          <VenueSwitcher venues={venues} activeVenueId={activeVenueId} isPremium={!!isPremium} />
+        ) : (
+          <p className="text-[11px] text-ink-4 truncate leading-none pl-[28px]">{venueName}</p>
+        )}
       </div>
 
       {/* Main nav */}
