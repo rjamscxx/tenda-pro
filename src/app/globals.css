@@ -46,8 +46,8 @@
 
   --ink:         #1A2420;
   --ink-2:       #3D5048;
-  --ink-3:       #647A72;
-  --ink-4:       #9AADA7;
+  --ink-3:       #4C5D57;
+  --ink-4:       #636F6B;
 
   --hair:        #D8D2C6;
   --hair-2:      #E4DFDA;
@@ -80,8 +80,8 @@
 
   --ink:         #F0E8DA;
   --ink-2:       #C4B49E;
-  --ink-3:       #9A8A78;
-  --ink-4:       #978875;
+  --ink-3:       #AA9985;
+  --ink-4:       #9D8E7A;
 
   --hair:        #3A3028;
   --hair-2:      #302820;
@@ -114,8 +114,8 @@
 
   --ink:         #EEF0D8;
   --ink-2:       #B8BEA0;
-  --ink-3:       #8A9078;
-  --ink-4:       #838F78;
+  --ink-3:       #979D83;
+  --ink-4:       #87937B;
 
   --hair:        #2C3528;
   --hair-2:      #242C20;
@@ -148,8 +148,8 @@
 
   --ink:         #F0E8E0;
   --ink-2:       #C0AEAA;
-  --ink-3:       #967878;
-  --ink-4:       #987B7B;
+  --ink-3:       #B18E8E;
+  --ink-4:       #A28383;
 
   --hair:        #3A2828;
   --hair-2:      #302020;
@@ -182,8 +182,8 @@
 
   --ink:         #DCF0F8;
   --ink-2:       #9AB8C8;
-  --ink-3:       #708898;
-  --ink-4:       #6C859E;
+  --ink-3:       #7C97A8;
+  --ink-4:       #708AA3;
 
   --hair:        #1A2E3C;
   --hair-2:      #132430;
@@ -216,8 +216,8 @@
 
   --ink:         #F8ECF4;
   --ink-2:       #D0A8C8;
-  --ink-3:       #A07890;
-  --ink-4:       #A27296;
+  --ink-3:       #B588A3;
+  --ink-4:       #AC7AA0;
 
   --hair:        #3E2038;
   --hair-2:      #341830;
@@ -250,8 +250,8 @@
 
   --ink:         #F8ECE0;
   --ink-2:       #D0A880;
-  --ink-3:       #A07850;
-  --ink-4:       #A57450;
+  --ink-3:       #B88A5D;
+  --ink-4:       #B07C56;
 
   --hair:        #3E2810;
   --hair-2:      #342008;
@@ -284,8 +284,8 @@
 
   --ink:         #E8E8F8;
   --ink-2:       #A8A8D8;
-  --ink-3:       #7878B0;
-  --ink-4:       #7373C8;
+  --ink-3:       #8B8BCA;
+  --ink-4:       #7B7BD5;
 
   --hair:        #222250;
   --hair-2:      #1A1A40;
@@ -352,8 +352,8 @@
 
   --ink:         #DCF0EC;
   --ink-2:       #90C0B8;
-  --ink-3:       #608880;
-  --ink-4:       #50907B;
+  --ink-3:       #72A198;
+  --ink-4:       #559983;
 
   --hair:        #1E3C38;
   --hair-2:      #183030;
@@ -386,8 +386,8 @@
 
   --ink:         #E0E4F0;
   --ink-2:       #A0A8C0;
-  --ink-3:       #707898;
-  --ink-4:       #7581B2;
+  --ink-3:       #8C96BD;
+  --ink-4:       #7C89BD;
 
   --hair:        #2A3048;
   --hair-2:      #22283C;
@@ -428,7 +428,7 @@
 [data-theme="trattoria"] {
   --canvas: #15100C; --canvas-2: #1B1410; --sidebar: #1C1612;
   --surface: #221A14; --surface-2: #2A2118; --surface-3: #33291E;
-  --ink: #F4ECD8; --ink-2: #C9B89D; --ink-3: #968671; --ink-4: #96836E;
+  --ink: #F4ECD8; --ink-2: #C9B89D; --ink-3: #A6957E; --ink-4: #9C8973;
   --hair: #2D2418; --hair-2: #261D14;
   --accent: #D97746; --accent-2: #E89368;
   --accent-dim: rgba(217,119,70,0.12); --accent-tint: rgba(217,119,70,0.22);
@@ -473,7 +473,7 @@
 [data-theme="saffron"] {
   --canvas: #140C04; --canvas-2: #1C1008; --sidebar: #1E120A;
   --surface: #25180D; --surface-2: #2E1E12; --surface-3: #382517;
-  --ink: #FCEACB; --ink-2: #D5BB91; --ink-3: #9E8665; --ink-4: #9B8365;
+  --ink: #FCEACB; --ink-2: #D5BB91; --ink-3: #AD936F; --ink-4: #9F8768;
   --hair: #322218; --hair-2: #2A1B12;
   --accent: #F97316; --accent-2: #FB923C;
   --accent-dim: rgba(249,115,22,0.12); --accent-tint: rgba(249,115,22,0.22);
@@ -488,7 +488,7 @@
 [data-theme="diner"] {
   --canvas: #080C14; --canvas-2: #0D1220; --sidebar: #0E1322;
   --surface: #131B2C; --surface-2: #182238; --surface-3: #1F2B45;
-  --ink: #E8EEF8; --ink-2: #B0BCD2; --ink-3: #7E8AA0; --ink-4: #7987A3;
+  --ink: #E8EEF8; --ink-2: #B0BCD2; --ink-3: #8B98B0; --ink-4: #7E8CA9;
   --hair: #1F2D45; --hair-2: #1A2538;
   --accent: #38BDF8; --accent-2: #7DD3FC;
   --accent-dim: rgba(56,189,248,0.12); --accent-tint: rgba(56,189,248,0.22);
@@ -533,7 +533,7 @@
 [data-theme="cloud"] {
   --canvas: #FAFAFA; --canvas-2: #F4F4F5; --sidebar: #F4F4F5;
   --surface: #FFFFFF; --surface-2: #F4F4F5; --surface-3: #E4E4E7;
-  --ink: #18181B; --ink-2: #3F3F46; --ink-3: #71717A; --ink-4: #A1A1AA;
+  --ink: #18181B; --ink-2: #3F3F46; --ink-3: #5C5C63; --ink-4: #6E6E75;
   --hair: #E4E4E7; --hair-2: #EBEBEE;
   --accent: #0EA5E9; --accent-2: #38BDF8;
   --accent-dim: rgba(14,165,233,0.10); --accent-tint: rgba(14,165,233,0.18);
@@ -548,7 +548,7 @@
 [data-theme="linen"] {
   --canvas: #FAF6EE; --canvas-2: #F4EFE3; --sidebar: #F0EAD9;
   --surface: #FFFEF9; --surface-2: #F7F0DE; --surface-3: #ECE3D0;
-  --ink: #2A1F12; --ink-2: #54422B; --ink-3: #816A4D; --ink-4: #A89479;
+  --ink: #2A1F12; --ink-2: #54422B; --ink-3: #816A4D; --ink-4: #796A56;
   --hair: #E0D4BC; --hair-2: #EADFC8;
   --accent: #92400E; --accent-2: #B45309;
   --accent-dim: rgba(146,64,14,0.08); --accent-tint: rgba(146,64,14,0.16);
@@ -563,7 +563,7 @@
 [data-theme="mint"] {
   --canvas: #F3FAF6; --canvas-2: #EAF5EE; --sidebar: #E5F1E9;
   --surface: #FFFFFF; --surface-2: #ECF7F0; --surface-3: #DAEDE0;
-  --ink: #0F2A1C; --ink-2: #325240; --ink-3: #5F806B; --ink-4: #92A89A;
+  --ink: #0F2A1C; --ink-2: #325240; --ink-3: #486352; --ink-4: #637369;
   --hair: #D2E4D7; --hair-2: #DEEDE2;
   --accent: #047857; --accent-2: #0F8466;
   --accent-dim: rgba(4,120,87,0.08); --accent-tint: rgba(4,120,87,0.16);
@@ -578,7 +578,7 @@
 [data-theme="sand"] {
   --canvas: #FBF7EE; --canvas-2: #F4EEDF; --sidebar: #EFE7D2;
   --surface: #FFFFFF; --surface-2: #F8F0DC; --surface-3: #EBE0C5;
-  --ink: #292014; --ink-2: #54452B; --ink-3: #806C4D; --ink-4: #AC9876;
+  --ink: #292014; --ink-2: #54452B; --ink-3: #68573E; --ink-4: #796B52;
   --hair: #E0D2B5; --hair-2: #EBDEC0;
   --accent: #B45309; --accent-2: #D97706;
   --accent-dim: rgba(180,83,9,0.10); --accent-tint: rgba(180,83,9,0.18);
@@ -593,7 +593,7 @@
 [data-theme="lavender"] {
   --canvas: #F8F5FB; --canvas-2: #F1ECF7; --sidebar: #EEE7F4;
   --surface: #FFFFFF; --surface-2: #F1ECF7; --surface-3: #E1D6EE;
-  --ink: #1F1430; --ink-2: #463357; --ink-3: #715E84; --ink-4: #9E8FAD;
+  --ink: #1F1430; --ink-2: #463357; --ink-3: #715E84; --ink-4: #72677D;
   --hair: #D9C9E5; --hair-2: #E3D6EC;
   --accent: #7C3AED; --accent-2: #9333EA;
   --accent-dim: rgba(124,58,237,0.08); --accent-tint: rgba(124,58,237,0.16);
