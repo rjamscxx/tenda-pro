@@ -5,17 +5,26 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { useCountUp } from '@/hooks/useCountUp'
 import SizzleLogo from '@/components/ui/SizzleLogo'
-import FounderStory from '@/components/landing/FounderStory'
-import ComparisonTable from '@/components/landing/ComparisonTable'
-import FAQ from '@/components/landing/FAQ'
-import OwnerScene from '@/components/landing/OwnerScene'
 
 const HeroScene3D = dynamic(() => import('@/components/3d/HeroScene3D'), {
   ssr: false,
   loading: () => <div className="w-full h-full rounded-2xl bg-surface-2/40 animate-pulse" />,
+})
+
+// Below-fold landing sections — code-split so their JS doesn't block hydration.
+const OwnerScene = dynamic(() => import('@/components/landing/OwnerScene'), {
+  loading: () => <div className="min-h-[640px]" aria-hidden="true" />,
+})
+const ComparisonTable = dynamic(() => import('@/components/landing/ComparisonTable'), {
+  loading: () => <div className="min-h-[720px]" aria-hidden="true" />,
+})
+const FounderStory = dynamic(() => import('@/components/landing/FounderStory'), {
+  loading: () => <div className="min-h-[480px]" aria-hidden="true" />,
+})
+const FAQ = dynamic(() => import('@/components/landing/FAQ'), {
+  loading: () => <div className="min-h-[520px]" aria-hidden="true" />,
 })
 
 import {
@@ -187,7 +196,8 @@ function smoothScrollTo(href: string) {
   const target = document.getElementById(id)
   if (!target) return
   // 80px offset for the fixed navbar
-  gsap.to(window, { scrollTo: { y: target, offsetY: 80 }, duration: 0.85, ease: 'power2.inOut' })
+  const top = target.getBoundingClientRect().top + window.scrollY - 80
+  window.scrollTo({ top, behavior: 'smooth' })
 }
 
 export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage-dark' }: { isLoggedIn?: boolean; initialTheme?: string }) {
@@ -205,7 +215,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
 
   // GSAP animations
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
+    gsap.registerPlugin(ScrollTrigger)
     const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     if (noMotion) {
