@@ -11,9 +11,46 @@ const outfit = Outfit({
 })
 const geistMono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'] })
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sizzle.app'
+const TITLE = 'Sizzle — Know your margins. Run your kitchen.'
+const DESCRIPTION =
+  'The all-in-one operating dashboard for restaurant and café owners in the Philippines. Track sales, cost recipes, manage staff, and watch inventory — without spreadsheets.'
+
 export const metadata: Metadata = {
-  title: 'Sizzle',
-  description: 'All-in-one operating dashboard for restaurants and cafés.',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: TITLE,
+    template: '%s · Sizzle',
+  },
+  description: DESCRIPTION,
+  applicationName: 'Sizzle',
+  keywords: [
+    'restaurant management',
+    'café POS',
+    'food cost',
+    'recipe costing',
+    'inventory',
+    'Philippines',
+    'small business',
+    'restaurant analytics',
+  ],
+  category: 'business',
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    siteName: 'Sizzle',
+    title: TITLE,
+    description: DESCRIPTION,
+    url: '/',
+    locale: 'en_PH',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  robots: { index: true, follow: true },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
