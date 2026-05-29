@@ -11,6 +11,7 @@ import SizzleLogo from '@/components/ui/SizzleLogo'
 import FounderStory from '@/components/landing/FounderStory'
 import ComparisonTable from '@/components/landing/ComparisonTable'
 import FAQ from '@/components/landing/FAQ'
+import OwnerScene from '@/components/landing/OwnerScene'
 
 const HeroScene3D = dynamic(() => import('@/components/3d/HeroScene3D'), {
   ssr: false,
@@ -157,6 +158,19 @@ const THEMES = [
   { id: 'harvest',     label: 'Harvest',     canvas: '#14100A', accent: '#F59E0B' },
   { id: 'jade',        label: 'Jade',        canvas: '#071010', accent: '#10B981' },
   { id: 'slate',       label: 'Slate',       canvas: '#0E1017', accent: '#14B8A6' },
+  { id: 'wasabi',      label: 'Wasabi',      canvas: '#0B1010', accent: '#84CC16' },
+  { id: 'trattoria',   label: 'Trattoria',   canvas: '#15100C', accent: '#D97746' },
+  { id: 'mariachi',    label: 'Mariachi',    canvas: '#14080A', accent: '#FBBF24' },
+  { id: 'imperial',    label: 'Imperial',    canvas: '#100808', accent: '#EAB308' },
+  { id: 'saffron',     label: 'Saffron',     canvas: '#140C04', accent: '#F97316' },
+  { id: 'diner',       label: 'Diner',       canvas: '#080C14', accent: '#38BDF8' },
+  { id: 'halo',        label: 'Halo',        canvas: '#110A18', accent: '#C084FC' },
+  { id: 'boba',        label: 'Boba',        canvas: '#14100E', accent: '#F472B6' },
+  { id: 'cloud',       label: 'Cloud',       canvas: '#FAFAFA', accent: '#0EA5E9' },
+  { id: 'linen',       label: 'Linen',       canvas: '#FAF6EE', accent: '#92400E' },
+  { id: 'mint',        label: 'Mint',        canvas: '#F3FAF6', accent: '#047857' },
+  { id: 'sand',        label: 'Sand',        canvas: '#FBF7EE', accent: '#B45309' },
+  { id: 'lavender',    label: 'Lavender',    canvas: '#F8F5FB', accent: '#7C3AED' },
 ]
 
 const NAV_LINKS = [
@@ -180,7 +194,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
   const [scrolled, setScrolled]       = useState(false)
   const [activeTheme, setActiveTheme] = useState(initialTheme)
   const currentTheme = THEMES.find(t => t.id === activeTheme) ?? THEMES[0]
-  const { ref: themeCountRef, count: themeCountVal } = useCountUp(12)
+  const { ref: themeCountRef, count: themeCountVal } = useCountUp(25)
 
   // Nav scroll state
   useEffect(() => {
@@ -424,7 +438,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
       </nav>
 
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section id="hero-section" className="relative pt-36 pb-20 px-4 overflow-hidden">
+      <section id="hero-section" className="relative pt-28 lg:pt-36 pb-16 lg:pb-20 px-4 overflow-hidden">
 
         {/* depth-1: Glow blobs — animated, theme-reactive */}
         <div
@@ -474,7 +488,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
               style={{ opacity: 0 }}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse shrink-0" />
-              Built for restaurants &amp; cafés in the Philippines
+              Made in the Philippines · Looking for the first 100 cafés
             </div>
 
             <h1 className="text-[clamp(2.8rem,6vw,5rem)] font-semibold tracking-tighter leading-[0.92] text-ink">
@@ -493,6 +507,22 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
               cost every recipe, manage staff, and watch inventory — without spreadsheets.
             </p>
 
+            {/* Concrete outcome line */}
+            <div className="hero-sub-el flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-ink-3" style={{ opacity: 0 }}>
+              <span className="inline-flex items-center gap-2">
+                <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8.5L6.5 12 13 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Replaces 4 spreadsheets, a notebook, and 3 apps
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8.5L6.5 12 13 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Sale logged in under 30 seconds
+              </span>
+            </div>
+
             <div className="hero-ctas-el flex items-center gap-3 flex-wrap" style={{ opacity: 0 }}>
               {isLoggedIn ? (
                 <Link href="/dashboard" className="px-6 py-3 btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform">
@@ -501,7 +531,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
               ) : (
                 <>
                   <Link href="/signup" className="px-6 py-3 btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform">
-                    Start for free
+                    Start free
                   </Link>
                   <Link href="/login" className="px-6 py-3 rounded-xl text-sm font-medium text-ink-2 border border-hair hover:border-accent hover:text-ink transition-all duration-200">
                     Sign in
@@ -511,7 +541,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
             </div>
 
             <p className="hero-note-el text-xs text-ink-4" style={{ opacity: 0 }}>
-              No credit card required · Free forever for one business
+              Free forever for one business · No credit card · 14-day Pro features unlocked at signup
             </p>
           </div>
 
@@ -531,6 +561,42 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
               <span key={type} className="trust-item flex items-center gap-2 text-sm text-ink-4">
                 <span className="w-1 h-1 rounded-full bg-hair-2 shrink-0" />
                 {type}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Recently shipped — momentum strip (combats 'is this abandonware' fear) */}
+      <div className="momentum-strip py-7 px-4 border-b border-hair bg-surface/30 overflow-hidden">
+        <div className="max-w-6xl mx-auto flex items-center gap-6 flex-wrap justify-center">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-success/60 opacity-75 animate-ping" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
+            </span>
+            <span className="text-[10px] uppercase tracking-widest font-semibold text-success">Built in public</span>
+          </div>
+          <span className="hidden sm:inline text-xs text-ink-4">Just shipped:</span>
+          <div className="flex items-center gap-2 flex-wrap justify-center">
+            {[
+              'Multi-venue',
+              'AI Assistant',
+              'POS',
+              '25 themes',
+              'QR Menu',
+              'Inventory forecasting',
+              'Daily digest email',
+              'PayMongo billing',
+            ].map(item => (
+              <span
+                key={item}
+                className="inline-flex items-center gap-1.5 text-[11px] text-ink-3 bg-surface-2 border border-hair rounded-full px-2.5 py-1"
+              >
+                <svg width="9" height="9" viewBox="0 0 12 12" fill="none" className="text-accent shrink-0" aria-hidden="true">
+                  <path d="M2 6.5L5 9.5 10 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                {item}
               </span>
             ))}
           </div>
@@ -593,6 +659,9 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
           </div>
         </div>
       </section>
+
+      {/* ── How owners actually use Sizzle (animated tablet + phone scene) ──── */}
+      <OwnerScene />
 
       {/* ── Features ──────────────────────────────────────────────────────────── */}
       <section id="features" className="py-24 px-4 border-t border-hair">
@@ -745,7 +814,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
           <div ref={themeCountRef} className="px-8 py-10 lp-fade-up">
             <p className="text-[clamp(2rem,4vw,2.8rem)] font-semibold tracking-tighter text-accent leading-none tabular">{themeCountVal}</p>
             <p className="text-sm font-medium text-ink mt-3">restaurant-specific themes</p>
-            <p className="text-xs text-ink-4 mt-1">Matcha, Neon, Obsidian, Sakura, and 32 more</p>
+            <p className="text-xs text-ink-4 mt-1">Sage, Espresso, Trattoria, Boba, and 21 more</p>
           </div>
           <div className="px-8 py-10 md:pr-0 lp-fade-up">
             <p className="text-[clamp(2rem,4vw,2.8rem)] font-semibold tracking-tighter text-accent leading-none">Free</p>
@@ -865,7 +934,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
               <ul className="space-y-3">
                 {[
                   'Auto-generated — no extra setup required',
-                  'Matches your app theme (36 styles available)',
+                  'Matches your app theme (25 styles available)',
                   'Always live — updates when you edit your menu',
                   'Works on any phone, no app download needed',
                 ].map(item => (
@@ -1130,12 +1199,12 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
         <div className="max-w-6xl mx-auto space-y-12">
 
           <div className="lp-fade-up text-center">
-            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">12 themes</p>
+            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">25 themes</p>
             <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold tracking-tighter text-ink leading-tight">
               Your dashboard, your style.
             </h2>
             <p className="text-base text-ink-3 mt-4 leading-relaxed max-w-[52ch] mx-auto">
-              Click any theme below — the hero preview above updates live. Every color you see is exactly how your dashboard will look.
+              Click any theme below — the hero preview above updates live. 14 dark, 6 light, and 5 cuisine-inspired palettes. Every color you see is exactly how your dashboard will look.
             </p>
           </div>
 
@@ -1231,7 +1300,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
                 <p className="text-xs text-ink-4 mt-1">Forever. One business.</p>
               </div>
               <ul className="space-y-3 text-sm text-ink-3">
-                {['Sales & expense tracking', 'Menu with recipe costing', 'Inventory alerts', '6-month reports', 'All 12 themes'].map(f => (
+                {['Sales & expense tracking', 'Menu with recipe costing', 'Inventory alerts', '6-month reports', 'All 25 themes'].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
                     <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 14 14" fill="none">
                       <path d="M2.5 7.5L5.5 10.5 11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1246,7 +1315,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
                 </Link>
               ) : (
                 <Link href="/signup" className="block w-full py-2.5 text-center rounded-xl border border-hair text-sm font-semibold text-ink-2 hover:border-accent hover:text-ink transition-all duration-200">
-                  Create account
+                  Start free
                 </Link>
               )}
             </div>
@@ -1277,7 +1346,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
                 </Link>
               ) : (
                 <Link href="/signup" className="block w-full py-2.5 text-center btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform">
-                  Start free trial
+                  Start free — get 14-day Pro
                 </Link>
               )}
             </div>
@@ -1308,13 +1377,15 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
                 </Link>
               ) : (
                 <Link href="/signup" className="block w-full py-2.5 text-center rounded-xl text-sm font-semibold bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors active:scale-[0.98]">
-                  Start free trial
+                  Start free
                 </Link>
               )}
             </div>
 
           </div>
-          <p className="text-xs text-ink-4 mt-5">14-day Pro trial included with every new account. No credit card required.</p>
+          <p className="text-xs text-ink-4 mt-5">
+            Every new account starts on <span className="text-ink">Basic — free forever</span>. We unlock <span className="text-ink">14 days of Pro features</span> at signup so you can see the full picture. No credit card needed.
+          </p>
         </div>
       </section>
 
@@ -1346,7 +1417,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
                 ) : (
                   <>
                     <Link href="/signup" className="px-6 py-3 btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform">
-                      Create free account
+                      Start free
                     </Link>
                     <Link href="/login" className="text-sm text-ink-3 hover:text-ink transition-colors px-1 py-3">
                       Already have an account →
@@ -1358,6 +1429,9 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
           </div>
         </div>
       </section>
+
+      {/* ── Mobile sticky CTA bar ─────────────────────────────────────────────── */}
+      {!isLoggedIn && <MobileStickyBar scrolled={scrolled} />}
 
       {/* ── Footer ───────────────────────────────────────────────────────────── */}
       <footer className="border-t border-hair pt-14 pb-10 px-4">
@@ -1440,6 +1514,29 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
         </div>
       </footer>
 
+    </div>
+  )
+}
+
+// ── Sticky mobile CTA — only renders below md, slides up after hero ─────────
+function MobileStickyBar({ scrolled }: { scrolled: boolean }) {
+  return (
+    <div
+      className={`md:hidden fixed bottom-0 inset-x-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 border-t border-hair bg-canvas/85 backdrop-blur-xl transition-transform duration-400 ease-out ${
+        scrolled ? 'translate-y-0' : 'translate-y-full'
+      }`}
+      aria-hidden={!scrolled}
+    >
+      <Link
+        href="/signup"
+        className="flex items-center justify-center gap-2 w-full py-3 btn-primary rounded-xl text-sm font-semibold active:scale-[0.98] transition-transform shadow-[0_10px_30px_-12px_var(--accent)]"
+      >
+        Start free
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </Link>
+      <p className="text-[10px] text-ink-4 text-center mt-1.5">No credit card · Free forever · 14-day Pro at signup</p>
     </div>
   )
 }
