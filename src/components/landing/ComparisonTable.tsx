@@ -25,6 +25,7 @@ function Cell({ value, highlight }: { value: string; highlight?: boolean }) {
   if (value === 'yes') {
     return (
       <span
+        role="img"
         className={`inline-flex items-center justify-center w-6 h-6 rounded-full ${
           highlight ? 'bg-accent/20' : 'bg-success/10'
         }`}
@@ -45,6 +46,7 @@ function Cell({ value, highlight }: { value: string; highlight?: boolean }) {
   if (value === 'no') {
     return (
       <span
+        role="img"
         className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-3"
         aria-label="No"
       >
@@ -57,6 +59,7 @@ function Cell({ value, highlight }: { value: string; highlight?: boolean }) {
   if (value === 'partial') {
     return (
       <span
+        role="img"
         className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-warn/10"
         aria-label="Partial"
         title="Partial — possible but limited or extra setup required"

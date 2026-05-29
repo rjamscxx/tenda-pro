@@ -230,10 +230,8 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
         { y: 16, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.65, ease: 'expo.out', delay: 0.1 }
       )
-      gsap.fromTo('.hero-sub-el',
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, ease: 'expo.out', delay: 0.55 }
-      )
+      // .hero-sub-el is the LCP element — no entrance animation, no opacity gate
+      // so it paints at first contentful frame.
       gsap.fromTo('.hero-ctas-el',
         { y: 16, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.6, ease: 'expo.out', delay: 0.7 }
@@ -352,7 +350,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
   }, [])
 
   return (
-    <div className="min-h-[100dvh] bg-canvas overflow-x-hidden" data-theme={activeTheme}>
+    <main className="min-h-[100dvh] bg-canvas overflow-x-hidden" data-theme={activeTheme}>
 
       {/* ── Ambient theme gradient — fixed, full-page ──────────────────────── */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
@@ -502,13 +500,13 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
               <span className="hero-word inline-block" style={{ opacity: 0 }}>kitchen.</span>
             </h1>
 
-            <p className="hero-sub-el text-base text-ink-3 leading-relaxed max-w-[50ch]" style={{ opacity: 0 }}>
+            <p className="hero-sub-el text-base text-ink-3 leading-relaxed max-w-[50ch]">
               Sizzle gives restaurant and café owners a single dashboard to track sales, log expenses,
               cost every recipe, manage staff, and watch inventory — without spreadsheets.
             </p>
 
             {/* Concrete outcome line */}
-            <div className="hero-sub-el flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-ink-3" style={{ opacity: 0 }}>
+            <div className="hero-sub-el flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-ink-3">
               <span className="inline-flex items-center gap-2">
                 <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 16 16" fill="none">
                   <path d="M3 8.5L6.5 12 13 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1514,7 +1512,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
         </div>
       </footer>
 
-    </div>
+    </main>
   )
 }
 
@@ -1525,7 +1523,7 @@ function MobileStickyBar({ scrolled }: { scrolled: boolean }) {
       className={`md:hidden fixed bottom-0 inset-x-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 border-t border-hair bg-canvas/85 backdrop-blur-xl transition-transform duration-400 ease-out ${
         scrolled ? 'translate-y-0' : 'translate-y-full'
       }`}
-      aria-hidden={!scrolled}
+      inert={!scrolled || undefined}
     >
       <Link
         href="/signup"
