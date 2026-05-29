@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import { Outfit, Geist_Mono } from 'next/font/google'
-import { cookies } from 'next/headers'
 import './globals.css'
 import ServiceWorkerRegistrar from '@/components/layout/ServiceWorkerRegistrar'
 
@@ -66,33 +65,21 @@ export const viewport: Viewport = {
   minimumScale: 1,
 }
 
-const VALID_THEMES = [
-  'sage-dark', 'sage-light', 'espresso', 'citrus',
-  'crimson', 'ocean', 'rose', 'ember', 'midnight',
-  'harvest', 'jade', 'slate', 'terracotta', 'ivory',
-  'matcha', 'sakura', 'copper', 'storm', 'forest',
-  'lavender', 'dusk', 'neon', 'charcoal', 'sandstone',
-  'arctic', 'wine', 'tropical', 'saffron', 'indigo',
-  'mocha', 'pearl', 'russet', 'mint', 'coral',
-  'obsidian', 'clay',
-] as const
-type Theme = typeof VALID_THEMES[number]
+// Inline pre-paint theme bootstrap. Reads the sizzle-theme cookie and applies
+// it to <html data-theme=…> before the body paints. Keeps the layout fully
+// static (no cookies() server call → cache-control public + bf-cache works).
+const THEME_INIT = `(function(){try{var m=document.cookie.match(/(?:^|; )sizzle-theme=([^;]+)/);if(m){var v=decodeURIComponent(m[1]);if(/^[a-z][a-z0-9-]{0,30}$/.test(v))document.documentElement.setAttribute('data-theme',v);}}catch(e){}})();`
 
-function isValidTheme(t: string | undefined): t is Theme {
-  return VALID_THEMES.includes(t as Theme)
-}
-
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies()
-  const rawTheme = cookieStore.get('sizzle-theme')?.value
-  const theme: Theme = isValidTheme(rawTheme) ? rawTheme : 'sage-dark'
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      data-theme={theme}
       className={`${outfit.variable} ${geistMono.variable} h-full`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+      </head>
       <body className="h-full">
         {children}
         <ServiceWorkerRegistrar />

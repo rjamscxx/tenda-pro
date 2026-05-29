@@ -227,11 +227,25 @@ function smoothScrollTo(href: string) {
   window.scrollTo({ top, behavior: 'smooth' })
 }
 
-export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage-dark' }: { isLoggedIn?: boolean; initialTheme?: string }) {
+function readThemeCookie(): string {
+  if (typeof document === 'undefined') return 'sage-dark'
+  const m = document.cookie.match(/(?:^|; )sizzle-theme=([^;]+)/)
+  if (!m) return 'sage-dark'
+  const v = decodeURIComponent(m[1])
+  return /^[a-z][a-z0-9-]{0,30}$/.test(v) ? v : 'sage-dark'
+}
+
+export default function LandingClient() {
   const [scrolled, setScrolled]       = useState(false)
-  const [activeTheme, setActiveTheme] = useState(initialTheme)
+  const [activeTheme, setActiveTheme] = useState(readThemeCookie)
   const currentTheme = THEMES.find(t => t.id === activeTheme) ?? THEMES[0]
   const { ref: themeCountRef, count: themeCountVal } = useCountUp(25)
+  // Landing always renders as logged-out. The rare logged-in visitor who hits
+  // "/" sees the marketing CTAs; clicking "Start free" / "Sign in" routes
+  // them to /signup or /login, both of which server-check auth and redirect
+  // straight to /dashboard. Avoids running a Supabase auth client during
+  // hydration (heavy import + chase, big TBT hit).
+  const isLoggedIn = false
 
   // Nav scroll state
   useEffect(() => {
@@ -387,7 +401,7 @@ export default function LandingClient({ isLoggedIn = false, initialTheme = 'sage
   }, [])
 
   return (
-    <main className="min-h-[100dvh] bg-canvas overflow-x-hidden" data-theme={activeTheme}>
+    <main className="min-h-[100dvh] bg-canvas overflow-x-hidden" data-theme={activeTheme} suppressHydrationWarning>
 
       {/* ── Ambient theme gradient — fixed, full-page ──────────────────────── */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
