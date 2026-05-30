@@ -18,7 +18,8 @@ interface SaleInput {
   total: number
   note: string
   items: OrderItem[]
-  isPaid?: boolean // defaults true (most sales paid immediately); false = open tab
+  isPaid?: boolean        // defaults true (most sales paid immediately); false = open tab
+  customerName?: string   // for "calling out the order" UX, optional
 }
 
 export async function logSale(input: SaleInput) {
@@ -29,12 +30,13 @@ export async function logSale(input: SaleInput) {
     const [saleRow] = await tx
       .insert(sales)
       .values({
-        venueId: venue.id,
-        userId:  dbUser.id,
-        channel: input.channel,
-        total:   input.total,
-        note:    input.note.trim() || null,
-        isPaid:  input.isPaid ?? true,
+        venueId:      venue.id,
+        userId:       dbUser.id,
+        channel:      input.channel,
+        total:        input.total,
+        note:         input.note.trim() || null,
+        customerName: input.customerName?.trim() || null,
+        isPaid:       input.isPaid ?? true,
       })
       .returning({ id: sales.id })
 

@@ -108,9 +108,10 @@ export const sales = pgTable('sales', {
   userId:   uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
   soldAt:   timestamp('sold_at', { withTimezone: true }).notNull().defaultNow(),
   channel:  saleChannelEnum('channel').notNull().default('dine_in'),
-  total:    integer('total').notNull().default(0), // cents
-  note:     text('note'),
-  isPaid:   boolean('is_paid').notNull().default(true), // false = open tab / utang / pending GCash
+  total:        integer('total').notNull().default(0), // cents
+  note:         text('note'),
+  customerName: text('customer_name'),                  // shown on receipts so staff can call out the customer
+  isPaid:       boolean('is_paid').notNull().default(true), // false = open tab / utang / pending GCash
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
   index('sales_venue_idx').on(t.venueId),

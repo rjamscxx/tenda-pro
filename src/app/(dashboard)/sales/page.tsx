@@ -43,12 +43,13 @@ export default async function SalesPage() {
   const data = salesRows.map(s => {
     const items = itemsBySale.get(s.id) ?? []
     return {
-      id:      s.id,
-      channel: s.channel,
-      total:   s.total,
-      note:    s.note,
-      soldAt:  s.soldAt,
-      isPaid:  s.isPaid,
+      id:           s.id,
+      channel:      s.channel,
+      total:        s.total,
+      note:         s.note,
+      customerName: s.customerName,
+      soldAt:       s.soldAt,
+      isPaid:       s.isPaid,
       items: items.map(i => ({
         id:        i.itemId,
         dishName:  i.dishName,

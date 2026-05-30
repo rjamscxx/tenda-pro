@@ -50,6 +50,7 @@ interface ReceiptData {
   total: number
   note: string
   tableNum: string
+  customerName: string
   vatRegistered: boolean
 }
 
@@ -84,6 +85,7 @@ export default function POSClient({
   const [discountVal, setDiscountVal]   = useState('')
   const [serviceChargeVal, setServiceChargeVal] = useState('')
   const [tableNum, setTableNum] = useState('')
+  const [customerName, setCustomerName] = useState('')
 
   const ALL_CATEGORIES = '__all__'
   const categories  = [...new Set(dishes.map(d => d.category))].sort()
@@ -123,7 +125,7 @@ export default function POSClient({
     setOrder([]); setChannel('dine_in'); setNote('')
     setError(''); setCategory(categories[0] ?? '')
     setDiscountType('%'); setDiscountVal('')
-    setServiceChargeVal(''); setTableNum('')
+    setServiceChargeVal(''); setTableNum(''); setCustomerName('')
   }
 
   async function handleToggleSoldOut(dishId: string) {
@@ -139,6 +141,7 @@ export default function POSClient({
       total,
       note,
       items: order,
+      customerName: customerName.trim() || undefined,
     })
     if (result?.error) { setError(result.error); setLoading(false); return }
     const receiptData: ReceiptData = {
@@ -152,6 +155,7 @@ export default function POSClient({
       total,
       note,
       tableNum:      tableNum.trim(),
+      customerName:  customerName.trim(),
       vatRegistered,
     }
     toast('Sale logged')
@@ -405,6 +409,22 @@ export default function POSClient({
               </div>
             </div>
 
+            {/* Customer name — for "Order for Lina!" call-outs */}
+            <div>
+              <p className="text-[10px] text-ink-4 uppercase tracking-wider font-semibold mb-1.5">
+                Customer name <span className="normal-case font-normal">(optional)</span>
+              </p>
+              <input
+                type="text"
+                value={customerName}
+                onChange={e => setCustomerName(e.target.value)}
+                placeholder="Lina, Juan, Ate Pen…"
+                maxLength={48}
+                autoComplete="off"
+                className="w-full px-2.5 py-1.5 rounded-lg bg-canvas border border-hair text-[12px] text-ink placeholder:text-ink-4"
+              />
+            </div>
+
             {/* Table # + Note */}
             <div>
               {channel === 'dine_in' ? (
@@ -562,6 +582,13 @@ export default function POSClient({
                 <p className="text-base font-bold text-ink">{venueName}</p>
                 <p className="text-[11px] text-ink-4 mt-0.5 uppercase tracking-wider">Official Receipt</p>
               </div>
+
+              {receipt.customerName && (
+                <div className="rounded-lg bg-accent/10 border border-accent/30 px-3 py-2 text-center">
+                  <p className="text-[10px] uppercase tracking-widest text-accent/80 font-semibold">Order for</p>
+                  <p className="text-xl font-extrabold text-ink mt-0.5 leading-tight">{receipt.customerName}</p>
+                </div>
+              )}
 
               <div className="flex items-center justify-between text-xs text-ink-3">
                 <span className="font-mono font-semibold text-ink-2">{receipt.receiptNumber}</span>
