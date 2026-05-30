@@ -110,6 +110,7 @@ export const sales = pgTable('sales', {
   channel:  saleChannelEnum('channel').notNull().default('dine_in'),
   total:    integer('total').notNull().default(0), // cents
   note:     text('note'),
+  isPaid:   boolean('is_paid').notNull().default(true), // false = open tab / utang / pending GCash
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
   index('sales_venue_idx').on(t.venueId),

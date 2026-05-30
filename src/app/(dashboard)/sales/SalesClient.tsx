@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Modal from '@/components/ui/Modal'
-import { logSale, deleteSale, getSaleItems } from './actions'
+import { logSale, deleteSale, toggleSalePaid } from './actions'
 import { formatCurrency, parseCents } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
 import EmptyState from '@/components/ui/EmptyState'
@@ -29,40 +29,42 @@ const PERIODS = [
   { value: 'all',   label: 'All time' },
 ] as const
 
-type Period = typeof PERIODS[number]['value']
+type Period     = typeof PERIODS[number]['value']
+type PaidFilter = 'all' | 'paid' | 'unpaid'
+
+interface SaleItem {
+  id:        string
+  dishName:  string | null
+  qty:       number
+  unitPrice: number
+  unitCost:  number
+}
 
 interface Sale {
-  id: string
+  id:      string
   channel: string
-  total: number
-  note: string | null
-  soldAt: Date | string
-  itemCount: number
+  total:   number
+  note:    string | null
+  soldAt:  Date | string
+  isPaid:  boolean
+  items:   SaleItem[]
 }
 
 interface DishOption {
-  id: string
-  name: string
-  category: string
-  price: number
-  foodCost: number
-  soldOutDate: string | null
+  id:           string
+  name:         string
+  category:     string
+  price:        number
+  foodCost:     number
+  soldOutDate:  string | null
 }
 
 interface OrderItem {
-  dishId: string
-  dishName: string
-  qty: number
+  dishId:    string
+  dishName:  string
+  qty:       number
   unitPrice: number
-  unitCost: number
-}
-
-interface SaleItemRow {
-  id: string
-  dishName: string | null
-  qty: number
-  unitPrice: number
-  unitCost: number
+  unitCost:  number
 }
 
 function manilaDateOf(dt: Date | string) {
@@ -100,10 +102,10 @@ export default function SalesClient({
 }) {
   const toast = useToast()
   const searchParams = useSearchParams()
-  // Open via ?log=1 query is decided once at mount — lazy init avoids a setState-in-effect
   const [open, setOpen]       = useState(() => searchParams.get('log') === '1')
   const [loading, setLoading] = useState(false)
   const [pendingDelete, setPendingDelete] = useState<string | null>(null)
+  const [, startTransition]   = useTransition()
 
   const [error, setError]             = useState('')
   const [mode, setMode]               = useState<'items' | 'manual'>('items')
@@ -111,7 +113,7 @@ export default function SalesClient({
   const [note, setNote]               = useState('')
   const [manualTotal, setManualTotal] = useState('')
   const [order, setOrder]             = useState<OrderItem[]>([])
-  // Restore persisted period from localStorage on first render (client-only)
+  const [newSaleUnpaid, setNewSaleUnpaid] = useState(false)
   const [period, setPeriod]           = useState<Period>(() => {
     if (typeof window === 'undefined') return 'all'
     try {
@@ -120,11 +122,12 @@ export default function SalesClient({
     } catch {}
     return 'all'
   })
-  const [chanFilter, setChanFilter]   = useState<string>('all')
+  const [chanFilter, setChanFilter] = useState<string>('all')
+  const [paidFilter, setPaidFilter] = useState<PaidFilter>('all')
 
-  const [detailSale, setDetailSale]       = useState<Sale | null>(null)
-  const [detailItems, setDetailItems]     = useState<SaleItemRow[]>([])
-  const [detailLoading, setDetailLoading] = useState(false)
+  // Optimistic paid toggles: { saleId → true|false } overrides server state
+  // until the server action finishes + revalidation drops the override.
+  const [paidOverride, setPaidOverride] = useState<Record<string, boolean>>({})
 
   const orderTotal = order.reduce((s, i) => s + i.qty * i.unitPrice, 0)
   const categories = [...new Set(dishes.map(d => d.category))].sort()
@@ -148,7 +151,7 @@ export default function SalesClient({
 
   function resetModal() {
     setMode('items'); setChannel('dine_in'); setNote('')
-    setManualTotal(''); setOrder([]); setError('')
+    setManualTotal(''); setOrder([]); setError(''); setNewSaleUnpaid(false)
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -161,53 +164,81 @@ export default function SalesClient({
       total,
       note,
       items: mode === 'items' ? order : [],
+      isPaid: !newSaleUnpaid,
     })
     if (result?.error) { setError(result.error); setLoading(false); return }
     setOpen(false); resetModal(); setLoading(false)
-    toast('Sale logged')
+    toast(newSaleUnpaid ? 'Sale logged · marked unpaid' : 'Sale logged')
   }
 
-  async function openDetail(sale: Sale) {
-    setDetailSale(sale)
-    setDetailItems([])
-    setDetailLoading(true)
-    const rows = await getSaleItems(sale.id)
-    setDetailItems(rows as SaleItemRow[])
-    setDetailLoading(false)
+  function handleTogglePaid(saleId: string, currentPaid: boolean) {
+    const nextPaid = !currentPaid
+    setPaidOverride(prev => ({ ...prev, [saleId]: nextPaid }))
+    startTransition(() => {
+      toggleSalePaid(saleId).then(() => {
+        toast(nextPaid ? 'Marked paid' : 'Marked unpaid', 'info')
+      }).catch(() => {
+        setPaidOverride(prev => {
+          const { [saleId]: _, ...rest } = prev
+          return rest
+        })
+        toast('Failed to update', 'error')
+      })
+    })
   }
 
   function exportCSV(rows: Sale[]) {
-    const header = 'Date,Time,Channel,Total,Items,Note'
+    const header = 'Date,Time,Channel,Total,Items,Paid,Note'
     const lines  = rows.map(s => {
       const dt   = new Date(s.soldAt)
       const date = dt.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' })
       const time = dt.toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit' })
+      const paid = (paidOverride[s.id] ?? s.isPaid) ? 'Yes' : 'No'
       return [
         date, time,
         CHANNELS.find(c => c.value === s.channel)?.label ?? s.channel,
         (s.total / 100).toFixed(2),
-        s.itemCount,
+        s.items.length,
+        paid,
         s.note ?? '',
       ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')
     })
     downloadCSV('sales.csv', [header, ...lines].join('\r\n'))
   }
 
-  const byPeriod    = filterByPeriod(sales, period)
-  const displayed   = chanFilter === 'all' ? byPeriod : byPeriod.filter(s => s.channel === chanFilter)
+  const byPeriod  = filterByPeriod(sales, period)
+  const byChan    = chanFilter === 'all' ? byPeriod : byPeriod.filter(s => s.channel === chanFilter)
+  const displayed = paidFilter === 'all'
+    ? byChan
+    : byChan.filter(s => {
+        const paid = paidOverride[s.id] ?? s.isPaid
+        return paidFilter === 'paid' ? paid : !paid
+      })
   const periodTotal = displayed.reduce((s, r) => s + r.total, 0)
+  const unpaidTotal = byPeriod.reduce((s, r) => {
+    const paid = paidOverride[r.id] ?? r.isPaid
+    return paid ? s : s + r.total
+  }, 0)
   const periodLabel = PERIODS.find(p => p.value === period)?.label ?? 'All time'
 
   return (
     <>
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <div className="px-6 py-5 flex items-center justify-between border-b border-hair shrink-0">
+      <div className="px-6 py-5 flex items-center justify-between border-b border-hair shrink-0 flex-wrap gap-3">
         <div>
           <h1 className="text-xl font-semibold text-ink tracking-tight">Sales</h1>
           <p className="text-sm text-ink-4 mt-0.5">
             <span className="tabular">{displayed.length}</span> entries
             <span className="mx-1.5 text-hair-2">·</span>
             {periodLabel}: <span className="tabular text-accent font-medium">{formatCurrency(periodTotal)}</span>
+            {unpaidTotal > 0 && (
+              <>
+                <span className="mx-1.5 text-hair-2">·</span>
+                <span className="text-warn font-medium">
+                  {formatCurrency(unpaidTotal)} unpaid
+                </span>
+              </>
+            )}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -226,7 +257,7 @@ export default function SalesClient({
         </div>
       </div>
 
-      {/* ── Period + Channel filter ──────────────────────────────────────────── */}
+      {/* ── Period + Channel + Paid filters ─────────────────────────────────── */}
       <div className="px-6 py-2.5 border-b border-hair flex items-center gap-1.5 flex-wrap shrink-0">
         {PERIODS.map(p => (
           <button
@@ -250,7 +281,7 @@ export default function SalesClient({
               : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink-2'
           }`}
         >
-          All
+          All channels
         </button>
         {CHANNELS.map(c => (
           <button
@@ -265,12 +296,26 @@ export default function SalesClient({
             {c.label}
           </button>
         ))}
+        <span className="w-px h-4 bg-hair mx-0.5 shrink-0" />
+        {(['all','paid','unpaid'] as const).map(pf => (
+          <button
+            key={pf}
+            onClick={() => setPaidFilter(pf)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              paidFilter === pf
+                ? (pf === 'unpaid' ? 'bg-warn text-canvas' : 'bg-accent text-canvas')
+                : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink-2'
+            }`}
+          >
+            {pf === 'all' ? 'All payment' : pf[0].toUpperCase() + pf.slice(1)}
+          </button>
+        ))}
       </div>
 
-      {/* ── Sales list ──────────────────────────────────────────────────────── */}
+      {/* ── Sales list (cards with inline items) ────────────────────────────── */}
       <div className="flex-1 overflow-y-auto min-h-0">
         {displayed.length === 0 ? (
-          period === 'all' ? (
+          period === 'all' && paidFilter === 'all' && chanFilter === 'all' ? (
             <EmptyState
               icon={<svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M3 19L9 11l5 5 8-10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>}
               title="No sales yet"
@@ -282,56 +327,57 @@ export default function SalesClient({
             <EmptyState
               compact
               icon={<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 15L7 8l4 4 6-8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-              title="No sales in this period"
-              body="Try a wider date range or switch to All time."
+              title="No sales match these filters"
+              body="Try a wider date range, different channel, or change payment filter."
             />
           )
         ) : (
-          <table className="w-full text-sm">
-            <thead className="sticky top-0 bg-canvas/90 backdrop-blur-sm z-10">
-              <tr className="border-b border-hair">
-                <th className="px-6 py-3 text-left text-[11px] font-medium text-ink-4 uppercase tracking-wider">Date & Time</th>
-                <th className="px-6 py-3 text-left text-[11px] font-medium text-ink-4 uppercase tracking-wider">Channel</th>
-                <th className="px-6 py-3 text-right text-[11px] font-medium text-ink-4 uppercase tracking-wider tabular">Total</th>
-                <th className="px-6 py-3 text-left text-[11px] font-medium text-ink-4 uppercase tracking-wider">Note / Items</th>
-                <th className="px-3 py-3 w-8" />
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-hair">
-              {displayed.map(sale => (
-                <tr key={sale.id} onClick={() => openDetail(sale)} className="group hover:bg-surface-2 transition-colors border-l-2 border-l-transparent hover:border-l-accent cursor-pointer">
-                  <td className="px-6 py-3.5 text-ink-3 tabular whitespace-nowrap text-sm">
-                    {new Date(sale.soldAt).toLocaleString('en-PH', {
-                      timeZone: 'Asia/Manila', month: 'short', day: 'numeric',
-                      hour: '2-digit', minute: '2-digit',
-                    })}
-                  </td>
-                  <td className="px-6 py-3.5">
+          <div className="divide-y divide-hair">
+            {displayed.map(sale => {
+              const paid = paidOverride[sale.id] ?? sale.isPaid
+              return (
+                <article key={sale.id} className={`px-6 py-4 transition-colors hover:bg-surface-2/40 ${!paid ? 'bg-warn/[0.03]' : ''}`}>
+                  {/* Header row */}
+                  <header className="flex items-center gap-3 flex-wrap">
+                    <span className="text-sm text-ink-3 tabular whitespace-nowrap">
+                      {new Date(sale.soldAt).toLocaleString('en-PH', {
+                        timeZone: 'Asia/Manila', month: 'short', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit',
+                      })}
+                    </span>
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${CHANNEL_BADGE[sale.channel] ?? 'bg-surface-3 text-ink-3'}`}>
                       {CHANNELS.find(c => c.value === sale.channel)?.label ?? sale.channel}
                     </span>
-                  </td>
-                  <td className="px-6 py-3.5 text-right tabular font-semibold text-accent">{formatCurrency(sale.total)}</td>
-                  <td className="px-6 py-3.5 text-ink-3 max-w-xs truncate text-sm">
-                    {sale.itemCount > 0 ? (
-                      <span className="inline-flex items-center gap-1.5">
-                        <span className="text-xs px-1.5 py-0.5 rounded bg-accent/10 text-accent font-medium">
-                          {sale.itemCount} item{sale.itemCount !== 1 ? 's' : ''}
-                        </span>
-                        {sale.note && <span className="text-ink-4">· {sale.note}</span>}
-                      </span>
-                    ) : (
-                      sale.note ?? <span className="text-ink-4">—</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-3.5">
+
+                    {/* Paid/Unpaid toggle */}
+                    <button
+                      type="button"
+                      onClick={() => handleTogglePaid(sale.id, paid)}
+                      title="Toggle paid"
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold border transition-colors ${
+                        paid
+                          ? 'bg-success/15 text-success border-success/30 hover:bg-success/25'
+                          : 'bg-warn/15 text-warn border-warn/30 hover:bg-warn/25'
+                      }`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${paid ? 'bg-success' : 'bg-warn animate-pulse'}`} />
+                      {paid ? 'Paid' : 'Unpaid'}
+                    </button>
+
+                    <div className="flex-1 min-w-0" />
+
+                    <span className="tabular font-semibold text-accent text-base whitespace-nowrap">
+                      {formatCurrency(sale.total)}
+                    </span>
+
                     <button
                       onClick={(e) => { e.stopPropagation(); handleDelete(sale.id) }}
-                      className={`transition-all p-1 rounded text-xs font-semibold ${
+                      className={`transition-colors p-1 rounded text-xs font-semibold ${
                         pendingDelete === sale.id
-                          ? 'opacity-100 text-danger'
-                          : 'opacity-0 group-hover:opacity-100 text-ink-4 hover:text-danger'
+                          ? 'text-danger'
+                          : 'text-ink-4 hover:text-danger'
                       }`}
+                      aria-label="Delete sale"
                     >
                       {pendingDelete === sale.id ? 'Confirm?' : (
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -339,20 +385,54 @@ export default function SalesClient({
                         </svg>
                       )}
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr className="border-t border-hair bg-surface-2/50">
-                <td className="px-6 py-3 text-xs text-ink-4 font-medium" colSpan={2}>
-                  {periodLabel} ({displayed.length} {displayed.length === 1 ? 'entry' : 'entries'})
-                </td>
-                <td className="px-6 py-3 text-right tabular font-semibold text-ink">{formatCurrency(periodTotal)}</td>
-                <td colSpan={2} />
-              </tr>
-            </tfoot>
-          </table>
+                  </header>
+
+                  {/* Items breakdown — inline, no click required */}
+                  {sale.items.length > 0 ? (
+                    <div className="mt-3 rounded-lg border border-hair overflow-hidden bg-surface/40">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="bg-surface-2/50">
+                            <th className="px-3 py-1.5 text-left text-[10px] font-semibold text-ink-4 uppercase tracking-wider">Item</th>
+                            <th className="px-3 py-1.5 text-center text-[10px] font-semibold text-ink-4 uppercase tracking-wider w-14">Qty</th>
+                            <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-ink-4 uppercase tracking-wider w-24">Price</th>
+                            <th className="px-3 py-1.5 text-right text-[10px] font-semibold text-ink-4 uppercase tracking-wider w-28">Subtotal</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-hair">
+                          {sale.items.map(item => (
+                            <tr key={item.id}>
+                              <td className="px-3 py-1.5 text-ink">
+                                {item.dishName ?? <span className="text-ink-4 italic">deleted item</span>}
+                              </td>
+                              <td className="px-3 py-1.5 text-center tabular text-ink-3">{item.qty}</td>
+                              <td className="px-3 py-1.5 text-right tabular text-ink-3">{formatCurrency(item.unitPrice)}</td>
+                              <td className="px-3 py-1.5 text-right tabular font-medium text-ink">{formatCurrency(item.qty * item.unitPrice)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-xs text-ink-4 italic">Manual total · no item breakdown</p>
+                  )}
+
+                  {sale.note && (
+                    <p className="mt-2 text-xs text-ink-4">
+                      <span className="text-ink-3 font-medium">Note:</span> {sale.note}
+                    </p>
+                  )}
+                </article>
+              )
+            })}
+            {/* Period total footer */}
+            <div className="px-6 py-3 bg-surface-2/40 flex items-center justify-between text-xs">
+              <span className="text-ink-4 font-medium">
+                {periodLabel} · {displayed.length} {displayed.length === 1 ? 'entry' : 'entries'}
+              </span>
+              <span className="tabular font-semibold text-ink">{formatCurrency(periodTotal)}</span>
+            </div>
+          </div>
         )}
       </div>
 
@@ -481,6 +561,19 @@ export default function SalesClient({
             </div>
           </div>
 
+          {/* Unpaid toggle for open tabs / utang / pending GCash */}
+          <label className="flex items-center gap-2.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={newSaleUnpaid}
+              onChange={e => setNewSaleUnpaid(e.target.checked)}
+              className="w-4 h-4 rounded border-hair bg-canvas text-warn focus:ring-warn/30 cursor-pointer"
+            />
+            <span className="text-sm text-ink-3">
+              Mark as <span className="text-warn font-medium">unpaid</span> <span className="text-ink-4">(open tab / utang / pending GCash)</span>
+            </span>
+          </label>
+
           {error && <p className="text-sm text-danger">{error}</p>}
 
           <button
@@ -491,70 +584,6 @@ export default function SalesClient({
             {loading ? 'Saving…' : `Save sale${mode === 'items' && orderTotal > 0 ? ` · ${formatCurrency(orderTotal)}` : ''}`}
           </button>
         </form>
-      </Modal>
-
-      {/* ── Sale Detail Modal ────────────────────────────────────────────────── */}
-      <Modal
-        open={!!detailSale}
-        onClose={() => setDetailSale(null)}
-        title="Sale Detail"
-      >
-        {detailSale && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-sm text-ink-3 tabular">
-                {new Date(detailSale.soldAt).toLocaleString('en-PH', {
-                  timeZone: 'Asia/Manila', month: 'short', day: 'numeric',
-                  year: 'numeric', hour: '2-digit', minute: '2-digit',
-                })}
-              </span>
-              <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${CHANNEL_BADGE[detailSale.channel] ?? 'bg-surface-3 text-ink-3'}`}>
-                {CHANNELS.find(c => c.value === detailSale.channel)?.label ?? detailSale.channel}
-              </span>
-            </div>
-
-            {detailLoading ? (
-              <div className="py-8 text-center text-sm text-ink-4">Loading items…</div>
-            ) : detailItems.length === 0 ? (
-              <div className="py-6 text-center text-sm text-ink-4 border border-hair rounded-lg">
-                No item breakdown for this sale.
-              </div>
-            ) : (
-              <div className="border border-hair rounded-lg overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead className="bg-surface-2">
-                    <tr>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-ink-4 uppercase tracking-wider">Item</th>
-                      <th className="px-3 py-2 text-center text-[10px] font-semibold text-ink-4 uppercase tracking-wider">Qty</th>
-                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-ink-4 uppercase tracking-wider">Price</th>
-                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-ink-4 uppercase tracking-wider">Subtotal</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-hair">
-                    {detailItems.map(item => (
-                      <tr key={item.id}>
-                        <td className="px-3 py-2.5 text-ink">{item.dishName ?? <span className="text-ink-4 italic">deleted item</span>}</td>
-                        <td className="px-3 py-2.5 text-center tabular text-ink-3">{item.qty}</td>
-                        <td className="px-3 py-2.5 text-right tabular text-ink-3">{formatCurrency(item.unitPrice)}</td>
-                        <td className="px-3 py-2.5 text-right tabular font-medium text-ink">{formatCurrency(item.qty * item.unitPrice)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr className="bg-surface-2 border-t border-hair">
-                      <td className="px-3 py-2 text-xs font-semibold text-ink-3 uppercase tracking-wider" colSpan={3}>Total</td>
-                      <td className="px-3 py-2 text-right tabular font-bold text-accent">{formatCurrency(detailSale.total)}</td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            )}
-
-            {detailSale.note && (
-              <p className="text-xs text-ink-4 border-t border-hair pt-2">Note: {detailSale.note}</p>
-            )}
-          </div>
-        )}
       </Modal>
     </>
   )

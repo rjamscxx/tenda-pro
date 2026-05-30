@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import { sales, dishes, saleItems } from '@/lib/db/schema'
-import { eq, desc, and, asc, inArray, sql } from 'drizzle-orm'
+import { eq, desc, and, asc, inArray } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import SalesClient from './SalesClient'
 
@@ -18,24 +18,46 @@ export default async function SalesPage() {
     }),
   ])
 
-  // Count saleItems per sale for table display
-  const itemCounts = salesRows.length > 0
+  // Fetch all sale items in one join so each row can render its breakdown
+  // inline without an additional click.
+  const itemRows = salesRows.length > 0
     ? await db
-        .select({ saleId: saleItems.saleId, count: sql<string>`count(*)::text` })
+        .select({
+          saleId:    saleItems.saleId,
+          itemId:    saleItems.id,
+          dishName:  dishes.name,
+          qty:       saleItems.qty,
+          unitPrice: saleItems.unitPrice,
+          unitCost:  saleItems.unitCost,
+        })
         .from(saleItems)
+        .leftJoin(dishes, eq(dishes.id, saleItems.dishId))
         .where(inArray(saleItems.saleId, salesRows.map(s => s.id)))
-        .groupBy(saleItems.saleId)
     : []
-  const itemCountMap = new Map(itemCounts.map(r => [r.saleId, Number(r.count)]))
+  const itemsBySale = new Map<string, typeof itemRows>()
+  for (const row of itemRows) {
+    if (!itemsBySale.has(row.saleId)) itemsBySale.set(row.saleId, [])
+    itemsBySale.get(row.saleId)!.push(row)
+  }
 
-  const data = salesRows.map(s => ({
-    id:        s.id,
-    channel:   s.channel,
-    total:     s.total,
-    note:      s.note,
-    soldAt:    s.soldAt,
-    itemCount: itemCountMap.get(s.id) ?? 0,
-  }))
+  const data = salesRows.map(s => {
+    const items = itemsBySale.get(s.id) ?? []
+    return {
+      id:      s.id,
+      channel: s.channel,
+      total:   s.total,
+      note:    s.note,
+      soldAt:  s.soldAt,
+      isPaid:  s.isPaid,
+      items: items.map(i => ({
+        id:        i.itemId,
+        dishName:  i.dishName,
+        qty:       i.qty,
+        unitPrice: i.unitPrice,
+        unitCost:  i.unitCost,
+      })),
+    }
+  })
 
   // Precompute food cost per dish from recipe
   const dishOptions = dishRows.map(d => {

@@ -18,6 +18,7 @@ interface SaleInput {
   total: number
   note: string
   items: OrderItem[]
+  isPaid?: boolean // defaults true (most sales paid immediately); false = open tab
 }
 
 export async function logSale(input: SaleInput) {
@@ -33,6 +34,7 @@ export async function logSale(input: SaleInput) {
         channel: input.channel,
         total:   input.total,
         note:    input.note.trim() || null,
+        isPaid:  input.isPaid ?? true,
       })
       .returning({ id: sales.id })
 
@@ -98,6 +100,16 @@ export async function getSaleItems(saleId: string) {
     .leftJoin(dishes, eq(saleItems.dishId, dishes.id))
     .innerJoin(sales, eq(saleItems.saleId, sales.id))
     .where(and(eq(saleItems.saleId, saleId), eq(sales.venueId, venue.id)))
+}
+
+export async function toggleSalePaid(saleId: string) {
+  const { venue } = await requireVenue()
+  await db.execute(sql`
+    UPDATE sales SET is_paid = NOT is_paid
+    WHERE id = ${saleId} AND venue_id = ${venue.id}
+  `)
+  revalidatePath('/sales')
+  revalidatePath('/dashboard')
 }
 
 export async function deleteSale(saleId: string) {
