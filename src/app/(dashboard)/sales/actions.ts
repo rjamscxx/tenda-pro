@@ -114,6 +114,25 @@ export async function toggleSalePaid(saleId: string) {
   revalidatePath('/dashboard')
 }
 
+/**
+ * Mark every currently-unpaid sale in this venue as paid in one round-trip.
+ * Used by the "Settle all unpaid" header button on the sales screen and
+ * during end-of-day close-out.
+ */
+export async function settleAllUnpaid() {
+  const { venue } = await requireVenue()
+  const res = await db.execute(sql`
+    UPDATE sales SET is_paid = true
+    WHERE venue_id = ${venue.id} AND is_paid = false
+    RETURNING id
+  `)
+  revalidatePath('/sales')
+  revalidatePath('/dashboard')
+  revalidatePath('/close-day')
+  // postgres-js returns rows on the array; drizzle wraps it differently
+  return { settled: Array.isArray(res) ? res.length : (res as { rowCount?: number }).rowCount ?? 0 }
+}
+
 export async function deleteSale(saleId: string) {
   const { venue } = await requireVenue()
 

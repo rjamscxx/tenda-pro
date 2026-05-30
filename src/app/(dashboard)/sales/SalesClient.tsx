@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Modal from '@/components/ui/Modal'
-import { logSale, deleteSale, toggleSalePaid } from './actions'
+import { logSale, deleteSale, toggleSalePaid, settleAllUnpaid } from './actions'
 import { formatCurrency, parseCents } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
 import EmptyState from '@/components/ui/EmptyState'
@@ -172,6 +172,31 @@ export default function SalesClient({
     toast(newSaleUnpaid ? 'Sale logged · marked unpaid' : 'Sale logged')
   }
 
+  function handleSettleAll() {
+    const unpaidIds = byPeriod.filter(s => !(paidOverride[s.id] ?? s.isPaid)).map(s => s.id)
+    if (!unpaidIds.length) return
+    if (!confirm(`Mark ${unpaidIds.length} unpaid sale${unpaidIds.length === 1 ? '' : 's'} as paid (${formatCurrency(unpaidTotal)})?`)) return
+    // Optimistic: flip every unpaid override to true
+    setPaidOverride(prev => {
+      const next = { ...prev }
+      for (const id of unpaidIds) next[id] = true
+      return next
+    })
+    startTransition(() => {
+      settleAllUnpaid().then(({ settled }) => {
+        toast(`Settled ${settled} sale${settled === 1 ? '' : 's'}`)
+      }).catch(() => {
+        // Roll back overrides
+        setPaidOverride(prev => {
+          const next = { ...prev }
+          for (const id of unpaidIds) delete next[id]
+          return next
+        })
+        toast('Settle all failed', 'error')
+      })
+    })
+  }
+
   function handleTogglePaid(saleId: string, currentPaid: boolean) {
     const nextPaid = !currentPaid
     setPaidOverride(prev => ({ ...prev, [saleId]: nextPaid }))
@@ -243,6 +268,18 @@ export default function SalesClient({
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {unpaidTotal > 0 && (
+            <button
+              onClick={() => handleSettleAll()}
+              className="px-3 py-2 rounded-lg bg-warn/15 border border-warn/40 text-warn hover:bg-warn/25 text-xs font-semibold transition-colors flex items-center gap-1.5"
+              title="Mark every unpaid sale as paid"
+            >
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 6.5l3 3 6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Settle all ({formatCurrency(unpaidTotal)})
+            </button>
+          )}
           <button
             onClick={() => exportCSV(displayed)}
             className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors flex items-center gap-1.5"
@@ -359,11 +396,12 @@ export default function SalesClient({
                       {CHANNELS.find(c => c.value === sale.channel)?.label ?? sale.channel}
                     </span>
 
-                    {/* Paid/Unpaid toggle */}
+                    {/* Paid/Unpaid status — toggle on click. Unpaid rows also
+                        get a dedicated "Mark paid" CTA next to it for speed. */}
                     <button
                       type="button"
                       onClick={() => handleTogglePaid(sale.id, paid)}
-                      title="Toggle paid"
+                      title={paid ? 'Tap to mark as unpaid' : 'Tap to mark as paid'}
                       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold border transition-colors ${
                         paid
                           ? 'bg-success/15 text-success border-success/30 hover:bg-success/25'
@@ -373,6 +411,18 @@ export default function SalesClient({
                       <span className={`w-1.5 h-1.5 rounded-full ${paid ? 'bg-success' : 'bg-warn animate-pulse'}`} />
                       {paid ? 'Paid' : 'Unpaid'}
                     </button>
+                    {!paid && (
+                      <button
+                        type="button"
+                        onClick={() => handleTogglePaid(sale.id, paid)}
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-accent text-canvas hover:bg-accent-2 transition-colors"
+                      >
+                        <svg width="11" height="11" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                          <path d="M2 6.5l3 3 6-6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        Mark paid
+                      </button>
+                    )}
 
                     <div className="flex-1 min-w-0" />
 
