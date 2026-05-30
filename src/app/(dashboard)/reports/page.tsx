@@ -30,11 +30,16 @@ export default async function ReportsPage() {
   const nowManila = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Manila' }))
   const currentMonth = nowManila.toLocaleDateString('en-CA').slice(0, 7)
 
-  // Build 6-month window oldest → newest
+  // Build 6-month window oldest → newest using safe month arithmetic.
+  // (Avoids setMonth's day-overflow: e.g. May 30 → setMonth(1) lands in
+  //  March because Feb has only 28 days, which used to produce "2026-03"
+  //  twice — once as the Feb slot, once as the real March slot.)
+  const baseTotalMonths = nowManila.getFullYear() * 12 + nowManila.getMonth()
   const months = Array.from({ length: 6 }, (_, i) => {
-    const d = new Date(nowManila)
-    d.setMonth(d.getMonth() - (5 - i))
-    return d.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }).slice(0, 7)
+    const t     = baseTotalMonths - (5 - i)
+    const year  = Math.floor(t / 12)
+    const month = ((t % 12) + 12) % 12 // safe for negatives
+    return `${year}-${String(month + 1).padStart(2, '0')}`
   })
 
   const sixMonthsAgo = new Date(`${months[0]}-01T00:00:00+08:00`)
