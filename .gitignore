@@ -48,4 +48,10 @@ screenshot-app.mjs
 sizzle-design/
 public/screenshots/
 
+# Local-only smoke artefacts (regenerable via scratch-simulate-day.mjs + Playwright)
+demo-*.png
+tablet-*.png
+dev.log
+sim.out
+
 .vercel
