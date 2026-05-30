@@ -90,6 +90,7 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
   const [entries, setEntries]     = useState<PayEntry[]>([])
   const [shiftFilled, setShiftFilled] = useState<Set<string>>(new Set())
   const [pullingShifts, startPullingShifts] = useTransition()
+  const [overlapWarning, setOverlapWarning] = useState<string | null>(null)
 
   const totalGross      = useMemo(() => entries.reduce((s, e) => s + Math.round((parseFloat(e.grossPay) || 0) * 100), 0), [entries])
   const totalDeductions = useMemo(() => entries.reduce((s, e) => s + Math.round((parseFloat(e.deductions) || 0) * 100), 0), [entries])
@@ -106,10 +107,23 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
     )
     setPeriodStart(() => { const d = new Date(); d.setDate(1); return d.toISOString().slice(0, 10) })
     setPeriodEnd(todayISO())
-    setRunNote(''); setError(''); setShiftFilled(new Set()); setModalOpen(true)
+    setRunNote(''); setError(''); setShiftFilled(new Set()); setOverlapWarning(null); setModalOpen(true)
   }
 
   function closeModal() { setModalOpen(false); setError('') }
+
+  // Period edits after a pull invalidate the pre-fill — clear badges +
+  // amounts so Lina doesn't ship payroll using the old window's numbers.
+  function handlePeriodChange(field: 'start' | 'end', value: string) {
+    if (field === 'start') setPeriodStart(value)
+    else                   setPeriodEnd(value)
+    if (shiftFilled.size > 0) {
+      setShiftFilled(new Set())
+      setEntries(prev => prev.map(e => ({ ...e, daysWorked: '', grossPay: '' })))
+      setError('Period changed — click "Pull from shifts" again to refresh the numbers.')
+    }
+    setOverlapWarning(null)
+  }
 
   function updateEntry(idx: number, field: keyof PayEntry, value: string) {
     setEntries(prev => {
@@ -142,7 +156,7 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
 
   function handlePullFromShifts() {
     if (!periodStart || !periodEnd) { setError('Select a pay period first'); return }
-    setError('')
+    setError(''); setOverlapWarning(null)
     startPullingShifts(async () => {
       const res = await summarizeShiftsForPeriod(periodStart, periodEnd)
       if (res.error) { setError(res.error); return }
@@ -164,8 +178,17 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
         }
       }))
       setShiftFilled(filled)
+
+      // Surface overlap warning even when no shifts were touched — a
+      // bare-period pull still risks duplicating a prior run.
+      if ((res.overlaps?.length ?? 0) > 0) {
+        const w = res.overlaps![0]
+        const more = res.overlaps!.length > 1 ? ` (+${res.overlaps!.length - 1} more)` : ''
+        setOverlapWarning(`Period overlaps a saved run (${w.periodStart} – ${w.periodEnd})${more}. Shifts in the overlap have already been paid.`)
+      }
+
       if (touched === 0) {
-        setError('No logged shifts in this period. Log shifts first or fill rows manually.')
+        setError('No billable shifts in this period. Log shifts first or fill rows manually.')
       } else {
         toast(`Pulled ${touched} ${touched === 1 ? 'employee' : 'employees'} from shifts`)
       }
@@ -391,7 +414,7 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
               <input
                 type="date"
                 value={periodStart}
-                onChange={e => setPeriodStart(e.target.value)}
+                onChange={e => handlePeriodChange('start', e.target.value)}
                 className="input-field w-full"
               />
             </div>
@@ -400,7 +423,7 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
               <input
                 type="date"
                 value={periodEnd}
-                onChange={e => setPeriodEnd(e.target.value)}
+                onChange={e => handlePeriodChange('end', e.target.value)}
                 className="input-field w-full"
               />
             </div>
@@ -434,6 +457,15 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
             </svg>
             {pullingShifts ? 'Pulling shifts…' : 'Pull from shifts in this period'}
           </button>
+
+          {overlapWarning && (
+            <div
+              role="alert"
+              className="rounded-lg border border-warn/40 bg-warn/10 px-3 py-2 text-[11px] leading-snug text-warn"
+            >
+              <span className="font-semibold">Heads up:</span> {overlapWarning}
+            </div>
+          )}
 
           {/* Employee pay entries */}
           <div>

@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db'
 import { payrollRuns, payrollItems, expenses, shifts } from '@/lib/db/schema'
-import { and, eq, gte, lte, sql } from 'drizzle-orm'
+import { and, eq, gte, lte, ne, sql } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { revalidatePath } from 'next/cache'
 
@@ -68,9 +68,12 @@ export async function createPayrollRun(input: PayrollRunInput): Promise<{ error?
 
 /**
  * Aggregate logged shifts in [periodStart, periodEnd] (inclusive) per
- * employee. Returns billable-hours (hours + ot − late, present/late only)
- * plus the snapshotted gross_pay sum. Used by the "Pull from shifts"
- * button on the new payroll-run modal so Lina doesn't retype anything.
+ * employee. `shiftCount` and `hours` count billable shifts only
+ * (present/late) so the modal pre-fill matches the snapshotted gross_pay
+ * sum — absent/leave rows are excluded from all three.
+ *
+ * Also returns any existing saved payroll runs whose period overlaps the
+ * requested window so the modal can warn before double-paying.
  */
 export interface ShiftSummary {
   employeeId: string
@@ -78,31 +81,55 @@ export interface ShiftSummary {
   shiftCount: number
   grossPay: number   // cents — sum of snapshotted shift gross_pay
 }
+export interface OverlappingRun {
+  id:          string
+  periodStart: string
+  periodEnd:   string
+}
 
 export async function summarizeShiftsForPeriod(
   periodStart: string,
   periodEnd: string,
-): Promise<{ summary?: ShiftSummary[]; error?: string }> {
+  excludeRunId?: string,
+): Promise<{ summary?: ShiftSummary[]; overlaps?: OverlappingRun[]; error?: string }> {
   try {
     const { venue } = await requireVenue()
-    const rows = await db
-      .select({
-        employeeId:  shifts.employeeId,
-        billable:    sql<string>`coalesce(sum(
-          case when ${shifts.status} in ('present','late')
-               then ${shifts.hoursWorked}::numeric + ${shifts.otHours}::numeric - ${shifts.lateHours}::numeric
-               else 0 end
-        ), 0)`,
-        shiftCount:  sql<string>`count(*)`,
-        gross:       sql<string>`coalesce(sum(${shifts.grossPay}::bigint), 0)`,
-      })
-      .from(shifts)
-      .where(and(
-        eq(shifts.venueId, venue.id),
-        gte(shifts.shiftDate, periodStart),
-        lte(shifts.shiftDate, periodEnd),
-      ))
-      .groupBy(shifts.employeeId)
+    const billableFilter = sql`${shifts.status} in ('present','late')`
+    const [rows, overlapRows] = await Promise.all([
+      db
+        .select({
+          employeeId:  shifts.employeeId,
+          billable:    sql<string>`coalesce(sum(
+            case when ${billableFilter}
+                 then ${shifts.hoursWorked}::numeric + ${shifts.otHours}::numeric - ${shifts.lateHours}::numeric
+                 else 0 end
+          ), 0)`,
+          shiftCount:  sql<string>`count(*) filter (where ${billableFilter})`,
+          gross:       sql<string>`coalesce(sum(${shifts.grossPay}::bigint) filter (where ${billableFilter}), 0)`,
+        })
+        .from(shifts)
+        .where(and(
+          eq(shifts.venueId, venue.id),
+          gte(shifts.shiftDate, periodStart),
+          lte(shifts.shiftDate, periodEnd),
+        ))
+        .groupBy(shifts.employeeId),
+      // Saved runs whose [periodStart, periodEnd] intersects the requested
+      // window. Two intervals overlap iff A.start ≤ B.end AND B.start ≤ A.end.
+      db
+        .select({
+          id:          payrollRuns.id,
+          periodStart: payrollRuns.periodStart,
+          periodEnd:   payrollRuns.periodEnd,
+        })
+        .from(payrollRuns)
+        .where(and(
+          eq(payrollRuns.venueId, venue.id),
+          lte(payrollRuns.periodStart, periodEnd),
+          gte(payrollRuns.periodEnd,   periodStart),
+          excludeRunId ? ne(payrollRuns.id, excludeRunId) : undefined,
+        )),
+    ])
 
     return {
       summary: rows.map(r => ({
@@ -111,6 +138,7 @@ export async function summarizeShiftsForPeriod(
         shiftCount: Number(r.shiftCount),
         grossPay:   Number(r.gross),
       })),
+      overlaps: overlapRows,
     }
   } catch (e) {
     console.error('summarizeShiftsForPeriod', e)
