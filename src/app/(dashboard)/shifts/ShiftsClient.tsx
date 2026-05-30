@@ -81,13 +81,20 @@ function rangeForPeriod(p: Period): { from: string | null; to: string | null } {
   return { from: isoFromDate(from), to: isoFromDate(to) }
 }
 
+interface PayrollRunRef {
+  id: string
+  periodStart: string
+  periodEnd: string
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 export default function ShiftsClient({
-  employees, shifts, isOwner,
+  employees, shifts, payrollRuns, isOwner,
 }: {
-  employees: Employee[]
-  shifts:    Shift[]
-  isOwner:   boolean
+  employees:   Employee[]
+  shifts:      Shift[]
+  payrollRuns: PayrollRunRef[]
+  isOwner:     boolean
 }) {
   const toast = useToast()
   const [, startTransition] = useTransition()
@@ -112,6 +119,12 @@ export default function ShiftsClient({
     return m
   }, [shifts])
   const empById = useMemo(() => new Map(employees.map(e => [e.id, e])), [employees])
+
+  // Is a shift date covered by any saved payroll run?
+  function isShiftPaid(date: string): PayrollRunRef | null {
+    for (const r of payrollRuns) if (date >= r.periodStart && date <= r.periodEnd) return r
+    return null
+  }
 
   // KPI: stats across all logged shifts (matches grayscale's behavior)
   const stats = useMemo(() => {
@@ -240,7 +253,7 @@ export default function ShiftsClient({
                       const s = shiftByEmpDate.get(`${emp.id}|${iso}`)
                       return (
                         <div key={iso} className={`px-1.5 py-2 border-l border-hair flex items-center justify-center min-h-[64px] ${isToday ? 'bg-accent/5' : ''}`}>
-                          {s ? <ShiftCell shift={s} onClick={() => openEdit(s)} /> : (
+                          {s ? <ShiftCell shift={s} paid={!!isShiftPaid(s.date)} onClick={() => openEdit(s)} /> : (
                             <button
                               onClick={() => openAdd({ employeeId: emp.id, date: iso })}
                               className="w-7 h-7 rounded-full border border-dashed border-hair text-ink-4 text-lg hover:border-accent hover:text-accent transition-colors flex items-center justify-center"
@@ -334,9 +347,17 @@ export default function ShiftsClient({
                     {filteredLog.slice(0, 40).map(s => {
                       const emp = empById.get(s.employeeId)
                       const st  = SHIFT_STATUS[s.status]
+                      const paid = !!isShiftPaid(s.date)
                       return (
                         <tr key={s.id} className="hover:bg-surface-2/30 transition-colors">
-                          <td className="py-2 pr-2 text-ink truncate">{emp ? nickname(emp.fullName) : '—'}</td>
+                          <td className="py-2 pr-2 text-ink truncate">
+                            <span className="inline-flex items-center gap-1.5">
+                              {emp ? nickname(emp.fullName) : '—'}
+                              {paid && (
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-accent bg-accent/15 border border-accent/30 px-1 rounded" title="In a payroll run">paid</span>
+                              )}
+                            </span>
+                          </td>
                           <td className="py-2 pr-2 text-ink-3 tabular">{s.date.slice(5)}</td>
                           <td className="py-2 pr-2">
                             <span className={`text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-md border ${toneClasses(st.tone)}`}>{SHIFT_TYPES[s.type].label}</span>
@@ -386,18 +407,28 @@ function toneClasses(tone: 'success'|'warn'|'danger'|'muted') {
   return 'bg-surface-3 text-ink-4 border-hair'
 }
 
-function ShiftCell({ shift, onClick }: { shift: Shift; onClick: () => void }) {
+function ShiftCell({ shift, paid, onClick }: { shift: Shift; paid: boolean; onClick: () => void }) {
   const st = SHIFT_STATUS[shift.status]
   return (
     <button
       onClick={onClick}
-      className={`w-full max-w-[100px] px-1.5 py-1 rounded-md border text-left ${toneClasses(st.tone)} hover:opacity-90 transition-opacity`}
-      title={`${st.label} · ${SHIFT_TYPES[shift.type].label}`}
+      className={`relative w-full max-w-[100px] px-1.5 py-1 rounded-md border text-left ${toneClasses(st.tone)} hover:opacity-90 transition-opacity`}
+      title={`${st.label} · ${SHIFT_TYPES[shift.type].label}${paid ? ' · already in a payroll run' : ''}`}
     >
       <p className="text-[10px] font-semibold uppercase tracking-wider truncate">{st.label}</p>
       <p className="text-[10px] tabular opacity-80 mt-0.5">
         {(shift.hours + shift.otHours - shift.lateHours).toFixed(1)}h · {formatCurrency(shift.grossPay)}
       </p>
+      {paid && (
+        <span
+          className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-accent text-canvas flex items-center justify-center"
+          title="Paid in a payroll run"
+        >
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" aria-hidden="true">
+            <path d="M1.5 4l2 2 3-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </span>
+      )}
     </button>
   )
 }

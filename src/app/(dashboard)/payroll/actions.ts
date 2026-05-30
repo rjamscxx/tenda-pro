@@ -1,8 +1,8 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { payrollRuns, payrollItems, expenses } from '@/lib/db/schema'
-import { and, eq } from 'drizzle-orm'
+import { payrollRuns, payrollItems, expenses, shifts } from '@/lib/db/schema'
+import { and, eq, gte, lte, sql } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { revalidatePath } from 'next/cache'
 
@@ -63,6 +63,58 @@ export async function createPayrollRun(input: PayrollRunInput): Promise<{ error?
   } catch (e) {
     console.error(e)
     return { error: 'Failed to create payroll run' }
+  }
+}
+
+/**
+ * Aggregate logged shifts in [periodStart, periodEnd] (inclusive) per
+ * employee. Returns billable-hours (hours + ot − late, present/late only)
+ * plus the snapshotted gross_pay sum. Used by the "Pull from shifts"
+ * button on the new payroll-run modal so Lina doesn't retype anything.
+ */
+export interface ShiftSummary {
+  employeeId: string
+  hours:    number   // decimal hours, billable = hours + ot − late
+  shiftCount: number
+  grossPay: number   // cents — sum of snapshotted shift gross_pay
+}
+
+export async function summarizeShiftsForPeriod(
+  periodStart: string,
+  periodEnd: string,
+): Promise<{ summary?: ShiftSummary[]; error?: string }> {
+  try {
+    const { venue } = await requireVenue()
+    const rows = await db
+      .select({
+        employeeId:  shifts.employeeId,
+        billable:    sql<string>`coalesce(sum(
+          case when ${shifts.status} in ('present','late')
+               then ${shifts.hoursWorked}::numeric + ${shifts.otHours}::numeric - ${shifts.lateHours}::numeric
+               else 0 end
+        ), 0)`,
+        shiftCount:  sql<string>`count(*)`,
+        gross:       sql<string>`coalesce(sum(${shifts.grossPay}::bigint), 0)`,
+      })
+      .from(shifts)
+      .where(and(
+        eq(shifts.venueId, venue.id),
+        gte(shifts.shiftDate, periodStart),
+        lte(shifts.shiftDate, periodEnd),
+      ))
+      .groupBy(shifts.employeeId)
+
+    return {
+      summary: rows.map(r => ({
+        employeeId: r.employeeId,
+        hours:      Math.round(Number(r.billable) * 100) / 100,
+        shiftCount: Number(r.shiftCount),
+        grossPay:   Number(r.gross),
+      })),
+    }
+  } catch (e) {
+    console.error('summarizeShiftsForPeriod', e)
+    return { error: 'Failed to summarize shifts' }
   }
 }
 

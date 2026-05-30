@@ -17,6 +17,7 @@ interface Employee {
   startDate: string
   isActive: boolean
   contactNumber: string | null
+  weekShifts: { count: number; hours: number }
 }
 
 interface Props {
@@ -226,9 +227,16 @@ export default function EmployeesClient({ employees }: Props) {
                   </td>
                   <td className="px-4 py-3 text-ink-4 hidden md:table-cell">{formatDate(emp.startDate)}</td>
                   <td className="px-4 py-3">
-                    <span className={emp.isActive ? 'badge badge-accent' : 'badge'}>
-                      {emp.isActive ? 'Active' : 'Inactive'}
-                    </span>
+                    <div className="flex flex-col gap-1">
+                      <span className={emp.isActive ? 'badge badge-accent' : 'badge'}>
+                        {emp.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                      {emp.weekShifts.count > 0 && (
+                        <a href="/shifts" className="text-[10px] text-ink-4 hover:text-accent transition-colors tabular">
+                          {emp.weekShifts.count} shift{emp.weekShifts.count === 1 ? '' : 's'} · {emp.weekShifts.hours}h this wk →
+                        </a>
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-2">

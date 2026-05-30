@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { createPayrollRun, deletePayrollRun, logPayrollAsExpense } from './actions'
+import { useState, useMemo, useTransition } from 'react'
+import { createPayrollRun, deletePayrollRun, logPayrollAsExpense, summarizeShiftsForPeriod } from './actions'
 import Modal from '@/components/ui/Modal'
 import { formatCurrency, formatDate, todayISO } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
@@ -88,6 +88,8 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
   const [periodEnd, setPeriodEnd] = useState(todayISO())
   const [runNote, setRunNote]     = useState('')
   const [entries, setEntries]     = useState<PayEntry[]>([])
+  const [shiftFilled, setShiftFilled] = useState<Set<string>>(new Set())
+  const [pullingShifts, startPullingShifts] = useTransition()
 
   const totalGross      = useMemo(() => entries.reduce((s, e) => s + Math.round((parseFloat(e.grossPay) || 0) * 100), 0), [entries])
   const totalDeductions = useMemo(() => entries.reduce((s, e) => s + Math.round((parseFloat(e.deductions) || 0) * 100), 0), [entries])
@@ -104,7 +106,7 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
     )
     setPeriodStart(() => { const d = new Date(); d.setDate(1); return d.toISOString().slice(0, 10) })
     setPeriodEnd(todayISO())
-    setRunNote(''); setError(''); setModalOpen(true)
+    setRunNote(''); setError(''); setShiftFilled(new Set()); setModalOpen(true)
   }
 
   function closeModal() { setModalOpen(false); setError('') }
@@ -136,6 +138,38 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
     const net = gross - deductions
     if (isNaN(net)) return '—'
     return `₱${net.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  }
+
+  function handlePullFromShifts() {
+    if (!periodStart || !periodEnd) { setError('Select a pay period first'); return }
+    setError('')
+    startPullingShifts(async () => {
+      const res = await summarizeShiftsForPeriod(periodStart, periodEnd)
+      if (res.error) { setError(res.error); return }
+      const map = new Map((res.summary ?? []).map(s => [s.employeeId, s]))
+      let touched = 0
+      const filled = new Set<string>()
+      setEntries(prev => prev.map(e => {
+        const s = map.get(e.employeeId)
+        if (!s || s.shiftCount === 0) return e
+        touched++
+        filled.add(e.employeeId)
+        const emp = activeEmployees.find(a => a.id === e.employeeId)
+        // hours for hourly staff; for daily/monthly we fall back to shift count
+        const units = emp?.payType === 'hourly' ? s.hours : s.shiftCount
+        return {
+          ...e,
+          daysWorked: String(units),
+          grossPay:   (s.grossPay / 100).toFixed(2),
+        }
+      }))
+      setShiftFilled(filled)
+      if (touched === 0) {
+        setError('No logged shifts in this period. Log shifts first or fill rows manually.')
+      } else {
+        toast(`Pulled ${touched} ${touched === 1 ? 'employee' : 'employees'} from shifts`)
+      }
+    })
   }
 
   async function handleSubmit() {
@@ -386,6 +420,21 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
             />
           </div>
 
+          {/* Pull from shifts shortcut — auto-fills units + gross from
+              the snapshotted shifts in this period. */}
+          <button
+            type="button"
+            onClick={handlePullFromShifts}
+            disabled={pullingShifts}
+            className="w-full px-3 py-2.5 rounded-lg border border-accent/40 bg-accent/5 hover:bg-accent/10 text-accent text-xs font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
+          >
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.3"/>
+              <polyline points="7 4 7 7 9.5 8.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            {pullingShifts ? 'Pulling shifts…' : 'Pull from shifts in this period'}
+          </button>
+
           {/* Employee pay entries */}
           <div>
             <p className="text-[12px] font-medium text-ink-3 mb-2">Employee Pay</p>
@@ -398,10 +447,15 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
                 const net   = gross - ded
 
                 return (
-                  <div key={emp.id} className="glass rounded-lg p-3 space-y-2">
+                  <div key={emp.id} className={`glass rounded-lg p-3 space-y-2 ${shiftFilled.has(emp.id) ? 'ring-1 ring-accent/40' : ''}`}>
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[13px] font-medium text-ink">{emp.fullName}</p>
+                        <p className="text-[13px] font-medium text-ink flex items-center gap-1.5">
+                          {emp.fullName}
+                          {shiftFilled.has(emp.id) && (
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-accent bg-accent/15 border border-accent/30 px-1 rounded">from shifts</span>
+                          )}
+                        </p>
                         <p className="text-[10px] text-ink-4">
                           {emp.role} · {rateLabel(emp)}
                         </p>

@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import { employees, shifts } from '@/lib/db/schema'
+import { employees, shifts, payrollRuns } from '@/lib/db/schema'
 import { and, eq, asc, gte, desc } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { isPro } from '@/lib/plan'
@@ -20,7 +20,7 @@ export default async function ShiftsPage() {
   // headroom for prev/next week navigation in the calendar.
   const sixtyDaysAgo = new Date(Date.now() - 60 * 86_400_000)
 
-  const [empRows, shiftRows] = await Promise.all([
+  const [empRows, shiftRows, runRows] = await Promise.all([
     db.select()
       .from(employees)
       .where(eq(employees.venueId, venue.id))
@@ -32,6 +32,17 @@ export default async function ShiftsPage() {
         gte(shifts.shiftDate, sixtyDaysAgo.toISOString().slice(0, 10)),
       ))
       .orderBy(desc(shifts.shiftDate)),
+    db.select({
+      id:          payrollRuns.id,
+      periodStart: payrollRuns.periodStart,
+      periodEnd:   payrollRuns.periodEnd,
+    })
+      .from(payrollRuns)
+      .where(and(
+        eq(payrollRuns.venueId, venue.id),
+        gte(payrollRuns.periodEnd, sixtyDaysAgo.toISOString().slice(0, 10)),
+      ))
+      .orderBy(desc(payrollRuns.periodEnd)),
   ])
 
   const employeeData = empRows.map(e => ({
@@ -59,11 +70,18 @@ export default async function ShiftsPage() {
     note:         s.note,
   }))
 
+  const payrollRunData = runRows.map(r => ({
+    id:          r.id,
+    periodStart: r.periodStart,
+    periodEnd:   r.periodEnd,
+  }))
+
   return (
     <div className="flex flex-col h-full">
       <ShiftsClient
         employees={employeeData}
         shifts={shiftData}
+        payrollRuns={payrollRunData}
         isOwner={dbUser.role === 'owner'}
       />
     </div>
