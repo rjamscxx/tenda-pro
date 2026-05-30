@@ -7,6 +7,8 @@ const base = {
   trialStartedAt: null,
   aiTokensToday: 0,
   aiTokensDate: null,
+  aiPushText: null,
+  aiPushDate: null,
 }
 
 describe('isPro', () => {

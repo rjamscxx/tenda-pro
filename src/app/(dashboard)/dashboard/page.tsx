@@ -2,9 +2,13 @@ import { db } from '@/lib/db'
 import { sales, expenses, ingredients, saleItems, dishes, wasteLogs } from '@/lib/db/schema'
 import { and, desc, eq, gte, lt, sql } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
+import { isPremium } from '@/lib/plan'
 import { formatCurrency } from '@/lib/utils'
 import CashflowChart, { type ChartPoint } from './CashflowChart'
 import EodSummary from './EodSummary'
+import AiTodayPush from '@/components/layout/AiTodayPush'
+import { getOrGenerateTodayPush } from '@/lib/ai/todayPush'
+import { refreshTodayPush } from './ai-actions'
 import Link from 'next/link'
 
 export const metadata = { title: 'Dashboard — Sizzle' }
@@ -25,7 +29,8 @@ function delta(current: number, previous: number) {
 }
 
 export default async function DashboardPage() {
-  const { venue } = await requireVenue()
+  const { venue, account } = await requireVenue()
+  const premium = isPremium(account)
   const tz = venue.timezone
 
   // ── Date helpers ──────────────────────────────────────────────────────────
@@ -497,6 +502,14 @@ export default async function DashboardPage() {
             ))}
           </div>
         </div>
+      )}
+
+      {/* AI today's push — Premium-only, hidden when no key configured */}
+      {premium && process.env.ANTHROPIC_API_KEY && (
+        <AiTodayPush
+          initialText={await getOrGenerateTodayPush(account.id, venue.id)}
+          refresh={refreshTodayPush}
+        />
       )}
 
       {/* KPI row */}

@@ -28,6 +28,9 @@ export const accounts = pgTable('accounts', {
   // arrives on a new day we reset aiTokensToday to 0 before adding.
   aiTokensToday:   integer('ai_tokens_today').notNull().default(0),
   aiTokensDate:    date('ai_tokens_date'),
+  // Cached "AI push" insight text generated once per day (Premium).
+  aiPushText:      text('ai_push_text'),
+  aiPushDate:      date('ai_push_date'),
   createdAt:       timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
