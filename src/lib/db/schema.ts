@@ -1,6 +1,6 @@
 import {
   pgTable, pgEnum, uuid, text, integer, numeric,
-  boolean, timestamp, date, jsonb, index,
+  boolean, timestamp, date, jsonb, index, unique,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
@@ -244,6 +244,7 @@ export const shifts = pgTable('shifts', {
   index('shifts_employee_idx').on(t.employeeId),
   index('shifts_date_idx').on(t.shiftDate),
   index('shifts_venue_date_idx').on(t.venueId, t.shiftDate),
+  unique('shifts_one_per_employee_per_day').on(t.employeeId, t.shiftDate),
 ])
 
 // ── Waste Logs ────────────────────────────────────────────────────────────────
