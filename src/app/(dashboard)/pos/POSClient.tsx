@@ -85,12 +85,14 @@ export default function POSClient({
   const [serviceChargeVal, setServiceChargeVal] = useState('')
   const [tableNum, setTableNum] = useState('')
 
+  const ALL_CATEGORIES = '__all__'
   const categories  = [...new Set(dishes.map(d => d.category))].sort()
   const byCategory  = Object.fromEntries(
     categories.map(cat => [cat, dishes.filter(d => d.category === cat)])
   )
-  const activeCat   = category || categories[0] || ''
-  const catDishes   = byCategory[activeCat] ?? []
+  // Default to All so owners see the whole menu without tab-hunting.
+  const activeCat   = category || ALL_CATEGORIES
+  const catDishes   = activeCat === ALL_CATEGORIES ? dishes : (byCategory[activeCat] ?? [])
   const todayManila = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' })
   const visibleDishes = dishSearch.trim()
     ? dishes.filter(d => d.name.toLowerCase().includes(dishSearch.toLowerCase()))
@@ -212,9 +214,20 @@ export default function POSClient({
             </span>
           </div>
 
-          {/* Category tabs */}
+          {/* Category tabs (with "All" first so the whole menu is one tap away) */}
           {categories.length > 1 && (
             <div className="flex gap-1.5 px-4 py-2.5 border-b border-hair overflow-x-auto shrink-0 scrollbar-none">
+              <button
+                key={ALL_CATEGORIES}
+                onClick={() => { setCategory(ALL_CATEGORIES); setDishSearch('') }}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
+                  activeCat === ALL_CATEGORIES
+                    ? 'bg-accent text-canvas'
+                    : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink'
+                }`}
+              >
+                All <span className="opacity-60">· {dishes.length}</span>
+              </button>
               {categories.map(cat => (
                 <button
                   key={cat}
@@ -242,49 +255,73 @@ export default function POSClient({
               <div className="flex flex-col items-center justify-center h-48 gap-2 text-ink-4">
                 <p className="text-sm">No dishes match &ldquo;{dishSearch}&rdquo;</p>
               </div>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {visibleDishes.map(dish => {
-                  const inOrder   = order.find(i => i.dishId === dish.id)
-                  const isSoldOut = dish.soldOutDate === todayManila
-                  return (
-                    <div
-                      key={dish.id}
-                      role="button"
-                      tabIndex={isSoldOut ? -1 : 0}
-                      onClick={() => { if (!isSoldOut) addItem(dish) }}
-                      onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && !isSoldOut) { e.preventDefault(); addItem(dish) } }}
-                      className={`relative group text-left p-4 rounded-xl border transition-all select-none ${
+            ) : (() => {
+              // When "All" is selected and the user isn't searching, group dishes
+              // under category headers so the whole menu stays scannable.
+              const isAllView = activeCat === ALL_CATEGORIES && !dishSearch.trim() && categories.length > 1
+              const dishTile = (dish: DishOption) => {
+                const inOrder   = order.find(i => i.dishId === dish.id)
+                const isSoldOut = dish.soldOutDate === todayManila
+                return (
+                  <div
+                    key={dish.id}
+                    role="button"
+                    tabIndex={isSoldOut ? -1 : 0}
+                    onClick={() => { if (!isSoldOut) addItem(dish) }}
+                    onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && !isSoldOut) { e.preventDefault(); addItem(dish) } }}
+                    className={`relative group text-left p-4 rounded-xl border transition-all select-none ${
+                      isSoldOut
+                        ? 'border-hair bg-surface opacity-50'
+                        : inOrder
+                          ? 'border-accent bg-accent/8 shadow-sm cursor-pointer'
+                          : 'border-hair bg-surface hover:border-hair-2 hover:bg-surface-2 cursor-pointer'
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={e => { e.stopPropagation(); handleToggleSoldOut(dish.id) }}
+                      className={`absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide leading-none transition-all ${
                         isSoldOut
-                          ? 'border-hair bg-surface opacity-50'
-                          : inOrder
-                            ? 'border-accent bg-accent/8 shadow-sm cursor-pointer'
-                            : 'border-hair bg-surface hover:border-hair-2 hover:bg-surface-2 cursor-pointer'
+                          ? 'bg-danger/20 text-danger border border-danger/20'
+                          : 'opacity-0 group-hover:opacity-100 bg-surface-3 text-ink-4 hover:bg-danger/10 hover:text-danger'
                       }`}
                     >
-                      <button
-                        type="button"
-                        onClick={e => { e.stopPropagation(); handleToggleSoldOut(dish.id) }}
-                        className={`absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide leading-none transition-all ${
-                          isSoldOut
-                            ? 'bg-danger/20 text-danger border border-danger/20'
-                            : 'opacity-0 group-hover:opacity-100 bg-surface-3 text-ink-4 hover:bg-danger/10 hover:text-danger'
-                        }`}
-                      >
-                        {isSoldOut ? 'Sold Out' : '×'}
-                      </button>
-                      {!isSoldOut && inOrder && (
-                        <span className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-accent text-canvas text-[10px] font-bold flex items-center justify-center leading-none">
-                          {inOrder.qty}
-                        </span>
-                      )}
-                      <p className="text-[13px] font-semibold text-ink leading-snug pr-6 line-clamp-2">{dish.name}</p>
-                      <p className="text-sm font-bold text-accent mt-2 tabular">{formatCurrency(dish.price)}</p>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
+                      {isSoldOut ? 'Sold Out' : '×'}
+                    </button>
+                    {!isSoldOut && inOrder && (
+                      <span className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-accent text-canvas text-[10px] font-bold flex items-center justify-center leading-none">
+                        {inOrder.qty}
+                      </span>
+                    )}
+                    <p className="text-[13px] font-semibold text-ink leading-snug pr-6 line-clamp-2">{dish.name}</p>
+                    <p className="text-sm font-bold text-accent mt-2 tabular">{formatCurrency(dish.price)}</p>
+                  </div>
+                )
+              }
+              if (!isAllView) {
+                return (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {visibleDishes.map(dishTile)}
+                  </div>
+                )
+              }
+              return (
+                <div className="space-y-6">
+                  {categories.map(cat => (
+                    <section key={cat}>
+                      <div className="flex items-center gap-3 mb-3">
+                        <h3 className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">{cat}</h3>
+                        <span className="h-px flex-1 bg-hair" />
+                        <span className="text-[10px] tabular text-ink-4">{byCategory[cat].length}</span>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                        {byCategory[cat].map(dishTile)}
+                      </div>
+                    </section>
+                  ))}
+                </div>
+              )
+            })()}
           </div>
         </div>
 
