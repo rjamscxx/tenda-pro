@@ -1,19 +1,12 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+import { useState } from 'react'
 import { addEmployee, updateEmployee, toggleEmployeeActive } from './actions'
-import { clockIn, clockOut, deleteShift } from './shift-actions'
 import type { EmployeeInput } from './actions'
 import Modal from '@/components/ui/Modal'
 import { formatCurrency, formatDate, todayISO } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
 import EmptyState from '@/components/ui/EmptyState'
-
-interface ShiftRow {
-  id: string
-  clockedInAt: string
-  clockedOutAt: string | null
-}
 
 interface Employee {
   id: string
@@ -24,33 +17,13 @@ interface Employee {
   startDate: string
   isActive: boolean
   contactNumber: string | null
-  openShift: { id: string; clockedInAt: string } | null
-  recentShifts: ShiftRow[]
 }
 
 interface Props {
   employees: Employee[]
-  isOwner: boolean
 }
 
-// "3h 24m" / "47m" — duration friendly
-function fmtDuration(fromIso: string, toIso: string | null) {
-  const from = new Date(fromIso).getTime()
-  const to   = toIso ? new Date(toIso).getTime() : Date.now()
-  const min  = Math.max(0, Math.round((to - from) / 60000))
-  if (min < 60) return `${min}m`
-  return `${Math.floor(min/60)}h ${min%60}m`
-}
-function fmtTime(iso: string) {
-  return new Date(iso).toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit' })
-}
-function fmtDateTime(iso: string) {
-  return new Date(iso).toLocaleString('en-PH', {
-    timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
-  })
-}
-
-export default function EmployeesClient({ employees, isOwner }: Props) {
+export default function EmployeesClient({ employees }: Props) {
   const toast = useToast()
   const [modalOpen, setModalOpen]     = useState(false)
   const [editingId, setEditingId]     = useState<string | null>(null)
@@ -68,38 +41,8 @@ export default function EmployeesClient({ employees, isOwner }: Props) {
   const [startDate, setStartDate]         = useState(todayISO())
   const [contactNumber, setContactNumber] = useState('')
 
-  // "Now" ticker so open-shift durations refresh in place every minute.
-  const [, setNowTick] = useState(0)
-  useEffect(() => {
-    const i = setInterval(() => setNowTick(n => n + 1), 60_000)
-    return () => clearInterval(i)
-  }, [])
-  const [shiftPending, startShiftTransition] = useTransition()
-  const [pendingShiftId, setPendingShiftId] = useState<string | null>(null)
-  const [historyFor, setHistoryFor] = useState<Employee | null>(null)
-
-  function handleClockIn(emp: Employee) {
-    setPendingShiftId(emp.id)
-    startShiftTransition(async () => {
-      const r = await clockIn(emp.id)
-      setPendingShiftId(null)
-      if (r?.error) toast(r.error, 'error')
-      else toast(`Clocked in: ${emp.fullName.split(' ')[0]}`)
-    })
-  }
-  function handleClockOut(emp: Employee) {
-    setPendingShiftId(emp.id)
-    startShiftTransition(async () => {
-      const r = await clockOut(emp.id)
-      setPendingShiftId(null)
-      if (r?.error) toast(r.error, 'error')
-      else toast(`Clocked out: ${emp.fullName.split(' ')[0]}`)
-    })
-  }
-
   const active    = employees.filter(e => e.isActive)
   const inactive  = employees.filter(e => !e.isActive)
-  const onShiftCount = employees.filter(e => e.openShift).length
   const base      = showInactive ? employees : active
   const displayed = search.trim()
     ? base.filter(e =>
@@ -207,17 +150,10 @@ export default function EmployeesClient({ employees, isOwner }: Props) {
 
       {/* Stats */}
       <div className="px-6 py-3 border-b border-hair flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-6 flex-wrap">
+        <div className="flex items-center gap-6">
           <div>
             <p className="text-[10px] text-ink-4 uppercase tracking-wider font-semibold">Active Staff</p>
             <p className="text-[20px] font-semibold tabular text-ink leading-tight">{active.length}</p>
-          </div>
-          <div>
-            <p className="text-[10px] text-ink-4 uppercase tracking-wider font-semibold">On shift now</p>
-            <p className="text-[20px] font-semibold tabular leading-tight">
-              <span className={onShiftCount > 0 ? 'text-success' : 'text-ink-3'}>{onShiftCount}</span>
-              {onShiftCount > 0 && <span className="inline-block w-1.5 h-1.5 rounded-full bg-success animate-pulse ml-1.5 align-middle" />}
-            </p>
           </div>
           <div>
             <p className="text-[10px] text-ink-4 uppercase tracking-wider font-semibold">Est. Monthly Labor</p>
@@ -259,7 +195,6 @@ export default function EmployeesClient({ employees, isOwner }: Props) {
                 <th className="px-4 py-3 text-right text-[11px] font-semibold text-ink-4 uppercase tracking-wider">Rate</th>
                 <th className="px-4 py-3 text-left text-[11px] font-semibold text-ink-4 uppercase tracking-wider hidden md:table-cell">Since</th>
                 <th className="px-4 py-3 text-left text-[11px] font-semibold text-ink-4 uppercase tracking-wider">Status</th>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold text-ink-4 uppercase tracking-wider">Shift</th>
                 <th className="px-4 py-3 text-right text-[11px] font-semibold text-ink-4 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
@@ -294,40 +229,6 @@ export default function EmployeesClient({ employees, isOwner }: Props) {
                     <span className={emp.isActive ? 'badge badge-accent' : 'badge'}>
                       {emp.isActive ? 'Active' : 'Inactive'}
                     </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    {emp.openShift ? (
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-success/15 text-success border border-success/30">
-                          <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-                          On shift · {fmtDuration(emp.openShift.clockedInAt, null)}
-                        </span>
-                        <button
-                          onClick={() => handleClockOut(emp)}
-                          disabled={shiftPending && pendingShiftId === emp.id}
-                          className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors disabled:opacity-50"
-                        >
-                          Clock out
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => handleClockIn(emp)}
-                        disabled={!emp.isActive || (shiftPending && pendingShiftId === emp.id)}
-                        title={!emp.isActive ? 'Activate employee first' : 'Start a shift'}
-                        className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-accent text-canvas hover:bg-accent-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                      >
-                        Clock in
-                      </button>
-                    )}
-                    {emp.recentShifts.length > 0 && (
-                      <button
-                        onClick={() => setHistoryFor(emp)}
-                        className="text-[10px] text-ink-4 hover:text-accent transition-colors mt-1 block underline-offset-2 hover:underline"
-                      >
-                        {emp.recentShifts.length} shift{emp.recentShifts.length === 1 ? '' : 's'} · 7d
-                      </button>
-                    )}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-2">
@@ -475,77 +376,6 @@ export default function EmployeesClient({ employees, isOwner }: Props) {
             </button>
           </div>
         </div>
-      </Modal>
-
-      {/* Shift history modal */}
-      <Modal
-        open={!!historyFor}
-        onClose={() => setHistoryFor(null)}
-        title={historyFor ? `${historyFor.fullName} · shifts (7d)` : ''}
-      >
-        {historyFor && (
-          <div className="space-y-3">
-            {historyFor.openShift && (
-              <div className="rounded-lg bg-success/10 border border-success/30 px-3 py-2 flex items-center justify-between">
-                <span className="text-sm text-success font-semibold flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                  Currently on shift · {fmtDuration(historyFor.openShift.clockedInAt, null)}
-                </span>
-                <span className="text-xs text-ink-3 tabular">since {fmtTime(historyFor.openShift.clockedInAt)}</span>
-              </div>
-            )}
-            {historyFor.recentShifts.length === 0 ? (
-              <p className="py-6 text-center text-sm text-ink-4">No shifts in the last 7 days.</p>
-            ) : (
-              <div className="border border-hair rounded-lg overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead className="bg-surface-2">
-                    <tr>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-ink-4 uppercase tracking-wider">In</th>
-                      <th className="px-3 py-2 text-left text-[10px] font-semibold text-ink-4 uppercase tracking-wider">Out</th>
-                      <th className="px-3 py-2 text-right text-[10px] font-semibold text-ink-4 uppercase tracking-wider">Duration</th>
-                      {isOwner && <th className="px-2 py-2 w-8" />}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-hair">
-                    {historyFor.recentShifts.map(s => {
-                      const open = s.clockedOutAt === null
-                      return (
-                        <tr key={s.id}>
-                          <td className="px-3 py-2 text-ink-3 tabular">{fmtDateTime(s.clockedInAt)}</td>
-                          <td className={`px-3 py-2 tabular ${open ? 'text-success font-semibold' : 'text-ink-3'}`}>
-                            {s.clockedOutAt ? fmtDateTime(s.clockedOutAt) : 'on shift'}
-                          </td>
-                          <td className={`px-3 py-2 text-right tabular font-medium ${open ? 'text-success' : 'text-ink'}`}>
-                            {fmtDuration(s.clockedInAt, s.clockedOutAt)}
-                          </td>
-                          {isOwner && (
-                            <td className="px-2 py-2 text-right">
-                              {!open && (
-                                <button
-                                  onClick={async () => {
-                                    if (!confirm('Delete this shift entry?')) return
-                                    const r = await deleteShift(s.id)
-                                    if (r?.error) toast(r.error, 'error')
-                                    else { toast('Shift deleted', 'info'); setHistoryFor(null) }
-                                  }}
-                                  className="text-ink-4 hover:text-danger transition-colors text-xs"
-                                  aria-label="Delete shift"
-                                >
-                                  ×
-                                </button>
-                              )}
-                            </td>
-                          )}
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
       </Modal>
     </>
   )
