@@ -221,7 +221,7 @@ export default function DishesClient({
                 <th className="px-6 py-3 text-right font-medium tabular">Margin %</th>
                 <th className="px-6 py-3 text-right font-medium tabular">Margin ₱</th>
                 <th className="px-6 py-3 text-center font-medium">Status</th>
-                <th className="px-4 py-3 text-center font-medium">86</th>
+                <th className="px-4 py-3 text-center font-medium">Availability</th>
                 <th className="px-2 py-3" />
               </tr>
             </thead>
@@ -265,14 +265,14 @@ export default function DishesClient({
                     <td className="px-4 py-3.5 text-center">
                       <button
                         onClick={() => toggleSoldOut(dish.id)}
-                        title={isSoldOutToday ? 'Mark as available' : 'Mark as sold out today (auto-resets tomorrow)'}
-                        className={`inline-flex items-center justify-center h-6 min-w-[2rem] px-1.5 rounded text-xs font-bold transition-colors duration-200 focus:outline-none ${
+                        title={isSoldOutToday ? 'Mark as available again' : 'Mark sold out for today (auto-resets tomorrow)'}
+                        className={`inline-flex items-center justify-center h-6 px-2.5 rounded text-[11px] font-bold uppercase tracking-wider transition-colors duration-200 focus:outline-none ${
                           isSoldOutToday
-                            ? 'bg-warn/20 text-warn border border-warn/40'
-                            : 'bg-surface-2 text-ink-4 border border-hair hover:border-warn/40 hover:text-warn'
+                            ? 'bg-warn/15 text-warn border border-warn/40 hover:bg-warn/25'
+                            : 'bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20'
                         }`}
                       >
-                        86
+                        {isSoldOutToday ? 'Sold Out' : 'Available'}
                       </button>
                     </td>
                     <td className="px-2 py-3.5">
