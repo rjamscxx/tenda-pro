@@ -53,6 +53,9 @@ const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
       { href: '/employees', label: 'Employees', proOnly: true, icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5.5" r="2.5" stroke="currentColor" strokeWidth="1.5"/><path d="M1 14c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><path d="M11.5 7a2 2 0 100-4M13.5 14c0-1.93-1.12-3.6-2.75-4.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
       )},
+      { href: '/shifts', label: 'Shifts', proOnly: true, icon: (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/><polyline points="8 4 8 8 11 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      )},
       { href: '/payroll', label: 'Payroll', proOnly: true, icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="5" width="13" height="8.5" rx="1.5" stroke="currentColor" strokeWidth="1.5"/><path d="M5 5V3.5h6V5M8 8.5v.5m0 1.5v.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><circle cx="8" cy="9.75" r="1.5" stroke="currentColor" strokeWidth="1.3"/></svg>
       )},

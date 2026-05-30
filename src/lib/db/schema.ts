@@ -13,6 +13,8 @@ export const expenseCategoryEnum = pgEnum('expense_category', [
 ])
 export const wasteReasonEnum = pgEnum('waste_reason', ['spoilage', 'overcooked', 'dropped', 'expired', 'other'])
 export const payTypeEnum = pgEnum('pay_type', ['daily', 'monthly', 'hourly'])
+export const shiftTypeEnum   = pgEnum('shift_type',   ['opening', 'mid', 'closing', 'full', 'custom'])
+export const shiftStatusEnum = pgEnum('shift_status', ['present', 'late', 'absent', 'leave'])
 
 // ── Accounts ──────────────────────────────────────────────────────────────────
 
@@ -214,6 +216,34 @@ export const payrollItems = pgTable('payroll_items', {
 }, (t) => [
   index('payroll_items_run_idx').on(t.payrollRunId),
   index('payroll_items_employee_idx').on(t.employeeId),
+])
+
+// ── Shifts ────────────────────────────────────────────────────────────────────
+// Modeled on grayscale-coffee-club's barista shift system: one row per
+// (employee, shift_date), with preset shift types + attendance status + a
+// pay snapshot so future rate changes don't rewrite history.
+
+export const shifts = pgTable('shifts', {
+  id:           uuid('id').primaryKey().defaultRandom(),
+  venueId:      uuid('venue_id').notNull().references(() => venues.id, { onDelete: 'cascade' }),
+  employeeId:   uuid('employee_id').notNull().references(() => employees.id, { onDelete: 'cascade' }),
+  shiftDate:    date('shift_date').notNull(),
+  shiftType:    shiftTypeEnum('shift_type').notNull().default('opening'),
+  status:       shiftStatusEnum('status').notNull().default('present'),
+  timeIn:       text('time_in'),                                    // 'HH:MM' venue-local
+  timeOut:      text('time_out'),                                   // 'HH:MM' venue-local
+  hoursWorked:  numeric('hours_worked', { precision: 5, scale: 2 }).notNull().default('0'),
+  otHours:      numeric('ot_hours',     { precision: 5, scale: 2 }).notNull().default('0'),
+  lateHours:    numeric('late_hours',   { precision: 5, scale: 2 }).notNull().default('0'),
+  grossPay:     integer('gross_pay').notNull().default(0),         // cents; snapshot at save time
+  note:         text('note'),
+  createdBy:    uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+  createdAt:    timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('shifts_venue_idx').on(t.venueId),
+  index('shifts_employee_idx').on(t.employeeId),
+  index('shifts_date_idx').on(t.shiftDate),
+  index('shifts_venue_date_idx').on(t.venueId, t.shiftDate),
 ])
 
 // ── Waste Logs ────────────────────────────────────────────────────────────────
