@@ -65,10 +65,23 @@ export const viewport: Viewport = {
   minimumScale: 1,
 }
 
-// Inline pre-paint theme bootstrap. Reads the sizzle-theme cookie and applies
-// it to <html data-theme=…> before the body paints. Keeps the layout fully
-// static (no cookies() server call → cache-control public + bf-cache works).
-const THEME_INIT = `(function(){try{var m=document.cookie.match(/(?:^|; )sizzle-theme=([^;]+)/);if(m){var v=decodeURIComponent(m[1]);if(/^[a-z][a-z0-9-]{0,30}$/.test(v))document.documentElement.setAttribute('data-theme',v);}}catch(e){}})();`
+// Inline pre-paint theme bootstrap. Two behaviors, picked by URL:
+// • Landing (`/`): no cookie read, no cookie write — pick a RANDOM theme
+//   on every visit so each load feels fresh. Each landing render samples
+//   one of the 25 themes; great for marketing-page polish.
+// • App (everywhere else): respect the sizzle-theme cookie set in Settings.
+//   The owner's choice persists across sessions and never randomizes.
+// Runs before the body paints; layout stays static + bf-cache friendly.
+const THEME_INIT = `(function(){try{
+  var p=location.pathname;
+  if(p==='/'||p===''){
+    var T=['sage-dark','sage-light','espresso','citrus','crimson','ocean','rose','ember','midnight','harvest','jade','slate','wasabi','trattoria','mariachi','imperial','saffron','diner','halo','boba','linen','lavender','cloud','mint','sand'];
+    document.documentElement.setAttribute('data-theme',T[Math.floor(Math.random()*T.length)]);
+    return;
+  }
+  var m=document.cookie.match(/(?:^|; )sizzle-theme=([^;]+)/);
+  if(m){var v=decodeURIComponent(m[1]);if(/^[a-z][a-z0-9-]{0,30}$/.test(v))document.documentElement.setAttribute('data-theme',v);}
+}catch(e){}})();`
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

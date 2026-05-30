@@ -227,17 +227,19 @@ function smoothScrollTo(href: string) {
   window.scrollTo({ top, behavior: 'smooth' })
 }
 
-function readThemeCookie(): string {
+// Landing is intentionally cookie-free for theming: the inline THEME_INIT
+// script in layout.tsx already picked a random theme and applied it to
+// <html data-theme>. We just read that back here so React state matches what
+// the visitor already sees, instead of flashing on hydration.
+function readInitialTheme(): string {
   if (typeof document === 'undefined') return 'sage-dark'
-  const m = document.cookie.match(/(?:^|; )sizzle-theme=([^;]+)/)
-  if (!m) return 'sage-dark'
-  const v = decodeURIComponent(m[1])
-  return /^[a-z][a-z0-9-]{0,30}$/.test(v) ? v : 'sage-dark'
+  const v = document.documentElement.getAttribute('data-theme')
+  return v && /^[a-z][a-z0-9-]{0,30}$/.test(v) ? v : 'sage-dark'
 }
 
 export default function LandingClient() {
   const [scrolled, setScrolled]       = useState(false)
-  const [activeTheme, setActiveTheme] = useState(readThemeCookie)
+  const [activeTheme, setActiveTheme] = useState(readInitialTheme)
   const currentTheme = THEMES.find(t => t.id === activeTheme) ?? THEMES[0]
   const { ref: themeCountRef, count: themeCountVal } = useCountUp(25)
   // Landing always renders as logged-out. The rare logged-in visitor who hits
@@ -1263,8 +1265,10 @@ export default function LandingClient() {
               <button
                 key={t.id}
                 onClick={() => {
+                  // Landing theme switcher is a preview only — does NOT
+                  // write the cookie. The dashboard theme is owned by
+                  // Settings; landing always randomizes on next visit.
                   setActiveTheme(t.id)
-                  document.cookie = `sizzle-theme=${t.id};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`
                 }}
                 className="theme-card group relative flex flex-col items-center gap-2.5 p-3 rounded-2xl border transition-all duration-200 cursor-pointer"
                 style={{
