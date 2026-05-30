@@ -313,11 +313,11 @@ export default function POSClient({
                 <div className="space-y-6">
                   {categories.map(cat => (
                     <section key={cat}>
-                      <div className="flex items-center gap-3 mb-4 pt-1">
-                        <span className="w-1 h-7 rounded-full bg-accent shrink-0" aria-hidden="true" />
-                        <h3 className="text-2xl font-black text-ink uppercase tracking-wide leading-none">{cat}</h3>
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="w-1 h-5 rounded-full bg-accent shrink-0" aria-hidden="true" />
+                        <h3 className="text-lg font-extrabold text-ink uppercase tracking-wide leading-none">{cat}</h3>
                         <span className="h-px flex-1 bg-hair" />
-                        <span className="text-sm font-bold tabular text-ink-3">{byCategory[cat].length}</span>
+                        <span className="text-xs font-bold tabular text-ink-3">{byCategory[cat].length}</span>
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                         {byCategory[cat].map(dishTile)}
