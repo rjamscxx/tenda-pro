@@ -216,6 +216,26 @@ export const payrollItems = pgTable('payroll_items', {
   index('payroll_items_employee_idx').on(t.employeeId),
 ])
 
+// ── Shifts ────────────────────────────────────────────────────────────────────
+// One row per employee shift. `clockedOutAt = null` means currently on shift;
+// a partial unique index in the DB enforces at most one open shift per employee.
+
+export const shifts = pgTable('shifts', {
+  id:             uuid('id').primaryKey().defaultRandom(),
+  venueId:        uuid('venue_id').notNull().references(() => venues.id, { onDelete: 'cascade' }),
+  employeeId:     uuid('employee_id').notNull().references(() => employees.id, { onDelete: 'cascade' }),
+  clockedInAt:    timestamp('clocked_in_at',  { withTimezone: true }).notNull().defaultNow(),
+  clockedOutAt:   timestamp('clocked_out_at', { withTimezone: true }),
+  clockedInBy:    uuid('clocked_in_by').references(() => users.id, { onDelete: 'set null' }),
+  clockedOutBy:   uuid('clocked_out_by').references(() => users.id, { onDelete: 'set null' }),
+  note:           text('note'),
+  createdAt:      timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('shifts_venue_idx').on(t.venueId),
+  index('shifts_employee_idx').on(t.employeeId),
+  index('shifts_clocked_in_idx').on(t.clockedInAt),
+])
+
 // ── Waste Logs ────────────────────────────────────────────────────────────────
 
 export const wasteLogs = pgTable('waste_logs', {
