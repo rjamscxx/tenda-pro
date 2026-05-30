@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from 'next'
-import { Outfit, Geist_Mono } from 'next/font/google'
+import { Geist_Mono } from 'next/font/google'
 import './globals.css'
 import ServiceWorkerRegistrar from '@/components/layout/ServiceWorkerRegistrar'
 
-const outfit = Outfit({
-  variable: '--font-outfit',
-  subsets: ['latin'],
-  display: 'swap',
-})
+// SF Pro is Apple-licensed and cannot be hosted via @font-face on the web.
+// The standard approach is the Apple system-font stack: real SF Pro renders
+// on macOS/iOS (where it ships as the OS UI font), and Windows/Android fall
+// back to their closest system font (Segoe UI / Roboto). Stack lives in
+// globals.css under --font-sans, applied to body.
 const geistMono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'] })
 
 const SITE_URL =
@@ -74,7 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${geistMono.variable} h-full`}
+      className={`${geistMono.variable} h-full`}
       suppressHydrationWarning
     >
       <head>

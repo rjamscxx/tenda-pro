@@ -626,7 +626,12 @@
 
 /* ── Tailwind theme bridge ─────────────────────────────────────────────────── */
 @theme inline {
-  --font-sans: var(--font-outfit);
+  /* Apple system-font stack. SF Pro is Apple-licensed and can't be hosted
+     via @font-face, so we use the OS-native stack: real SF Pro renders on
+     macOS / iOS, Windows falls back to Segoe UI, Android to Roboto. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-mono);
   /* Used on the public QR menu for a real-restaurant typographic feel.
      Georgia is system-installed everywhere; no extra network request. */
@@ -677,11 +682,13 @@ button:not(:disabled),
 body {
   background: var(--canvas);
   color: var(--ink);
-  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-  letter-spacing: -0.01em;
+  /* SF Pro is metric-perfect at default tracking; drop the −1% Outfit
+     compensation that used to be here. */
 }
 
 input:focus, select:focus, textarea:focus {
