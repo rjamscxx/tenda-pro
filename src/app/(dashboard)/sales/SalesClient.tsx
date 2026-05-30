@@ -41,13 +41,14 @@ interface SaleItem {
 }
 
 interface Sale {
-  id:      string
-  channel: string
-  total:   number
-  note:    string | null
-  soldAt:  Date | string
-  isPaid:  boolean
-  items:   SaleItem[]
+  id:           string
+  channel:      string
+  total:        number
+  note:         string | null
+  customerName: string | null
+  soldAt:       Date | string
+  isPaid:       boolean
+  items:        SaleItem[]
 }
 
 interface DishOption {
@@ -339,12 +340,21 @@ export default function SalesClient({
                 <article key={sale.id} className={`px-6 py-4 transition-colors hover:bg-surface-2/40 ${!paid ? 'bg-warn/[0.03]' : ''}`}>
                   {/* Header row */}
                   <header className="flex items-center gap-3 flex-wrap">
-                    <span className="text-sm text-ink-3 tabular whitespace-nowrap">
+                    <span className="text-base font-bold text-ink tabular whitespace-nowrap">
                       {new Date(sale.soldAt).toLocaleString('en-PH', {
                         timeZone: 'Asia/Manila', month: 'short', day: 'numeric',
                         hour: '2-digit', minute: '2-digit',
                       })}
                     </span>
+                    {sale.customerName && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                          <circle cx="5" cy="3.2" r="1.8" stroke="currentColor" strokeWidth="1.2"/>
+                          <path d="M1.5 9c.5-1.6 2-2.5 3.5-2.5S8 7.4 8.5 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+                        </svg>
+                        {sale.customerName}
+                      </span>
+                    )}
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${CHANNEL_BADGE[sale.channel] ?? 'bg-surface-3 text-ink-3'}`}>
                       {CHANNELS.find(c => c.value === sale.channel)?.label ?? sale.channel}
                     </span>
