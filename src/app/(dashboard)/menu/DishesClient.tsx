@@ -265,14 +265,14 @@ export default function DishesClient({
                     <td className="px-4 py-3.5 text-center">
                       <button
                         onClick={() => toggleSoldOut(dish.id)}
-                        title={isSoldOutToday ? 'Mark as available again' : 'Mark sold out for today (auto-resets tomorrow)'}
+                        title={isSoldOutToday ? 'Mark as available again' : 'Mark out of stock for today (auto-resets tomorrow)'}
                         className={`inline-flex items-center justify-center h-6 px-2.5 rounded text-[11px] font-bold uppercase tracking-wider transition-colors duration-200 focus:outline-none ${
                           isSoldOutToday
                             ? 'bg-warn/15 text-warn border border-warn/40 hover:bg-warn/25'
                             : 'bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20'
                         }`}
                       >
-                        {isSoldOutToday ? 'Sold Out' : 'Available'}
+                        {isSoldOutToday ? 'Out of Stock' : 'Available'}
                       </button>
                     </td>
                     <td className="px-2 py-3.5">
