@@ -5,8 +5,11 @@ import type { Metadata } from 'next'
 
 export const revalidate = 60
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function generateMetadata({ params }: { params: Promise<{ venueId: string }> }): Promise<Metadata> {
   const { venueId } = await params
+  if (!UUID_RE.test(venueId)) return { title: 'Menu' }
   const [venue] = await db.select({ name: venues.name }).from(venues).where(eq(venues.id, venueId)).limit(1)
   return {
     title: venue ? `${venue.name} — Menu` : 'Menu',
@@ -37,6 +40,14 @@ function categoryRank(cat: string) {
 
 export default async function PublicMenuPage({ params }: { params: Promise<{ venueId: string }> }) {
   const { venueId } = await params
+
+  if (!UUID_RE.test(venueId)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-canvas text-ink-3 text-sm">
+        Menu not found.
+      </div>
+    )
+  }
 
   const [venueRow, dishRows] = await Promise.all([
     db.select({ id: venues.id, name: venues.name, menuTheme: venues.menuTheme })
