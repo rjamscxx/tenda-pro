@@ -64,7 +64,7 @@ export default async function DashboardPage() {
   const weekStartIso      = weekStart.toISOString()
   const lastWeekStartIso  = lastWeekStart.toISOString()
 
-  const [salesAgg, expensesAgg, allIngredients, chartSalesRows, chartExpensesRows, topDishesRows, anyDish, channelRows, weekAgg] = await Promise.all([
+  const [salesAgg, expensesAgg, allIngredients, chartSalesRows, chartExpensesRows, topDishesRows, anyDish, channelRows, weekAgg, cogsAgg] = await Promise.all([
     // 1. All sales KPIs in one pass
     db.select({
       todayRevenue:     sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${todayStartIso} and ${sales.soldAt} < ${tomorrowStartIso} then ${sales.total}::bigint else 0 end), 0)`,
@@ -135,6 +135,18 @@ export default async function DashboardPage() {
       lastWeekRevenue: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${lastWeekStartIso} and ${sales.soldAt} < ${weekStartIso} then ${sales.total}::bigint else 0 end), 0)`,
       lastWeekCount:   sql<string>`coalesce(count(case when ${sales.soldAt} >= ${lastWeekStartIso} and ${sales.soldAt} < ${weekStartIso} then 1 end), 0)`,
     }).from(sales).where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, lastWeekStart))),
+
+    // 10. Recipe-based COGS — the industry-standard food cost denominator.
+    //     We sum unit_cost × qty over sale_items joined to today's + month's sales.
+    //     This is "Cost of Goods Sold from what we actually sold", which is
+    //     independent of when ingredients were purchased.
+    db.select({
+      cogsToday: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${todayStartIso} and ${sales.soldAt} < ${tomorrowStartIso} then ${saleItems.qty} * ${saleItems.unitCost} else 0 end), 0)`,
+      cogsMonth: sql<string>`coalesce(sum(case when ${sales.soldAt} >= ${monthStartIso} then ${saleItems.qty} * ${saleItems.unitCost} else 0 end), 0)`,
+    })
+      .from(saleItems)
+      .innerJoin(sales, eq(saleItems.saleId, sales.id))
+      .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, lastMonthStart))),
   ])
 
   // Waste queries isolated — degrade gracefully if waste_logs table not yet migrated
@@ -221,8 +233,13 @@ export default async function DashboardPage() {
   )
   const lowStockCount = outOfStock.length + lowStock.length
 
-  const foodCostPct    = revenueMonth > 0 ? (ingredientCostMonth / revenueMonth) * 100 : null
-  const grossMarginPct = revenueMonth > 0 ? ((revenueMonth - ingredientCostMonth) / revenueMonth) * 100 : null
+  // Food cost % uses recipe COGS (sale_items.unit_cost × qty) — the industry-standard
+  // measure. Ingredient *purchases* this month show under the expense breakdown below.
+  const cogsMonth      = Number(cogsAgg[0].cogsMonth)
+  const cogsToday      = Number(cogsAgg[0].cogsToday)
+  const foodCostPct    = revenueMonth > 0 ? (cogsMonth / revenueMonth) * 100 : null
+  const grossMarginPct = revenueMonth > 0 ? ((revenueMonth - cogsMonth) / revenueMonth) * 100 : null
+  const foodCostTodayPct = revenueToday > 0 ? (cogsToday / revenueToday) * 100 : null
 
   // Budget progress
   const revenueGoal   = venue.monthlyRevenueGoal   // cents
@@ -268,7 +285,9 @@ export default async function DashboardPage() {
     {
       label: 'Food Cost %',
       value: foodCostPct !== null ? `${foodCostPct.toFixed(1)}%` : '—',
-      sub: 'ingredients vs revenue MTD',
+      sub: foodCostTodayPct !== null
+        ? `${foodCostTodayPct.toFixed(1)}% today · recipe COGS MTD`
+        : 'recipe COGS vs revenue MTD',
       delta: null,
       deltaLabel: '',
       status: foodCostPct !== null && foodCostPct > (venue.foodCostTarget ?? 35) ? 'warn' as const : 'good' as const,
@@ -276,7 +295,7 @@ export default async function DashboardPage() {
     {
       label: 'Gross Margin',
       value: grossMarginPct !== null ? `${grossMarginPct.toFixed(1)}%` : '—',
-      sub: 'after ingredient cost MTD',
+      sub: 'after recipe COGS MTD',
       delta: null,
       deltaLabel: '',
       status: grossMarginPct !== null && grossMarginPct < 30 ? 'warn' as const : 'neutral' as const,
