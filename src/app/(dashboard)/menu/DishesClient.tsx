@@ -422,7 +422,7 @@ export default function DishesClient({
                       className="w-20 shrink-0 px-3 py-2 rounded-lg bg-canvas border border-hair text-ink text-sm tabular focus:outline-none focus:border-accent transition-colors"
                       placeholder="Qty"
                     />
-                    <span className="text-xs text-ink-4 w-8 shrink-0">{ing?.unit ?? ''}</span>
+                    <span className="text-xs text-ink-4 uppercase tracking-wider w-8 shrink-0">{ing?.unit ?? ''}</span>
                     <span className="text-xs tabular text-ink-3 w-16 text-right shrink-0">
                       {formatCurrency(Math.round(rowCost))}
                     </span>

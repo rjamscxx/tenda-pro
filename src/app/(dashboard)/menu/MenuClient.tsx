@@ -208,7 +208,7 @@ export default function MenuClient({
                   {lowStock.length} ingredient{lowStock.length > 1 ? 's' : ''} running low
                 </p>
                 <p className="text-xs text-ink-3 mt-0.5 leading-relaxed">
-                  {lowStock.map(i => `${i.name} (${parseFloat(i.stockQty).toLocaleString()} ${i.unit} left)`).join(' · ')}
+                  {lowStock.map(i => `${i.name} (${parseFloat(i.stockQty).toLocaleString()} ${i.unit.toUpperCase()} left)`).join(' · ')}
                 </p>
               </div>
             </div>
@@ -259,7 +259,7 @@ export default function MenuClient({
                             {ing.name}
                           </div>
                         </td>
-                        <td className="px-6 py-3.5 text-ink-3">{ing.unit}</td>
+                        <td className="px-6 py-3.5 text-ink-3 uppercase tabular tracking-wider text-xs">{ing.unit}</td>
                         <td className="px-6 py-3.5 text-right tabular text-ink">
                           {formatCurrency(ing.costPerUnit)}
                         </td>
