@@ -24,6 +24,7 @@ export default function MenuClient({
   venueId,
   venueName,
   isBasic = false,
+  showFinancials = true,
   dishLimit = 20,
   ingredientLimit = 15,
 }: {
@@ -32,6 +33,7 @@ export default function MenuClient({
   venueId: string
   venueName: string
   isBasic?: boolean
+  showFinancials?: boolean
   dishLimit?: number
   ingredientLimit?: number
 }) {
@@ -150,7 +152,7 @@ export default function MenuClient({
       {/* Tab content */}
       {tab === 'dishes' ? (
         <>
-          <DishesClient dishes={dishes} ingredients={ingredients} isBasic={isBasic} dishLimit={dishLimit} />
+          <DishesClient dishes={dishes} ingredients={ingredients} isBasic={isBasic} showFinancials={showFinancials} dishLimit={dishLimit} />
           {/* QR Code button — fixed bottom-left of dishes tab */}
           <div className="px-6 py-3 border-t border-hair flex justify-end">
             <button

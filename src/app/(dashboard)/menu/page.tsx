@@ -3,14 +3,16 @@ import { ingredients, dishes } from '@/lib/db/schema'
 import { eq, asc } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { isPro, BASIC_DISH_LIMIT, BASIC_INGREDIENT_LIMIT } from '@/lib/plan'
+import { canSeeFinancials } from '@/lib/permissions'
 import MenuClient from './MenuClient'
 
 export const revalidate = 30
 export const metadata = { title: 'Menu — Sizzle' }
 
 export default async function MenuPage() {
-  const { venue, account } = await requireVenue()
+  const { venue, account, dbUser } = await requireVenue()
   const isBasic = !isPro(account)
+  const showFin = canSeeFinancials(dbUser)
 
   const [ingredientRows, dishRows] = await Promise.all([
     db
@@ -68,6 +70,7 @@ export default async function MenuPage() {
         venueId={venue.id}
         venueName={venue.name}
         isBasic={isBasic}
+        showFinancials={showFin}
         dishLimit={BASIC_DISH_LIMIT}
         ingredientLimit={BASIC_INGREDIENT_LIMIT}
       />

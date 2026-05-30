@@ -68,11 +68,13 @@ export default function DishesClient({
   dishes,
   ingredients,
   isBasic = false,
+  showFinancials = true,
   dishLimit = 20,
 }: {
   dishes: DishData[]
   ingredients: IngredientOption[]
   isBasic?: boolean
+  showFinancials?: boolean
   dishLimit?: number
 }) {
   const toast = useToast()
@@ -217,9 +219,11 @@ export default function DishesClient({
                 <th className="px-6 py-3 text-left font-medium">Dish</th>
                 <th className="px-6 py-3 text-left font-medium">Category</th>
                 <th className="px-6 py-3 text-right font-medium tabular">Price</th>
-                <th className="px-6 py-3 text-right font-medium tabular">Food Cost</th>
-                <th className="px-6 py-3 text-right font-medium tabular">Margin %</th>
-                <th className="px-6 py-3 text-right font-medium tabular">Margin ₱</th>
+                {showFinancials && (<>
+                  <th className="px-6 py-3 text-right font-medium tabular">Food Cost</th>
+                  <th className="px-6 py-3 text-right font-medium tabular">Margin %</th>
+                  <th className="px-6 py-3 text-right font-medium tabular">Margin ₱</th>
+                </>)}
                 <th className="px-6 py-3 text-center font-medium">Status</th>
                 <th className="px-4 py-3 text-center font-medium">Availability</th>
                 <th className="px-2 py-3" />
@@ -240,15 +244,17 @@ export default function DishesClient({
                     <td className="px-6 py-3.5 font-medium text-ink">{dish.name}</td>
                     <td className="px-6 py-3.5 text-ink-3">{dish.category}</td>
                     <td className="px-6 py-3.5 text-right tabular text-ink">{formatCurrency(dish.price)}</td>
-                    <td className="px-6 py-3.5 text-right tabular text-ink-3">
-                      {hasRecipe ? formatCurrency(Math.round(cost)) : '—'}
-                    </td>
-                    <td className={`px-6 py-3.5 text-right tabular font-semibold ${hasRecipe ? marginColor(pct) : 'text-ink-4'}`}>
-                      {hasRecipe ? `${pct.toFixed(1)}%` : '—'}
-                    </td>
-                    <td className={`px-6 py-3.5 text-right tabular font-medium ${hasRecipe ? marginColor(pct) : 'text-ink-4'}`}>
-                      {hasRecipe ? formatCurrency(Math.round(marginAmt)) : '—'}
-                    </td>
+                    {showFinancials && (<>
+                      <td className="px-6 py-3.5 text-right tabular text-ink-3">
+                        {hasRecipe ? formatCurrency(Math.round(cost)) : '—'}
+                      </td>
+                      <td className={`px-6 py-3.5 text-right tabular font-semibold ${hasRecipe ? marginColor(pct) : 'text-ink-4'}`}>
+                        {hasRecipe ? `${pct.toFixed(1)}%` : '—'}
+                      </td>
+                      <td className={`px-6 py-3.5 text-right tabular font-medium ${hasRecipe ? marginColor(pct) : 'text-ink-4'}`}>
+                        {hasRecipe ? formatCurrency(Math.round(marginAmt)) : '—'}
+                      </td>
+                    </>)}
                     <td className="px-6 py-3.5 text-center">
                       <button
                         onClick={() => toggleDishActive(dish.id)}

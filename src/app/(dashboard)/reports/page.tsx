@@ -2,6 +2,8 @@ import { db } from '@/lib/db'
 import { sales, expenses, saleItems, dishes, wasteLogs } from '@/lib/db/schema'
 import { and, eq, gte } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
+import { canSeeFinancials } from '@/lib/permissions'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import ReportsClient, { type MonthData } from './ReportsClient'
 
@@ -25,7 +27,8 @@ function monthLabel(ym: string) {
 }
 
 export default async function ReportsPage() {
-  const { venue } = await requireVenue()
+  const { venue, dbUser } = await requireVenue()
+  if (!canSeeFinancials(dbUser)) redirect('/dashboard')
 
   const nowManila = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Manila' }))
   const currentMonth = nowManila.toLocaleDateString('en-CA').slice(0, 7)

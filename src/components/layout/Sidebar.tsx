@@ -12,6 +12,7 @@ interface NavItemDef {
   icon: React.ReactNode
   proOnly?: boolean
   premiumOnly?: boolean
+  ownerOnly?: boolean // hidden from staff (reveals financials)
 }
 
 const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
@@ -60,10 +61,10 @@ const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
   {
     label: 'Insights',
     items: [
-      { href: '/reports', label: 'Reports', icon: (
+      { href: '/reports', label: 'Reports', ownerOnly: true, icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13V9M6 13V6M9 13V8M12 13V4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
       )},
-      { href: '/analytics', label: 'Analytics', premiumOnly: true, icon: (
+      { href: '/analytics', label: 'Analytics', premiumOnly: true, ownerOnly: true, icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 10l3.5-3.5 2.5 2.5L12 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="12.5" cy="3.5" r="1.5" fill="currentColor" opacity=".7"/><path d="M2 14h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" opacity=".4"/></svg>
       )},
     ],
@@ -202,20 +203,24 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
         )}
       </div>
 
-      {/* Main nav */}
+      {/* Main nav — staff role doesn't see ownerOnly items (Reports, Analytics) */}
       <nav className="flex-1 py-3 px-2 space-y-4 overflow-y-auto">
-        {NAV_SECTIONS.map(section => (
-          <div key={section.label}>
-            <p className="px-3 mb-1 text-[10px] font-semibold text-ink-4 uppercase tracking-widest">
-              {section.label}
-            </p>
-            <div className="space-y-0.5">
-              {section.items.map(({ href, label, icon, proOnly, premiumOnly }) => (
-                <NavItem key={href} href={href} label={label} icon={icon} proOnly={proOnly} premiumOnly={premiumOnly} isUserPro={isPro} isUserPremium={isPremium} onClose={onClose} />
-              ))}
+        {NAV_SECTIONS.map(section => {
+          const visible = section.items.filter(it => !(it.ownerOnly && role !== 'owner'))
+          if (!visible.length) return null
+          return (
+            <div key={section.label}>
+              <p className="px-3 mb-1 text-[10px] font-semibold text-ink-4 uppercase tracking-widest">
+                {section.label}
+              </p>
+              <div className="space-y-0.5">
+                {visible.map(({ href, label, icon, proOnly, premiumOnly }) => (
+                  <NavItem key={href} href={href} label={label} icon={icon} proOnly={proOnly} premiumOnly={premiumOnly} isUserPro={isPro} isUserPremium={isPremium} onClose={onClose} />
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </nav>
 
       {/* Bottom nav */}

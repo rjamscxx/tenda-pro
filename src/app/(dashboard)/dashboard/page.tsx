@@ -3,6 +3,7 @@ import { sales, expenses, ingredients, saleItems, dishes, wasteLogs } from '@/li
 import { and, desc, eq, gte, lt, sql } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { isPremium } from '@/lib/plan'
+import { canSeeFinancials } from '@/lib/permissions'
 import { formatCurrency } from '@/lib/utils'
 import CashflowChart, { type ChartPoint } from './CashflowChart'
 import EodSummary from './EodSummary'
@@ -29,8 +30,9 @@ function delta(current: number, previous: number) {
 }
 
 export default async function DashboardPage() {
-  const { venue, account } = await requireVenue()
+  const { venue, account, dbUser } = await requireVenue()
   const premium = isPremium(account)
+  const showFin = canSeeFinancials(dbUser)
   const tz = venue.timezone
 
   // ── Date helpers ──────────────────────────────────────────────────────────
@@ -270,6 +272,8 @@ export default async function DashboardPage() {
   })
 
   // ── KPI card definitions ───────────────────────────────────────────────────
+  // Staff role sees Revenue Today + Month Revenue only — food cost % and gross
+  // margin reveal what the business actually earns and stay owner-only.
   const kpis = [
     {
       label: 'Revenue Today',
@@ -287,24 +291,26 @@ export default async function DashboardPage() {
       deltaLabel: 'vs last month',
       status: 'neutral' as const,
     },
-    {
-      label: 'Food Cost %',
-      value: foodCostPct !== null ? `${foodCostPct.toFixed(1)}%` : '—',
-      sub: foodCostTodayPct !== null
-        ? `${foodCostTodayPct.toFixed(1)}% today · recipe COGS MTD`
-        : 'recipe COGS vs revenue MTD',
-      delta: null,
-      deltaLabel: '',
-      status: foodCostPct !== null && foodCostPct > (venue.foodCostTarget ?? 35) ? 'warn' as const : 'good' as const,
-    },
-    {
-      label: 'Gross Margin',
-      value: grossMarginPct !== null ? `${grossMarginPct.toFixed(1)}%` : '—',
-      sub: 'after recipe COGS MTD',
-      delta: null,
-      deltaLabel: '',
-      status: grossMarginPct !== null && grossMarginPct < 30 ? 'warn' as const : 'neutral' as const,
-    },
+    ...(showFin ? [
+      {
+        label: 'Food Cost %',
+        value: foodCostPct !== null ? `${foodCostPct.toFixed(1)}%` : '—',
+        sub: foodCostTodayPct !== null
+          ? `${foodCostTodayPct.toFixed(1)}% today · recipe COGS MTD`
+          : 'recipe COGS vs revenue MTD',
+        delta: null,
+        deltaLabel: '',
+        status: foodCostPct !== null && foodCostPct > (venue.foodCostTarget ?? 35) ? 'warn' as const : 'good' as const,
+      },
+      {
+        label: 'Gross Margin',
+        value: grossMarginPct !== null ? `${grossMarginPct.toFixed(1)}%` : '—',
+        sub: 'after recipe COGS MTD',
+        delta: null,
+        deltaLabel: '',
+        status: grossMarginPct !== null && grossMarginPct < 30 ? 'warn' as const : 'neutral' as const,
+      },
+    ] : []),
   ]
 
   // ── Getting started checklist ─────────────────────────────────────────────
@@ -504,8 +510,9 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* AI today's push — Premium-only, hidden when no key configured */}
-      {premium && process.env.ANTHROPIC_API_KEY && (
+      {/* AI today's push — Premium-only + owner-only (reveals margins),
+          hidden when no Anthropic key is configured. */}
+      {premium && showFin && process.env.ANTHROPIC_API_KEY && (
         <AiTodayPush
           initialText={await getOrGenerateTodayPush(account.id, venue.id)}
           refresh={refreshTodayPush}

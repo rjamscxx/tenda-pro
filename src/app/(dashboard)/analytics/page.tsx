@@ -3,8 +3,10 @@ import { sales, expenses } from '@/lib/db/schema'
 import { and, eq, gte } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { isPremium as checkPremium } from '@/lib/plan'
+import { canSeeFinancials } from '@/lib/permissions'
 import PremiumLockPage from '@/components/ui/PremiumLockPage'
 import AnalyticsClient from './AnalyticsClient'
+import { redirect } from 'next/navigation'
 
 export const revalidate = 60
 export const metadata = { title: 'Analytics — Sizzle' }
@@ -25,7 +27,8 @@ function calendarDow(dateStr: string): number {
 }
 
 export default async function AnalyticsPage() {
-  const { venue, account } = await requireVenue()
+  const { venue, account, dbUser } = await requireVenue()
+  if (!canSeeFinancials(dbUser)) redirect('/dashboard')
 
   if (!checkPremium(account)) {
     return <PremiumLockPage />

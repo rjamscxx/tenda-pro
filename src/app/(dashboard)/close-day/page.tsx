@@ -1,4 +1,6 @@
 import { requireVenue } from '@/lib/queries/auth'
+import { canSeeFinancials } from '@/lib/permissions'
+import { redirect } from 'next/navigation'
 import { getTodayKpi } from '@/lib/queries/todayKpi'
 import { db } from '@/lib/db'
 import { sales, saleItems, expenses, wasteLogs, dishes } from '@/lib/db/schema'
@@ -9,6 +11,7 @@ export const metadata = { title: 'Close Day — Sizzle' }
 
 export default async function CloseDayPage() {
   const { venue, dbUser } = await requireVenue()
+  if (!canSeeFinancials(dbUser)) redirect('/dashboard')
   const k = await getTodayKpi(venue.id)
 
   const today = k.today
