@@ -381,7 +381,7 @@ export default function InventoryClient({
                       <td className="px-6 py-3.5 font-medium text-ink">{ing.name}</td>
                       <td className="px-6 py-3.5 text-right tabular text-ink">
                         <div className="flex items-center justify-end gap-2">
-                          <span>{fmtQty(ing.stockQty)}{' '}<span className="text-ink-4 text-xs font-normal">{ing.unit}</span></span>
+                          <span>{fmtQty(ing.stockQty)}{' '}<span className="text-ink-4 text-xs font-normal uppercase tracking-wider">{ing.unit}</span></span>
                           {/* Premium forecast badge: days until stock runs out at current sales pace */}
                           {isPremium && ing.daysRemaining !== null && ing.daysRemaining !== undefined && ing.stockQty > 0 && (() => {
                             const d = ing.daysRemaining
@@ -409,7 +409,7 @@ export default function InventoryClient({
                       </td>
                       <td className="px-6 py-3.5 text-right tabular text-ink-3">
                         {ing.lowStockThreshold > 0
-                          ? <>{fmtQty(ing.lowStockThreshold)} <span className="text-ink-4 text-xs">{ing.unit}</span></>
+                          ? <>{fmtQty(ing.lowStockThreshold)} <span className="text-ink-4 text-xs uppercase tracking-wider">{ing.unit}</span></>
                           : <span className="text-ink-4">—</span>}
                       </td>
                       <td className="px-6 py-3.5 text-right tabular text-ink-3">
@@ -642,7 +642,7 @@ export default function InventoryClient({
             {ingredients.map(ing => (
               <div key={ing.id} className="flex items-center gap-3">
                 <span className="flex-1 min-w-0 text-sm text-ink truncate">{ing.name}</span>
-                <span className="text-xs text-ink-4 w-8 shrink-0 text-right">{ing.unit}</span>
+                <span className="text-xs text-ink-4 w-8 shrink-0 text-right uppercase tracking-wider">{ing.unit}</span>
                 <input
                   type="number"
                   min="0"
@@ -690,7 +690,7 @@ export default function InventoryClient({
           </div>
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-ink-3 uppercase tracking-wider">
-              Quantity{adjustTarget ? ` (${adjustTarget.unit})` : ''}
+              Quantity{adjustTarget ? ` (${adjustTarget.unit.toUpperCase()})` : ''}
               {adjustForm.movementType === 'received' && <span className="ml-2 text-success normal-case font-normal">+ adding to stock</span>}
               {(adjustForm.movementType === 'used' || adjustForm.movementType === 'wasted') && <span className="ml-2 text-danger normal-case font-normal">− removing from stock</span>}
               {adjustForm.movementType === 'adjusted' && <span className="ml-2 text-warn normal-case font-normal">positive or negative net change</span>}
@@ -705,7 +705,7 @@ export default function InventoryClient({
               <p className="text-xs text-ink-4">
                 Current: <span className="tabular text-ink-2">{fmtQty(adjustTarget.stockQty)}</span>{' '}
                 → New: <span className="tabular text-ink font-medium">{fmtQty(previewQty)}</span>{' '}
-                {adjustTarget.unit}
+                <span className="uppercase tracking-wider">{adjustTarget.unit}</span>
               </p>
             )}
           </div>
