@@ -222,28 +222,10 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
   const router = useRouter()
   const [active, setActive] = useState(initialTheme)
   const [isPending, startTransition] = useTransition()
-  const [planLoading, setPlanLoading] = useState<'trial' | 'monthly' | 'annual' | null>(null)
-  const [planError, setPlanError] = useState<string | null>(null)
-
-  // Route Pro purchase through PayMongo Checkout. The webhook activates the
-  // account when the payment completes — never short-circuit via activatePlan.
-  async function startCheckout(billing: 'monthly' | 'annual') {
-    setPlanLoading(billing)
-    setPlanError(null)
-    try {
-      const res = await fetch(`/api/paymongo/checkout?billing=${billing}`, { method: 'POST' })
-      const data = await res.json()
-      if (!res.ok || !data.url) {
-        setPlanError(data.error ?? 'Could not start checkout. Try again in a moment.')
-        setPlanLoading(null)
-        return
-      }
-      window.location.href = data.url
-    } catch {
-      setPlanError('Network error — check your connection and try again.')
-      setPlanLoading(null)
-    }
-  }
+  const [planLoading, setPlanLoading] = useState<'trial' | null>(null)
+  const [contactForm, setContactForm] = useState<{ billing: 'monthly' | 'annual' } | null>(null)
+  const [contactFields, setContactFields] = useState({ fullName: '', phone: '', email: '' })
+  const [contactSent, setContactSent] = useState(false)
 
   const now = new Date()
   const isExpired = planExpiresAt ? new Date(planExpiresAt) < now : false
@@ -587,39 +569,110 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                     }}
                     className="w-full py-2 rounded-lg text-sm font-semibold btn-primary disabled:opacity-60"
                   >
-                    {planLoading === 'trial' ? 'Activating…' : 'Start 14-day free trial →'}
+                    {planLoading === 'trial' ? 'Activating…' : 'Start 7-day free trial →'}
                   </button>
                 )}
                 <button
-                  disabled={!!planLoading}
-                  onClick={() => startCheckout('monthly')}
-                  className="w-full py-2 rounded-lg text-sm font-semibold btn-primary disabled:opacity-60"
+                  onClick={() => { setContactForm({ billing: 'monthly' }); setContactSent(false); setContactFields({ fullName: '', phone: '', email: '' }) }}
+                  className="w-full py-2 rounded-lg text-sm font-semibold btn-primary"
                 >
-                  {planLoading === 'monthly' ? 'Redirecting…' : 'Subscribe monthly — ₱399/mo →'}
+                  Subscribe monthly — ₱399/mo →
                 </button>
                 <button
-                  disabled={!!planLoading}
-                  onClick={() => startCheckout('annual')}
-                  className="w-full py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors disabled:opacity-60"
+                  onClick={() => { setContactForm({ billing: 'annual' }); setContactSent(false); setContactFields({ fullName: '', phone: '', email: '' }) }}
+                  className="w-full py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors"
                 >
-                  {planLoading === 'annual' ? 'Redirecting…' : 'Subscribe annually — ₱4,000/yr (save ₱788) →'}
+                  Subscribe annually — ₱4,000/yr (save ₱788) →
                 </button>
               </div>
             )}
           </div>
 
-          {planError && (
-            <p className="text-xs text-danger leading-snug text-center">{planError}</p>
-          )}
-
         </div>
-
-        {effectivePlan === 'pro' && (
-          <p className="text-xs text-ink-4 text-center">
-            Pay via GCash, Maya, card, or bank transfer. Cancel anytime.
-          </p>
-        )}
       </section>
+
+      {/* ── Contact form modal ───────────────────────────────────────── */}
+      {contactForm && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
+          <div className="glass rounded-2xl w-full max-w-md p-8 space-y-6 shadow-2xl border border-hair">
+            {!contactSent ? (
+              <>
+                <div className="space-y-1">
+                  <h2 className="text-lg font-semibold text-ink">
+                    {contactForm.billing === 'annual' ? 'Pro Annual — ₱4,000/yr' : 'Pro Monthly — ₱399/mo'}
+                  </h2>
+                  <p className="text-sm text-ink-4">Leave your details and we'll get back to you within 24 hours.</p>
+                </div>
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-ink-3">Full Name</label>
+                    <input
+                      type="text"
+                      value={contactFields.fullName}
+                      onChange={e => setContactFields(f => ({ ...f, fullName: e.target.value }))}
+                      placeholder="Juan dela Cruz"
+                      className="input-field w-full"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-ink-3">Contact Number</label>
+                    <input
+                      type="tel"
+                      value={contactFields.phone}
+                      onChange={e => setContactFields(f => ({ ...f, phone: e.target.value }))}
+                      placeholder="09XX XXX XXXX"
+                      className="input-field w-full"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-ink-3">Email Address</label>
+                    <input
+                      type="email"
+                      value={contactFields.email}
+                      onChange={e => setContactFields(f => ({ ...f, email: e.target.value }))}
+                      placeholder="you@example.com"
+                      className="input-field w-full"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <a
+                    href={`mailto:rjamscxx@gmail.com?subject=${encodeURIComponent(`Sizzle Pro ${contactForm.billing === 'annual' ? 'Annual' : 'Monthly'} — Subscription Request`)}&body=${encodeURIComponent(`Hi RJ,\n\nI'd like to subscribe to Sizzle Pro (${contactForm.billing === 'annual' ? '₱4,000/yr Annual' : '₱399/mo Monthly'}).\n\nFull Name: ${contactFields.fullName}\nContact Number: ${contactFields.phone}\nEmail: ${contactFields.email}\n\nPlease let me know the next steps.\n\nThank you!`)}`}
+                    onClick={() => setContactSent(true)}
+                    className={`block w-full py-2.5 btn-primary rounded-lg text-sm font-semibold text-center ${
+                      !contactFields.fullName || !contactFields.phone || !contactFields.email
+                        ? 'opacity-40 pointer-events-none'
+                        : ''
+                    }`}
+                  >
+                    Send request →
+                  </a>
+                  <button
+                    onClick={() => setContactForm(null)}
+                    className="w-full text-xs text-ink-4 hover:text-ink transition-colors py-1"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="text-center space-y-4 py-4">
+                <p className="text-4xl">🎉</p>
+                <div className="space-y-1">
+                  <h2 className="text-lg font-semibold text-ink">Request sent!</h2>
+                  <p className="text-sm text-ink-4">We'll activate your Pro account within 24 hours after confirming your details.</p>
+                </div>
+                <button
+                  onClick={() => setContactForm(null)}
+                  className="px-6 py-2 rounded-lg text-sm font-medium border border-hair text-ink-3 hover:border-accent hover:text-accent transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── Appearance ───────────────────────────────────────────────── */}
       <section className="glass card-glow rounded-xl p-6 space-y-5">
