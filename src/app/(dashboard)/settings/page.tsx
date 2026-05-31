@@ -36,7 +36,7 @@ export default async function SettingsPage() {
     requireVenue(),
   ])
 
-  const theme = cookieStore.get('sizzle-theme')?.value ?? 'sage-dark'
+  const theme = cookieStore.get('sizzle-theme')?.value ?? 'ember'
   const isAdmin = authUser.email === ADMIN_EMAIL
 
   const [recentActivity, subRequests, subscribedAccounts] = await Promise.all([

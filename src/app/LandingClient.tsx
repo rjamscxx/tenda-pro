@@ -232,9 +232,9 @@ function smoothScrollTo(href: string) {
 // <html data-theme>. We just read that back here so React state matches what
 // the visitor already sees, instead of flashing on hydration.
 function readInitialTheme(): string {
-  if (typeof document === 'undefined') return 'sage-dark'
+  if (typeof document === 'undefined') return 'ember'
   const v = document.documentElement.getAttribute('data-theme')
-  return v && /^[a-z][a-z0-9-]{0,30}$/.test(v) ? v : 'sage-dark'
+  return v && /^[a-z][a-z0-9-]{0,30}$/.test(v) ? v : 'ember'
 }
 
 export default function LandingClient() {
