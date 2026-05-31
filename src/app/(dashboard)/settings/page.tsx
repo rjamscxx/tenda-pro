@@ -66,40 +66,31 @@ export default async function SettingsPage() {
       : Promise.resolve([]),
 
     isAdmin
-      ? (async (): Promise<SubscribedAccount[]> => {
-          const rows = await db
-            .select({
-              accountId: accounts.id,
-              planExpiresAt: accounts.planExpiresAt,
-              createdAt: accounts.createdAt,
-              fullName: users.fullName,
-              venueName: venues.name,
-              userId: users.id,
-            })
-            .from(accounts)
-            .innerJoin(users, eq(users.accountId, accounts.id))
-            .leftJoin(venues, eq(venues.accountId, accounts.id))
-            .where(and(
-              eq(accounts.plan, 'pro'),
-              isNull(accounts.trialStartedAt),
-              isNotNull(accounts.planExpiresAt),
-            ))
-            .orderBy(desc(accounts.planExpiresAt))
-
-          const supabase = createAdminClient()
-          const { data: { users: authUsers } } = await supabase.auth.admin.listUsers()
-          const emailMap = new Map((authUsers ?? []).map(u => [u.id, u.email ?? '']))
-
-          return rows.map(r => ({
+      ? db
+          .select({
+            accountId: accounts.id,
+            planExpiresAt: accounts.planExpiresAt,
+            fullName: users.fullName,
+            email: users.email,
+            venueName: venues.name,
+          })
+          .from(accounts)
+          .innerJoin(users, eq(users.accountId, accounts.id))
+          .leftJoin(venues, eq(venues.accountId, accounts.id))
+          .where(and(
+            eq(accounts.plan, 'pro'),
+            isNull(accounts.trialStartedAt),
+            isNotNull(accounts.planExpiresAt),
+          ))
+          .orderBy(desc(accounts.planExpiresAt))
+          .then(rows => rows.map(r => ({
             accountId: r.accountId,
             fullName: r.fullName ?? '',
             venueName: r.venueName ?? '',
-            email: emailMap.get(r.userId) ?? '',
-            // Activation date = expiry minus 30 days
+            email: r.email ?? '',
             activatedAt: new Date(r.planExpiresAt!.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(),
             planExpiresAt: r.planExpiresAt!.toISOString(),
-          }))
-        })()
+          } satisfies SubscribedAccount)))
       : Promise.resolve([]),
   ])
 

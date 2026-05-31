@@ -110,7 +110,7 @@ const TYPE_THEME: Record<BusinessTypeId, string> = Object.fromEntries(
   BUSINESS_TYPES.map(t => [t.id, t.theme])
 ) as Record<BusinessTypeId, string>
 
-export default function OnboardingForm({ userId }: { userId: string }) {
+export default function OnboardingForm({ userId, email }: { userId: string; email: string }) {
   const [businessType, setBusinessType] = useState<BusinessTypeId>('restaurant')
   const [venueName, setVenueName]       = useState('')
   const [fullName, setFullName]         = useState('')
@@ -129,6 +129,7 @@ export default function OnboardingForm({ userId }: { userId: string }) {
     setError('')
     const result = await createVenue({
       userId,
+      email,
       venueName,
       fullName,
       theme: TYPE_THEME[businessType],
