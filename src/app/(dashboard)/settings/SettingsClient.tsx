@@ -226,6 +226,8 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
   const [contactForm, setContactForm] = useState<{ billing: 'monthly' | 'annual' } | null>(null)
   const [contactFields, setContactFields] = useState({ fullName: '', phone: '', email: '' })
   const [contactSent, setContactSent] = useState(false)
+  const [contactSubmitting, setContactSubmitting] = useState(false)
+  const [contactSubmitError, setContactSubmitError] = useState<string | null>(null)
   const [receiptFile, setReceiptFile] = useState<File | null>(null)
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null)
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
@@ -610,7 +612,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                   </button>
                 )}
                 <button
-                  onClick={() => { setContactForm({ billing: 'monthly' }); setContactSent(false); setContactFields({ fullName: '', phone: '', email: '' }); setReceiptFile(null); setReceiptPreview(null); setReceiptUrl(null); setReceiptError(null) }}
+                  onClick={() => { setContactForm({ billing: 'monthly' }); setContactSent(false); setContactFields({ fullName: '', phone: '', email: '' }); setReceiptFile(null); setReceiptPreview(null); setReceiptUrl(null); setReceiptError(null); setContactSubmitting(false); setContactSubmitError(null) }}
                   className="w-full py-2 rounded-lg text-sm font-semibold btn-primary"
                 >
                   Subscribe monthly — ₱399/mo →
@@ -642,22 +644,22 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 </div>
 
                 {/* Payment QR codes */}
-                <div className="space-y-3">
+                <div className="flex gap-2">
                   {[
                     { name: 'GCash', src: '/payment-qrs/gcash.jpg' },
                     { name: 'GoTyme', src: '/payment-qrs/gotyme.jpg' },
                     { name: 'BPI', src: '/payment-qrs/bpi.jpg' },
                   ].map(({ name, src }) => (
-                    <div key={name} className="rounded-lg border border-hair bg-white overflow-hidden">
-                      <div className="px-3 pt-2 pb-1">
-                        <span className="text-xs font-semibold text-gray-500">{name}</span>
+                    <div key={name} className="flex-1 flex flex-col items-center gap-1">
+                      <div className="w-full bg-white rounded-lg border border-hair overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={src}
+                          alt={`${name} QR code`}
+                          className="w-full h-32 object-contain"
+                        />
                       </div>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={src}
-                        alt={`${name} QR code`}
-                        className="w-full object-contain"
-                      />
+                      <span className="text-xs font-semibold text-ink-3">{name}</span>
                     </div>
                   ))}
                 </div>
@@ -724,17 +726,38 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <a
-                    href={`mailto:rjamscxx@gmail.com?subject=${encodeURIComponent(`Sizzle Pro ${contactForm.billing === 'annual' ? 'Annual' : 'Monthly'} — Subscription Request`)}&body=${encodeURIComponent(`Hi RJ,\n\nI'd like to subscribe to Sizzle Pro (${contactForm.billing === 'annual' ? '₱4,000/yr Annual' : '₱399/mo Monthly'}).\n\nFull Name: ${contactFields.fullName}\nContact Number: ${contactFields.phone}\nEmail: ${contactFields.email}${receiptUrl ? `\n\nPayment Receipt: ${receiptUrl}` : ''}\n\nPlease let me know the next steps.\n\nThank you!`)}`}
-                    onClick={() => setContactSent(true)}
-                    className={`block w-full py-2.5 btn-primary rounded-lg text-sm font-semibold text-center ${
-                      !contactFields.fullName || !contactFields.phone || !contactFields.email || receiptUploading
-                        ? 'opacity-40 pointer-events-none'
-                        : ''
-                    }`}
+                  {contactSubmitError && (
+                    <p className="text-xs text-danger text-center">{contactSubmitError}</p>
+                  )}
+                  <button
+                    disabled={!contactFields.fullName || !contactFields.phone || !contactFields.email || receiptUploading || contactSubmitting}
+                    onClick={async () => {
+                      setContactSubmitting(true)
+                      setContactSubmitError(null)
+                      try {
+                        const res = await fetch('/api/subscription-request', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            fullName: contactFields.fullName,
+                            phone: contactFields.phone,
+                            email: contactFields.email,
+                            billing: contactForm.billing,
+                            receiptUrl: receiptUrl ?? undefined,
+                          }),
+                        })
+                        if (!res.ok) throw new Error('Failed to send')
+                        setContactSent(true)
+                      } catch {
+                        setContactSubmitError('Could not send request. Please try again.')
+                      } finally {
+                        setContactSubmitting(false)
+                      }
+                    }}
+                    className="w-full py-2.5 btn-primary rounded-lg text-sm font-semibold disabled:opacity-40"
                   >
-                    Send request →
-                  </a>
+                    {contactSubmitting ? 'Sending…' : 'Send request →'}
+                  </button>
                   <button
                     onClick={() => setContactForm(null)}
                     className="w-full text-xs text-ink-4 hover:text-ink transition-colors py-1"
