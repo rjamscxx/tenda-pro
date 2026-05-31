@@ -40,7 +40,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <PageTransition>{children}</PageTransition>
         </main>
       </div>
-      <TrialExpiredModal trialExpired={trialExpired} />
+      <TrialExpiredModal trialExpired={trialExpired} userEmail={dbUser.email ?? ''} userFullName={dbUser.fullName ?? ''} />
       {/* Widget only mounts when both: account is Premium AND ANTHROPIC_API_KEY is
           configured on the server. Lets us ship the code without lighting the
           feature up until Anthropic credits are loaded. */}
