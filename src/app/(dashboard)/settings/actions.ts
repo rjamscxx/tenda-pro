@@ -95,6 +95,44 @@ export async function activatePlan(plan: 'pro' | 'premium') {
   revalidatePath('/payroll')
 }
 
+const ADMIN_EMAIL = 'rjamscxx@gmail.com'
+
+export async function activateSubscriptionRequest(requestId: string, userEmail: string) {
+  const { authUser } = await requireVenue()
+  if (authUser.email !== ADMIN_EMAIL) throw new Error('Unauthorized')
+
+  const supabase = createAdminClient()
+
+  // Find the Supabase auth user by email
+  const { data: userList } = await supabase.auth.admin.listUsers()
+  const targetUser = userList?.users.find(u => u.email === userEmail)
+  if (!targetUser) throw new Error(`No user found with email ${userEmail}`)
+
+  // Find their account via users table
+  const dbUserRow = await db.select({ accountId: users.accountId }).from(users).where(eq(users.id, targetUser.id)).limit(1)
+  if (!dbUserRow.length) throw new Error('Account not found')
+
+  const accountId = dbUserRow[0].accountId
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+
+  await Promise.all([
+    db.update(accounts).set({ plan: 'pro', planExpiresAt: expiresAt, trialStartedAt: null }).where(eq(accounts.id, accountId)),
+    supabase.from('subscription_requests').update({ status: 'activated' }).eq('id', requestId),
+  ])
+
+  revalidatePath('/settings')
+  revalidatePath('/(dashboard)', 'layout')
+}
+
+export async function rejectSubscriptionRequest(requestId: string) {
+  const { authUser } = await requireVenue()
+  if (authUser.email !== ADMIN_EMAIL) throw new Error('Unauthorized')
+  const supabase = createAdminClient()
+  await supabase.from('subscription_requests').update({ status: 'rejected' }).eq('id', requestId)
+  revalidatePath('/settings')
+  revalidatePath('/(dashboard)', 'layout')
+}
+
 export async function downgradeTofree() {
   const { account } = await requireVenue()
   await db.update(accounts).set({ plan: 'free', planExpiresAt: null }).where(eq(accounts.id, account.id))
