@@ -642,20 +642,22 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 </div>
 
                 {/* Payment QR codes */}
-                <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-3">
                   {[
                     { name: 'GCash', src: '/payment-qrs/gcash.jpg' },
                     { name: 'GoTyme', src: '/payment-qrs/gotyme.jpg' },
                     { name: 'BPI', src: '/payment-qrs/bpi.jpg' },
                   ].map(({ name, src }) => (
-                    <div key={name} className="flex flex-col items-center gap-1.5">
+                    <div key={name} className="rounded-lg border border-hair bg-white overflow-hidden">
+                      <div className="px-3 pt-2 pb-1">
+                        <span className="text-xs font-semibold text-gray-500">{name}</span>
+                      </div>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={src}
-                        alt={`${name} QR`}
-                        className="w-full aspect-square object-contain rounded-lg border border-hair bg-white p-1"
+                        alt={`${name} QR code`}
+                        className="w-full object-contain"
                       />
-                      <span className="text-xs font-medium text-ink-3">{name}</span>
                     </div>
                   ))}
                 </div>
