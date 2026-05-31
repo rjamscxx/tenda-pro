@@ -6,7 +6,7 @@ import Sidebar from './Sidebar'
 
 interface MobileNavVenue { id: string; name: string }
 
-export default function MobileNav({ venueName, venues, activeVenueId, fullName, role, isPro, isPremium }: { venueName: string; venues?: MobileNavVenue[]; activeVenueId?: string; fullName?: string; role?: string; isPro?: boolean; isPremium?: boolean }) {
+export default function MobileNav({ venueName, venues, activeVenueId, fullName, role, isPro, isPremium, pendingSubRequests }: { venueName: string; venues?: MobileNavVenue[]; activeVenueId?: string; fullName?: string; role?: string; isPro?: boolean; isPremium?: boolean; pendingSubRequests?: number }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
@@ -42,12 +42,12 @@ export default function MobileNav({ venueName, venues, activeVenueId, fullName, 
         transition-transform duration-200 ease-out
         ${open ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <Sidebar venueName={venueName} venues={venues} activeVenueId={activeVenueId} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} onClose={() => setOpen(false)} />
+        <Sidebar venueName={venueName} venues={venues} activeVenueId={activeVenueId} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} onClose={() => setOpen(false)} pendingSubRequests={pendingSubRequests} />
       </div>
 
       {/* Desktop sidebar — always visible */}
       <div className="hidden lg:block h-full shrink-0">
-        <Sidebar venueName={venueName} venues={venues} activeVenueId={activeVenueId} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} />
+        <Sidebar venueName={venueName} venues={venues} activeVenueId={activeVenueId} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} pendingSubRequests={pendingSubRequests} />
       </div>
     </>
   )

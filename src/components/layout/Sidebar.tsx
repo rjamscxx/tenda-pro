@@ -99,6 +99,7 @@ function NavItem({
   isUserPro,
   isUserPremium,
   onClose,
+  badge,
 }: {
   href: string
   label: string
@@ -108,6 +109,7 @@ function NavItem({
   isUserPro?: boolean
   isUserPremium?: boolean
   onClose?: () => void
+  badge?: number
 }) {
   const pathname = usePathname()
   const router   = useRouter()
@@ -140,6 +142,11 @@ function NavItem({
           {premiumOnly ? '💎' : '🔒'}
         </span>
       )}
+      {badge && !locked && !isPending && (
+        <span className="ml-auto shrink-0 min-w-[18px] h-[18px] px-1 rounded-full bg-danger text-white text-[10px] font-bold flex items-center justify-center">
+          {badge > 9 ? '9+' : badge}
+        </span>
+      )}
       {isPending && !locked && (
         <span className="ml-auto shrink-0">
           <svg className="animate-spin" width="10" height="10" viewBox="0 0 10 10" fill="none">
@@ -166,9 +173,10 @@ interface SidebarProps {
   isPro?: boolean
   isPremium?: boolean
   onClose?: () => void
+  pendingSubRequests?: number
 }
 
-export default function Sidebar({ venueName, venues, activeVenueId, fullName, role, isPro, isPremium, onClose }: SidebarProps) {
+export default function Sidebar({ venueName, venues, activeVenueId, fullName, role, isPro, isPremium, onClose, pendingSubRequests }: SidebarProps) {
   const router = useRouter()
 
   async function handleSignOut() {
@@ -232,7 +240,14 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
       {/* Bottom nav */}
       <div className="py-2 px-2 border-t border-hair space-y-0.5">
         {BOTTOM_NAV.map(({ href, label, icon }) => (
-          <NavItem key={href} href={href} label={label} icon={icon} onClose={onClose} />
+          <NavItem
+            key={href}
+            href={href}
+            label={label}
+            icon={icon}
+            onClose={onClose}
+            badge={href === '/settings' && pendingSubRequests ? pendingSubRequests : undefined}
+          />
         ))}
         <button
           onClick={handleSignOut}
