@@ -39,8 +39,8 @@ export async function POST(req: NextRequest) {
   })
 
   if (error) {
-    console.error('[subscription-request]', error)
-    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
+    console.error('[subscription-request] full error:', JSON.stringify(error))
+    return NextResponse.json({ error: 'Failed to send email', detail: JSON.stringify(error) }, { status: 500 })
   }
 
   return NextResponse.json({ ok: true })
