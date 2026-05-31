@@ -674,13 +674,13 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                   </button>
                 )}
                 <button
-                  onClick={() => { setContactForm({ billing: 'monthly' }); setContactSent(false); setContactFields({ fullName: '', phone: '', email: '' }); setReceiptFile(null); setReceiptPreview(null); setReceiptUrl(null); setReceiptError(null); setContactSubmitting(false); setContactSubmitError(null) }}
+                  onClick={() => { setContactForm({ billing: 'monthly' }); setContactSent(false); setContactFields({ fullName: profile.fullName || '', phone: '', email: profile.email || '' }); setReceiptFile(null); setReceiptPreview(null); setReceiptUrl(null); setReceiptError(null); setContactSubmitting(false); setContactSubmitError(null) }}
                   className="w-full py-2 rounded-lg text-sm font-semibold btn-primary"
                 >
                   Subscribe monthly — ₱399/mo →
                 </button>
                 <button
-                  onClick={() => { setContactForm({ billing: 'annual' }); setContactSent(false); setContactFields({ fullName: '', phone: '', email: '' }) }}
+                  onClick={() => { setContactForm({ billing: 'annual' }); setContactSent(false); setContactFields({ fullName: profile.fullName || '', phone: '', email: profile.email || '' }); setReceiptFile(null); setReceiptPreview(null); setReceiptUrl(null); setReceiptError(null); setContactSubmitting(false); setContactSubmitError(null) }}
                   className="w-full py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors"
                 >
                   Subscribe annually — ₱4,000/yr (save ₱788) →
@@ -770,10 +770,10 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                     <input
                       type="email"
                       value={contactFields.email}
-                      onChange={e => setContactFields(f => ({ ...f, email: e.target.value }))}
-                      placeholder="you@example.com"
-                      className="input-field w-full"
+                      readOnly
+                      className="input-field w-full opacity-60 cursor-not-allowed"
                     />
+                    <p className="text-[11px] text-ink-4">This is your account email — used to activate your plan.</p>
                   </div>
                   {/* Receipt upload */}
                   <div className="space-y-1.5">
