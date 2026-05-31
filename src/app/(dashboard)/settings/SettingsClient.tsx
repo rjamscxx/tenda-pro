@@ -226,6 +226,43 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
   const [contactForm, setContactForm] = useState<{ billing: 'monthly' | 'annual' } | null>(null)
   const [contactFields, setContactFields] = useState({ fullName: '', phone: '', email: '' })
   const [contactSent, setContactSent] = useState(false)
+  const [receiptFile, setReceiptFile] = useState<File | null>(null)
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null)
+  const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
+  const [receiptUploading, setReceiptUploading] = useState(false)
+  const [receiptError, setReceiptError] = useState<string | null>(null)
+
+  async function compressAndUpload(file: File) {
+    setReceiptUploading(true)
+    setReceiptError(null)
+    setReceiptUrl(null)
+    try {
+      // Draw to canvas at max 1200px, export JPEG 0.75
+      const bitmap = await createImageBitmap(file)
+      const MAX = 1200
+      const scale = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height))
+      const w = Math.round(bitmap.width * scale)
+      const h = Math.round(bitmap.height * scale)
+      const canvas = document.createElement('canvas')
+      canvas.width = w; canvas.height = h
+      canvas.getContext('2d')!.drawImage(bitmap, 0, 0, w, h)
+      const blob = await new Promise<Blob>(res => canvas.toBlob(b => res(b!), 'image/jpeg', 0.75))
+      const compressed = new File([blob], 'receipt.jpg', { type: 'image/jpeg' })
+      // Preview
+      setReceiptPreview(URL.createObjectURL(blob))
+      // Upload
+      const fd = new FormData()
+      fd.append('file', compressed)
+      const res = await fetch('/api/upload-receipt', { method: 'POST', body: fd })
+      const data = await res.json() as { url?: string; error?: string }
+      if (!res.ok || !data.url) throw new Error(data.error ?? 'Upload failed')
+      setReceiptUrl(data.url)
+    } catch (err) {
+      setReceiptError(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
+      setReceiptUploading(false)
+    }
+  }
 
   const now = new Date()
   const isExpired = planExpiresAt ? new Date(planExpiresAt) < now : false
@@ -573,7 +610,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                   </button>
                 )}
                 <button
-                  onClick={() => { setContactForm({ billing: 'monthly' }); setContactSent(false); setContactFields({ fullName: '', phone: '', email: '' }) }}
+                  onClick={() => { setContactForm({ billing: 'monthly' }); setContactSent(false); setContactFields({ fullName: '', phone: '', email: '' }); setReceiptFile(null); setReceiptPreview(null); setReceiptUrl(null); setReceiptError(null) }}
                   className="w-full py-2 rounded-lg text-sm font-semibold btn-primary"
                 >
                   Subscribe monthly — ₱399/mo →
@@ -601,7 +638,27 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                   <h2 className="text-lg font-semibold text-ink">
                     {contactForm.billing === 'annual' ? 'Pro Annual — ₱4,000/yr' : 'Pro Monthly — ₱399/mo'}
                   </h2>
-                  <p className="text-sm text-ink-4">Leave your details and we'll get back to you within 24 hours.</p>
+                  <p className="text-sm text-ink-4">Pay via any of the options below, then fill out the form with your receipt.</p>
+                </div>
+
+                {/* Payment QR codes */}
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { name: 'GCash', src: '/payment-qrs/gcash.png' },
+                    { name: 'GoTyme', src: '/payment-qrs/gotyme.png' },
+                    { name: 'BPI', src: '/payment-qrs/bpi.png' },
+                  ].map(({ name, src }) => (
+                    <div key={name} className="flex flex-col items-center gap-1.5">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={src}
+                        alt={`${name} QR`}
+                        className="w-full aspect-square object-contain rounded-lg border border-hair bg-white p-1"
+                        onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+                      />
+                      <span className="text-xs font-medium text-ink-3">{name}</span>
+                    </div>
+                  ))}
                 </div>
                 <div className="space-y-3">
                   <div className="space-y-1">
@@ -634,13 +691,43 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                       className="input-field w-full"
                     />
                   </div>
+                  {/* Receipt upload */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-ink-3">Payment Receipt <span className="text-ink-4 font-normal">(GCash, GoTyme, BPI)</span></label>
+                    <label className="flex items-center gap-3 cursor-pointer rounded-lg border border-dashed border-hair hover:border-accent/50 p-3 transition-colors">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="sr-only"
+                        onChange={e => {
+                          const f = e.target.files?.[0]
+                          if (f) { setReceiptFile(f); compressAndUpload(f) }
+                        }}
+                      />
+                      {receiptPreview ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={receiptPreview} alt="Receipt preview" className="h-14 w-14 object-cover rounded-md shrink-0" />
+                      ) : (
+                        <span className="text-xl">📎</span>
+                      )}
+                      <div className="min-w-0">
+                        {receiptUploading && <p className="text-xs text-ink-4">Compressing & uploading…</p>}
+                        {receiptUrl && !receiptUploading && <p className="text-xs text-accent">Receipt uploaded ✓</p>}
+                        {receiptError && <p className="text-xs text-danger">{receiptError}</p>}
+                        {!receiptFile && !receiptUploading && <p className="text-xs text-ink-4">Tap to attach screenshot</p>}
+                        {receiptFile && !receiptUploading && !receiptUrl && !receiptError && (
+                          <p className="text-xs text-ink-4 truncate">{receiptFile.name}</p>
+                        )}
+                      </div>
+                    </label>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <a
-                    href={`mailto:rjamscxx@gmail.com?subject=${encodeURIComponent(`Sizzle Pro ${contactForm.billing === 'annual' ? 'Annual' : 'Monthly'} — Subscription Request`)}&body=${encodeURIComponent(`Hi RJ,\n\nI'd like to subscribe to Sizzle Pro (${contactForm.billing === 'annual' ? '₱4,000/yr Annual' : '₱399/mo Monthly'}).\n\nFull Name: ${contactFields.fullName}\nContact Number: ${contactFields.phone}\nEmail: ${contactFields.email}\n\nPlease let me know the next steps.\n\nThank you!`)}`}
+                    href={`mailto:rjamscxx@gmail.com?subject=${encodeURIComponent(`Sizzle Pro ${contactForm.billing === 'annual' ? 'Annual' : 'Monthly'} — Subscription Request`)}&body=${encodeURIComponent(`Hi RJ,\n\nI'd like to subscribe to Sizzle Pro (${contactForm.billing === 'annual' ? '₱4,000/yr Annual' : '₱399/mo Monthly'}).\n\nFull Name: ${contactFields.fullName}\nContact Number: ${contactFields.phone}\nEmail: ${contactFields.email}${receiptUrl ? `\n\nPayment Receipt: ${receiptUrl}` : ''}\n\nPlease let me know the next steps.\n\nThank you!`)}`}
                     onClick={() => setContactSent(true)}
                     className={`block w-full py-2.5 btn-primary rounded-lg text-sm font-semibold text-center ${
-                      !contactFields.fullName || !contactFields.phone || !contactFields.email
+                      !contactFields.fullName || !contactFields.phone || !contactFields.email || receiptUploading
                         ? 'opacity-40 pointer-events-none'
                         : ''
                     }`}
