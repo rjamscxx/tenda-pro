@@ -746,10 +746,13 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                             receiptUrl: receiptUrl ?? undefined,
                           }),
                         })
-                        if (!res.ok) throw new Error('Failed to send')
+                        if (!res.ok) {
+                          const d = await res.json().catch(() => ({})) as { detail?: string }
+                          throw new Error(d.detail ?? 'Failed to send')
+                        }
                         setContactSent(true)
-                      } catch {
-                        setContactSubmitError('Could not send request. Please try again.')
+                      } catch (err) {
+                        setContactSubmitError(err instanceof Error ? err.message : 'Could not send request. Please try again.')
                       } finally {
                         setContactSubmitting(false)
                       }
