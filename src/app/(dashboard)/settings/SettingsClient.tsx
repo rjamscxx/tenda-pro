@@ -219,6 +219,15 @@ interface SubRequest {
   createdAt: string
 }
 
+interface SubscribedAccount {
+  accountId: string
+  fullName: string
+  venueName: string
+  email: string
+  activatedAt: string
+  planExpiresAt: string
+}
+
 function AdminSubRequestRow({ req }: { req: SubRequest }) {
   const [state, setState] = useState<'idle' | 'activating' | 'rejecting' | 'done' | 'error'>('idle')
   const statusColor = req.status === 'pending' ? 'text-amber-500' : req.status === 'activated' ? 'text-accent' : 'text-ink-4'
@@ -278,9 +287,10 @@ interface Props {
   recentActivity: ActivityEntry[]
   isAdmin?: boolean
   subscriptionRequests?: SubRequest[]
+  subscribedAccounts?: SubscribedAccount[]
 }
 
-export default function SettingsClient({ initialTheme, plan, planExpiresAt, trialStartedAt, venue, profile, recentActivity, isAdmin, subscriptionRequests }: Props) {
+export default function SettingsClient({ initialTheme, plan, planExpiresAt, trialStartedAt, venue, profile, recentActivity, isAdmin, subscriptionRequests, subscribedAccounts }: Props) {
   const router = useRouter()
   const [active, setActive] = useState(initialTheme)
   const [isPending, startTransition] = useTransition()
@@ -691,6 +701,73 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
 
         </div>
       </section>
+
+      {/* ── Admin: Subscribed Accounts ───────────────────────────────── */}
+      {isAdmin && subscribedAccounts && (
+        <section className="glass card-glow rounded-xl p-6 space-y-4 border border-accent/20">
+          <div>
+            <h2 className="text-base font-semibold text-ink">Subscribed Accounts</h2>
+            <p className="text-sm text-ink-4 mt-0.5">
+              Admin only — all active Pro subscribers ({subscribedAccounts.length}).
+            </p>
+          </div>
+          {subscribedAccounts.length === 0 ? (
+            <p className="text-sm text-ink-4 text-center py-4">No active subscribers yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {subscribedAccounts.map(acct => {
+                const now = Date.now()
+                const expiresMs = new Date(acct.planExpiresAt).getTime()
+                const activatedMs = new Date(acct.activatedAt).getTime()
+                const totalMs = expiresMs - activatedMs
+                const remainingMs = Math.max(0, expiresMs - now)
+                const daysLeft = Math.ceil(remainingMs / (1000 * 60 * 60 * 24))
+                const pct = Math.min(100, Math.max(0, (remainingMs / totalMs) * 100))
+                const urgent = daysLeft <= 5
+                const activatedStr = new Date(acct.activatedAt).toLocaleString('en-PH', {
+                  year: 'numeric', month: 'short', day: 'numeric',
+                })
+                const expiresStr = new Date(acct.planExpiresAt).toLocaleString('en-PH', {
+                  year: 'numeric', month: 'short', day: 'numeric',
+                })
+                return (
+                  <div key={acct.accountId} className="rounded-lg border border-hair bg-surface/40 p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-2 flex-wrap">
+                      <div className="space-y-0.5">
+                        <p className="text-sm font-semibold text-ink">
+                          {acct.venueName || acct.fullName || 'Unnamed'}
+                        </p>
+                        <p className="text-xs text-ink-4">{acct.email}</p>
+                        {acct.fullName && acct.venueName && (
+                          <p className="text-xs text-ink-3">{acct.fullName}</p>
+                        )}
+                      </div>
+                      <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${
+                        urgent ? 'bg-danger/15 text-danger' : 'bg-accent/15 text-accent'
+                      }`}>
+                        {daysLeft === 0 ? 'Expired' : `${daysLeft}d left`}
+                      </span>
+                    </div>
+                    {/* Progress bar */}
+                    <div className="space-y-1">
+                      <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${urgent ? 'bg-danger' : 'bg-accent'}`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-[10px] text-ink-4 tabular">
+                        <span>Activated {activatedStr}</span>
+                        <span>Expires {expiresStr}</span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* ── Admin: Subscription Requests ─────────────────────────────── */}
       {isAdmin && subscriptionRequests && (
