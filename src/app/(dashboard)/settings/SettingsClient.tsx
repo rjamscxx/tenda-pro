@@ -644,9 +644,9 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 {/* Payment QR codes */}
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { name: 'GCash', src: '/payment-qrs/gcash.png' },
-                    { name: 'GoTyme', src: '/payment-qrs/gotyme.png' },
-                    { name: 'BPI', src: '/payment-qrs/bpi.png' },
+                    { name: 'GCash', src: '/payment-qrs/gcash.jpg' },
+                    { name: 'GoTyme', src: '/payment-qrs/gotyme.jpg' },
+                    { name: 'BPI', src: '/payment-qrs/bpi.jpg' },
                   ].map(({ name, src }) => (
                     <div key={name} className="flex flex-col items-center gap-1.5">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
