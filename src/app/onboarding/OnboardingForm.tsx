@@ -19,7 +19,7 @@ const BUSINESS_TYPES = [
   {
     id: 'restaurant',
     label: 'Restaurant',
-    theme: 'sage-dark',
+    theme: 'ember',
     icon: (
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
         <path d="M8 3v6.5c0 1.38-1.12 2.5-2.5 2.5S3 10.88 3 9.5V3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
