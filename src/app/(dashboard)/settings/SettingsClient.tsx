@@ -344,21 +344,47 @@ function SubscribedAccountCard({ acct }: { acct: SubscribedAccount }) {
 
 function AdminSubRequestRow({ req }: { req: SubRequest }) {
   const [state, setState] = useState<'idle' | 'activating' | 'rejecting' | 'done' | 'error'>('idle')
+  const [lightbox, setLightbox] = useState(false)
   const statusColor = req.status === 'pending' ? 'text-amber-500' : req.status === 'activated' ? 'text-accent' : 'text-ink-4'
 
   return (
-    <div className="rounded-lg border border-hair bg-surface/40 p-4 space-y-2">
+    <>
+    <div className="rounded-lg border border-hair bg-surface/40 p-4 space-y-3">
       <div className="flex items-start justify-between gap-2 flex-wrap">
         <div className="space-y-0.5">
           <p className="text-sm font-semibold text-ink">{req.fullName}</p>
           <p className="text-xs text-ink-4">{req.email} · {req.phone}</p>
           <p className="text-xs text-ink-3">{req.billing === 'annual' ? 'Pro Annual — ₱4,000/yr' : 'Pro Monthly — ₱399/mo'}</p>
+          <p className="text-[11px] text-ink-4">{new Date(req.createdAt).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}</p>
         </div>
         <span className={`text-[11px] font-semibold uppercase tracking-wide ${statusColor}`}>{req.status}</span>
       </div>
-      {req.receiptUrl && (
-        <a href={req.receiptUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-accent underline">View receipt →</a>
+
+      {/* Receipt thumbnail — click to expand */}
+      {req.receiptUrl ? (
+        <div className="space-y-1">
+          <p className="text-[11px] font-medium text-ink-3 uppercase tracking-wider">Payment Receipt</p>
+          <button
+            onClick={() => setLightbox(true)}
+            className="block w-full rounded-lg overflow-hidden border border-hair hover:border-accent/50 transition-colors group relative"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={req.receiptUrl}
+              alt="Payment receipt"
+              className="w-full max-h-48 object-contain bg-white"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-xs font-semibold bg-black/60 px-3 py-1.5 rounded-full">
+                Click to enlarge
+              </span>
+            </div>
+          </button>
+        </div>
+      ) : (
+        <p className="text-xs text-ink-4 italic">No receipt attached.</p>
       )}
+
       {state === 'error' && <p className="text-xs text-danger">Something went wrong. Try again.</p>}
       {req.status === 'pending' && state !== 'done' && (
         <div className="flex gap-2 pt-1">
@@ -388,6 +414,48 @@ function AdminSubRequestRow({ req }: { req: SubRequest }) {
       )}
       {state === 'done' && <p className="text-xs text-accent font-medium">Done — page will refresh shortly.</p>}
     </div>
+
+    {/* Receipt lightbox */}
+    {lightbox && req.receiptUrl && (
+      <div
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+        onClick={() => setLightbox(false)}
+      >
+        <div className="relative max-w-lg w-full" onClick={e => e.stopPropagation()}>
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-sm font-semibold text-white">{req.fullName} — Receipt</p>
+              <p className="text-xs text-white/60">{req.email}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <a
+                href={req.receiptUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-white/70 hover:text-white border border-white/20 hover:border-white/50 px-3 py-1.5 rounded-lg transition-colors"
+              >
+                Open original ↗
+              </a>
+              <button
+                onClick={() => setLightbox(false)}
+                className="text-white/70 hover:text-white p-1.5 rounded-lg border border-white/20 hover:border-white/50 transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={req.receiptUrl}
+            alt="Payment receipt"
+            className="w-full rounded-xl shadow-2xl bg-white"
+          />
+        </div>
+      </div>
+    )}
+    </>
   )
 }
 
