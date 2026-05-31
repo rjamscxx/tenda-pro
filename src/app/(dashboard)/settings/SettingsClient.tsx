@@ -654,7 +654,6 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                         src={src}
                         alt={`${name} QR`}
                         className="w-full aspect-square object-contain rounded-lg border border-hair bg-white p-1"
-                        onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
                       />
                       <span className="text-xs font-medium text-ink-3">{name}</span>
                     </div>
