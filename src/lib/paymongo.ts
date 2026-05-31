@@ -9,8 +9,8 @@ function authHeader(): string {
 }
 
 export const PLAN_AMOUNTS = {
-  pro_monthly: 39900,  // ₱399/mo
-  pro_annual:  400000, // ₱4,000/yr
+  pro_monthly: 1000,   // ₱10/mo (test)
+  pro_annual:  30000,  // ₱300/yr (test)
 }
 
 export async function createCheckoutSession(opts: {
@@ -25,7 +25,7 @@ export async function createCheckoutSession(opts: {
   const label = opts.billing === 'annual' ? 'Sizzle Pro (Annual)' : 'Sizzle Pro (Monthly)'
   const description = opts.billing === 'annual'
     ? 'Annual subscription — all Pro features (₱4,000/year, save ₱788)'
-    : 'Monthly subscription — all Pro features'
+    : 'Monthly subscription — all Pro features (test)'
 
   const res = await fetch(`${PAYMONGO_BASE}/checkout_sessions`, {
     method: 'POST',
