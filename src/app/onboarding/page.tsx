@@ -32,7 +32,7 @@ export default async function OnboardingPage() {
           <h1 className="text-2xl font-semibold text-ink">Set up your business</h1>
           <p className="text-sm text-ink-3">You can change this later in Settings.</p>
         </div>
-        <OnboardingForm userId={user.id} />
+        <OnboardingForm userId={user.id} email={user.email ?? ''} />
       </div>
     </div>
   )

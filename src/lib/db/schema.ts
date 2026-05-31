@@ -43,8 +43,9 @@ export const users = pgTable('users', {
   accountId:  uuid('account_id').notNull().references(() => accounts.id, { onDelete: 'cascade' }),
   role:       userRoleEnum('role').notNull().default('owner'),
   fullName:   text('full_name'),
+  email:      text('email'),
   createdAt:  timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-}, (t) => [index('users_account_idx').on(t.accountId)])
+}, (t) => [index('users_account_idx').on(t.accountId), index('users_email_idx').on(t.email)])
 
 // ── Venues (1 per account in v1; schema is multi-venue ready) ────────────────
 

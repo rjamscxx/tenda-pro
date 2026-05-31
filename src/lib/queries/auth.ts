@@ -42,6 +42,11 @@ export const requireVenue = cache(async () => {
   const account = rows[0].account
   const allVenues = rows.map(r => r.venue)
 
+  // Keep email in sync with auth.users (e.g. after email change or for existing rows)
+  if (user.email && dbUser.email !== user.email) {
+    db.update(users).set({ email: user.email }).where(eq(users.id, user.id)).catch(() => {})
+  }
+
   // Active venue resolution
   const cookieStore = await cookies()
   const preferredId = cookieStore.get(ACTIVE_VENUE_COOKIE)?.value
