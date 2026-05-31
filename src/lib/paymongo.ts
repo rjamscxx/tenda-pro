@@ -8,25 +8,24 @@ function authHeader(): string {
   return 'Basic ' + Buffer.from(key + ':').toString('base64')
 }
 
-export const PLAN_AMOUNTS: Record<'pro' | 'premium', number> = {
-  pro: 39900,      // ₱399
-  premium: 199900, // ₱1,999
-}
-
-const PLAN_LABELS: Record<'pro' | 'premium', string> = {
-  pro: 'Sizzle Pro',
-  premium: 'Sizzle Premium',
+export const PLAN_AMOUNTS = {
+  pro_monthly: 39900,  // ₱399/mo
+  pro_annual:  400000, // ₱4,000/yr
 }
 
 export async function createCheckoutSession(opts: {
   email: string
   accountId: string
-  plan: 'pro' | 'premium'
+  billing: 'monthly' | 'annual'
   successUrl: string
   cancelUrl: string
 }): Promise<string> {
-  const amount = PLAN_AMOUNTS[opts.plan]
-  const label = PLAN_LABELS[opts.plan]
+  const key = opts.billing === 'annual' ? 'pro_annual' : 'pro_monthly'
+  const amount = PLAN_AMOUNTS[key]
+  const label = opts.billing === 'annual' ? 'Sizzle Pro (Annual)' : 'Sizzle Pro (Monthly)'
+  const description = opts.billing === 'annual'
+    ? 'Annual subscription — all Pro features (₱4,000/year, save ₱788)'
+    : 'Monthly subscription — all Pro features'
 
   const res = await fetch(`${PAYMONGO_BASE}/checkout_sessions`, {
     method: 'POST',
@@ -43,16 +42,16 @@ export async function createCheckoutSession(opts: {
             currency: 'PHP',
             amount,
             name: label,
-            description: `Monthly subscription — all ${opts.plan === 'premium' ? 'Premium' : 'Pro'} features`,
+            description,
             quantity: 1,
           }],
           payment_method_types: ['gcash', 'paymaya', 'card', 'grab_pay', 'billease', 'dob'],
           success_url: opts.successUrl,
           cancel_url: opts.cancelUrl,
-          metadata: { account_id: opts.accountId, plan: opts.plan },
+          metadata: { account_id: opts.accountId },
           send_email_receipt: true,
-          statement_descriptor: label,
-          description: `${label} Monthly Subscription`,
+          statement_descriptor: 'Sizzle Pro',
+          description: `${label} Subscription`,
         },
       },
     }),
@@ -102,10 +101,10 @@ export function verifyWebhookSignature(rawBody: string, sigHeader: string): bool
   return timingSafeEqual(expectedBuf, actualBuf)
 }
 
-// Reverse-lookup: what plan corresponds to a paid amount? Used by the webhook
-// to derive the plan from the actual amount paid instead of trusting metadata.
-export function planForAmount(amount: number): 'pro' | 'premium' | null {
-  if (amount === PLAN_AMOUNTS.pro) return 'pro'
-  if (amount === PLAN_AMOUNTS.premium) return 'premium'
+// Derives plan + subscription duration from the amount actually paid.
+// Used by the webhook to set the correct expiry without trusting client metadata.
+export function planForAmount(amount: number): { plan: 'pro'; days: number } | null {
+  if (amount === PLAN_AMOUNTS.pro_monthly) return { plan: 'pro', days: 30 }
+  if (amount === PLAN_AMOUNTS.pro_annual)  return { plan: 'pro', days: 365 }
   return null
 }

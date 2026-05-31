@@ -3,7 +3,7 @@ import type { accounts } from './db/schema'
 type Account = typeof accounts.$inferSelect
 export type PlanTier = 'free' | 'pro' | 'premium'
 
-const TIER_RANK: Record<PlanTier, number> = { free: 0, pro: 1, premium: 2 }
+const TIER_RANK: Record<PlanTier, number> = { free: 0, pro: 1, premium: 1 }
 
 export const BASIC_DISH_LIMIT = 20
 export const BASIC_INGREDIENT_LIMIT = 15
@@ -24,7 +24,7 @@ export function isPro(account: Account): boolean {
 }
 
 export function isPremium(account: Account): boolean {
-  return isAtLeast(account, 'premium')
+  return isPro(account)
 }
 
 export function isTrial(account: Account): boolean {

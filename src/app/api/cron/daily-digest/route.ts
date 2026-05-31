@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { accounts, users, venues, sales, expenses, saleItems, dishes, ingredients } from '@/lib/db/schema'
 import { and, eq, gte, lt, desc, sql, isNotNull } from 'drizzle-orm'
-import { isPremium } from '@/lib/plan'
+import { isPro as isPremium } from '@/lib/plan'
 import { resend, FROM_EMAIL } from '@/lib/resend'
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
 

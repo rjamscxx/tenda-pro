@@ -7,13 +7,13 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 export async function POST(req: NextRequest) {
   const { account, authUser } = await requireVenue()
   const { searchParams } = new URL(req.url)
-  const plan = searchParams.get('plan') === 'premium' ? 'premium' : 'pro'
+  const billing = searchParams.get('billing') === 'annual' ? 'annual' : 'monthly'
 
   try {
     const url = await createCheckoutSession({
       email: authUser.email ?? '',
       accountId: account.id,
-      plan,
+      billing,
       successUrl: `${APP_URL}/settings?upgraded=1#plan`,
       cancelUrl: `${APP_URL}/settings#plan`,
     })

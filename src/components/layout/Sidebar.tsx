@@ -70,7 +70,7 @@ const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
       { href: '/reports', label: 'Reports', ownerOnly: true, icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13V9M6 13V6M9 13V8M12 13V4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
       )},
-      { href: '/analytics', label: 'Analytics', premiumOnly: true, ownerOnly: true, icon: (
+      { href: '/analytics', label: 'Analytics', proOnly: true, ownerOnly: true, icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 10l3.5-3.5 2.5 2.5L12 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="12.5" cy="3.5" r="1.5" fill="currentColor" opacity=".7"/><path d="M2 14h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" opacity=".4"/></svg>
       )},
     ],

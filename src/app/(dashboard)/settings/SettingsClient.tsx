@@ -70,11 +70,9 @@ function pad2(n: number) {
 function SubscriptionCountdown({
   expiresAt,
   isTrial,
-  isPremium,
 }: {
   expiresAt: string
   isTrial: boolean
-  isPremium: boolean
 }) {
   const target = new Date(expiresAt).getTime()
   // ms since epoch — reactive. Trials tick once per minute (60s) which is
@@ -104,14 +102,8 @@ function SubscriptionCountdown({
   const totalWindow = isTrial ? 14 : 30
   const pctRemaining = Math.min(100, Math.max(0, (days / totalWindow) * 100))
 
-  const barTone =
-    urgent ? 'from-danger to-danger/70' :
-    isTrial ? 'from-accent to-accent-2' :
-    isPremium ? 'from-warn to-warn/70' : 'from-accent to-accent-2'
-  const labelTone =
-    urgent ? 'text-danger' :
-    isTrial ? 'text-accent' :
-    isPremium ? 'text-warn' : 'text-accent'
+  const barTone = urgent ? 'from-danger to-danger/70' : 'from-accent to-accent-2'
+  const labelTone = urgent ? 'text-danger' : 'text-accent'
 
   return (
     <div className={`rounded-xl border p-4 space-y-2.5 ${urgent ? 'border-danger/40 bg-danger/5' : 'border-hair/60 bg-surface/40'}`}>
@@ -147,7 +139,7 @@ function SubscriptionCountdown({
       {urgent && diffMs > 0 && (
         <p className="text-[11px] text-danger leading-snug">
           {isTrial
-            ? 'Your trial ends soon. Subscribe below to keep your Pro/Premium features.'
+            ? 'Your trial ends soon. Subscribe below to keep your Pro features.'
             : 'Your subscription ends soon. Renew below to avoid losing access.'}
         </p>
       )}
@@ -230,18 +222,16 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
   const router = useRouter()
   const [active, setActive] = useState(initialTheme)
   const [isPending, startTransition] = useTransition()
-  const [planLoading, setPlanLoading] = useState<'trial' | 'pro' | 'premium' | null>(null)
+  const [planLoading, setPlanLoading] = useState<'trial' | 'monthly' | 'annual' | null>(null)
   const [planError, setPlanError] = useState<string | null>(null)
 
-  // Route Pro/Premium purchase through PayMongo Checkout (test mode while
-  // PAYMONGO_SECRET_KEY is a sk_test_... key). The webhook activates the
-  // account when the test payment completes — never short-circuit via
-  // activatePlan from the UI.
-  async function startCheckout(plan: 'pro' | 'premium') {
-    setPlanLoading(plan)
+  // Route Pro purchase through PayMongo Checkout. The webhook activates the
+  // account when the payment completes — never short-circuit via activatePlan.
+  async function startCheckout(billing: 'monthly' | 'annual') {
+    setPlanLoading(billing)
     setPlanError(null)
     try {
-      const res = await fetch(`/api/paymongo/checkout?plan=${plan}`, { method: 'POST' })
+      const res = await fetch(`/api/paymongo/checkout?billing=${billing}`, { method: 'POST' })
       const data = await res.json()
       if (!res.ok || !data.url) {
         setPlanError(data.error ?? 'Could not start checkout. Try again in a moment.')
@@ -257,7 +247,8 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
 
   const now = new Date()
   const isExpired = planExpiresAt ? new Date(planExpiresAt) < now : false
-  const effectivePlan: 'free' | 'pro' | 'premium' = isExpired ? 'free' : plan
+  const rawPlan = isExpired ? 'free' : plan
+  const effectivePlan: 'free' | 'pro' = rawPlan === 'free' ? 'free' : 'pro'
   const isOnTrial = trialStartedAt !== null && !!planExpiresAt && !isExpired && plan === 'pro'
   const trialDaysLeft = isOnTrial && planExpiresAt
     ? Math.max(0, Math.ceil((new Date(planExpiresAt).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
@@ -513,21 +504,17 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
           <div>
             <h2 className="text-base font-semibold text-ink">Subscription</h2>
             <p className="text-sm text-ink-4 mt-0.5">
-              {effectivePlan === 'premium'
-                ? 'You\'re on Sizzle Premium — all features unlocked.'
-                : effectivePlan === 'pro'
-                  ? isOnTrial
-                    ? `Pro trial — ${trialDaysLeft} day${trialDaysLeft === 1 ? '' : 's'} remaining.`
-                    : 'You\'re on Sizzle Pro — all Pro features unlocked.'
-                  : 'You\'re on the Basic plan.'}
+              {effectivePlan === 'pro'
+                ? isOnTrial
+                  ? `Pro trial — ${trialDaysLeft} day${trialDaysLeft === 1 ? '' : 's'} remaining.`
+                  : 'You\'re on Sizzle Pro — all features unlocked.'
+                : 'You\'re on the Basic plan.'}
             </p>
           </div>
           <span className={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
-            effectivePlan === 'premium' ? 'bg-warn/15 text-warn' :
-            effectivePlan === 'pro' ? 'bg-accent/15 text-accent' :
-            'bg-surface-3 text-ink-3'
+            effectivePlan === 'pro' ? 'bg-accent/15 text-accent' : 'bg-surface-3 text-ink-3'
           }`}>
-            {effectivePlan === 'premium' ? '★ Premium' : effectivePlan === 'pro' ? '⚡ Pro' : 'Basic'}
+            {effectivePlan === 'pro' ? '⚡ Pro' : 'Basic'}
           </span>
         </div>
 
@@ -536,7 +523,6 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
           <SubscriptionCountdown
             expiresAt={planExpiresAt}
             isTrial={isOnTrial}
-            isPremium={effectivePlan === 'premium'}
           />
         )}
 
@@ -576,14 +562,17 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 <p className="font-medium text-ink text-sm">Pro</p>
                 {effectivePlan === 'pro' && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-accent/20 text-accent font-semibold">Current</span>}
               </div>
-              <p className="text-sm font-semibold text-accent">₱399 / month</p>
+              <div className="text-right">
+                <p className="text-sm font-semibold text-accent">₱399 / month</p>
+                <p className="text-[10px] text-ink-4">or ₱4,000 / year</p>
+              </div>
             </div>
             <ul className="text-xs text-ink-4 space-y-1">
               <li>✓ Everything in Basic</li>
               <li>✓ Unlimited dishes & ingredients</li>
-              <li>✓ Employees & payroll management</li>
-              <li>✓ Waste log tracking</li>
-              <li>✓ CSV exports & priority support</li>
+              <li>✓ Employees, payroll & waste log</li>
+              <li>✓ Advanced analytics & forecasting</li>
+              <li>✓ Daily digest email & CSV exports</li>
             </ul>
             {effectivePlan !== 'pro' && (
               <div className="space-y-2">
@@ -603,42 +592,19 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 )}
                 <button
                   disabled={!!planLoading}
-                  onClick={() => startCheckout('pro')}
-                  className={`w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-60 ${
-                    effectivePlan === 'free' && trialStartedAt
-                      ? 'btn-primary'
-                      : 'border border-hair text-ink-3 hover:border-accent hover:text-accent transition-colors'
-                  }`}
+                  onClick={() => startCheckout('monthly')}
+                  className="w-full py-2 rounded-lg text-sm font-semibold btn-primary disabled:opacity-60"
                 >
-                  {planLoading === 'pro' ? 'Redirecting…' : effectivePlan === 'free' ? 'Subscribe to Pro — ₱399/mo →' : 'Switch to Pro — ₱399/mo'}
+                  {planLoading === 'monthly' ? 'Redirecting…' : 'Subscribe monthly — ₱399/mo →'}
+                </button>
+                <button
+                  disabled={!!planLoading}
+                  onClick={() => startCheckout('annual')}
+                  className="w-full py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors disabled:opacity-60"
+                >
+                  {planLoading === 'annual' ? 'Redirecting…' : 'Subscribe annually — ₱4,000/yr (save ₱788) →'}
                 </button>
               </div>
-            )}
-          </div>
-
-          {/* Premium */}
-          <div className={`rounded-xl border p-4 space-y-2.5 ${effectivePlan === 'premium' ? 'border-warn/40 bg-warn/5' : 'border-hair/40 bg-surface/20'}`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <p className="font-medium text-ink text-sm">Premium</p>
-                {effectivePlan === 'premium' && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-warn/20 text-warn font-semibold">Current</span>}
-              </div>
-              <p className="text-sm font-semibold text-warn">₱1,999 / month</p>
-            </div>
-            <ul className="text-xs text-ink-4 space-y-1">
-              <li>✓ Everything in Pro</li>
-              <li>✓ Multiple businesses</li>
-              <li>✓ AI-powered insights & advanced analytics</li>
-              <li>✓ Dedicated support & first access to new features</li>
-            </ul>
-            {effectivePlan !== 'premium' && (
-              <button
-                disabled={!!planLoading}
-                onClick={() => startCheckout('premium')}
-                className="w-full py-2 rounded-lg text-sm font-semibold bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors disabled:opacity-60"
-              >
-                {planLoading === 'premium' ? 'Redirecting…' : 'Subscribe to Premium — ₱1,999/mo →'}
-              </button>
             )}
           </div>
 
@@ -648,7 +614,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
 
         </div>
 
-        {(effectivePlan === 'pro' || effectivePlan === 'premium') && (
+        {effectivePlan === 'pro' && (
           <p className="text-xs text-ink-4 text-center">
             Pay via GCash, Maya, card, or bank transfer. Cancel anytime.
           </p>

@@ -1,37 +1,44 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { startTrial } from '@/app/(dashboard)/settings/actions'
 
-const PREMIUM_FEATURES = [
-  'Advanced Analytics & Revenue Trends',
-  '7-Day Revenue Forecast',
-  'Day-of-Week Performance Heatmap',
-  'Expense Category Breakdown',
-  'Month-over-Month P&L Report',
-  'Everything in Pro',
+const PRO_FEATURES = [
+  '90-day Revenue Trend & 7-day Forecast',
+  'Day-of-Week Performance Breakdown',
+  'Expense Category Analysis',
+  'Monthly P&L Table (6 months)',
+  'Everything else in Pro',
 ]
 
 export default function PremiumLockPage() {
-  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const [loading, setLoading] = useState<'trial' | 'monthly' | 'annual' | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  // Route through PayMongo Checkout (test mode while PAYMONGO_SECRET_KEY is a
-  // sk_test_... key). The webhook activates the account after the test payment.
-  async function handleActivate() {
-    setLoading(true)
+  async function handleTrial() {
+    setLoading('trial')
+    await startTrial()
+    router.refresh()
+    setLoading(null)
+  }
+
+  async function handleActivate(billing: 'monthly' | 'annual') {
+    setLoading(billing)
     setError(null)
     try {
-      const res = await fetch('/api/paymongo/checkout?plan=premium', { method: 'POST' })
+      const res = await fetch(`/api/paymongo/checkout?billing=${billing}`, { method: 'POST' })
       const data = await res.json()
       if (!res.ok || !data.url) {
         setError(data.error ?? 'Could not start checkout. Try again in a moment.')
-        setLoading(false)
+        setLoading(null)
         return
       }
       window.location.href = data.url
     } catch {
       setError('Network error — check your connection and try again.')
-      setLoading(false)
+      setLoading(null)
     }
   }
 
@@ -39,24 +46,24 @@ export default function PremiumLockPage() {
     <div className="flex flex-col items-center justify-center h-full min-h-[60vh] p-8">
       <div className="glass card-glow rounded-2xl p-10 max-w-md w-full space-y-6 text-center">
 
-        <div className="w-14 h-14 rounded-2xl bg-warn/10 flex items-center justify-center mx-auto text-3xl select-none">
-          💎
+        <div className="w-14 h-14 rounded-2xl bg-surface-2 flex items-center justify-center mx-auto text-3xl select-none">
+          📊
         </div>
 
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-warn/15 text-warn text-xs font-semibold mb-3">
-            Premium Feature
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-accent/15 text-accent text-xs font-semibold mb-3">
+            Pro Feature
           </div>
           <h2 className="text-lg font-semibold text-ink">Advanced Analytics</h2>
           <p className="text-sm text-ink-4 mt-2 leading-relaxed">
-            Upgrade to Premium to unlock deep analytics, revenue forecasting, and multi-month P&L insights.
+            Upgrade to Pro to unlock deep analytics, revenue forecasting, and multi-month P&L insights.
           </p>
         </div>
 
-        <div className="text-left space-y-2.5 border border-warn/20 rounded-xl p-4 bg-warn/5">
-          {PREMIUM_FEATURES.map(f => (
+        <div className="text-left space-y-2.5 border border-hair rounded-xl p-4 bg-surface/40">
+          {PRO_FEATURES.map(f => (
             <div key={f} className="flex items-center gap-2.5 text-sm text-ink-3">
-              <span className="text-warn shrink-0">✓</span>
+              <span className="text-accent shrink-0">✓</span>
               {f}
             </div>
           ))}
@@ -64,11 +71,25 @@ export default function PremiumLockPage() {
 
         <div className="space-y-3">
           <button
-            disabled={loading}
-            onClick={handleActivate}
-            className="block w-full text-center px-6 py-3 rounded-xl font-semibold text-sm bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors disabled:opacity-60"
+            disabled={!!loading}
+            onClick={handleTrial}
+            className="block w-full text-center px-6 py-3 btn-primary rounded-xl font-semibold text-sm disabled:opacity-60"
           >
-            {loading ? 'Activating…' : 'Subscribe to Premium — ₱1,999/mo →'}
+            {loading === 'trial' ? 'Activating…' : 'Start 14-day free trial →'}
+          </button>
+          <button
+            disabled={!!loading}
+            onClick={() => handleActivate('monthly')}
+            className="block w-full text-center px-6 py-2.5 rounded-xl font-semibold text-sm border border-accent/40 text-accent hover:bg-accent/10 transition-colors disabled:opacity-60"
+          >
+            {loading === 'monthly' ? 'Redirecting…' : 'Subscribe monthly — ₱399/mo →'}
+          </button>
+          <button
+            disabled={!!loading}
+            onClick={() => handleActivate('annual')}
+            className="block w-full text-center px-6 py-2.5 rounded-xl font-semibold text-sm border border-hair text-ink-3 hover:border-accent hover:text-accent transition-colors disabled:opacity-60"
+          >
+            {loading === 'annual' ? 'Redirecting…' : 'Subscribe annually — ₱4,000/yr (save ₱788) →'}
           </button>
           <p className="text-xs text-ink-4">Pay via GCash, Maya, card, or bank transfer. Cancel anytime.</p>
           {error && (

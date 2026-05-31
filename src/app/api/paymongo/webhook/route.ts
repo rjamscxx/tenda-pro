@@ -52,20 +52,20 @@ export async function POST(req: NextRequest) {
       (sum, li) => sum + li.amount * li.quantity,
       0,
     )
-    const plan = planForAmount(paidAmount)
-    if (!plan) {
+    const billing = planForAmount(paidAmount)
+    if (!billing) {
       console.error('[paymongo/webhook] unknown amount', { paidAmount, accountId })
       return NextResponse.json({ error: 'Unknown plan amount' }, { status: 400 })
     }
 
     const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + 30)
+    expiresAt.setDate(expiresAt.getDate() + billing.days)
 
     // Idempotency: only update if the new expiry is later than what's there.
     // PayMongo retries on 5xx — this prevents double-extension on retries
     // while still letting a real second payment extend the cycle.
     await db.update(accounts)
-      .set({ plan, planExpiresAt: expiresAt, trialStartedAt: null })
+      .set({ plan: billing.plan, planExpiresAt: expiresAt, trialStartedAt: null })
       .where(eq(accounts.id, accountId))
   }
 

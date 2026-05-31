@@ -2,7 +2,7 @@ import { db } from '@/lib/db'
 import { sales, expenses } from '@/lib/db/schema'
 import { and, eq, gte } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
-import { isPremium as checkPremium } from '@/lib/plan'
+import { isPro as checkPro } from '@/lib/plan'
 import { canSeeFinancials } from '@/lib/permissions'
 import PremiumLockPage from '@/components/ui/PremiumLockPage'
 import AnalyticsClient from './AnalyticsClient'
@@ -30,7 +30,7 @@ export default async function AnalyticsPage() {
   const { venue, account, dbUser } = await requireVenue()
   if (!canSeeFinancials(dbUser)) redirect('/dashboard')
 
-  if (!checkPremium(account)) {
+  if (!checkPro(account)) {
     return <PremiumLockPage />
   }
 

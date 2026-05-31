@@ -6,16 +6,16 @@ import { startTrial } from '@/app/(dashboard)/settings/actions'
 
 const PRO_FEATURES = [
   'Unlimited dishes & ingredients',
-  'Employee Management',
-  'Payroll Runs',
+  'Employee Management & Payroll',
   'Waste Log & Spoilage Tracking',
-  'CSV Exports',
-  'Priority Support',
+  'Advanced Analytics & Forecasting',
+  'Daily Digest Email',
+  'CSV Exports & Priority Support',
 ]
 
 export default function ProLockPage({ feature, hasUsedTrial }: { feature: string; hasUsedTrial: boolean }) {
   const router = useRouter()
-  const [loading, setLoading] = useState<'trial' | 'pro' | null>(null)
+  const [loading, setLoading] = useState<'trial' | 'monthly' | 'annual' | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   async function handleTrial() {
@@ -25,14 +25,11 @@ export default function ProLockPage({ feature, hasUsedTrial }: { feature: string
     setLoading(null)
   }
 
-  // Route through PayMongo Checkout (test mode while PAYMONGO_SECRET_KEY is a
-  // sk_test_... key). The webhook activates the account when the test payment
-  // completes, so there's no UI shortcut.
-  async function handleActivate() {
-    setLoading('pro')
+  async function handleActivate(billing: 'monthly' | 'annual') {
+    setLoading(billing)
     setError(null)
     try {
-      const res = await fetch('/api/paymongo/checkout?plan=pro', { method: 'POST' })
+      const res = await fetch(`/api/paymongo/checkout?billing=${billing}`, { method: 'POST' })
       const data = await res.json()
       if (!res.ok || !data.url) {
         setError(data.error ?? 'Could not start checkout. Try again in a moment.')
@@ -60,7 +57,7 @@ export default function ProLockPage({ feature, hasUsedTrial }: { feature: string
           </div>
           <h2 className="text-lg font-semibold text-ink">{feature}</h2>
           <p className="text-sm text-ink-4 mt-2 leading-relaxed">
-            Upgrade to Pro to unlock {feature} and all Pro features.
+            Upgrade to Pro to unlock {feature} and everything below.
           </p>
         </div>
 
@@ -83,13 +80,22 @@ export default function ProLockPage({ feature, hasUsedTrial }: { feature: string
               {loading === 'trial' ? 'Activating…' : 'Start 14-day free trial →'}
             </button>
           ) : (
-            <button
-              disabled={!!loading}
-              onClick={handleActivate}
-              className="block w-full text-center px-6 py-3 btn-primary rounded-xl font-semibold text-sm disabled:opacity-60"
-            >
-              {loading === 'pro' ? 'Activating…' : 'Subscribe to Pro — ₱399/mo →'}
-            </button>
+            <>
+              <button
+                disabled={!!loading}
+                onClick={() => handleActivate('monthly')}
+                className="block w-full text-center px-6 py-3 btn-primary rounded-xl font-semibold text-sm disabled:opacity-60"
+              >
+                {loading === 'monthly' ? 'Redirecting…' : 'Subscribe monthly — ₱399/mo →'}
+              </button>
+              <button
+                disabled={!!loading}
+                onClick={() => handleActivate('annual')}
+                className="block w-full text-center px-6 py-2.5 rounded-xl font-semibold text-sm border border-accent/40 text-accent hover:bg-accent/10 transition-colors disabled:opacity-60"
+              >
+                {loading === 'annual' ? 'Redirecting…' : 'Subscribe annually — ₱4,000/yr (save ₱788) →'}
+              </button>
+            </>
           )}
           <p className="text-xs text-ink-4">
             {hasUsedTrial ? 'Pay via GCash, Maya, card, or bank transfer.' : '14 days free, no credit card required.'}

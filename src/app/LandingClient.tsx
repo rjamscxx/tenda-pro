@@ -1381,10 +1381,10 @@ export default function LandingClient() {
                 <p className="text-4xl font-semibold tracking-tighter text-ink mt-2">
                   ₱399<span className="text-lg text-ink-4 font-normal">/mo</span>
                 </p>
-                <p className="text-xs text-ink-4 mt-1">One business, billed monthly.</p>
+                <p className="text-xs text-ink-4 mt-1">Billed monthly. Cancel anytime.</p>
               </div>
               <ul className="space-y-3 text-sm text-ink-3">
-                {['Everything in Basic', 'Unlimited dishes & ingredients', 'Employees & payroll', 'Waste log tracking', 'CSV exports', 'Priority support'].map(f => (
+                {['Everything in Basic', 'Unlimited dishes & ingredients', 'Employees, payroll & waste log', 'Advanced analytics & forecasting', 'Daily digest email', 'CSV exports & priority support'].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
                     <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 14 14" fill="none">
                       <path d="M2.5 7.5L5.5 10.5 11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1404,20 +1404,23 @@ export default function LandingClient() {
               )}
             </div>
 
-            {/* Premium */}
-            <div className="pricing-card relative glass rounded-2xl p-7 space-y-6 overflow-hidden border border-warn/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" style={{ opacity: 0 }}>
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-warn/80 to-warn" />
+            {/* Pro Annual */}
+            <div className="pricing-card relative glass rounded-2xl p-7 space-y-6 overflow-hidden border border-accent/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" style={{ opacity: 0 }}>
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent/60 to-accent" />
               <div>
-                <p className="text-xs font-semibold text-warn/70 uppercase tracking-widest">Premium</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-semibold text-accent/70 uppercase tracking-widest">Pro Annual</p>
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-accent/15 text-accent">Save ₱788</span>
+                </div>
                 <p className="text-4xl font-semibold tracking-tighter text-ink mt-2">
-                  ₱1,999<span className="text-lg text-ink-4 font-normal">/mo</span>
+                  ₱4,000<span className="text-lg text-ink-4 font-normal">/yr</span>
                 </p>
-                <p className="text-xs text-ink-4 mt-1">Unlimited businesses.</p>
+                <p className="text-xs text-ink-4 mt-1">Billed once a year — ₱333/mo effective.</p>
               </div>
               <ul className="space-y-3 text-sm text-ink-3">
-                {['Everything in Pro', 'Multiple businesses', 'AI-powered insights', 'Advanced analytics', 'Dedicated support', 'First access to new features'].map(f => (
+                {['Everything in Pro', 'One payment, full year', 'No monthly billing worry', 'Early access to new features'].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
-                    <svg className="w-3.5 h-3.5 text-warn shrink-0" viewBox="0 0 14 14" fill="none">
+                    <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 14 14" fill="none">
                       <path d="M2.5 7.5L5.5 10.5 11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                     {f}
@@ -1425,11 +1428,11 @@ export default function LandingClient() {
                 ))}
               </ul>
               {isLoggedIn ? (
-                <Link href="/settings#plan" className="block w-full py-2.5 text-center rounded-xl text-sm font-semibold bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors active:scale-[0.98]">
-                  Upgrade to Premium
+                <Link href="/settings#plan" className="block w-full py-2.5 text-center rounded-xl text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors active:scale-[0.98]">
+                  Subscribe annually
                 </Link>
               ) : (
-                <Link href="/signup" className="block w-full py-2.5 text-center rounded-xl text-sm font-semibold bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors active:scale-[0.98]">
+                <Link href="/signup" className="block w-full py-2.5 text-center rounded-xl text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors active:scale-[0.98]">
                   Start free
                 </Link>
               )}

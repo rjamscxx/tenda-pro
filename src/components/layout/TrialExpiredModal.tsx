@@ -12,8 +12,8 @@ export default function TrialExpiredModal({ trialExpired }: Props) {
 
   if (!trialExpired) return null
 
-  async function handleCheckout(plan: 'pro' | 'premium') {
-    const res = await fetch(`/api/paymongo/checkout?plan=${plan}`, { method: 'POST' })
+  async function handleCheckout(billing: 'monthly' | 'annual') {
+    const res = await fetch(`/api/paymongo/checkout?billing=${billing}`, { method: 'POST' })
     const json = await res.json() as { url?: string; error?: string }
     if (json.url) window.location.href = json.url
   }
@@ -48,37 +48,37 @@ export default function TrialExpiredModal({ trialExpired }: Props) {
             </button>
           </div>
 
-          {/* Pro */}
+          {/* Pro monthly */}
           <div className="rounded-xl border border-accent/30 bg-accent/5 p-4 space-y-2.5">
             <div className="flex items-center justify-between">
               <p className="font-semibold text-ink text-sm">Pro</p>
               <p className="text-sm font-semibold text-accent">₱399 / month</p>
             </div>
             <p className="text-xs text-ink-4 leading-relaxed">
-              Everything in Basic + unlimited dishes & ingredients, employees, payroll, waste log, CSV exports.
+              Everything in Basic + unlimited dishes, employees, payroll, waste log, analytics, CSV exports.
             </p>
             <button
-              onClick={() => handleCheckout('pro')}
+              onClick={() => handleCheckout('monthly')}
               className="w-full py-2 btn-primary rounded-lg text-sm font-semibold"
             >
-              Subscribe to Pro — ₱399/mo →
+              Subscribe monthly — ₱399/mo →
             </button>
           </div>
 
-          {/* Premium */}
-          <div className="rounded-xl border border-warn/30 bg-warn/5 p-4 space-y-2.5">
+          {/* Pro annual */}
+          <div className="rounded-xl border border-hair/40 bg-surface/20 p-4 space-y-2.5">
             <div className="flex items-center justify-between">
-              <p className="font-semibold text-ink text-sm">Premium</p>
-              <p className="text-sm font-semibold text-warn">₱1,999 / month</p>
+              <p className="font-semibold text-ink text-sm">Pro Annual</p>
+              <p className="text-sm font-semibold text-accent">₱4,000 / year</p>
             </div>
             <p className="text-xs text-ink-4 leading-relaxed">
-              Everything in Pro + multiple businesses, AI-powered insights, advanced analytics, dedicated support.
+              Same as Pro, billed once a year. Save ₱788 vs monthly.
             </p>
             <button
-              onClick={() => handleCheckout('premium')}
-              className="w-full py-2 rounded-lg text-sm font-semibold bg-warn/15 text-warn border border-warn/30 hover:bg-warn/25 transition-colors"
+              onClick={() => handleCheckout('annual')}
+              className="w-full py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors"
             >
-              Subscribe to Premium — ₱1,999/mo →
+              Subscribe annually — ₱4,000/yr →
             </button>
           </div>
         </div>
