@@ -656,7 +656,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                         <img
                           src={src}
                           alt={`${name} QR code`}
-                          className="w-full h-32 object-contain"
+                          className="w-full h-44 object-contain"
                         />
                       </div>
                       <span className="text-xs font-semibold text-ink-3">{name}</span>
