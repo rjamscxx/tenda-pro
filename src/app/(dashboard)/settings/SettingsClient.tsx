@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { updateVenue, updateProfile, downgradeTofree, deleteAccount, startTrial, activateSubscriptionRequest, rejectSubscriptionRequest } from './actions'
+import { updateVenue, updateProfile, downgradeTofree, deleteAccount, startTrial, activateSubscriptionRequest, rejectSubscriptionRequest, adjustSubscriptionDays } from './actions'
 import InstallButton from '@/components/layout/InstallButton'
 
 // ── Theme picker ──────────────────────────────────────────────────────────────
@@ -226,6 +226,120 @@ interface SubscribedAccount {
   email: string
   activatedAt: string
   planExpiresAt: string
+}
+
+function SubscribedAccountCard({ acct }: { acct: SubscribedAccount }) {
+  const now = Date.now()
+  const expiresMs = new Date(acct.planExpiresAt).getTime()
+  const activatedMs = new Date(acct.activatedAt).getTime()
+  const totalMs = expiresMs - activatedMs
+  const remainingMs = Math.max(0, expiresMs - now)
+  const daysLeft = Math.ceil(remainingMs / (1000 * 60 * 60 * 24))
+  const pct = Math.min(100, Math.max(0, (remainingMs / totalMs) * 100))
+  const urgent = daysLeft <= 5
+
+  const activatedStr = new Date(acct.activatedAt).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+  const expiresStr   = new Date(acct.planExpiresAt).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+
+  const [editing, setEditing] = useState(false)
+  const [daysInput, setDaysInput] = useState(String(daysLeft))
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  async function handleSave() {
+    const days = parseInt(daysInput, 10)
+    if (isNaN(days) || days < 0) { setSaveError('Enter a valid number of days.'); return }
+    setSaving(true)
+    setSaveError(null)
+    try {
+      await adjustSubscriptionDays(acct.accountId, days)
+      setEditing(false)
+    } catch {
+      setSaveError('Failed to update. Try again.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="rounded-lg border border-hair bg-surface/40 p-4 space-y-3">
+      <div className="flex items-start justify-between gap-2 flex-wrap">
+        <div className="space-y-0.5">
+          <p className="text-sm font-semibold text-ink">{acct.venueName || acct.fullName || 'Unnamed'}</p>
+          <p className="text-xs text-ink-4">{acct.email}</p>
+          {acct.fullName && acct.venueName && <p className="text-xs text-ink-3">{acct.fullName}</p>}
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${urgent ? 'bg-danger/15 text-danger' : 'bg-accent/15 text-accent'}`}>
+            {daysLeft === 0 ? 'Expired' : `${daysLeft}d left`}
+          </span>
+          {!editing && (
+            <button
+              onClick={() => { setEditing(true); setDaysInput(String(daysLeft)); setSaveError(null) }}
+              className="text-[11px] text-ink-4 hover:text-accent transition-colors px-2 py-0.5 rounded border border-hair hover:border-accent/40"
+            >
+              Edit days
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className="space-y-1">
+        <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${urgent ? 'bg-danger' : 'bg-accent'}`}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <div className="flex justify-between text-[10px] text-ink-4 tabular">
+          <span>Activated {activatedStr}</span>
+          <span>Expires {expiresStr}</span>
+        </div>
+      </div>
+
+      {/* Inline edit */}
+      {editing && (
+        <div className="pt-1 space-y-2">
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-ink-3 shrink-0">Days remaining:</label>
+            <input
+              type="number"
+              min="0"
+              max="3650"
+              value={daysInput}
+              onChange={e => setDaysInput(e.target.value)}
+              className="w-24 px-2 py-1.5 rounded-lg bg-canvas border border-hair text-ink text-sm tabular focus:outline-none focus:border-accent/60"
+              autoFocus
+            />
+            <span className="text-xs text-ink-4">days</span>
+          </div>
+          <p className="text-[11px] text-ink-4">
+            New expiry: {daysInput && !isNaN(parseInt(daysInput))
+              ? new Date(Date.now() + parseInt(daysInput) * 864e5).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+              : '—'}
+          </p>
+          {saveError && <p className="text-xs text-danger">{saveError}</p>}
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex-1 py-1.5 btn-primary rounded-lg text-xs font-semibold disabled:opacity-50"
+            >
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+            <button
+              onClick={() => setEditing(false)}
+              disabled={saving}
+              className="flex-1 py-1.5 rounded-lg text-xs font-medium border border-hair text-ink-4 hover:text-ink transition-colors disabled:opacity-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
 
 function AdminSubRequestRow({ req }: { req: SubRequest }) {
@@ -715,55 +829,9 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
             <p className="text-sm text-ink-4 text-center py-4">No active subscribers yet.</p>
           ) : (
             <div className="space-y-3">
-              {subscribedAccounts.map(acct => {
-                const now = Date.now()
-                const expiresMs = new Date(acct.planExpiresAt).getTime()
-                const activatedMs = new Date(acct.activatedAt).getTime()
-                const totalMs = expiresMs - activatedMs
-                const remainingMs = Math.max(0, expiresMs - now)
-                const daysLeft = Math.ceil(remainingMs / (1000 * 60 * 60 * 24))
-                const pct = Math.min(100, Math.max(0, (remainingMs / totalMs) * 100))
-                const urgent = daysLeft <= 5
-                const activatedStr = new Date(acct.activatedAt).toLocaleString('en-PH', {
-                  year: 'numeric', month: 'short', day: 'numeric',
-                })
-                const expiresStr = new Date(acct.planExpiresAt).toLocaleString('en-PH', {
-                  year: 'numeric', month: 'short', day: 'numeric',
-                })
-                return (
-                  <div key={acct.accountId} className="rounded-lg border border-hair bg-surface/40 p-4 space-y-3">
-                    <div className="flex items-start justify-between gap-2 flex-wrap">
-                      <div className="space-y-0.5">
-                        <p className="text-sm font-semibold text-ink">
-                          {acct.venueName || acct.fullName || 'Unnamed'}
-                        </p>
-                        <p className="text-xs text-ink-4">{acct.email}</p>
-                        {acct.fullName && acct.venueName && (
-                          <p className="text-xs text-ink-3">{acct.fullName}</p>
-                        )}
-                      </div>
-                      <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${
-                        urgent ? 'bg-danger/15 text-danger' : 'bg-accent/15 text-accent'
-                      }`}>
-                        {daysLeft === 0 ? 'Expired' : `${daysLeft}d left`}
-                      </span>
-                    </div>
-                    {/* Progress bar */}
-                    <div className="space-y-1">
-                      <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full rounded-full transition-all duration-500 ${urgent ? 'bg-danger' : 'bg-accent'}`}
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <div className="flex justify-between text-[10px] text-ink-4 tabular">
-                        <span>Activated {activatedStr}</span>
-                        <span>Expires {expiresStr}</span>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
+              {subscribedAccounts.map(acct => (
+                <SubscribedAccountCard key={acct.accountId} acct={acct} />
+              ))}
             </div>
           )}
         </section>

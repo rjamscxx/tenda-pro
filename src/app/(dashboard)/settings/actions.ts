@@ -124,6 +124,16 @@ export async function activateSubscriptionRequest(requestId: string, userEmail: 
   revalidatePath('/(dashboard)', 'layout')
 }
 
+export async function adjustSubscriptionDays(accountId: string, daysRemaining: number) {
+  const { authUser } = await requireVenue()
+  if (authUser.email !== ADMIN_EMAIL) throw new Error('Unauthorized')
+  if (daysRemaining < 0 || daysRemaining > 3650) throw new Error('Invalid days')
+  const newExpiry = new Date(Date.now() + Math.round(daysRemaining) * 24 * 60 * 60 * 1000)
+  await db.update(accounts).set({ planExpiresAt: newExpiry }).where(eq(accounts.id, accountId))
+  revalidatePath('/settings')
+  revalidatePath('/(dashboard)', 'layout')
+}
+
 export async function rejectSubscriptionRequest(requestId: string) {
   const { authUser } = await requireVenue()
   if (authUser.email !== ADMIN_EMAIL) throw new Error('Unauthorized')
