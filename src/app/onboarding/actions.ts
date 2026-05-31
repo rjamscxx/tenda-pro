@@ -22,7 +22,7 @@ export async function createVenue({ userId, venueName, fullName, theme, withDemo
 
   try {
     const trialEnd = new Date()
-    trialEnd.setDate(trialEnd.getDate() + 14)
+    trialEnd.setDate(trialEnd.getDate() + 7)
     const [account] = await db.insert(accounts).values({
       plan: 'pro',
       trialStartedAt: new Date(),
