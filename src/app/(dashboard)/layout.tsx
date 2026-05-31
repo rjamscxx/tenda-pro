@@ -1,5 +1,6 @@
 import { requireVenue } from '@/lib/queries/auth'
 import { isPro as checkPro, isPremium as checkPremium, isTrial, getTrialDaysLeft, isTrialExpired } from '@/lib/plan'
+import { createAdminClient } from '@/lib/supabase/admin'
 import MobileNav from '@/components/layout/MobileNav'
 import PageTransition from '@/components/layout/PageTransition'
 import TrialBanner from '@/components/layout/TrialBanner'
@@ -17,10 +18,21 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const trialExpired = isTrialExpired(account)
   const venueList = venues.map(v => ({ id: v.id, name: v.name }))
 
+  // Only the owner sees pending subscription request badge
+  let pendingSubRequests = 0
+  if (dbUser.role === 'owner') {
+    const supabase = createAdminClient()
+    const { count } = await supabase
+      .from('subscription_requests')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'pending')
+    pendingSubRequests = count ?? 0
+  }
+
   return (
     <ToastProvider>
       <div className="flex h-full">
-        <MobileNav venueName={venue.name} venues={venueList} activeVenueId={venue.id} fullName={dbUser.fullName ?? ''} role={dbUser.role} isPro={pro} isPremium={premium} />
+        <MobileNav venueName={venue.name} venues={venueList} activeVenueId={venue.id} fullName={dbUser.fullName ?? ''} role={dbUser.role} isPro={pro} isPremium={premium} pendingSubRequests={pendingSubRequests} />
         <main className="flex-1 flex flex-col min-w-0 overflow-y-auto dashboard-bg">
           <div className="lg:hidden h-12 w-full shrink-0" />
           {trialActive && daysLeft !== null && <TrialBanner daysLeft={daysLeft} />}
