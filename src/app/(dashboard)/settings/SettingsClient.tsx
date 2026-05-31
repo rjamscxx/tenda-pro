@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { updateVenue, updateProfile, downgradeTofree, deleteAccount, startTrial } from './actions'
+import { updateVenue, updateProfile, downgradeTofree, deleteAccount, startTrial, activateSubscriptionRequest, rejectSubscriptionRequest } from './actions'
 import InstallButton from '@/components/layout/InstallButton'
 
 // ── Theme picker ──────────────────────────────────────────────────────────────
@@ -208,6 +208,66 @@ function activitySummary(entry: ActivityEntry): string {
   return label
 }
 
+interface SubRequest {
+  id: string
+  fullName: string
+  phone: string
+  email: string
+  billing: string
+  receiptUrl: string | null
+  status: string
+  createdAt: string
+}
+
+function AdminSubRequestRow({ req }: { req: SubRequest }) {
+  const [state, setState] = useState<'idle' | 'activating' | 'rejecting' | 'done' | 'error'>('idle')
+  const statusColor = req.status === 'pending' ? 'text-amber-500' : req.status === 'activated' ? 'text-accent' : 'text-ink-4'
+
+  return (
+    <div className="rounded-lg border border-hair bg-surface/40 p-4 space-y-2">
+      <div className="flex items-start justify-between gap-2 flex-wrap">
+        <div className="space-y-0.5">
+          <p className="text-sm font-semibold text-ink">{req.fullName}</p>
+          <p className="text-xs text-ink-4">{req.email} · {req.phone}</p>
+          <p className="text-xs text-ink-3">{req.billing === 'annual' ? 'Pro Annual — ₱4,000/yr' : 'Pro Monthly — ₱399/mo'}</p>
+        </div>
+        <span className={`text-[11px] font-semibold uppercase tracking-wide ${statusColor}`}>{req.status}</span>
+      </div>
+      {req.receiptUrl && (
+        <a href={req.receiptUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-accent underline">View receipt →</a>
+      )}
+      {state === 'error' && <p className="text-xs text-danger">Something went wrong. Try again.</p>}
+      {req.status === 'pending' && state !== 'done' && (
+        <div className="flex gap-2 pt-1">
+          <button
+            disabled={state !== 'idle'}
+            onClick={async () => {
+              setState('activating')
+              try { await activateSubscriptionRequest(req.id, req.email); setState('done') }
+              catch { setState('error') }
+            }}
+            className="flex-1 py-1.5 btn-primary rounded-lg text-xs font-semibold disabled:opacity-50"
+          >
+            {state === 'activating' ? 'Activating…' : 'Activate Pro'}
+          </button>
+          <button
+            disabled={state !== 'idle'}
+            onClick={async () => {
+              setState('rejecting')
+              try { await rejectSubscriptionRequest(req.id); setState('done') }
+              catch { setState('error') }
+            }}
+            className="flex-1 py-1.5 rounded-lg text-xs font-medium border border-hair text-ink-4 hover:border-danger hover:text-danger transition-colors disabled:opacity-50"
+          >
+            {state === 'rejecting' ? 'Rejecting…' : 'Reject'}
+          </button>
+        </div>
+      )}
+      {state === 'done' && <p className="text-xs text-accent font-medium">Done — page will refresh shortly.</p>}
+    </div>
+  )
+}
+
 interface Props {
   initialTheme: string
   plan: 'free' | 'pro' | 'premium'
@@ -216,9 +276,11 @@ interface Props {
   venue: { name: string; timezone: string; monthlyRevenueGoal: number; monthlyExpenseBudget: number; vatRegistered: boolean; dailyRevenueTarget: number; foodCostTarget: number }
   profile: { fullName: string; email: string }
   recentActivity: ActivityEntry[]
+  isAdmin?: boolean
+  subscriptionRequests?: SubRequest[]
 }
 
-export default function SettingsClient({ initialTheme, plan, planExpiresAt, trialStartedAt, venue, profile, recentActivity }: Props) {
+export default function SettingsClient({ initialTheme, plan, planExpiresAt, trialStartedAt, venue, profile, recentActivity, isAdmin, subscriptionRequests }: Props) {
   const router = useRouter()
   const [active, setActive] = useState(initialTheme)
   const [isPending, startTransition] = useTransition()
@@ -629,6 +691,25 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
 
         </div>
       </section>
+
+      {/* ── Admin: Subscription Requests ─────────────────────────────── */}
+      {isAdmin && subscriptionRequests && (
+        <section className="glass card-glow rounded-xl p-6 space-y-4 border border-accent/20">
+          <div>
+            <h2 className="text-base font-semibold text-ink">Subscription Requests</h2>
+            <p className="text-sm text-ink-4 mt-0.5">Admin only — activate or reject pending upgrade requests.</p>
+          </div>
+          {subscriptionRequests.length === 0 ? (
+            <p className="text-sm text-ink-4 text-center py-4">No requests yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {subscriptionRequests.map(req => (
+                <AdminSubRequestRow key={req.id} req={req} />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* ── Contact form modal ───────────────────────────────────────── */}
       {contactForm && (
