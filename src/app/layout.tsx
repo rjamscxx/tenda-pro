@@ -80,7 +80,7 @@ const THEME_INIT = `(function(){try{
     return;
   }
   var m=document.cookie.match(/(?:^|; )sizzle-theme=([^;]+)/);
-  if(m){var v=decodeURIComponent(m[1]);if(/^[a-z][a-z0-9-]{0,30}$/.test(v))document.documentElement.setAttribute('data-theme',v);}
+  if(m){var v=decodeURIComponent(m[1]);if(/^[a-z][a-z0-9-]{0,30}$/.test(v))document.documentElement.setAttribute('data-theme',v);}else{document.documentElement.setAttribute('data-theme','ember');}
 }catch(e){}})();`
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

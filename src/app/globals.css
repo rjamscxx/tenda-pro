@@ -1,7 +1,41 @@
 @import "tailwindcss";
 
-/* ── Theme 1: Sage Dark (default) ─────────────────────────────────────────── */
+/* ── Theme 1: Ember / Orange (default) ────────────────────────────────────── */
 :root,
+[data-theme="ember"] {
+  --canvas:      #130A04;
+  --canvas-2:    #1A1008;
+  --sidebar:     #180E06;
+  --surface:     #1F1408;
+  --surface-2:   #281A0C;
+  --surface-3:   #301F10;
+
+  --ink:         #F8ECE0;
+  --ink-2:       #D0A880;
+  --ink-3:       #B88A5D;
+  --ink-4:       #A57450;  /* WCAG AA: 4.86:1 on canvas, 4.49:1 on surface */
+
+  --hair:        #3E2810;
+  --hair-2:      #342008;
+
+  --accent:      #F97316;
+  --accent-2:    #FB923C;
+  --accent-dim:  rgba(249, 115, 22, 0.12);
+  --accent-tint: rgba(249, 115, 22, 0.22);
+  --accent-glow: rgba(249, 115, 22, 0.18);
+  --accent-end:  #EA580C;
+
+  --danger:      #DC2626;
+  --danger-dim:  rgba(220, 38, 38, 0.12);
+  --warn:        #F59E0B;
+  --warn-dim:    rgba(245, 158, 11, 0.12);
+  --success:     #78C488;
+  --success-dim: rgba(120, 196, 136, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #130A04 0%, #1C1008 50%, #130A04 100%);
+}
+
+/* ── Theme 2: Sage Dark ────────────────────────────────────────────────────── */
 [data-theme="sage-dark"] {
   --canvas:      #0E1714;
   --canvas-2:    #121D19;
@@ -239,41 +273,7 @@
   --gradient-hero: linear-gradient(135deg, #150C10 0%, #1E1018 50%, #150C10 100%);
 }
 
-/* ── Theme 8: Ember — BBQ / Grill ─────────────────────────────────────────── */
-[data-theme="ember"] {
-  --canvas:      #130A04;
-  --canvas-2:    #1A1008;
-  --sidebar:     #180E06;
-  --surface:     #1F1408;
-  --surface-2:   #281A0C;
-  --surface-3:   #301F10;
-
-  --ink:         #F8ECE0;
-  --ink-2:       #D0A880;
-  --ink-3:       #B88A5D;
-  --ink-4:       #B07C56;
-
-  --hair:        #3E2810;
-  --hair-2:      #342008;
-
-  --accent:      #F97316;
-  --accent-2:    #FB923C;
-  --accent-dim:  rgba(249, 115, 22, 0.12);
-  --accent-tint: rgba(249, 115, 22, 0.22);
-  --accent-glow: rgba(249, 115, 22, 0.18);
-  --accent-end:  #EA580C;
-
-  --danger:      #DC2626;
-  --danger-dim:  rgba(220, 38, 38, 0.12);
-  --warn:        #F59E0B;
-  --warn-dim:    rgba(245, 158, 11, 0.12);
-  --success:     #78C488;
-  --success-dim: rgba(120, 196, 136, 0.12);
-
-  --gradient-hero: linear-gradient(135deg, #130A04 0%, #1C1008 50%, #130A04 100%);
-}
-
-/* ── Theme 9: Midnight — Fine Dining / Bar ────────────────────────────────── */
+/* ── Theme 9: Midnight — Fine Dining / Bar ──────────────────────────────── */
 [data-theme="midnight"] {
   --canvas:      #070714;
   --canvas-2:    #0C0C1A;

@@ -6,12 +6,12 @@ export const contentType = 'image/png'
 export const alt =
   'Sizzle — All-in-one operating dashboard for restaurants and cafés'
 
-const CANVAS = '#0E1714'
-const SURFACE = '#18231F'
-const HAIR = '#28332E'
-const INK = '#ECE6D5'
-const INK_3 = '#929B93'
-const ACCENT = '#58C098'
+const CANVAS = '#130A04'
+const SURFACE = '#1F1408'
+const HAIR = '#3E2810'
+const INK = '#F8ECE0'
+const INK_3 = '#B88A5D'
+const ACCENT = '#F97316'
 
 export default async function Image() {
   return new ImageResponse(
@@ -25,7 +25,7 @@ export default async function Image() {
           justifyContent: 'space-between',
           padding: '72px 80px',
           background: CANVAS,
-          backgroundImage: `radial-gradient(circle at 12% 18%, rgba(88,192,152,0.18) 0%, rgba(88,192,152,0) 55%), radial-gradient(circle at 92% 96%, rgba(61,168,122,0.10) 0%, rgba(61,168,122,0) 50%)`,
+          backgroundImage: `radial-gradient(circle at 12% 18%, rgba(249,115,22,0.18) 0%, rgba(249,115,22,0) 55%), radial-gradient(circle at 92% 96%, rgba(234,88,12,0.10) 0%, rgba(234,88,12,0) 50%)`,
           color: INK,
           fontFamily: 'sans-serif',
         }}
