@@ -42,6 +42,9 @@ const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
       { href: '/inventory', label: 'Inventory', icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
       )},
+      { href: '/suppliers', label: 'Suppliers', proOnly: true, icon: (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="5" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/><path d="M11 8h1.5l1.5 3v2H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="4" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3"/><circle cx="12" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M4 5V3.5h6V5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
+      )},
       { href: '/waste', label: 'Waste Log', proOnly: true, icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M6 4.5V3h4v1.5M5.5 4.5l.5 8.5h4l.5-8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
       )},

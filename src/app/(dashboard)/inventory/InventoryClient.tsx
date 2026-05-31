@@ -31,6 +31,8 @@ interface Ingredient {
   stockQty: number
   lowStockThreshold: number
   costPerUnit: number
+  supplierId?: string | null
+  supplierName?: string | null
   /** Days of stock left at current consumption pace. Premium-only; null when unavailable. */
   daysRemaining?: number | null
 }
@@ -378,7 +380,14 @@ export default function InventoryClient({
                   const status = stockStatus(ing.stockQty, ing.lowStockThreshold)
                   return (
                     <tr key={ing.id} className="group hover:bg-surface-2 transition-colors border-l-2 border-l-transparent hover:border-l-accent">
-                      <td className="px-6 py-3.5 font-medium text-ink">{ing.name}</td>
+                      <td className="px-6 py-3.5">
+                        <p className="font-medium text-ink">{ing.name}</p>
+                        {ing.supplierName && (
+                          <a href="/suppliers" className="text-[10px] text-ink-4 hover:text-accent transition-colors">
+                            {ing.supplierName}
+                          </a>
+                        )}
+                      </td>
                       <td className="px-6 py-3.5 text-right tabular text-ink">
                         <div className="flex items-center justify-end gap-2">
                           <span>{fmtQty(ing.stockQty)}{' '}<span className="text-ink-4 text-xs font-normal uppercase tracking-wider">{ing.unit}</span></span>

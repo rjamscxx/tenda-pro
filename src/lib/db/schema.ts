@@ -64,11 +64,26 @@ export const venues = pgTable('venues', {
   updatedAt:             timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index('venues_account_idx').on(t.accountId)])
 
+// ── Suppliers ─────────────────────────────────────────────────────────────────
+
+export const suppliers = pgTable('suppliers', {
+  id:          uuid('id').primaryKey().defaultRandom(),
+  venueId:     uuid('venue_id').notNull().references(() => venues.id, { onDelete: 'cascade' }),
+  name:        text('name').notNull(),
+  contactName: text('contact_name'),
+  phone:       text('phone'),
+  email:       text('email'),
+  notes:       text('notes'),
+  createdAt:   timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt:   timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index('suppliers_venue_idx').on(t.venueId)])
+
 // ── Ingredients ───────────────────────────────────────────────────────────────
 
 export const ingredients = pgTable('ingredients', {
   id:                uuid('id').primaryKey().defaultRandom(),
   venueId:           uuid('venue_id').notNull().references(() => venues.id, { onDelete: 'cascade' }),
+  supplierId:        uuid('supplier_id').references(() => suppliers.id, { onDelete: 'set null' }),
   name:              text('name').notNull(),
   unit:              text('unit').notNull(), // kg, g, L, mL, pcs …
   costPerUnit:       integer('cost_per_unit').notNull().default(0), // cents
@@ -76,7 +91,10 @@ export const ingredients = pgTable('ingredients', {
   lowStockThreshold: numeric('low_stock_threshold', { precision: 12, scale: 4 }).notNull().default('0'),
   createdAt:         timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt:         timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
-}, (t) => [index('ingredients_venue_idx').on(t.venueId)])
+}, (t) => [
+  index('ingredients_venue_idx').on(t.venueId),
+  index('ingredients_supplier_idx').on(t.supplierId),
+])
 
 // ── Dishes ────────────────────────────────────────────────────────────────────
 
@@ -283,6 +301,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 
 export const venuesRelations = relations(venues, ({ one, many }) => ({
   account:      one(accounts, { fields: [venues.accountId], references: [accounts.id] }),
+  suppliers:    many(suppliers),
   ingredients:  many(ingredients),
   dishes:       many(dishes),
   sales:        many(sales),
@@ -292,8 +311,14 @@ export const venuesRelations = relations(venues, ({ one, many }) => ({
   wasteLogs:    many(wasteLogs),
 }))
 
+export const suppliersRelations = relations(suppliers, ({ one, many }) => ({
+  venue:       one(venues, { fields: [suppliers.venueId], references: [venues.id] }),
+  ingredients: many(ingredients),
+}))
+
 export const ingredientsRelations = relations(ingredients, ({ one, many }) => ({
   venue:       one(venues, { fields: [ingredients.venueId], references: [venues.id] }),
+  supplier:    one(suppliers, { fields: [ingredients.supplierId], references: [suppliers.id] }),
   recipeItems: many(recipeItems),
   wasteLogs:   many(wasteLogs),
 }))

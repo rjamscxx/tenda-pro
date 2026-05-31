@@ -114,6 +114,7 @@ export default function OnboardingForm({ userId }: { userId: string }) {
   const [businessType, setBusinessType] = useState<BusinessTypeId>('restaurant')
   const [venueName, setVenueName]       = useState('')
   const [fullName, setFullName]         = useState('')
+  const [withDemo, setWithDemo]         = useState(true)
   const [error, setError]               = useState('')
   const [loading, setLoading]           = useState(false)
 
@@ -131,6 +132,7 @@ export default function OnboardingForm({ userId }: { userId: string }) {
       venueName,
       fullName,
       theme: TYPE_THEME[businessType],
+      withDemo,
     })
     if (result?.error) {
       setError(result.error)
@@ -196,6 +198,35 @@ export default function OnboardingForm({ userId }: { userId: string }) {
           />
         </div>
       </div>
+
+      {/* Demo data toggle */}
+      <label className="flex items-start gap-3 cursor-pointer group">
+        <div className="relative mt-0.5 shrink-0">
+          <input
+            type="checkbox"
+            checked={withDemo}
+            onChange={e => setWithDemo(e.target.checked)}
+            className="sr-only peer"
+          />
+          <div
+            className="w-4 h-4 rounded border transition-colors"
+            style={{
+              background:   withDemo ? 'var(--accent)' : 'var(--surface)',
+              borderColor:  withDemo ? 'var(--accent)' : 'var(--hair)',
+            }}
+          >
+            {withDemo && (
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="absolute inset-0.5">
+                <path d="M1.5 5l2.5 2.5 4.5-4" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+          </div>
+        </div>
+        <div>
+          <p className="text-sm font-medium text-ink">Load sample data</p>
+          <p className="text-xs text-ink-4 mt-0.5">Pre-fill with demo ingredients, menu items, and sales so you can explore right away</p>
+        </div>
+      </label>
 
       {error && <p className="text-sm text-danger">{error}</p>}
 

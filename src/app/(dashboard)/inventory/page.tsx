@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import { ingredients, auditLogs } from '@/lib/db/schema'
+import { ingredients, suppliers, auditLogs } from '@/lib/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import { isPro, isPremium, BASIC_INGREDIENT_LIMIT } from '@/lib/plan'
@@ -16,8 +16,18 @@ export default async function InventoryPage() {
   const isBasic = !pro
 
   const [allIngredients, allMovements, forecast] = await Promise.all([
-    db.select()
+    db.select({
+        id:                ingredients.id,
+        name:              ingredients.name,
+        unit:              ingredients.unit,
+        costPerUnit:       ingredients.costPerUnit,
+        stockQty:          ingredients.stockQty,
+        lowStockThreshold: ingredients.lowStockThreshold,
+        supplierId:        ingredients.supplierId,
+        supplierName:      suppliers.name,
+      })
       .from(ingredients)
+      .leftJoin(suppliers, eq(ingredients.supplierId, suppliers.id))
       .where(eq(ingredients.venueId, venue.id))
       .orderBy(ingredients.name),
     db.select()
@@ -39,6 +49,8 @@ export default async function InventoryPage() {
       stockQty:          parseFloat(i.stockQty),
       lowStockThreshold: parseFloat(i.lowStockThreshold),
       costPerUnit:       i.costPerUnit,
+      supplierId:        i.supplierId ?? null,
+      supplierName:      i.supplierName ?? null,
       daysRemaining:     fc?.daysRemaining ?? null,
     }
   })
