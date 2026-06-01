@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Sizzle — Operating Dashboard for Filipino F&B</title>
+<style>
+  /* ─── Page setup ──────────────────────────────────────────────────────── */
+  @page { size: A4; margin: 0; }
+  *  { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 210mm; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    color: #0F172A;
+    background: white;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.45;
+  }
+
+  :root {
+    --ink:       #0F172A;
+    --ink-2:     #374151;
+    --ink-3:     #6B7280;
+    --ink-4:     #9CA3AF;
+    --hair:      #E5E7EB;
+    --hair-2:    #D1D5DB;
+    --canvas:    #FFFFFF;
+    --cream:     #FFF7EE;
+    --cream-2:   #FFEFDB;
+    --surface:   #FAFAF8;
+    --accent:    #F97316;
+    --accent-2:  #FB923C;
+    --accent-d:  #C2410C;
+    --ok:        #16A34A;
+    --warn:      #D97706;
+
+    --sage-bg:   #0F1A14;
+    --sage-bg2:  #16241C;
+    --sage-surf: #1F2E25;
+    --sage-ink:  #F5F7F4;
+    --sage-ink2: #D6DDD7;
+    --sage-ink3: #9CA8A0;
+    --sage-hair: rgba(255,255,255,0.10);
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* ─── Type scale ──────────────────────────────────────────────────────── */
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-d);
+  }
+  .h1 {
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .h2 {
+    font-size: 22px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .h3 {
+    font-size: 14px;
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .body {
+    font-size: 11px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .small {
+    font-size: 10px;
+    color: var(--ink-3);
+    line-height: 1.45;
+  }
+
+  /* ─── Page chrome (header watermark + footer) ─────────────────────────── */
+  .page-chrome-top {
+    position: absolute; top: 12mm; left: 18mm; right: 18mm;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 9px; color: var(--ink-4);
+    letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+  }
+  .page-chrome-top .brand-mini {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .page-chrome-top .brand-mini .mark {
+    width: 14px; height: 14px; border-radius: 4px;
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .page-chrome-bottom {
+    position: absolute; bottom: 12mm; left: 18mm; right: 18mm;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 9px; color: var(--ink-4);
+    letter-spacing: 0.08em;
+  }
+  .page-chrome-bottom .num { font-weight: 700; color: var(--ink-3); }
+
+  .page-body {
+    position: absolute; top: 22mm; left: 18mm; right: 18mm; bottom: 18mm;
+  }
+
+  /* ─── Cover (page 1) — dark sage full-bleed ───────────────────────────── */
+  .cover {
+    background:
+      radial-gradient(800px 400px at 70% 0%, rgba(249,115,22,0.22), transparent 60%),
+      radial-gradient(600px 400px at 10% 80%, rgba(249,115,22,0.10), transparent 60%),
+      linear-gradient(160deg, var(--sage-bg) 0%, var(--sage-bg2) 100%);
+    color: var(--sage-ink);
+    padding: 28mm 22mm;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .cover-brand {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .cover-mark {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 20px rgba(249,115,22,0.40);
+  }
+  .cover-wordmark { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+  .cover-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+  }
+  .cover-headline {
+    font-size: 60px;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+    color: var(--sage-ink);
+    margin-top: 14px;
+  }
+  .cover-headline .accent {
+    background: linear-gradient(180deg, #FCD34D 0%, var(--accent) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .cover-sub {
+    font-size: 18px; line-height: 1.45; color: var(--sage-ink2);
+    margin-top: 18px; max-width: 460px;
+  }
+  .cover-chips {
+    margin-top: 22px; display: flex; gap: 8px;
+  }
+  .cover-chip {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(255,255,255,0.06); color: var(--sage-ink2);
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+  .cover-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 10px; color: var(--sage-ink3); letter-spacing: 0.08em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .cover-footer .url { color: var(--accent-2); font-weight: 700; letter-spacing: 0.02em; text-transform: none; font-size: 14px; }
+
+  /* ─── Generic content blocks ──────────────────────────────────────────── */
+  .stat-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--hair); border-radius: 10px; overflow: hidden;
+    margin-top: 20px;
+  }
+  .stat {
+    padding: 14px 16px; text-align: center;
+  }
+  .stat + .stat { border-left: 1px solid var(--hair); }
+  .stat .v { font-size: 22px; font-weight: 800; color: var(--accent-d); letter-spacing: -0.02em; }
+  .stat .l { font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.10em; margin-top: 4px; font-weight: 600; }
+
+  .callout {
+    background: var(--cream);
+    border-left: 3px solid var(--accent);
+    padding: 14px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 18px;
+  }
+  .callout .body { color: var(--ink); }
+
+  .kills-grid {
+    margin-top: 18px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .kill {
+    border: 1px solid var(--hair); border-radius: 8px;
+    padding: 12px 14px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .kill .x {
+    color: #DC2626; font-size: 14px; font-weight: 700; margin-top: 1px;
+    flex-shrink: 0; line-height: 1;
+  }
+  .kill .text { font-size: 11px; color: var(--ink-2); line-height: 1.4; }
+  .kill .text strong { color: var(--ink); font-weight: 700; }
+
+  /* Feature module list */
+  .module-block { margin-top: 18px; }
+  .module-head {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 6px; margin-bottom: 8px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .module-icon {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .module-title {
+    font-size: 14px; font-weight: 800; letter-spacing: -0.01em;
+  }
+  .module-tier {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent-d);
+    margin-left: auto;
+    padding: 2px 8px; border-radius: 999px;
+    background: var(--cream); border: 1px solid var(--cream-2);
+  }
+  .module-tier.free { color: var(--ok); background: #F0FDF4; border-color: #BBF7D0; }
+  .module-tier.both { color: var(--ink-3); background: var(--surface); border-color: var(--hair); }
+  .module-feats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px;
+  }
+  .module-feat {
+    font-size: 10.5px; color: var(--ink-2); line-height: 1.4;
+    display: flex; gap: 6px; align-items: flex-start;
+  }
+  .module-feat::before {
+    content: ""; flex-shrink: 0;
+    width: 4px; height: 4px; border-radius: 999px;
+    background: var(--accent); margin-top: 6px;
+  }
+
+  /* Industries */
+  .industry-grid {
+    margin-top: 18px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .industry {
+    border: 1px solid var(--hair);
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: var(--canvas);
+  }
+  .industry-head {
+    display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;
+  }
+  .industry-emoji { font-size: 18px; line-height: 1; }
+  .industry-name { font-size: 13px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; }
+  .industry-tagline { font-size: 9.5px; color: var(--accent-d); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .industry-body { font-size: 10px; color: var(--ink-2); line-height: 1.5; margin-top: 4px; }
+  .industry-keys { font-size: 9.5px; color: var(--ink-3); margin-top: 8px; }
+  .industry-keys strong { color: var(--ink-2); font-weight: 700; }
+
+  /* Benefits */
+  .benefit-grid {
+    margin-top: 18px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .benefit {
+    border: 1px solid var(--hair); border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .benefit-num {
+    font-size: 22px; font-weight: 800;
+    color: var(--accent); letter-spacing: -0.02em;
+    line-height: 1; margin-bottom: 6px;
+  }
+  .benefit-num.txt { font-size: 16px; }
+  .benefit-title {
+    font-size: 12px; font-weight: 800; color: var(--ink); margin-bottom: 4px;
+    letter-spacing: -0.005em;
+  }
+  .benefit-body { font-size: 10px; color: var(--ink-2); line-height: 1.5; }
+
+  /* Pricing */
+  .pricing-row {
+    margin-top: 22px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .price-card {
+    border: 1px solid var(--hair); border-radius: 14px;
+    padding: 22px;
+  }
+  .price-card.pro {
+    border-color: var(--accent); background: var(--cream);
+    box-shadow: 0 6px 18px rgba(249,115,22,0.12);
+  }
+  .price-tier-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+  .price-card.pro .price-tier-label { color: var(--accent-d); }
+  .price-amount {
+    font-size: 38px; font-weight: 800; color: var(--ink); margin-top: 4px;
+    letter-spacing: -0.025em; line-height: 1;
+  }
+  .price-amount .per { font-size: 14px; color: var(--ink-3); font-weight: 500; }
+  .price-sub {
+    font-size: 11px; color: var(--ink-3); margin-top: 4px;
+  }
+  .price-list {
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px solid var(--hair);
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .price-card.pro .price-list { border-top-color: rgba(194,65,12,0.20); }
+  .price-list-item {
+    font-size: 10.5px; color: var(--ink); display: flex; gap: 8px; align-items: flex-start;
+  }
+  .check {
+    color: var(--ok); font-weight: 700; flex-shrink: 0; line-height: 1.2;
+  }
+
+  /* Page 8 about */
+  .about-row {
+    margin-top: 24px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .about-block .h3 { font-size: 13px; color: var(--accent-d); margin-bottom: 6px; }
+  .about-block p { font-size: 11px; color: var(--ink-2); line-height: 1.55; }
+
+  .start-steps {
+    margin-top: 18px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+  }
+  .step {
+    border-top: 2px solid var(--accent);
+    padding-top: 10px;
+  }
+  .step-n {
+    font-size: 10px; font-weight: 700; color: var(--accent-d);
+    letter-spacing: 0.10em;
+  }
+  .step-t { font-size: 12px; font-weight: 700; color: var(--ink); margin-top: 4px; }
+  .step-b { font-size: 10px; color: var(--ink-3); line-height: 1.5; margin-top: 4px; }
+
+  .contact-strip {
+    margin-top: 22px;
+    background: linear-gradient(160deg, var(--sage-bg) 0%, var(--sage-bg2) 100%);
+    color: var(--sage-ink);
+    border-radius: 14px;
+    padding: 22px 26px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .contact-left .head { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+  .contact-left .sub { font-size: 11px; color: var(--sage-ink3); margin-top: 4px; }
+  .contact-right { text-align: right; }
+  .contact-right .url { font-size: 18px; font-weight: 800; color: var(--accent-2); }
+  .contact-right .email { font-size: 11px; color: var(--sage-ink2); margin-top: 4px; }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 1 — COVER
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page cover">
+  <div>
+    <div class="cover-brand">
+      <div class="cover-mark">
+        <svg width="30" height="30" viewBox="0 0 24 32" fill="none">
+          <path d="M17 5 C22 5 22 14 12 16 C2 18 2 27 7 27" stroke="white" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+          <circle cx="7" cy="27" r="3" fill="white"/>
+        </svg>
+      </div>
+      <div class="cover-wordmark">Sizzle</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="cover-eyebrow">Operating dashboard for Filipino F&amp;B</div>
+    <h1 class="cover-headline">Know your <span class="accent">margins.</span><br/>Run your kitchen.</h1>
+    <p class="cover-sub">The all-in-one operating system for cafés, restaurants, karinderyas, and food kiosks in the Philippines. POS, inventory, payroll, AI insights — one screen, real margins, PH pricing.</p>
+    <div class="cover-chips">
+      <span class="cover-chip">Free forever plan</span>
+      <span class="cover-chip">No credit card</span>
+      <span class="cover-chip">Built in PH 🇵🇭</span>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <div>Comprehensive Overview · 2026</div>
+    <div class="url">sizzle.app</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 2 — WHAT IS SIZZLE + WHAT IT ELIMINATES
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="page-chrome-top">
+    <div class="brand-mini">
+      <span class="mark"></span>
+      <span>Sizzle</span>
+    </div>
+    <div>The Problem</div>
+  </div>
+
+  <div class="page-body">
+    <div class="eyebrow">What is Sizzle</div>
+    <h1 class="h1" style="margin-top:8px;max-width:160mm;">The dashboard your café would build if it had an engineering team.</h1>
+    <p class="body" style="margin-top:14px;max-width:170mm;font-size:12px;">
+      Sizzle is a full operating system for small Filipino food businesses. Built from the ground up
+      for owner-operators who today stitch together a notebook, a spreadsheet, Square, QuickBooks,
+      and three GCash receipts to figure out if Tuesday made any money. We replace all of that with
+      one screen — and add an AI co-pilot that reads your numbers and tells you what to do next.
+    </p>
+
+    <div class="stat-row">
+      <div class="stat"><div class="v">1</div><div class="l">Screen, not five apps</div></div>
+      <div class="stat"><div class="v">60s</div><div class="l">Setup time</div></div>
+      <div class="stat"><div class="v">₱399</div><div class="l">Pro · per month</div></div>
+    </div>
+
+    <h2 class="h2" style="margin-top:24px;">What Sizzle eliminates</h2>
+    <p class="body" style="margin-top:6px;">The tools, workarounds, and end-of-day stress that disappear once you switch.</p>
+
+    <div class="kills-grid">
+      <div class="kill"><span class="x">✕</span><div class="text"><strong>Spreadsheet hell</strong> — no more end-of-day Excel reconciliation against three notebooks.</div></div>
+      <div class="kill"><span class="x">✕</span><div class="text"><strong>Three-app stack</strong> — replaces Square + QuickBooks + notebook with one dashboard.</div></div>
+      <div class="kill"><span class="x">✕</span><div class="text"><strong>"Where did the money go?"</strong> — every peso is tracked and categorized automatically.</div></div>
+      <div class="kill"><span class="x">✕</span><div class="text"><strong>Manual food cost math</strong> — recipe costs flow into every dish and recalculate when prices change.</div></div>
+      <div class="kill"><span class="x">✕</span><div class="text"><strong>Notebook payroll</strong> — shifts auto-fill payroll runs; net pay is computed for you.</div></div>
+      <div class="kill"><span class="x">✕</span><div class="text"><strong>Surprise stockouts</strong> — low-stock alerts fire before you run out of milk on a Saturday.</div></div>
+      <div class="kill"><span class="x">✕</span><div class="text"><strong>USD-priced SaaS</strong> — no $40-60/mo subscriptions. Free tier forever, ₱399 for Pro.</div></div>
+      <div class="kill"><span class="x">✕</span><div class="text"><strong>"I'll check tomorrow"</strong> — AI digest emails you the answer at 7 AM, every morning.</div></div>
+    </div>
+
+    <div class="callout">
+      <p class="body"><strong>The persona:</strong> Lina runs a single café in Quezon City. She doesn't need ERP. She needs to know yesterday's food cost ran 41%, that Café Latte is her best Plowhorse, and that she's ₱8,000 short of her monthly revenue goal with 5 days left. Sizzle is built for Lina.</p>
+    </div>
+  </div>
+
+  <div class="page-chrome-bottom">
+    <div>sizzle.app</div>
+    <div class="num">02</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 3 — FEATURES (OPERATIONS)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="page-chrome-top">
+    <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
+    <div>Features &amp; Modules · 1/2</div>
+  </div>
+
+  <div class="page-body">
+    <div class="eyebrow">Features &amp; Functions</div>
+    <h1 class="h1" style="margin-top:6px;">Everything you currently stitch together.</h1>
+    <p class="body" style="margin-top:6px;max-width:170mm;">Sixteen integrated modules across operations, people, insights, and customer-facing tools. Free tier covers the core; Pro unlocks AI, payroll, analytics, and multi-venue.</p>
+
+    <!-- OPERATIONS -->
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M4 8.5h8M4 11h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <div class="module-title">Point of Sale</div>
+        <div class="module-tier free">FREE</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">Dish grid by category with one-tap add</div>
+        <div class="module-feat">Order builder with line edits + discounts</div>
+        <div class="module-feat">VAT-aware receipts (12% PH)</div>
+        <div class="module-feat">Service charge, table number, customer name</div>
+        <div class="module-feat">Multi-channel: dine-in, takeout, delivery</div>
+        <div class="module-feat">Open tabs / utang tracking (unpaid sales)</div>
+      </div>
+    </div>
+
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 11.5L6 7l3 3 5-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 5.5h3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="module-title">Sales Tracking</div>
+        <div class="module-tier free">FREE</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">Log sales via item picker or manual total</div>
+        <div class="module-feat">Period filters (today, week, month, custom)</div>
+        <div class="module-feat">Channel badges + edit/delete</div>
+        <div class="module-feat">Mark as paid / pending GCash</div>
+      </div>
+    </div>
+
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 8h5M8 5.5v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="module-title">Menu &amp; Recipe Engineering</div>
+        <div class="module-tier both">FREE + PRO</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">Ingredients CRUD with cost &amp; unit</div>
+        <div class="module-feat">Dishes with full recipe (ingredient + qty)</div>
+        <div class="module-feat">Per-dish margin auto-calculated from recipe</div>
+        <div class="module-feat">Public QR menu page (no auth, mobile-first)</div>
+        <div class="module-feat"><strong>Pro:</strong> Menu Engineering quadrant (Stars / Plowhorses / Puzzles / Dogs)</div>
+        <div class="module-feat"><strong>Pro:</strong> Scatter plot of volume vs margin</div>
+      </div>
+    </div>
+
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 4.5L6 9l3-3 5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="module-title">Expenses</div>
+        <div class="module-tier free">FREE</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">6 categories: ingredients, labor, rent, utilities, marketing, other</div>
+        <div class="module-feat">Recurring expenses with monthly auto-fire</div>
+        <div class="module-feat">Quick-expense shortcut from any page</div>
+        <div class="module-feat">Per-month breakdown by category</div>
+      </div>
+    </div>
+
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 5l6-3 6 3v6l-6 3-6-3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+        <div class="module-title">Inventory &amp; Suppliers</div>
+        <div class="module-tier both">FREE + PRO</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">Stock qty + low-stock threshold per ingredient</div>
+        <div class="module-feat">Auto-deplete from sales using recipe consumption</div>
+        <div class="module-feat">Supplier management + ingredient-to-supplier links</div>
+        <div class="module-feat"><strong>Pro:</strong> CSV export, multi-venue inventory</div>
+      </div>
+    </div>
+
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 13l5-10 5 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="module-title">Waste Log</div>
+        <div class="module-tier">PRO</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">Track ingredient spoilage with reason codes</div>
+        <div class="module-feat">Auto-estimated cost using ingredient pricing</div>
+        <div class="module-feat">Period filters + venue-scoped summaries</div>
+        <div class="module-feat">Feeds the AI's nightly waste insights</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-chrome-bottom">
+    <div>sizzle.app</div>
+    <div class="num">03</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 4 — FEATURES (PEOPLE, INSIGHTS, AI, ACCOUNT)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="page-chrome-top">
+    <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
+    <div>Features &amp; Modules · 2/2</div>
+  </div>
+
+  <div class="page-body">
+    <div class="module-block" style="margin-top:0;">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 14c0-2.5 2.2-4 5-4s5 1.5 5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <div class="module-title">Employees &amp; Shifts</div>
+        <div class="module-tier">PRO</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">Daily / monthly / hourly pay structures</div>
+        <div class="module-feat">Shift scheduling with attendance status</div>
+        <div class="module-feat">Late / OT hours snapshot per shift</div>
+        <div class="module-feat">Toggle active / inactive employees</div>
+      </div>
+    </div>
+
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 6h6M5 9h6M5 12h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <div class="module-title">Payroll Runs</div>
+        <div class="module-tier">PRO</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">Auto-pull billable shifts into pay periods</div>
+        <div class="module-feat">Per-employee gross / deductions / net pay</div>
+        <div class="module-feat">Overlap warning for period collisions</div>
+        <div class="module-feat">Expandable history with audit trail</div>
+      </div>
+    </div>
+
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/></svg></div>
+        <div class="module-title">Dashboard &amp; Reports</div>
+        <div class="module-tier both">FREE + PRO</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">Live KPI cards: revenue, food cost %, gross margin</div>
+        <div class="module-feat">30-day cashflow chart (revenue vs expenses)</div>
+        <div class="module-feat">Today's top sellers + low-stock count</div>
+        <div class="module-feat"><strong>Pro:</strong> Daily Digest viewer (60-day archive)</div>
+      </div>
+    </div>
+
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 12l4-6 3 3 5-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="module-title">Advanced Analytics</div>
+        <div class="module-tier">PRO</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">90-day revenue trend with 7-day MA</div>
+        <div class="module-feat">Day-of-week performance bars</div>
+        <div class="module-feat">7-day forecast with confidence bands</div>
+        <div class="module-feat">Monthly P&amp;L over 6 months with margin %</div>
+      </div>
+    </div>
+
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8a5 5 0 0110 0v3a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.4"/><circle cx="6" cy="8" r="0.8" fill="currentColor"/><circle cx="10" cy="8" r="0.8" fill="currentColor"/></svg></div>
+        <div class="module-title">AI Co-pilot (Claude Sonnet 4.6)</div>
+        <div class="module-tier">PRO</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">Floating chat widget on dashboard, draggable</div>
+        <div class="module-feat">8 tool-calling functions: sales, expenses, profit, dish margins, top dishes, low stock, waste, payroll</div>
+        <div class="module-feat">Tagalog / Taglish friendly, asks follow-ups</div>
+        <div class="module-feat">Nightly digest pipeline → 7 AM email insight</div>
+        <div class="module-feat">Daily AI push card on dashboard ("Lina's tip of the day")</div>
+        <div class="module-feat">200k daily token budget per Pro account</div>
+      </div>
+    </div>
+
+    <div class="module-block">
+      <div class="module-head">
+        <div class="module-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M8 4v4l3 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <div class="module-title">Account, Settings &amp; Theming</div>
+        <div class="module-tier both">FREE + PRO</div>
+      </div>
+      <div class="module-feats">
+        <div class="module-feat">14-day Pro trial · 7-day auto-trial on signup</div>
+        <div class="module-feat"><strong>Pro:</strong> Multi-venue switcher (single account, many locations)</div>
+        <div class="module-feat">25 themes (Sage Dark, Ember, Espresso, Citrus, Karinderya…)</div>
+        <div class="module-feat">Configurable food cost target + revenue goals</div>
+        <div class="module-feat">GCash / GoTyme / BPI subscription via manual form</div>
+        <div class="module-feat">Full audit log of every action</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-chrome-bottom">
+    <div>sizzle.app</div>
+    <div class="num">04</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 5 — INDUSTRIES
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="page-chrome-top">
+    <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
+    <div>Industries</div>
+  </div>
+
+  <div class="page-body">
+    <div class="eyebrow">Built for these businesses</div>
+    <h1 class="h1" style="margin-top:6px;">Seven industries. One operating system.</h1>
+    <p class="body" style="margin-top:6px;max-width:170mm;">Sizzle ships pre-configured for the seven most common Filipino food businesses. Each comes with a starter menu, ingredient list, supplier list, and dashboard layout tuned for that vertical.</p>
+
+    <div class="industry-grid">
+      <div class="industry">
+        <div class="industry-head">
+          <span class="industry-emoji">☕</span>
+          <div>
+            <div class="industry-name">Café &amp; Coffee Shop</div>
+            <div class="industry-tagline">Espresso · Pandesal · Pastry</div>
+          </div>
+        </div>
+        <div class="industry-body">Track milk &amp; bean cost-per-shot, monitor barista shifts, and forecast Saturday volume before payroll. Public QR menu for table ordering.</div>
+        <div class="industry-keys"><strong>Critical features:</strong> Recipe costs, low-stock alerts, shift scheduling, AI cost-per-cup insights.</div>
+      </div>
+
+      <div class="industry">
+        <div class="industry-head">
+          <span class="industry-emoji">🍕</span>
+          <div>
+            <div class="industry-name">Pizzeria</div>
+            <div class="industry-tagline">Wood-fired · Delivery-first</div>
+          </div>
+        </div>
+        <div class="industry-body">Higher ingredient consumption per ticket means stock alerts fire more often — Sizzle's auto-deplete keeps you ahead. Multi-channel POS for dine-in and delivery riders.</div>
+        <div class="industry-keys"><strong>Critical features:</strong> Channel-split sales, delivery margin tracking, peak-hour staff scheduling.</div>
+      </div>
+
+      <div class="industry">
+        <div class="industry-head">
+          <span class="industry-emoji">🍚</span>
+          <div>
+            <div class="industry-name">Karinderya</div>
+            <div class="industry-tagline">Turo-turo · Owner-operated</div>
+          </div>
+        </div>
+        <div class="industry-body">Designed for one-person operations. Quick-log sales without a POS, daily revenue + waste tracking, and AI tips written in plain Tagalog about which adobo runs ran short.</div>
+        <div class="industry-keys"><strong>Critical features:</strong> Manual total entry, waste log, Tagalog AI insights, free forever tier.</div>
+      </div>
+
+      <div class="industry">
+        <div class="industry-head">
+          <span class="industry-emoji">🧋</span>
+          <div>
+            <div class="industry-name">Boba &amp; Milk Tea</div>
+            <div class="industry-tagline">Topping-heavy · Mall kiosk</div>
+          </div>
+        </div>
+        <div class="industry-body">Per-cup tapioca / topping cost tracked at the ingredient level. Group orders (Grab/Foodpanda batches) logged in one tap. Multi-location for franchise owners.</div>
+        <div class="industry-keys"><strong>Critical features:</strong> Recipe items per cup, channel breakdown, multi-venue (Pro), supplier links.</div>
+      </div>
+
+      <div class="industry">
+        <div class="industry-head">
+          <span class="industry-emoji">🍔</span>
+          <div>
+            <div class="industry-name">Burger Joint</div>
+            <div class="industry-tagline">Combo meals · QSR</div>
+          </div>
+        </div>
+        <div class="industry-body">Combo-meal margins broken down per component. VAT-aware receipts for BIR-registered branches. Forecast meat thaw based on next week's projected volume.</div>
+        <div class="industry-keys"><strong>Critical features:</strong> Recipe items per dish, food cost %, VAT receipts, 7-day forecast (Pro).</div>
+      </div>
+
+      <div class="industry">
+        <div class="industry-head">
+          <span class="industry-emoji">🥐</span>
+          <div>
+            <div class="industry-name">Bakery / Panaderia</div>
+            <div class="industry-tagline">Flour-heavy · Batch production</div>
+          </div>
+        </div>
+        <div class="industry-body">Yield-based recipes (one batch = N pieces) with per-piece cost. Morning shift attendance feeds 6 AM payroll automatically. Catch waste from unsold afternoon trays.</div>
+        <div class="industry-keys"><strong>Critical features:</strong> Recipe yields, shifts &amp; payroll, waste log (Pro), low-stock alerts.</div>
+      </div>
+
+      <div class="industry">
+        <div class="industry-head">
+          <span class="industry-emoji">🍜</span>
+          <div>
+            <div class="industry-name">Ramen / Noodle Shop</div>
+            <div class="industry-tagline">Slow-prep · Premium-priced</div>
+          </div>
+        </div>
+        <div class="industry-body">Broth-prep batched the night before; Sizzle tracks consumption and forecasts batch sizes. Premium-ticket margin reporting reveals which bowls justify the slow cook.</div>
+        <div class="industry-keys"><strong>Critical features:</strong> Recipe batch yields, menu engineering (Pro), per-dish margins, daily digest.</div>
+      </div>
+
+      <div class="industry" style="background:var(--cream);border-color:var(--cream-2);">
+        <div class="industry-head">
+          <span class="industry-emoji">＋</span>
+          <div>
+            <div class="industry-name">Any other food business</div>
+            <div class="industry-tagline">Custom setup in 60s</div>
+          </div>
+        </div>
+        <div class="industry-body">Food trucks, cloud kitchens, dessert shops, juice bars — Sizzle works for any small F&amp;B operation. Build your menu, set your costs, you're live.</div>
+        <div class="industry-keys"><strong>Common requests:</strong> Onboarding support is direct from the founder — DM us on signup.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-chrome-bottom">
+    <div>sizzle.app</div>
+    <div class="num">05</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 6 — BENEFITS
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="page-chrome-top">
+    <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
+    <div>Benefits</div>
+  </div>
+
+  <div class="page-body">
+    <div class="eyebrow">For future clients</div>
+    <h1 class="h1" style="margin-top:6px;">Ten reasons to switch this week.</h1>
+    <p class="body" style="margin-top:6px;max-width:170mm;">What you get on day one — and what compounds over the next three months.</p>
+
+    <div class="benefit-grid">
+      <div class="benefit">
+        <div class="benefit-num">1</div>
+        <div class="benefit-title">Real margins, not just revenue</div>
+        <div class="benefit-body">Recipe cost flows into every sale, so your dashboard shows actual gross profit — not just gross sales. You'll know within 24 hours which dishes are losing you money.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-num">2</div>
+        <div class="benefit-title">60-second setup</div>
+        <div class="benefit-body">Pick your vertical (café, pizzeria, etc.) and the menu, ingredients, and dashboards pre-populate. No accounting expertise required. No 14-day onboarding call.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-num">3</div>
+        <div class="benefit-title">PH-priced subscriptions</div>
+        <div class="benefit-body">₱399/mo or ₱4,000/yr Pro tier — paid in pesos via GCash, GoTyme, or BPI bank transfer. No USD card required, no 3% FX markup.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-num">4</div>
+        <div class="benefit-title">Mobile-first POS</div>
+        <div class="benefit-body">Works on the phone behind the counter or the tablet at the table. No dedicated POS hardware to buy or maintain. Touch-friendly at any screen size.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-num">5</div>
+        <div class="benefit-title">AI that reads your numbers</div>
+        <div class="benefit-body">Wake up to "Yesterday's food cost ran 41% — 6 points over target. Your latte margin is fine but pandesal cost jumped on Monday." Plain English (or Tagalog).</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-num">6</div>
+        <div class="benefit-title">Free forever, no expiry</div>
+        <div class="benefit-body">The Free tier isn't a trial. It's a full operating dashboard for one venue with POS, sales, menu, expenses, and inventory. Upgrade only when you need AI or multi-venue.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-num">7</div>
+        <div class="benefit-title">Payroll that fills itself</div>
+        <div class="benefit-body">Shifts you logged this week auto-populate the payroll run on Friday. Gross / deductions / net pay computed per employee. No more notebook math at 11 PM Sunday.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-num">8</div>
+        <div class="benefit-title">VAT-ready receipts</div>
+        <div class="benefit-body">BIR-friendly receipt format with 12% VAT-inclusive math. Customer-name capture for "Order for Lina!" callouts. Optional service charge built-in.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-num">9</div>
+        <div class="benefit-title">Public QR menu</div>
+        <div class="benefit-body">Every venue gets a public menu page at sizzle.app/m/yourvenue. Print the QR, stick it on tables, customers browse from their phones. No extra subscription.</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-num">10</div>
+        <div class="benefit-title">Founder support</div>
+        <div class="benefit-body">Built and run by RJ in Manila. Email goes directly to the person who wrote the code. We respond in hours, not days.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-chrome-bottom">
+    <div>sizzle.app</div>
+    <div class="num">06</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 7 — PRICING
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="page-chrome-top">
+    <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
+    <div>Pricing</div>
+  </div>
+
+  <div class="page-body">
+    <div class="eyebrow">Pricing</div>
+    <h1 class="h1" style="margin-top:6px;">Two tiers. PH pricing. No surprises.</h1>
+    <p class="body" style="margin-top:6px;max-width:170mm;">Free tier is forever — not a trial. Pro adds the AI, payroll, advanced analytics, and multi-venue capabilities. Cancel anytime; downgrade keeps your data.</p>
+
+    <div class="pricing-row">
+      <div class="price-card">
+        <div class="price-tier-label">Free Forever</div>
+        <div class="price-amount">₱0</div>
+        <div class="price-sub">1 venue · core dashboard</div>
+        <div class="price-list">
+          <div class="price-list-item"><span class="check">✓</span> Full POS (dine-in, takeout, delivery)</div>
+          <div class="price-list-item"><span class="check">✓</span> Sales tracking + open tabs</div>
+          <div class="price-list-item"><span class="check">✓</span> Menu, ingredients, recipes &amp; margins</div>
+          <div class="price-list-item"><span class="check">✓</span> Expense logging with categories</div>
+          <div class="price-list-item"><span class="check">✓</span> Inventory + low-stock alerts</div>
+          <div class="price-list-item"><span class="check">✓</span> Public QR menu page</div>
+          <div class="price-list-item"><span class="check">✓</span> Dashboard with live KPIs &amp; 30-day chart</div>
+          <div class="price-list-item"><span class="check">✓</span> Supplier management</div>
+          <div class="price-list-item"><span class="check">✓</span> 25 themes (Sage Dark, Ember, etc.)</div>
+          <div class="price-list-item"><span class="check">✓</span> Full audit log</div>
+        </div>
+      </div>
+
+      <div class="price-card pro">
+        <div class="price-tier-label">Pro</div>
+        <div class="price-amount">₱399<span class="per">/mo</span></div>
+        <div class="price-sub">or ₱4,000/yr (save ₱788) · 14-day free trial</div>
+        <div class="price-list">
+          <div class="price-list-item"><span class="check">✓</span> <strong>Everything in Free, plus:</strong></div>
+          <div class="price-list-item"><span class="check">✓</span> <strong>AI co-pilot</strong> (chat + 8 tools, 200k tokens/day)</div>
+          <div class="price-list-item"><span class="check">✓</span> Nightly digest email (Tagalog or English)</div>
+          <div class="price-list-item"><span class="check">✓</span> <strong>Multi-venue</strong> (run several locations on one account)</div>
+          <div class="price-list-item"><span class="check">✓</span> <strong>Payroll runs</strong> with auto-pull from shifts</div>
+          <div class="price-list-item"><span class="check">✓</span> Shifts, attendance, OT/late tracking</div>
+          <div class="price-list-item"><span class="check">✓</span> Waste log + AI waste insights</div>
+          <div class="price-list-item"><span class="check">✓</span> Menu engineering quadrant</div>
+          <div class="price-list-item"><span class="check">✓</span> Advanced analytics (90-day, forecast, P&amp;L)</div>
+          <div class="price-list-item"><span class="check">✓</span> CSV exports across modules</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:24px;">
+      <p class="body"><strong>How to pay:</strong> Sizzle supports GCash, GoTyme, and BPI bank transfer. You upload your receipt in the app; we activate Pro on your account within 24 hours. No card, no PayPal, no FX surprise.</p>
+    </div>
+
+    <div class="callout" style="margin-top:10px;background:#F0FDF4;border-color:var(--ok);border-left-width:3px;">
+      <p class="body"><strong>Switch incentive:</strong> Moving from Square, QuickBooks, Loyverse, or another POS? Email us your last month's sales export — we'll import it, set up your starter menu, and waive your first month of Pro.</p>
+    </div>
+  </div>
+
+  <div class="page-chrome-bottom">
+    <div>sizzle.app</div>
+    <div class="num">07</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 8 — ABOUT + HOW TO START + CONTACT
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="page-chrome-top">
+    <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
+    <div>About &amp; Contact</div>
+  </div>
+
+  <div class="page-body">
+    <div class="eyebrow">About Sizzle</div>
+    <h1 class="h1" style="margin-top:6px;">Built in Manila for businesses like yours.</h1>
+
+    <div class="about-row">
+      <div class="about-block">
+        <div class="h3">Founder note</div>
+        <p>I built Sizzle for café and restaurant owners I know personally. People who run on instinct, gut, and three open Excel tabs — paying ₱400/mo to a POS that doesn't speak their language and a notebook that doesn't speak to the POS. Sizzle is the single dashboard I wished they'd had ten years ago. — <strong>RJ Cabansay</strong>, Manila</p>
+      </div>
+      <div class="about-block">
+        <div class="h3">What we believe</div>
+        <p>Software built for the Philippines should be in pesos, in your language, and on your phone. It should respect that most owners are operators, not analysts. And it should be honest about pricing: a Free tier that's actually free, and a Pro tier that's worth less than one slow Tuesday's waste.</p>
+      </div>
+    </div>
+
+    <h2 class="h2" style="margin-top:28px;">How to start (today, 60 seconds)</h2>
+    <div class="start-steps">
+      <div class="step">
+        <div class="step-n">STEP 1</div>
+        <div class="step-t">Sign up free</div>
+        <div class="step-b">Go to <strong>sizzle.app</strong> and create an account with your email. No card. We auto-grant a 7-day Pro trial so you can try everything.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">STEP 2</div>
+        <div class="step-t">Pick your vertical</div>
+        <div class="step-b">Choose café, pizzeria, karinderya, boba, burger, bakery, or ramen. Your menu, ingredients, and dashboards pre-populate.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">STEP 3</div>
+        <div class="step-t">Log your first sale</div>
+        <div class="step-b">Use the POS on your phone or open the dashboard from a laptop. Your real numbers start flowing immediately.</div>
+      </div>
+    </div>
+
+    <div class="contact-strip">
+      <div class="contact-left">
+        <div class="head">Ready when you are.</div>
+        <div class="sub">Start free at sizzle.app — or email us for a guided onboarding. Replies from the founder, usually within the day.</div>
+      </div>
+      <div class="contact-right">
+        <div class="url">sizzle.app</div>
+        <div class="email">rjamscxx@gmail.com</div>
+      </div>
+    </div>
+
+    <p class="small" style="margin-top:20px;text-align:center;">Sizzle · Built in PH 🇵🇭 · © 2026 · <strong style="color:var(--ink-2);">Free forever plan available · No credit card required</strong></p>
+  </div>
+
+  <div class="page-chrome-bottom">
+    <div>sizzle.app · rjamscxx@gmail.com</div>
+    <div class="num">08</div>
+  </div>
+</section>
+
+</body>
+</html>
