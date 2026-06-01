@@ -2,7 +2,7 @@ import {
   pgTable, pgEnum, uuid, text, integer, numeric,
   boolean, timestamp, date, jsonb, index, unique,
 } from 'drizzle-orm/pg-core'
-import { relations } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 
 // ── Enums ─────────────────────────────────────────────────────────────────────
 
@@ -141,6 +141,8 @@ export const sales = pgTable('sales', {
   index('sales_venue_idx').on(t.venueId),
   index('sales_sold_at_idx').on(t.soldAt),
   index('sales_venue_date_idx').on(t.venueId, t.soldAt),
+  // Partial index — open tabs / utang / pending GCash are the minority of rows.
+  index('sales_venue_unpaid_idx').on(t.venueId).where(sql`${t.isPaid} = false`),
 ])
 
 // ── Sale Items ────────────────────────────────────────────────────────────────
