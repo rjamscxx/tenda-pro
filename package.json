@@ -12,6 +12,7 @@
     "db:studio": "dotenv -e .env.local -- drizzle-kit studio",
     "db:apply-manual": "dotenv -e .env.local -- node scripts/apply-manual-migrations.mjs",
     "db:mark-applied": "dotenv -e .env.local -- node scripts/mark-migration-applied.mjs",
+    "build:flyer": "node scripts/build-flyer.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
