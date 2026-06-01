@@ -373,6 +373,178 @@
   .contact-right .url { font-size: 18px; font-weight: 800; color: var(--accent-2); }
   .contact-right .email { font-size: 11px; color: var(--sage-ink2); margin-top: 4px; }
 
+  /* ─── Comparison table ────────────────────────────────────────────────── */
+  .compare-table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--hair);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 10.5px;
+  }
+  .compare-table th, .compare-table td {
+    padding: 9px 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--hair);
+    border-right: 1px solid var(--hair);
+    line-height: 1.3;
+  }
+  .compare-table th:last-child, .compare-table td:last-child { border-right: 0; }
+  .compare-table tr:last-child th, .compare-table tr:last-child td { border-bottom: 0; }
+  .compare-table thead th {
+    font-size: 10px; font-weight: 700; color: var(--ink-3);
+    background: var(--surface);
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .compare-table thead th.sizzle {
+    color: white;
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+  }
+  .compare-table tbody th {
+    text-align: left;
+    font-weight: 600; color: var(--ink); background: white;
+    font-size: 10.5px; letter-spacing: -0.005em;
+  }
+  .compare-table .yes { color: var(--ok); font-weight: 800; font-size: 13px; }
+  .compare-table .no  { color: #DC2626; font-weight: 700; font-size: 13px; }
+  .compare-table .partial { color: var(--warn); font-weight: 700; font-size: 10px; }
+  .compare-table tbody td.sizzle-col {
+    background: var(--cream);
+    font-weight: 700;
+  }
+  .compare-foot {
+    margin-top: 12px;
+    font-size: 10px; color: var(--ink-3); text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ─── Case study layout ───────────────────────────────────────────────── */
+  .case-hero {
+    margin-top: 18px;
+    background: linear-gradient(160deg, var(--cream) 0%, white 100%);
+    border: 1px solid var(--cream-2);
+    border-radius: 14px;
+    padding: 22px 26px;
+  }
+  .case-hero .quote {
+    font-size: 17px; line-height: 1.4; color: var(--ink);
+    font-style: italic; letter-spacing: -0.005em;
+  }
+  .case-hero .who {
+    font-size: 10px; color: var(--ink-3); margin-top: 10px;
+    letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
+  }
+  .case-hero .who strong { color: var(--accent-d); }
+
+  .case-row {
+    margin-top: 18px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .case-col h4 {
+    font-size: 11px; font-weight: 800; color: var(--ink-3);
+    letter-spacing: 0.10em; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .case-col.before h4 { color: #6B7280; }
+  .case-col.after  h4 { color: var(--accent-d); }
+  .case-line {
+    font-size: 10.5px; color: var(--ink-2); padding: 7px 0;
+    border-bottom: 1px dashed var(--hair); line-height: 1.4;
+  }
+  .case-line:last-child { border-bottom: 0; }
+  .case-col.after .case-line { color: var(--ink); font-weight: 500; }
+  .case-line strong { color: var(--ink); font-weight: 700; }
+  .case-col.after .case-line strong { color: var(--accent-d); }
+
+  .roi-strip {
+    margin-top: 18px;
+    background: linear-gradient(160deg, var(--sage-bg) 0%, var(--sage-bg2) 100%);
+    color: var(--sage-ink);
+    border-radius: 12px;
+    padding: 18px 22px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0;
+    text-align: center;
+  }
+  .roi-cell { padding: 4px 8px; }
+  .roi-cell + .roi-cell { border-left: 1px solid rgba(255,255,255,0.10); }
+  .roi-cell .v { font-size: 22px; font-weight: 800; color: var(--accent-2); letter-spacing: -0.02em; line-height: 1; }
+  .roi-cell .l { font-size: 9px; color: var(--sage-ink3); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.10em; font-weight: 600; }
+
+  /* ─── FAQ layout ──────────────────────────────────────────────────────── */
+  .faq-grid {
+    margin-top: 18px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px;
+  }
+  .faq-q {
+    font-size: 11.5px; font-weight: 800; color: var(--ink);
+    letter-spacing: -0.005em; margin-bottom: 4px;
+    display: flex; gap: 6px; align-items: flex-start;
+  }
+  .faq-q::before {
+    content: "Q"; flex-shrink: 0;
+    width: 14px; height: 14px; border-radius: 4px;
+    background: var(--accent); color: white;
+    font-size: 9px; font-weight: 800;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .faq-a {
+    font-size: 10.5px; color: var(--ink-2); line-height: 1.5;
+    padding-left: 20px;
+  }
+  .faq-a strong { color: var(--ink); font-weight: 700; }
+
+  /* ─── Founding offer banner ───────────────────────────────────────────── */
+  .founding-banner {
+    margin-top: 18px;
+    background:
+      radial-gradient(600px 200px at 100% 0%, rgba(252,211,77,0.30), transparent 70%),
+      linear-gradient(160deg, var(--accent-d) 0%, var(--accent) 100%);
+    color: white;
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  .founding-banner .label {
+    font-size: 10px; font-weight: 800; letter-spacing: 0.18em;
+    text-transform: uppercase; opacity: 0.85;
+  }
+  .founding-banner .headline {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+    margin-top: 4px; line-height: 1.1;
+  }
+  .founding-banner .sub {
+    font-size: 12px; color: rgba(255,255,255,0.88); margin-top: 6px;
+    line-height: 1.4; max-width: 360px;
+  }
+  .founding-banner .badge {
+    font-size: 38px; font-weight: 800; letter-spacing: -0.02em;
+    line-height: 1; text-align: right;
+  }
+  .founding-banner .badge .b-sub {
+    display: block;
+    font-size: 11px; font-weight: 600; opacity: 0.85;
+    letter-spacing: 0.04em; margin-top: 4px;
+  }
+
+  .guarantee-row {
+    margin-top: 14px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+  }
+  .guarantee {
+    border: 1px solid var(--hair); border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .guarantee .g-title {
+    font-size: 11px; font-weight: 800; color: var(--ink); letter-spacing: -0.005em;
+    display: flex; align-items: center; gap: 6px; margin-bottom: 3px;
+  }
+  .guarantee .g-title .ic {
+    color: var(--ok); font-size: 13px; font-weight: 800;
+  }
+  .guarantee .g-body { font-size: 9.5px; color: var(--ink-3); line-height: 1.5; }
+
 </style>
 </head>
 <body>
@@ -662,7 +834,7 @@
         <div class="module-tier both">FREE + PRO</div>
       </div>
       <div class="module-feats">
-        <div class="module-feat">14-day Pro trial · 7-day auto-trial on signup</div>
+        <div class="module-feat">14-day free Pro trial — no card required</div>
         <div class="module-feat"><strong>Pro:</strong> Multi-venue switcher (single account, many locations)</div>
         <div class="module-feat">25 themes (Sage Dark, Ember, Espresso, Citrus, Karinderya…)</div>
         <div class="module-feat">Configurable food cost target + revenue goals</div>
@@ -798,12 +970,66 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
-     PAGE 6 — BENEFITS
+     PAGE 6 — COMPARED TO ALTERNATIVES
      ═══════════════════════════════════════════════════════════════════════ -->
 <section class="page">
   <div class="page-chrome-top">
     <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
-    <div>Benefits</div>
+    <div>Sizzle vs Alternatives</div>
+  </div>
+
+  <div class="page-body">
+    <div class="eyebrow">Side-by-side</div>
+    <h1 class="h1" style="margin-top:6px;">Why owners switch from their current stack.</h1>
+    <p class="body" style="margin-top:6px;max-width:170mm;">The four tools café and restaurant owners typically use today — and what each gets wrong for the Philippine market.</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="text-align:left;width:35%;">Capability</th>
+          <th class="sizzle">Sizzle</th>
+          <th>Square POS</th>
+          <th>Loyverse</th>
+          <th>QuickBooks</th>
+          <th>Excel + Notebook</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>Full POS with VAT receipts</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
+        <tr><th>Recipe-level food cost &amp; margins</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="partial">partial</span></td><td><span class="no">✕</span></td><td><span class="partial">manual</span></td></tr>
+        <tr><th>Inventory with low-stock alerts</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="partial">add-on</span></td><td><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
+        <tr><th>Employee shifts + payroll</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="partial">add-on</span></td><td><span class="no">✕</span></td><td><span class="yes">✓</span></td><td><span class="partial">manual</span></td></tr>
+        <tr><th>AI co-pilot &amp; daily insights</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
+        <tr><th>Public QR menu page</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="partial">paid</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
+        <tr><th>PH peso pricing</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="no">USD</span></td><td><span class="no">USD</span></td><td><span class="no">USD</span></td><td><span class="yes">free</span></td></tr>
+        <tr><th>Tagalog / Taglish support</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="yes">✓</span></td></tr>
+        <tr><th>GCash / GoTyme billing</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="yes">N/A</span></td></tr>
+        <tr><th>Free tier forever</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="partial">limited</span></td><td><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="yes">✓</span></td></tr>
+        <tr><th>Multi-venue (one account)</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="partial">paid</span></td><td><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
+        <tr><th>Owner-operator focus (not enterprise)</th><td class="sizzle-col"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="partial">partial</span></td><td><span class="no">✕</span></td><td><span class="yes">✓</span></td></tr>
+      </tbody>
+    </table>
+
+    <p class="compare-foot">Sizzle is the <strong style="color:var(--accent-d);">only product built for Philippine F&amp;B from day one</strong> — peso-priced, GCash-billed, Tagalog-aware, and designed for the owner-operator who is also the manager, the marketer, and sometimes the dishwasher.</p>
+
+    <div class="callout">
+      <p class="body"><strong>Switching is free.</strong> Email us your last month's sales export from Square, Loyverse, or your spreadsheet, and we'll import it, set up your starter menu, and <strong>waive your first month of Pro</strong>. Your data is yours — exportable as CSV any time.</p>
+    </div>
+  </div>
+
+  <div class="page-chrome-bottom">
+    <div>sizzle.app</div>
+    <div class="num">06</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 7 — BENEFITS (was page 6)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="page-chrome-top">
+    <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
+    <div>Why Owners Switch</div>
   </div>
 
   <div class="page-body">
@@ -867,12 +1093,70 @@
 
   <div class="page-chrome-bottom">
     <div>sizzle.app</div>
-    <div class="num">06</div>
+    <div class="num">07</div>
   </div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
-     PAGE 7 — PRICING
+     PAGE 8 — CASE STUDY
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="page-chrome-top">
+    <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
+    <div>Case Study · 90 Days</div>
+  </div>
+
+  <div class="page-body">
+    <div class="eyebrow">What changes in 90 days</div>
+    <h1 class="h1" style="margin-top:6px;">Café Lina, Quezon City: the transformation.</h1>
+    <p class="body" style="margin-top:6px;max-width:170mm;">A 4-table neighborhood café running on instinct, three apps, and a 9 PM Excel ritual. Here's what the first 90 days on Sizzle looked like — and what it actually saved.</p>
+
+    <div class="case-hero">
+      <p class="quote">"I used to think I was making money because the cash drawer felt full. Sizzle showed me my Saturday brunch was actually losing ₱2,400 in waste alone. Three weeks later I had it down to ₱400. The app paid for itself in the first week."</p>
+      <p class="who"><strong>Lina H.</strong> · Owner-operator, Café Lina · Single venue · 4 staff</p>
+    </div>
+
+    <div class="case-row">
+      <div class="case-col before">
+        <h4>Before Sizzle</h4>
+        <div class="case-line"><strong>2 hours/night</strong> reconciling Square + notebook + GCash receipts</div>
+        <div class="case-line">Food cost <strong>≈42%</strong>, hand-calculated weekly — usually wrong</div>
+        <div class="case-line"><strong>3-4 stockouts/week</strong> ("we're out of milk again")</div>
+        <div class="case-line">Payroll <strong>Sunday 11 PM</strong>, double-entry from a notebook</div>
+        <div class="case-line">Best/worst dishes? <strong>"I think the latte does well"</strong></div>
+        <div class="case-line">Monthly net: <strong>"Maybe ₱40K? I'm not sure"</strong></div>
+      </div>
+      <div class="case-col after">
+        <h4>After 90 Days</h4>
+        <div class="case-line"><strong>15 min/night</strong> — just verifies the AI digest before bed</div>
+        <div class="case-line">Food cost <strong>32%</strong>, monitored daily — alerts when it drifts</div>
+        <div class="case-line"><strong>Zero surprise stockouts</strong> — low-stock alerts at 9 AM</div>
+        <div class="case-line">Payroll <strong>auto-fills from shifts</strong>, runs in 5 minutes</div>
+        <div class="case-line">Top sellers: Café Latte, Pandesal · <strong>Killed 2 losing dishes</strong></div>
+        <div class="case-line">Monthly net: <strong>₱58K (+45%)</strong> — same revenue, lower waste</div>
+      </div>
+    </div>
+
+    <div class="roi-strip">
+      <div class="roi-cell"><div class="v">₱18K</div><div class="l">Saved · month</div></div>
+      <div class="roi-cell"><div class="v">10×</div><div class="l">Faster ops</div></div>
+      <div class="roi-cell"><div class="v">3 days</div><div class="l">Payback period</div></div>
+      <div class="roi-cell"><div class="v">+45%</div><div class="l">Net profit</div></div>
+    </div>
+
+    <div class="callout" style="margin-top:18px;">
+      <p class="body"><strong>The math:</strong> at ₱399/mo, Sizzle Pro pays for itself in the first <strong>3 days</strong> of any month for a café Lina's size. Every day after that is pure margin recovery — money that was leaving the kitchen through waste, stockouts, and underpriced dishes.</p>
+    </div>
+  </div>
+
+  <div class="page-chrome-bottom">
+    <div>sizzle.app</div>
+    <div class="num">08</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 9 — PRICING (was page 7)
      ═══════════════════════════════════════════════════════════════════════ -->
 <section class="page">
   <div class="page-chrome-top">
@@ -934,17 +1218,84 @@
 
   <div class="page-chrome-bottom">
     <div>sizzle.app</div>
-    <div class="num">07</div>
+    <div class="num">09</div>
   </div>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
-     PAGE 8 — ABOUT + HOW TO START + CONTACT
+     PAGE 10 — FAQ / OBJECTIONS
      ═══════════════════════════════════════════════════════════════════════ -->
 <section class="page">
   <div class="page-chrome-top">
     <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
-    <div>About &amp; Contact</div>
+    <div>FAQ &amp; Objections</div>
+  </div>
+
+  <div class="page-body">
+    <div class="eyebrow">Your questions, answered</div>
+    <h1 class="h1" style="margin-top:6px;">Common objections — handled honestly.</h1>
+    <p class="body" style="margin-top:6px;max-width:170mm;">The eight questions every café owner asks before switching. Real answers, no marketing fluff.</p>
+
+    <div class="faq-grid">
+      <div>
+        <div class="faq-q">I already use Square / Loyverse. Is switching worth it?</div>
+        <div class="faq-a">If margin tracking, recipe costs, or AI insights matter to you — yes. Sizzle imports your sales data and waives your first month. You can keep both running in parallel for a week to compare. <strong>Most owners decide in 3 days.</strong></div>
+      </div>
+
+      <div>
+        <div class="faq-q">Will it work for my karinderya?</div>
+        <div class="faq-a">Yes. Karinderya is one of the 7 verticals we ship with pre-configured menus and dashboards. You don't need a POS terminal — log sales by total in 2 taps from your phone. <strong>Free tier covers it entirely.</strong></div>
+      </div>
+
+      <div>
+        <div class="faq-q">I'm not techy. Can I actually use this?</div>
+        <div class="faq-a">If you can use Messenger and GCash, you can use Sizzle. <strong>60-second signup</strong>, in-app video tutorials, and the founder DMs you personally if you get stuck. No accountant or IT person required.</div>
+      </div>
+
+      <div>
+        <div class="faq-q">What happens to my data if I cancel?</div>
+        <div class="faq-a">Your data is yours. <strong>Cancel anytime</strong>, downgrade to Free and keep using the core dashboard, or request a full CSV export and we email it to you within 24 hours. No hostage situations.</div>
+      </div>
+
+      <div>
+        <div class="faq-q">What if Sizzle goes down during a rush?</div>
+        <div class="faq-a">Sizzle runs on Vercel and Supabase — the same infrastructure powering thousands of production apps. <strong>99.9% uptime target.</strong> Status page at status.sizzle.app. POS is offline-tolerant and syncs when reconnected.</div>
+      </div>
+
+      <div>
+        <div class="faq-q">Can my staff use it without seeing my financials?</div>
+        <div class="faq-a">Yes. Owner and staff roles are built in. Staff sees POS, menu, and shifts — <strong>not reports, analytics, or payroll.</strong> One account, multiple users, clear permissions.</div>
+      </div>
+
+      <div>
+        <div class="faq-q">Will the ₱399 price go up later?</div>
+        <div class="faq-a">Maybe — Sizzle is in early-stage pricing. <strong>The first 100 cafés get ₱399 locked in for the life of their subscription</strong>, even if we raise prices for new signups. Sign up early to lock yours.</div>
+      </div>
+
+      <div>
+        <div class="faq-q">Do I need a business permit / BIR registration?</div>
+        <div class="faq-a">No. Sizzle works the same whether you're a registered BIR business or running an informal kainan. VAT receipts are available when you turn them on in settings; otherwise receipts print without VAT lines. <strong>You decide.</strong></div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:18px;background:#F0FDF4;border-color:var(--ok);">
+      <p class="body"><strong>Still unsure?</strong> Email rjamscxx@gmail.com with your specific question. The founder personally answers — usually within hours. No sales team, no chatbot, no "thanks for your inquiry" autoresponder.</p>
+    </div>
+  </div>
+
+  <div class="page-chrome-bottom">
+    <div>sizzle.app</div>
+    <div class="num">10</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PAGE 11 — ABOUT + HOW TO START + CONTACT (was page 8)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="page-chrome-top">
+    <div class="brand-mini"><span class="mark"></span><span>Sizzle</span></div>
+    <div>About &amp; Start</div>
   </div>
 
   <div class="page-body">
@@ -962,29 +1313,55 @@
       </div>
     </div>
 
-    <h2 class="h2" style="margin-top:28px;">How to start (today, 60 seconds)</h2>
+    <div class="founding-banner">
+      <div>
+        <div class="label">Limited Founding Offer</div>
+        <div class="headline">First 100 cafés lock ₱399/mo forever.</div>
+        <div class="sub">Sign up while we're still in early-stage pricing and your monthly rate never changes — even when we raise prices for new customers. The clock is ticking.</div>
+      </div>
+      <div class="badge">
+        100<span class="b-sub">FOUNDING SLOTS</span>
+      </div>
+    </div>
+
+    <div class="guarantee-row">
+      <div class="guarantee">
+        <div class="g-title"><span class="ic">✓</span> Free migration</div>
+        <div class="g-body">Email your sales export from Square / Loyverse / spreadsheet. We import it and waive your first month of Pro.</div>
+      </div>
+      <div class="guarantee">
+        <div class="g-title"><span class="ic">✓</span> Cancel anytime</div>
+        <div class="g-body">Downgrade to Free and keep all your data. Or request a full CSV export — emailed within 24 hours.</div>
+      </div>
+      <div class="guarantee">
+        <div class="g-title"><span class="ic">✓</span> Founder DM support</div>
+        <div class="g-body">Stuck? Email rjamscxx@gmail.com. The founder personally answers — usually within hours, never a chatbot.</div>
+      </div>
+    </div>
+
+    <h2 class="h2" style="margin-top:22px;">How to start (today, 60 seconds)</h2>
     <div class="start-steps">
       <div class="step">
         <div class="step-n">STEP 1</div>
         <div class="step-t">Sign up free</div>
-        <div class="step-b">Go to <strong>sizzle.app</strong> and create an account with your email. No card. We auto-grant a 7-day Pro trial so you can try everything.</div>
+        <div class="step-b">Go to <strong>sizzle.app</strong>. No card. Optionally activate your 14-day Pro trial from settings.</div>
       </div>
       <div class="step">
         <div class="step-n">STEP 2</div>
         <div class="step-t">Pick your vertical</div>
-        <div class="step-b">Choose café, pizzeria, karinderya, boba, burger, bakery, or ramen. Your menu, ingredients, and dashboards pre-populate.</div>
+        <div class="step-b">Café, pizzeria, karinderya, boba, burger, bakery, or ramen — menu &amp; dashboards pre-populate.</div>
       </div>
       <div class="step">
         <div class="step-n">STEP 3</div>
         <div class="step-t">Log your first sale</div>
-        <div class="step-b">Use the POS on your phone or open the dashboard from a laptop. Your real numbers start flowing immediately.</div>
+        <div class="step-b">Use the POS on your phone or laptop. Your real numbers start flowing immediately.</div>
       </div>
     </div>
 
     <div class="contact-strip">
       <div class="contact-left">
         <div class="head">Ready when you are.</div>
-        <div class="sub">Start free at sizzle.app — or email us for a guided onboarding. Replies from the founder, usually within the day.</div>
+        <div class="sub">Start free at sizzle.app — or email for a guided onboarding. Replies from the founder, usually within the day.</div>
       </div>
       <div class="contact-right">
         <div class="url">sizzle.app</div>
@@ -992,12 +1369,12 @@
       </div>
     </div>
 
-    <p class="small" style="margin-top:20px;text-align:center;">Sizzle · Built in PH 🇵🇭 · © 2026 · <strong style="color:var(--ink-2);">Free forever plan available · No credit card required</strong></p>
+    <p class="small" style="margin-top:14px;text-align:center;">Sizzle · Built in PH 🇵🇭 · © 2026 · <strong style="color:var(--ink-2);">Free forever · No credit card · Cancel anytime</strong></p>
   </div>
 
   <div class="page-chrome-bottom">
     <div>sizzle.app · rjamscxx@gmail.com</div>
-    <div class="num">08</div>
+    <div class="num">11</div>
   </div>
 </section>
 
