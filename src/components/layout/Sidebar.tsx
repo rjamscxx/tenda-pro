@@ -194,10 +194,10 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
       style={{ borderRightColor: 'color-mix(in srgb, var(--hair) 60%, var(--accent) 40%)' }}
     >
       {/* Logo */}
-      <div className="h-[60px] flex flex-col justify-center px-4 border-b border-hair gap-0.5">
-        <div className="flex items-center gap-2">
-          <SizzleLogo size={20} />
-          <span className="font-semibold text-[15px] tracking-tight gradient-text">Sizzle</span>
+      <div className="h-[60px] flex flex-col justify-center px-4 border-b border-hair gap-1">
+        <div className="flex items-center gap-2.5">
+          <SizzleLogo size={28} variant="badge" />
+          <span className="font-semibold text-[17px] tracking-tight gradient-text leading-none">Sizzle</span>
           {onClose && (
             <button
               onClick={onClose}
@@ -213,7 +213,7 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
         {venues && venues.length > 0 && activeVenueId ? (
           <VenueSwitcher venues={venues} activeVenueId={activeVenueId} isPremium={!!isPremium} />
         ) : (
-          <p className="text-[11px] text-ink-4 truncate leading-none pl-[28px]">{venueName}</p>
+          <p className="text-[11px] text-ink-4 truncate leading-none pl-[38px]">{venueName}</p>
         )}
       </div>
 

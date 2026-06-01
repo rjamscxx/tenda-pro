@@ -9,7 +9,7 @@ export default function ResetPasswordPage() {
       <div className="glass glow rounded-2xl p-8 space-y-8">
         <div className="space-y-3">
           <div className="flex items-center gap-2.5">
-            <SizzleLogo size={22} />
+            <SizzleLogo size={28} variant="badge" />
             <span className="font-semibold text-[17px] tracking-tight gradient-text">Sizzle</span>
           </div>
           <div className="space-y-1">

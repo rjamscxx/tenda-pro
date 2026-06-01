@@ -452,7 +452,7 @@ export default function LandingClient() {
           }`}
         >
           <div className="flex items-center gap-2.5">
-            <SizzleLogo size={20} />
+            <SizzleLogo size={26} variant="badge" />
             <span className="font-semibold text-ink tracking-tight">Sizzle</span>
           </div>
 
@@ -1496,8 +1496,8 @@ export default function LandingClient() {
 
             {/* Brand col */}
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <SizzleLogo size={20} />
+              <div className="flex items-center gap-2.5">
+                <SizzleLogo size={24} variant="badge" />
                 <span className="text-sm font-semibold text-ink">Sizzle</span>
               </div>
               <p className="text-sm text-ink-4 leading-relaxed max-w-[28ch]">

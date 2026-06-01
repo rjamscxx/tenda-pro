@@ -26,7 +26,7 @@ export default async function OnboardingPage() {
       <div className="relative z-10 w-full max-w-md glass glow rounded-2xl p-8 space-y-8">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5 mb-4">
-            <SizzleLogo size={22} />
+            <SizzleLogo size={28} variant="badge" />
             <span className="font-semibold text-[17px] tracking-tight gradient-text">Sizzle</span>
           </div>
           <h1 className="text-2xl font-semibold text-ink">Set up your business</h1>
