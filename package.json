@@ -10,6 +10,8 @@
     "db:generate": "dotenv -e .env.local -- drizzle-kit generate",
     "db:migrate": "dotenv -e .env.local -- drizzle-kit migrate",
     "db:studio": "dotenv -e .env.local -- drizzle-kit studio",
+    "db:apply-manual": "dotenv -e .env.local -- node scripts/apply-manual-migrations.mjs",
+    "db:mark-applied": "dotenv -e .env.local -- node scripts/mark-migration-applied.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"

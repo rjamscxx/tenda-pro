@@ -29,6 +29,13 @@
       "when": 1780005020218,
       "tag": "0003_add_ai_token_budget",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1780280627350,
+      "tag": "0004_quiet_human_robot",
+      "breakpoints": true
     }
   ]
 }
