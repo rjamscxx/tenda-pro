@@ -4,11 +4,10 @@ import { db } from '@/lib/db'
 import { auditLogs, accounts, users, venues } from '@/lib/db/schema'
 import { eq, desc, and, isNull, isNotNull } from 'drizzle-orm'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isAdmin as checkIsAdmin } from '@/lib/admin'
 import SettingsClient from './SettingsClient'
 
 export const metadata = { title: 'Settings — Sizzle' }
-
-const ADMIN_EMAIL = 'rjamscxx@gmail.com'
 
 interface SubRequest {
   id: string
@@ -37,7 +36,7 @@ export default async function SettingsPage() {
   ])
 
   const theme = cookieStore.get('sizzle-theme')?.value ?? 'ember'
-  const isAdmin = authUser.email === ADMIN_EMAIL
+  const isAdmin = checkIsAdmin(authUser)
 
   const [recentActivity, subRequests, subscribedAccounts] = await Promise.all([
     db.select({

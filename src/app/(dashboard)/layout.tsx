@@ -1,6 +1,7 @@
 import { requireVenue } from '@/lib/queries/auth'
 import { isPro as checkPro, isPremium as checkPremium, isTrial, getTrialDaysLeft, isTrialExpired } from '@/lib/plan'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isAdmin } from '@/lib/admin'
 import MobileNav from '@/components/layout/MobileNav'
 import PageTransition from '@/components/layout/PageTransition'
 import TrialBanner from '@/components/layout/TrialBanner'
@@ -10,7 +11,7 @@ import AiChatWidget from '@/components/layout/AiChatWidget'
 import { ToastProvider } from '@/components/ui/Toast'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { venue, venues, dbUser, account } = await requireVenue()
+  const { venue, venues, dbUser, account, authUser } = await requireVenue()
   const pro     = checkPro(account)
   const premium = checkPremium(account)
   const trialActive = isTrial(account)
@@ -18,9 +19,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const trialExpired = isTrialExpired(account)
   const venueList = venues.map(v => ({ id: v.id, name: v.name }))
 
-  // Only the owner sees pending subscription request badge
+  // Pending-subscription badge is admin-only (not "any account owner").
   let pendingSubRequests = 0
-  if (dbUser.role === 'owner') {
+  if (isAdmin(authUser)) {
     const supabase = createAdminClient()
     const { count } = await supabase
       .from('subscription_requests')

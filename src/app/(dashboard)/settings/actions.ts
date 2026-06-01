@@ -12,6 +12,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { requireVenue } from '@/lib/queries/auth'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isAdmin } from '@/lib/admin'
 import { z } from 'zod'
 
 const UpdateVenueSchema = z.object({
@@ -95,30 +96,39 @@ export async function activatePlan(plan: 'pro' | 'premium') {
   revalidatePath('/payroll')
 }
 
-const ADMIN_EMAIL = 'rjamscxx@gmail.com'
-
 export async function activateSubscriptionRequest(requestId: string, userEmail: string) {
   const { authUser } = await requireVenue()
-  if (authUser.email !== ADMIN_EMAIL) throw new Error('Unauthorized')
+  if (!isAdmin(authUser)) throw new Error('Unauthorized')
 
-  const supabase = createAdminClient()
+  const normalizedEmail = userEmail.trim().toLowerCase()
+  if (!normalizedEmail) throw new Error('Email is required')
 
-  // Find the Supabase auth user by email
-  const { data: userList } = await supabase.auth.admin.listUsers()
-  const targetUser = userList?.users.find(u => u.email === userEmail)
-  if (!targetUser) throw new Error(`No user found with email ${userEmail}`)
-
-  // Find their account via users table
-  const dbUserRow = await db.select({ accountId: users.accountId }).from(users).where(eq(users.id, targetUser.id)).limit(1)
-  if (!dbUserRow.length) throw new Error('Account not found')
+  // Look up the account via users.email (indexed by 0012). Avoids paginating
+  // supabase.auth.admin.listUsers(), which defaults to 50 rows per page.
+  const dbUserRow = await db
+    .select({ accountId: users.accountId })
+    .from(users)
+    .where(eq(users.email, normalizedEmail))
+    .limit(1)
+  if (!dbUserRow.length) throw new Error(`No account found for ${userEmail}`)
 
   const accountId = dbUserRow[0].accountId
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+  const supabase = createAdminClient()
 
-  await Promise.all([
-    db.update(accounts).set({ plan: 'pro', planExpiresAt: expiresAt, trialStartedAt: null }).where(eq(accounts.id, accountId)),
-    supabase.from('subscription_requests').update({ status: 'activated' }).eq('id', requestId),
-  ])
+  await db.update(accounts).set({ plan: 'pro', planExpiresAt: expiresAt, trialStartedAt: null }).where(eq(accounts.id, accountId))
+
+  // Mark the request activated; surface mismatch so re-activation can't silently no-op.
+  const { error: reqError, count } = await supabase
+    .from('subscription_requests')
+    .update({ status: 'activated' }, { count: 'exact' })
+    .eq('id', requestId)
+    .eq('status', 'pending')
+  if (reqError) throw new Error(`Could not update request: ${reqError.message}`)
+  if (count === 0) {
+    // Account upgraded but request was already activated/rejected — log and continue.
+    console.warn(`[activateSubscriptionRequest] request ${requestId} was not pending; account ${accountId} upgraded anyway`)
+  }
 
   revalidatePath('/settings')
   revalidatePath('/(dashboard)', 'layout')
@@ -126,7 +136,7 @@ export async function activateSubscriptionRequest(requestId: string, userEmail: 
 
 export async function adjustSubscriptionDays(accountId: string, daysRemaining: number) {
   const { authUser } = await requireVenue()
-  if (authUser.email !== ADMIN_EMAIL) throw new Error('Unauthorized')
+  if (!isAdmin(authUser)) throw new Error('Unauthorized')
   if (daysRemaining < 0 || daysRemaining > 3650) throw new Error('Invalid days')
   const newExpiry = new Date(Date.now() + Math.round(daysRemaining) * 24 * 60 * 60 * 1000)
   await db.update(accounts).set({ planExpiresAt: newExpiry }).where(eq(accounts.id, accountId))
@@ -136,9 +146,10 @@ export async function adjustSubscriptionDays(accountId: string, daysRemaining: n
 
 export async function rejectSubscriptionRequest(requestId: string) {
   const { authUser } = await requireVenue()
-  if (authUser.email !== ADMIN_EMAIL) throw new Error('Unauthorized')
+  if (!isAdmin(authUser)) throw new Error('Unauthorized')
   const supabase = createAdminClient()
-  await supabase.from('subscription_requests').update({ status: 'rejected' }).eq('id', requestId)
+  const { error } = await supabase.from('subscription_requests').update({ status: 'rejected' }).eq('id', requestId)
+  if (error) throw new Error(`Could not reject request: ${error.message}`)
   revalidatePath('/settings')
   revalidatePath('/(dashboard)', 'layout')
 }
