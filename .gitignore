@@ -55,3 +55,7 @@ dev.log
 sim.out
 
 .vercel
+
+# Marketing flyer build artifacts (re-generate with: npm run build:flyer)
+marketing/hero.png
+marketing/sizzle-flyer.png
