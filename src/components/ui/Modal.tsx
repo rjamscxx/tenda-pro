@@ -34,8 +34,13 @@ export default function Modal({ open, onClose, title, icon, variant = 'default',
   // .card-enter animation leaves a permanent transform).
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={onClose} />
-      <div className="relative glass glow rounded-xl w-full max-w-md overflow-hidden">
+      <div className="overlay-enter absolute inset-0 bg-black/70 backdrop-blur-md" onClick={onClose} />
+      <div className="modal-enter relative glass glow rounded-xl w-full max-w-md overflow-hidden">
+        {/* Top accent line */}
+        <div
+          className="h-px w-full shrink-0"
+          style={{ background: 'linear-gradient(90deg, transparent 0%, var(--accent) 30%, var(--accent-2) 70%, transparent 100%)' }}
+        />
         {/* Title bar */}
         <div className="flex items-center gap-3 px-5 py-4 border-b border-hair">
           {icon ? (

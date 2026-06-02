@@ -190,11 +190,16 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
 
   return (
     <aside
-      className="w-56 shrink-0 flex flex-col bg-sidebar h-full border-r"
+      className="relative w-56 shrink-0 flex flex-col bg-sidebar h-full border-r overflow-hidden"
       style={{ borderRightColor: 'color-mix(in srgb, var(--hair) 60%, var(--accent) 40%)' }}
     >
+      {/* Ambient top glow */}
+      <div
+        className="absolute top-0 left-0 right-0 h-36 pointer-events-none z-0"
+        style={{ background: 'radial-gradient(ellipse 90% 60% at 50% -10%, var(--accent-tint), transparent 70%)' }}
+      />
       {/* Logo */}
-      <div className="h-[60px] flex flex-col justify-center px-4 border-b border-hair gap-1">
+      <div className="relative z-10 h-[60px] flex flex-col justify-center px-4 border-b border-hair gap-1">
         <div className="flex items-center gap-2.5">
           <SizzleLogo size={28} variant="badge" />
           <span className="font-semibold text-[17px] tracking-tight gradient-text leading-none">Sizzle</span>
@@ -218,15 +223,17 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
       </div>
 
       {/* Main nav — staff role doesn't see ownerOnly items (Reports, Analytics) */}
-      <nav className="flex-1 py-3 px-2 space-y-4 overflow-y-auto">
+      <nav className="relative z-10 flex-1 py-3 px-2 space-y-4 overflow-y-auto">
         {NAV_SECTIONS.map(section => {
           const visible = section.items.filter(it => !(it.ownerOnly && role !== 'owner'))
           if (!visible.length) return null
           return (
             <div key={section.label}>
-              <p className="px-3 mb-1 text-[10px] font-semibold text-ink-4 uppercase tracking-widest">
-                {section.label}
-              </p>
+              <div className="px-3 mb-1 flex items-center gap-2">
+                <span className="text-[7px] leading-none" style={{ color: 'var(--accent)', opacity: 0.55 }}>●</span>
+                <span className="text-[10px] font-semibold text-ink-4 uppercase tracking-widest">{section.label}</span>
+                <span className="flex-1 h-px" style={{ background: 'var(--hair)', opacity: 0.6 }} />
+              </div>
               <div className="space-y-0.5">
                 {visible.map(({ href, label, icon, proOnly, premiumOnly }) => (
                   <NavItem key={href} href={href} label={label} icon={icon} proOnly={proOnly} premiumOnly={premiumOnly} isUserPro={isPro} isUserPremium={isPremium} onClose={onClose} />
@@ -238,7 +245,7 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
       </nav>
 
       {/* Bottom nav */}
-      <div className="py-2 px-2 border-t border-hair space-y-0.5">
+      <div className="relative z-10 py-2 px-2 border-t border-hair space-y-0.5">
         {BOTTOM_NAV.map(({ href, label, icon }) => (
           <NavItem
             key={href}
@@ -261,16 +268,31 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
 
         {/* User avatar chip */}
         {fullName && (
-          <div className="mt-2 pt-2 border-t border-hair flex items-center gap-2.5 px-3 py-2">
-            <div
-              className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
-              style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}
-            >
-              {initials}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[12px] font-medium text-ink truncate">{fullName}</p>
-              <p className="text-[10px] text-ink-4 capitalize">{role ?? 'owner'}</p>
+          <div className="mt-2 pt-2 border-t border-hair">
+            <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg glass">
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
+                style={{
+                  background: 'var(--accent-dim)',
+                  color: 'var(--accent)',
+                  boxShadow: '0 0 0 2px var(--accent-tint)',
+                }}
+              >
+                {initials}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[12px] font-medium text-ink truncate">{fullName}</p>
+                <p className="text-[10px] text-ink-4 capitalize">{role ?? 'owner'}</p>
+              </div>
+              <span
+                className="shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                style={{
+                  background: isPro ? 'var(--accent-dim)' : 'var(--surface-3)',
+                  color: isPro ? 'var(--accent)' : 'var(--ink-4)',
+                }}
+              >
+                {isPremium ? 'PRO+' : isPro ? 'PRO' : 'FREE'}
+              </span>
             </div>
           </div>
         )}
