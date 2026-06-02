@@ -10,6 +10,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
  * through it correctly) + floating POS phone + scroll-synced day timeline.
  */
 
+const EXPENSE_BAR_HEIGHTS = Array.from({ length: 30 }, (_, i) => 6 + Math.abs(Math.sin(i * 1.7) * 12) + (i * 0.3 % 3))
+
 const TAPS = [
   { x: 79, y: 67, label: 'Ask the assistant' },
 ]
@@ -308,10 +310,9 @@ export default function OwnerScene() {
                           <line key={i} x1="0" x2="200" y1={15 + i*12} y2={15 + i*12} stroke="var(--hair)" strokeWidth="0.4" />
                         ))}
                         {/* expense bars (faint warn) */}
-                        {Array.from({length: 30}).map((_, i) => {
-                          const h = 6 + Math.abs(Math.sin(i*1.7) * 12) + Math.random()*3
-                          return <rect key={`e${i}`} x={i*6.5+1} y={60-h} width="3" height={h} fill="var(--warn)" opacity="0.45" />
-                        })}
+                        {EXPENSE_BAR_HEIGHTS.map((h, i) => (
+                          <rect key={`e${i}`} x={i*6.5+1} y={60-h} width="3" height={h} fill="var(--warn)" opacity="0.45" />
+                        ))}
                         {/* revenue area + line */}
                         <path
                           d={(() => {

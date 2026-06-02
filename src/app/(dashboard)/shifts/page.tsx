@@ -18,6 +18,7 @@ export default async function ShiftsPage() {
 
   // Last 60 days of shifts covers the longest preset filter ("last 30") plus
   // headroom for prev/next week navigation in the calendar.
+  // eslint-disable-next-line react-hooks/purity
   const sixtyDaysAgo = new Date(Date.now() - 60 * 86_400_000)
 
   const [empRows, shiftRows, runRows] = await Promise.all([

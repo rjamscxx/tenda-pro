@@ -13,7 +13,7 @@ function formatPHP(cents: number) {
 }
 
 export async function emailCloseOut() {
-  const { venue, dbUser } = await requireVenue()
+  const { venue } = await requireVenue()
   if (!process.env.RESEND_API_KEY) {
     return { error: 'Email not configured. Set RESEND_API_KEY first.' }
   }
