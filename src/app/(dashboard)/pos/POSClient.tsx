@@ -193,6 +193,12 @@ export default function POSClient({
 
           {/* Top bar */}
           <div className="flex items-center gap-3 px-5 py-3 border-b border-hair shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="3.5" width="12" height="9" rx="1.2" stroke="currentColor" strokeWidth="1.3"/>
+                <path d="M4 3.5V3a3 3 0 016 0v.5M5 8h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
+            </div>
             <span className="text-sm font-semibold text-ink">POS</span>
             <span className="text-xs text-ink-4">·</span>
             <span className="text-sm text-ink-4 truncate">{venueName}</span>

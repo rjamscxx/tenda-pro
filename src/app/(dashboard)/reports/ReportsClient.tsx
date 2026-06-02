@@ -151,15 +151,22 @@ export default function ReportsClient({ months, currentMonth }: Props) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto w-full pb-10 space-y-5">
 
       {/* Header row */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-semibold text-ink tracking-tight">Reports</h1>
-          <p className="text-sm text-ink-4 mt-0.5">
-            {data.label}{isCurrentMonth && <span className="ml-2 text-accent text-xs font-semibold">current</span>}
-          </p>
+      <div className="card-enter card-d0 glass rounded-xl px-5 py-4 flex items-start justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 11V8.5M5.5 11V5M9 11V7M12.5 11V3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-ink tracking-tight">Reports</h1>
+            <p className="text-sm text-ink-4 mt-0.5">
+              {data.label}{isCurrentMonth && <span className="ml-2 text-accent text-xs font-semibold">current</span>}
+            </p>
+          </div>
         </div>
         <button onClick={downloadCSV} className="px-4 py-2 btn-primary rounded-lg text-sm flex items-center gap-2 shrink-0">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -172,7 +179,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
       <>
 
       {/* Month pills */}
-      <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="card-enter card-d1 flex items-center gap-1.5 flex-wrap">
         {months.map(m => {
           const isSel = m.month === selected
           return (
@@ -203,29 +210,53 @@ export default function ReportsClient({ months, currentMonth }: Props) {
       </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="glass card-glow rounded-xl p-4 space-y-2">
-          <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Revenue</p>
-          <p className="text-2xl font-semibold tabular tracking-tight text-ink">{formatCurrency(data.revenue)}</p>
+      <div className="card-enter card-d2 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent via-accent-2 to-accent" />
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Revenue</p>
+            <div className="w-7 h-7 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M1.5 9.5L4.5 6l2 2L10 4l2.5 2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <p className="text-2xl font-bold tabular tracking-tight text-ink">{formatCurrency(data.revenue)}</p>
           <p className="text-[11px] text-ink-4">{data.transactionCount} transaction{data.transactionCount !== 1 ? 's' : ''}</p>
         </div>
-        <div className="glass card-glow rounded-xl p-4 space-y-2">
-          <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Total Expenses</p>
-          <p className="text-2xl font-semibold tabular tracking-tight text-ink">{formatCurrency(data.expenses)}</p>
+        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-danger/60 to-warn/60" />
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Expenses</p>
+            <div className="w-7 h-7 rounded-lg bg-danger/10 flex items-center justify-center shrink-0 text-danger">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M1.5 3h10M5 3V2.5a.5.5 0 01.5-.5h2a.5.5 0 01.5.5V3M5 5.5v4.5M8 5.5v4.5M2.5 3l.6 7a1 1 0 001 .9h5.8a1 1 0 001-.9l.6-7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <p className="text-2xl font-bold tabular tracking-tight text-ink">{formatCurrency(data.expenses)}</p>
           <p className="text-[11px] text-ink-4">{data.expenseCount} entr{data.expenseCount !== 1 ? 'ies' : 'y'}</p>
         </div>
-        <div className="glass card-glow rounded-xl p-4 space-y-2">
+        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+          <div className={`absolute inset-x-0 top-0 h-[2px] ${data.profit >= 0 ? 'bg-success' : 'bg-danger'}`} />
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Gross Profit</p>
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${data.profit >= 0 ? 'bg-success/12 text-success' : 'bg-danger/12 text-danger'}`}>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M1.5 10V7.5M4 10V5M6.5 10V7M9 10V3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <p className={`text-2xl font-bold tabular tracking-tight ${data.profit >= 0 ? 'text-success' : 'text-danger'}`}>
+              {data.profit < 0 ? '−' : ''}{formatCurrency(Math.abs(data.profit))}
+            </p>
             {data.margin !== null && (
-              <span className={`text-[11px] font-semibold tabular px-1.5 py-0.5 rounded ${data.margin >= 0 ? 'text-success' : 'text-danger'}`}>
+              <span className={`text-[11px] font-semibold tabular px-1.5 py-0.5 rounded-md ${data.margin >= 0 ? 'text-success bg-success/12' : 'text-danger bg-danger/12'}`}>
                 {data.margin.toFixed(1)}%
               </span>
             )}
           </div>
-          <p className={`text-2xl font-semibold tabular tracking-tight ${data.profit >= 0 ? 'text-success' : 'text-danger'}`}>
-            {data.profit < 0 ? '−' : ''}{formatCurrency(Math.abs(data.profit))}
-          </p>
           <p className="text-[11px] text-ink-4">{data.profit >= 0 ? 'positive this month' : 'operating at a loss'}</p>
         </div>
       </div>
@@ -247,9 +278,16 @@ export default function ReportsClient({ months, currentMonth }: Props) {
           sortBy === 'revenue' ? b.totalRevenue - a.totalRevenue : b.totalQty - a.totalQty
         )
         return (
-          <div className="glass card-glow rounded-xl overflow-hidden">
-            <div className="px-5 py-4 border-b border-hair flex items-center justify-between">
-              <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Sales Leaderboard</p>
+          <div className="card-enter card-d3 glass card-glow rounded-xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-hair flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M5.5 1l1.1 3.4H10L7.2 6.5l1.1 3.4L5.5 8 2.7 9.9l1.1-3.4L1 4.4h3.4z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Sales Leaderboard</p>
+              </div>
               <div className="flex gap-1 bg-surface-2 rounded-lg p-0.5">
                 <button
                   onClick={() => setSortBy('revenue')}
@@ -308,9 +346,17 @@ export default function ReportsClient({ months, currentMonth }: Props) {
       })()}
 
       {/* Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="card-enter card-d4 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="glass card-glow rounded-xl p-5 space-y-4">
-          <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Expenses by Category</p>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                <path d="M1.5 1.5h4.5l4 4-4.5 4.5-4-4z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+                <circle cx="4" cy="4" r="1" fill="currentColor"/>
+              </svg>
+            </div>
+            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Expenses by Category</p>
+          </div>
           {data.byCategory.length === 0 ? (
             <EmptyState
               compact
@@ -330,7 +376,14 @@ export default function ReportsClient({ months, currentMonth }: Props) {
           )}
         </div>
         <div className="glass card-glow rounded-xl p-5 space-y-4">
-          <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Revenue by Channel</p>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                <path d="M1 9h9M1 6.5h6M1 4h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Revenue by Channel</p>
+          </div>
           {data.byChannel.length === 0 ? (
             <EmptyState
               compact
@@ -349,9 +402,14 @@ export default function ReportsClient({ months, currentMonth }: Props) {
       </div>
 
       {/* 6-month trend table */}
-      <div className="glass card-glow rounded-xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-hair">
-          <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">6-Month Trend</p>
+      <div className="card-enter card-d5 glass card-glow rounded-xl overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-hair flex items-center gap-2">
+          <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+              <path d="M1 10V7.5M3.5 10V5M6 10V7M8.5 10V3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">6-Month Trend</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -401,6 +459,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
       </div>
 
       </>
+
     </div>
   )
 }

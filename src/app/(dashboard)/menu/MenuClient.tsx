@@ -101,12 +101,21 @@ export default function MenuClient({
     <>
       {/* Page header with integrated segment control */}
       <div className="px-6 py-4 border-b border-hair flex items-center justify-between gap-4 shrink-0 flex-wrap">
-        <div>
-          <h1 className="text-xl font-semibold text-ink tracking-tight">Menu</h1>
-          <p className="text-sm text-ink-3 mt-0.5">
-            {dishes.length} dishes · {ingredients.length} ingredients
-            {lowStock.length > 0 && <span className="ml-2 text-danger">· {lowStock.length} low stock</span>}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <ellipse cx="8" cy="10" rx="5" ry="2.5" stroke="currentColor" strokeWidth="1.4"/>
+              <path d="M5 5c0-1.66 1.34-2.5 3-2.5s3 .84 3 2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+              <path d="M3 10h10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-ink tracking-tight">Menu</h1>
+            <p className="text-sm text-ink-3 mt-0.5">
+              {dishes.length} dishes · {ingredients.length} ingredients
+              {lowStock.length > 0 && <span className="ml-2 text-danger">· {lowStock.length} low stock</span>}
+            </p>
+          </div>
         </div>
 
         {/* Segmented control */}

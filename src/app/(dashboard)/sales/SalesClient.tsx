@@ -252,21 +252,27 @@ export default function SalesClient({
     <>
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div className="px-6 py-5 flex items-center justify-between border-b border-hair shrink-0 flex-wrap gap-3">
-        <div>
-          <h1 className="text-xl font-semibold text-ink tracking-tight">Sales</h1>
-          <p className="text-sm text-ink-4 mt-0.5">
-            <span className="tabular">{displayed.length}</span> entries
-            <span className="mx-1.5 text-hair-2">·</span>
-            {periodLabel}: <span className="tabular text-accent font-medium">{formatCurrency(periodTotal)}</span>
-            {unpaidTotal > 0 && (
-              <>
-                <span className="mx-1.5 text-hair-2">·</span>
-                <span className="text-warn font-medium">
-                  {formatCurrency(unpaidTotal)} unpaid
-                </span>
-              </>
-            )}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 12L5.5 7.5 8 10l3.5-5 3 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <rect x="1" y="4" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-ink tracking-tight">Sales</h1>
+            <p className="text-sm text-ink-4 mt-0.5">
+              <span className="tabular">{displayed.length}</span> entries
+              <span className="mx-1.5 text-hair-2">·</span>
+              {periodLabel}: <span className="tabular text-accent font-medium">{formatCurrency(periodTotal)}</span>
+              {unpaidTotal > 0 && (
+                <>
+                  <span className="mx-1.5 text-hair-2">·</span>
+                  <span className="text-warn font-medium">{formatCurrency(unpaidTotal)} unpaid</span>
+                </>
+              )}
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {unpaidTotal > 0 && (

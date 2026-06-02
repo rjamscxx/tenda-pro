@@ -611,10 +611,18 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
     <div className="space-y-5">
 
       {/* ── Venue ────────────────────────────────────────────────────── */}
-      <section className="glass card-glow rounded-xl p-6 space-y-5">
-        <div>
-          <h2 className="text-base font-semibold text-ink">Business</h2>
-          <p className="text-sm text-ink-4 mt-0.5">Your business name appears in the sidebar and digest emails.</p>
+      <section className="card-enter card-d1 glass card-glow rounded-xl p-6 space-y-5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M1 10.5V4.5l5-3 5 3v6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+              <rect x="4" y="7" width="4" height="3.5" rx="0.5" stroke="currentColor" strokeWidth="1.1"/>
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-[13px] font-semibold text-ink">Business</h2>
+            <p className="text-xs text-ink-4 mt-0.5">Your business name appears in the sidebar and digest emails.</p>
+          </div>
         </div>
         <form onSubmit={handleVenueSave} className="space-y-4">
           <div className="space-y-1.5">
@@ -743,10 +751,18 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
       </section>
 
       {/* ── Account ──────────────────────────────────────────────────── */}
-      <section className="glass card-glow rounded-xl p-6 space-y-5">
-        <div>
-          <h2 className="text-base font-semibold text-ink">Account</h2>
-          <p className="text-sm text-ink-4 mt-0.5">Your personal profile details.</p>
+      <section className="card-enter card-d2 glass card-glow rounded-xl p-6 space-y-5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <circle cx="6" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.2"/>
+              <path d="M1 11c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-[13px] font-semibold text-ink">Account</h2>
+            <p className="text-xs text-ink-4 mt-0.5">Your personal profile details.</p>
+          </div>
         </div>
         <form onSubmit={handleProfileSave} className="space-y-4">
           <div className="space-y-1.5">
@@ -1080,10 +1096,18 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
       )}
 
       {/* ── Appearance ───────────────────────────────────────────────── */}
-      <section className="glass card-glow rounded-xl p-6 space-y-5">
-        <div>
-          <h2 className="text-base font-semibold text-ink">Appearance</h2>
-          <p className="text-sm text-ink-4 mt-0.5">Choose a color theme for your dashboard.</p>
+      <section className="card-enter card-d3 glass card-glow rounded-xl p-6 space-y-5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.2"/>
+              <path d="M3.5 6a2.5 2.5 0 002.5 2.5V3.5A2.5 2.5 0 003.5 6z" fill="currentColor" opacity="0.5"/>
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-[13px] font-semibold text-ink">Appearance</h2>
+            <p className="text-xs text-ink-4 mt-0.5">Choose a color theme for your dashboard.</p>
+          </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
           {THEMES.map(t => {

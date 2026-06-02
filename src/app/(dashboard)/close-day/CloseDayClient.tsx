@@ -85,12 +85,19 @@ export default function CloseDayClient({
       `}</style>
 
       {/* Header */}
-      <header className="flex flex-wrap items-end justify-between gap-3 no-print">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-accent">Close of day</p>
-          <h1 className="text-2xl font-bold tracking-tight text-ink mt-1">{venueName}</h1>
-          <p className="text-sm text-ink-3 mt-0.5">{dateLabel} · {kpi.tickets} {kpi.tickets === 1 ? 'sale' : 'sales'}</p>
-          {ownerName && <p className="text-xs text-ink-4 mt-0.5">Hi {ownerName.split(' ')[0]} 👋</p>}
+      <div className="card-enter card-d0 glass rounded-xl px-5 py-4 flex items-center justify-between gap-3 flex-wrap no-print">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.4"/>
+              <path d="M5 8l2.5 2.5L11 5.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-accent">Close of day</p>
+            <h1 className="text-xl font-semibold text-ink tracking-tight">{venueName}</h1>
+            <p className="text-sm text-ink-3 mt-0.5">{dateLabel} · {kpi.tickets} {kpi.tickets === 1 ? 'sale' : 'sales'}</p>
+          </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <Link href="/dashboard" className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors">
@@ -114,7 +121,7 @@ export default function CloseDayClient({
             {sending ? 'Sending…' : 'Email me this'}
           </button>
         </div>
-      </header>
+      </div>
       {emailedTo && (
         <p className="text-xs text-success no-print">✓ Sent to {emailedTo}</p>
       )}
@@ -123,7 +130,8 @@ export default function CloseDayClient({
       <div id="close-day-printable" className="space-y-6">
 
         {/* Hero net profit card */}
-        <div className="glass rounded-2xl p-6 sm:p-8 text-center">
+        <div className="card-enter card-d1 glass rounded-2xl p-6 sm:p-8 text-center relative overflow-hidden">
+          <div className={`absolute inset-x-0 top-0 h-[3px] ${kpi.net >= 0 ? 'bg-gradient-to-r from-success/70 to-success' : 'bg-gradient-to-r from-danger/70 to-danger'}`} />
           <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-3">Net profit today</p>
           <p className={`text-5xl font-bold tabular mt-2 ${netClass}`}>{formatCurrency(kpi.net)}</p>
           <p className="text-xs text-ink-4 mt-2">
@@ -132,7 +140,7 @@ export default function CloseDayClient({
         </div>
 
         {/* P&L breakdown */}
-        <section className="glass rounded-2xl p-5 sm:p-6">
+        <section className="card-enter card-d2 glass rounded-2xl p-5 sm:p-6">
           <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-3 mb-3">P&L</p>
           <table className="w-full text-sm">
             <tbody className="divide-y divide-hair">
@@ -193,7 +201,7 @@ export default function CloseDayClient({
         )}
 
         {/* Top sellers + expenses + waste in a 2-column on desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="card-enter card-d3 grid grid-cols-1 lg:grid-cols-2 gap-4">
 
           <section className="glass rounded-2xl p-5">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-3 mb-3">Top sellers</p>

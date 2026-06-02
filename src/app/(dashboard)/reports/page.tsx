@@ -151,9 +151,5 @@ export default async function ReportsPage() {
     )
   }
 
-  return (
-    <div className="p-6 max-w-7xl mx-auto w-full">
-      <ReportsClient months={monthlyData} currentMonth={currentMonth} />
-    </div>
-  )
+  return <ReportsClient months={monthlyData} currentMonth={currentMonth} />
 }
