@@ -205,8 +205,9 @@ export default function SalesClient({
         toast(nextPaid ? 'Marked paid' : 'Marked unpaid', 'info')
       }).catch(() => {
         setPaidOverride(prev => {
-          const { [saleId]: _, ...rest } = prev
-          return rest
+          const next = { ...prev }
+          delete next[saleId]
+          return next
         })
         toast('Failed to update', 'error')
       })

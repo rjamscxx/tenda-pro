@@ -229,7 +229,7 @@ interface SubscribedAccount {
 }
 
 function SubscribedAccountCard({ acct }: { acct: SubscribedAccount }) {
-  const now = Date.now()
+  const [now] = useState(Date.now)
   const expiresMs = new Date(acct.planExpiresAt).getTime()
   const activatedMs = new Date(acct.activatedAt).getTime()
   const totalMs = expiresMs - activatedMs
@@ -316,7 +316,7 @@ function SubscribedAccountCard({ acct }: { acct: SubscribedAccount }) {
           </div>
           <p className="text-[11px] text-ink-4">
             New expiry: {daysInput && !isNaN(parseInt(daysInput))
-              ? new Date(Date.now() + parseInt(daysInput) * 864e5).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+              ? new Date(now + parseInt(daysInput) * 864e5).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
               : '—'}
           </p>
           {saveError && <p className="text-xs text-danger">{saveError}</p>}
@@ -1065,7 +1065,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 <p className="text-4xl">🎉</p>
                 <div className="space-y-1">
                   <h2 className="text-lg font-semibold text-ink">Request sent!</h2>
-                  <p className="text-sm text-ink-4">We'll activate your Pro account within 24 hours after confirming your details.</p>
+                  <p className="text-sm text-ink-4">We&apos;ll activate your Pro account within 24 hours after confirming your details.</p>
                 </div>
                 <button
                   onClick={() => setContactForm(null)}

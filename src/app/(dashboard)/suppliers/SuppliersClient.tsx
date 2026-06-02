@@ -133,7 +133,7 @@ export default function SuppliersClient({
   ingredients: IngredientRow[]
 }) {
   const toast = useToast()
-  const [suppliers, setSuppliers]         = useState(initialSuppliers)
+  const [suppliers]                        = useState(initialSuppliers)
   const [showAdd, setShowAdd]             = useState(false)
   const [editTarget, setEditTarget]       = useState<Supplier | null>(null)
   const [deleteTarget, setDeleteTarget]   = useState<Supplier | null>(null)
@@ -142,7 +142,6 @@ export default function SuppliersClient({
   const [formError, setFormError]         = useState('')
   const [assigning, setAssigning]         = useState(false)
 
-  const supplierIngredients = ingredients.filter(i => i.supplierId === expandedId)
   const unassigned = ingredients.filter(i => !i.supplierId)
 
   async function handleAdd(form: FormState) {

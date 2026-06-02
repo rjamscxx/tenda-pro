@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useTransition } from 'react'
+import { useState, useMemo, useEffect, useTransition } from 'react'
 import Modal from '@/components/ui/Modal'
 import { useToast } from '@/components/ui/Toast'
 import EmptyState from '@/components/ui/EmptyState'
@@ -110,8 +110,6 @@ export default function ShiftsClient({
   const activeEmployees = employees.filter(e => e.isActive)
   const today = todayISO()
   const weekDates = useMemo(() => getWeekDates(weekOffset), [weekOffset])
-  const weekIsoSet = useMemo(() => new Set(weekDates.map(isoFromDate)), [weekDates])
-
   // Look-ups
   const shiftByEmpDate = useMemo(() => {
     const m = new Map<string, Shift>()
@@ -443,7 +441,6 @@ function LogShiftModal({
   seed: { employeeId?: string; date?: string; existing?: Shift } | null
   onSaved: () => void
 }) {
-  const toast = useToast()
   const [, startTransition] = useTransition()
 
   // Initial form values driven by seed (cell click) or existing edit row.
@@ -462,8 +459,9 @@ function LogShiftModal({
   const [loading, setLoading]   = useState(false)
 
   // Re-seed when modal reopens.
-  useMemo(() => {
+  useEffect(() => {
     if (!open) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEmpId(seed?.employeeId ?? employees[0]?.id ?? '')
     setDate(seed?.date ?? todayISO())
     const existing = seed?.existing
