@@ -22,8 +22,12 @@ export async function createVenue({ userId, email, venueName, fullName, theme, w
   let venueId: string | undefined
 
   try {
+    const trialStart  = new Date()
+    const trialExpiry = new Date(trialStart.getTime() + 14 * 24 * 60 * 60 * 1000)
     const [account] = await db.insert(accounts).values({
-      plan: 'free',
+      plan:           'pro',
+      trialStartedAt: trialStart,
+      planExpiresAt:  trialExpiry,
     }).returning()
     await db.insert(users).values({
       id:        userId,

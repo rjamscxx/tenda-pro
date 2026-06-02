@@ -1,5 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { db } from '@/lib/db'
+import { users } from '@/lib/db/schema'
+import { eq } from 'drizzle-orm'
 import SizzleLogo from '@/components/ui/SizzleLogo'
 import OnboardingForm from './OnboardingForm'
 
@@ -9,6 +12,9 @@ export default async function OnboardingPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const existing = await db.select({ id: users.id }).from(users).where(eq(users.id, user.id)).limit(1)
+  if (existing.length > 0) redirect('/dashboard')
 
   return (
     <div
