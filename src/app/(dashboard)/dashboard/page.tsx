@@ -106,19 +106,20 @@ export default async function DashboardPage() {
     db.select({ expensedAt: expenses.expensedAt, amount: expenses.amount })
       .from(expenses).where(and(eq(expenses.venueId, venue.id), gte(expenses.expensedAt, thirtyDaysAgoStr))),
 
-    // 6. Today's top dishes
+    // 6. Today's top dishes by gross profit (unitPrice − unitCost × qty)
     db.select({
       dishId:       saleItems.dishId,
       dishName:     dishes.name,
       totalQty:     sql<string>`sum(${saleItems.qty})::text`,
       totalRevenue: sql<string>`sum(${saleItems.qty} * ${saleItems.unitPrice})::text`,
+      totalCogs:    sql<string>`sum(${saleItems.qty} * ${saleItems.unitCost})::text`,
     })
       .from(saleItems)
       .innerJoin(sales, eq(saleItems.saleId, sales.id))
       .innerJoin(dishes, eq(saleItems.dishId, dishes.id))
       .where(and(eq(sales.venueId, venue.id), gte(sales.soldAt, todayStart), lt(sales.soldAt, tomorrowStart)))
       .groupBy(saleItems.dishId, dishes.name)
-      .orderBy(desc(sql`sum(${saleItems.qty})`))
+      .orderBy(desc(sql`sum((${saleItems.unitPrice} - ${saleItems.unitCost}) * ${saleItems.qty})`))
       .limit(5),
 
     // 7. Getting-started: dish existence check (ingredients already in allIngredients)
@@ -360,6 +361,9 @@ export default async function DashboardPage() {
 
   const foodCostThreshold = venue.foodCostTarget ?? 35
 
+  const laborCost = Number(expensesAgg[0].catLabor)
+  const laborPct  = revenueMonth > 0 ? (laborCost / revenueMonth) * 100 : null
+
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto w-full space-y-5">
 
@@ -520,7 +524,7 @@ export default async function DashboardPage() {
       )}
 
       {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         {kpis.map((kpi, idx) => (
           <div key={kpi.label} className={`card-enter card-d${idx + 1} glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden`}>
             <div className={`absolute inset-x-0 top-0 h-[2px] ${
@@ -549,6 +553,32 @@ export default async function DashboardPage() {
             </div>
           </div>
         ))}
+
+        {/* Stock alerts card — always visible so owners know stock health at a glance */}
+        <Link
+          href="/inventory"
+          className="card-enter glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden hover:ring-1 hover:ring-accent/30 transition-all"
+        >
+          <div className={`absolute inset-x-0 top-0 h-[2px] ${
+            outOfStock.length > 0 ? 'bg-danger' : lowStockCount > 0 ? 'bg-warn' : 'bg-success'
+          }`} />
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-medium text-ink-4 uppercase tracking-widest">Stock Alerts</p>
+            <span className={`w-1.5 h-1.5 rounded-full ${
+              outOfStock.length > 0 ? 'bg-danger animate-pulse' : lowStockCount > 0 ? 'bg-warn animate-pulse' : 'bg-success'
+            }`} />
+          </div>
+          <p className={`text-[1.65rem] font-bold tabular tracking-tight leading-none ${
+            outOfStock.length > 0 ? 'text-danger' : lowStockCount > 0 ? 'text-warn' : 'text-success'
+          }`}>
+            {lowStockCount === 0 ? 'All clear' : lowStockCount}
+          </p>
+          <p className="text-[11px] text-ink-4 leading-snug">
+            {lowStockCount === 0
+              ? `${allIngredients.length} ingredient${allIngredients.length !== 1 ? 's' : ''} healthy`
+              : `${outOfStock.length} out · ${lowStock.length} low`}
+          </p>
+        </Link>
       </div>
 
       {/* Monthly P&L summary */}
@@ -557,7 +587,7 @@ export default async function DashboardPage() {
           <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Monthly P&amp;L — {monthLabel}</p>
           <Link href="/expenses" className="text-[11px] text-accent hover:underline underline-offset-2">View Expenses →</Link>
         </div>
-        <div className="grid grid-cols-3 divide-x divide-hair">
+        <div className={`grid ${showFin ? 'grid-cols-4' : 'grid-cols-3'} divide-x divide-hair`}>
           {/* Revenue */}
           <div className="px-4 py-4 space-y-1.5">
             <p className="text-[10px] font-medium text-ink-4 uppercase tracking-widest">Revenue</p>
@@ -590,6 +620,18 @@ export default async function DashboardPage() {
               </span>
             )}
           </div>
+          {/* Labor % of revenue — owner-only; tells owners their biggest controllable cost */}
+          {showFin && (
+            <div className="px-4 py-4 space-y-1.5">
+              <p className="text-[10px] font-medium text-ink-4 uppercase tracking-widest">Labor %</p>
+              <p className={`text-xl font-bold tabular ${laborPct !== null && laborPct > 35 ? 'text-warn' : 'text-ink'}`}>
+                {laborPct !== null ? `${laborPct.toFixed(1)}%` : '—'}
+              </p>
+              <span className="text-[10px] text-ink-4">
+                {laborCost > 0 ? `${formatCurrency(laborCost)} MTD` : 'no labor logged'}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -736,19 +778,33 @@ export default async function DashboardPage() {
         {/* Right column — Top Sellers + Channel Breakdown stacked */}
         <div className="flex flex-col gap-4">
 
-          {/* Top sellers */}
+          {/* Top sellers by gross profit */}
           <div className="glass card-glow rounded-xl p-4 space-y-3 flex-1">
-            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Today&apos;s Top Sellers</p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Today&apos;s Top by Profit</p>
+              <span className="text-[9px] text-ink-4 uppercase tracking-wider font-medium">gross ₱</span>
+            </div>
             {topDishesRows.length > 0 ? (
               <div className="space-y-2.5">
-                {topDishesRows.map((dish, i) => (
-                  <div key={dish.dishId ?? i} className="flex items-center gap-2.5">
-                    <span className={`text-[10px] font-bold w-4 tabular shrink-0 ${i === 0 ? 'text-accent' : 'text-ink-4'}`}>{i + 1}</span>
-                    <span className="flex-1 text-[13px] text-ink truncate">{dish.dishName}</span>
-                    <span className="text-[11px] tabular text-ink-4">{Number(dish.totalQty)}×</span>
-                    <span className="text-[13px] tabular font-semibold text-accent">{formatCurrency(Number(dish.totalRevenue))}</span>
-                  </div>
-                ))}
+                {topDishesRows.map((dish, i) => {
+                  const rev  = Number(dish.totalRevenue)
+                  const cogs = Number(dish.totalCogs)
+                  const gp   = rev - cogs
+                  const gpPct = rev > 0 ? Math.round((gp / rev) * 100) : null
+                  return (
+                    <div key={dish.dishId ?? i} className="flex items-center gap-2.5">
+                      <span className={`text-[10px] font-bold w-4 tabular shrink-0 ${i === 0 ? 'text-accent' : 'text-ink-4'}`}>{i + 1}</span>
+                      <span className="flex-1 text-[13px] text-ink truncate">{dish.dishName}</span>
+                      <span className="text-[11px] tabular text-ink-4 shrink-0">{Number(dish.totalQty)}×</span>
+                      <div className="text-right shrink-0">
+                        <span className="text-[13px] tabular font-semibold text-accent block">{formatCurrency(gp)}</span>
+                        {gpPct !== null && cogs > 0 && (
+                          <span className={`text-[9px] tabular ${gpPct < 30 ? 'text-warn' : 'text-ink-4'}`}>{gpPct}%</span>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             ) : (
               <div className="flex items-center justify-center py-6 text-sm text-ink-4">
@@ -869,23 +925,6 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* Low stock summary */}
-      {lowStockCount > 0 && (
-        <div className="flex items-center justify-between glass rounded-xl px-4 py-3 border-l-2 border-warn">
-          <div className="flex items-center gap-2">
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" className="text-warn shrink-0">
-              <path d="M6.5 1.5L12 11H1L6.5 1.5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
-              <path d="M6.5 5v2.5M6.5 9.5h.01" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-            </svg>
-            <span className="text-sm text-ink-3">
-              <span className="text-warn font-semibold tabular">{lowStockCount}</span> ingredient{lowStockCount !== 1 ? 's' : ''} low or out of stock
-            </span>
-          </div>
-          <Link href="/inventory" className="text-xs text-accent hover:text-accent font-medium flex items-center gap-1 group">
-            View <span className="group-hover:translate-x-0.5 transition-transform">→</span>
-          </Link>
-        </div>
-      )}
     </div>
   )
 }

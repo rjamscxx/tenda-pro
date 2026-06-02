@@ -703,6 +703,32 @@ export default function POSClient({
               )}
             </div>
 
+            {/* Kitchen margin summary — owner-facing, hidden from print */}
+            {(() => {
+              const foodCost   = receipt.items.reduce((s, i) => s + i.qty * i.unitCost, 0)
+              const grossProfit = receipt.total - foodCost
+              const marginPct   = receipt.total > 0 ? (grossProfit / receipt.total) * 100 : null
+              if (foodCost === 0) return null
+              return (
+                <div className="print:hidden mt-3 rounded-lg bg-surface-2 border border-hair px-3 py-2.5 space-y-1.5">
+                  <p className="text-[10px] font-semibold text-ink-4 uppercase tracking-widest">Kitchen summary</p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-ink-3">Food cost</span>
+                    <span className="tabular text-warn font-medium">{formatCurrency(foodCost)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-ink-3">Gross profit</span>
+                    <span className={`tabular font-semibold ${grossProfit >= 0 ? 'text-success' : 'text-danger'}`}>
+                      {formatCurrency(grossProfit)}
+                      {marginPct !== null && (
+                        <span className="ml-1.5 font-normal text-ink-4">({marginPct.toFixed(0)}%)</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              )
+            })()}
+
             <div className="flex gap-2 pt-4 mt-1">
               <button
                 onClick={() => setReceipt(null)}

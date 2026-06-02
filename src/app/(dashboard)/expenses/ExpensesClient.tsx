@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Modal from '@/components/ui/Modal'
 import { createExpense, updateExpense, deleteExpense } from './actions'
 import { formatCurrency, formatDate, parseCents, todayISO } from '@/lib/utils'
@@ -83,6 +83,17 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
   const [catFilter, setCatFilter] = useState<string>('all')
   const [search, setSearch]       = useState('')
 
+  // Unique recurring expense templates — deduped by category+vendor+amount, most recent first
+  const quickTemplates = useMemo(() => {
+    const seen = new Map<string, Expense>()
+    for (const e of expenses) {
+      if (!e.isRecurring) continue
+      const key = `${e.category}|${e.vendor ?? ''}|${e.amount}`
+      if (!seen.has(key)) seen.set(key, e)
+    }
+    return Array.from(seen.values()).slice(0, 6)
+  }, [expenses])
+
   function updateForm(key: string, value: string | boolean) {
     setForm(f => ({ ...f, [key]: value }))
   }
@@ -143,6 +154,22 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
     toast('Expense deleted', 'info')
   }
 
+  async function handleQuickLog(template: Expense) {
+    setLoading(true)
+    const result = await createExpense({
+      category:      template.category as 'ingredients' | 'labor' | 'rent' | 'utilities' | 'marketing' | 'other',
+      amount:        template.amount,
+      vendor:        template.vendor ?? '',
+      note:          template.note ?? '',
+      expensedAt:    todayISO(),
+      isRecurring:   true,
+      recurrenceDay: template.recurrenceDay,
+    })
+    setLoading(false)
+    if (result?.error) toast(result.error, 'error')
+    else toast(`${CATEGORIES.find(c => c.value === template.category)?.label ?? template.category} logged`)
+  }
+
   function exportCSV(rows: Expense[]) {
     const header = 'Date,Category,Vendor,Amount,Recurring,Note'
     const lines  = rows.map(e => {
@@ -197,6 +224,25 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
           </button>
         </div>
       </div>
+
+      {/* Quick log — one-tap re-log of recurring expenses */}
+      {quickTemplates.length > 0 && (
+        <div className="px-6 py-2.5 border-b border-hair flex items-center gap-2 shrink-0 flex-wrap">
+          <span className="text-[11px] text-ink-4 uppercase tracking-wider font-semibold shrink-0">Quick log</span>
+          {quickTemplates.map((t, i) => (
+            <button
+              key={i}
+              onClick={() => handleQuickLog(t)}
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-2 hover:bg-surface-3 border border-hair text-xs font-medium text-ink-3 hover:text-ink transition-colors disabled:opacity-50"
+            >
+              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${CATEGORY_BADGE[t.category]?.split(' ')[0] ?? 'bg-hair-2'}`} />
+              {t.vendor || CATEGORIES.find(c => c.value === t.category)?.label}
+              <span className="text-ink-4 font-normal">· {formatCurrency(t.amount)}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Period filter */}
       <div className="px-6 py-2.5 border-b border-hair flex items-center gap-1.5 shrink-0 flex-wrap">
