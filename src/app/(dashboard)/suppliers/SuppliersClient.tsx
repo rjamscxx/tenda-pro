@@ -190,10 +190,18 @@ export default function SuppliersClient({
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-hair shrink-0">
-        <div>
-          <h1 className="font-semibold text-ink text-base">Suppliers</h1>
-          <p className="text-xs text-ink-4 mt-0.5">{suppliers.length} supplier{suppliers.length !== 1 ? 's' : ''}</p>
+      <div className="flex items-center justify-between px-5 py-4 border-b border-hair shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-7 h-7 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M1 4l6-2.5L13 4v6L7 12.5 1 10V4z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+              <path d="M7 1.5V12.5M1 4l6 2.5 6-2.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="font-semibold text-ink text-base">Suppliers</h1>
+            <p className="text-xs text-ink-4 mt-0.5">{suppliers.length} supplier{suppliers.length !== 1 ? 's' : ''}</p>
+          </div>
         </div>
         <button
           onClick={() => { setShowAdd(true); setFormError('') }}

@@ -201,13 +201,20 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
     <>
       {/* Header */}
       <div className="px-6 py-5 flex items-center justify-between border-b border-hair shrink-0">
-        <div>
-          <h1 className="text-xl font-semibold text-ink tracking-tight">Expenses</h1>
-          <p className="text-sm text-ink-4 mt-0.5">
-            <span className="tabular">{displayed.length}</span> entries
-            <span className="mx-1.5 text-hair-2">·</span>
-            {periodLabel}: <span className="tabular text-ink font-medium">{formatCurrency(periodTotal)}</span>
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center shrink-0 text-danger">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 4h12M6 4V3a1 1 0 011-1h2a1 1 0 011 1v1M6 7v5M10 7v5M3 4l1 9a1 1 0 001 1h6a1 1 0 001-1l1-9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-ink tracking-tight">Expenses</h1>
+            <p className="text-sm text-ink-4 mt-0.5">
+              <span className="tabular">{displayed.length}</span> entries
+              <span className="mx-1.5 text-hair-2">·</span>
+              {periodLabel}: <span className="tabular text-ink font-medium">{formatCurrency(periodTotal)}</span>
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button

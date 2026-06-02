@@ -243,17 +243,25 @@ export default function InventoryClient({
     <>
       {/* Header */}
       <div className="px-6 py-5 flex items-center justify-between border-b border-hair shrink-0 gap-4">
-        <div>
-          <h1 className="text-xl font-semibold text-ink tracking-tight">Inventory</h1>
-          <p className="text-sm text-ink-4 mt-0.5">
-            <span className="tabular">{ingredients.length}</span> ingredients
-            {outCount > 0 && (
-              <><span className="mx-1.5 text-hair-2">·</span><span className="text-danger font-medium">{outCount} out of stock</span></>
-            )}
-            {lowCount > 0 && (
-              <><span className="mx-1.5 text-hair-2">·</span><span className="text-warn font-medium">{lowCount} low</span></>
-            )}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${outCount > 0 ? 'bg-danger/10 text-danger' : lowCount > 0 ? 'bg-warn/12 text-warn' : 'bg-success/12 text-success'}`}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="1.5" y="5" width="13" height="9.5" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
+              <path d="M1.5 8.5h13M6 5V3.5h4V5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-ink tracking-tight">Inventory</h1>
+            <p className="text-sm text-ink-4 mt-0.5">
+              <span className="tabular">{ingredients.length}</span> ingredients
+              {outCount > 0 && (
+                <><span className="mx-1.5 text-hair-2">·</span><span className="text-danger font-medium">{outCount} out of stock</span></>
+              )}
+              {lowCount > 0 && (
+                <><span className="mx-1.5 text-hair-2">·</span><span className="text-warn font-medium">{lowCount} low</span></>
+              )}
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <div className="relative">

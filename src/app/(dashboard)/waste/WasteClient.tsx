@@ -116,9 +116,16 @@ export default function WasteClient({ wasteLogs, ingredients }: Props) {
     <>
       {/* Header */}
       <div className="px-6 py-5 border-b border-hair flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-ink">Waste Log</h1>
-          <p className="text-[12px] text-ink-4 mt-0.5">Track spoilage and food waste to monitor your true food cost.</p>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-warn/12 flex items-center justify-center shrink-0 text-warn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 4h12M6 4V3a1 1 0 011-1h2a1 1 0 011 1v1M6 7v5.5M10 7v5.5M3.5 4l.8 8.5a1 1 0 001 .9h5.4a1 1 0 001-.9l.8-8.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-ink tracking-tight">Waste Log</h1>
+            <p className="text-sm text-ink-4 mt-0.5">Track spoilage and food waste to monitor your true food cost.</p>
+          </div>
         </div>
         <button className="btn-primary px-4 py-2 text-[13px]" onClick={() => setModalOpen(true)}>
           + Log Waste

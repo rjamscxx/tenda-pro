@@ -249,9 +249,17 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
     <>
       {/* Header */}
       <div className="px-6 py-5 border-b border-hair flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-ink">Payroll</h1>
-          <p className="text-[12px] text-ink-4 mt-0.5">Process payroll runs and track total labor cost.</p>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="1.5" y="3" width="13" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
+              <path d="M1.5 6.5h13M5 3V1.5M11 3V1.5M5 9.5h3M5 11.5h2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-ink tracking-tight">Payroll</h1>
+            <p className="text-sm text-ink-4 mt-0.5">Process payroll runs and track total labor cost.</p>
+          </div>
         </div>
         <button
           className="btn-primary px-4 py-2 text-[13px]"

@@ -179,12 +179,21 @@ export default function ShiftsClient({
       <div className="p-6 max-w-7xl mx-auto w-full space-y-5">
 
         {/* Header */}
-        <header className="flex items-end justify-between flex-wrap gap-3">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-ink">Shifts</h1>
-            <p className="text-sm text-ink-4 mt-0.5">
-              {fmtMonDay(weekDates[0])} – {fmtMonDay(weekDates[6])}, {weekDates[0].getFullYear()}
-            </p>
+        <div className="card-enter card-d0 glass rounded-xl px-5 py-4 flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" strokeWidth="1.4"/>
+                <path d="M5 2v2M11 2v2M2 7h12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                <path d="M5 10h2M9 10h2M5 12.5h2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold text-ink tracking-tight">Shifts</h1>
+              <p className="text-sm text-ink-4 mt-0.5">
+                {fmtMonDay(weekDates[0])} – {fmtMonDay(weekDates[6])}, {weekDates[0].getFullYear()}
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex rounded-lg border border-hair bg-surface-2 overflow-hidden">
@@ -196,10 +205,10 @@ export default function ShiftsClient({
               + Log shift
             </button>
           </div>
-        </header>
+        </div>
 
         {/* KPI row */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <section className="card-enter card-d1 grid grid-cols-2 lg:grid-cols-4 gap-3">
           <KpiCard label="Active staff"   value={String(stats.staff)} tone="accent" />
           <KpiCard label="Hours logged"   value={`${stats.hoursLogged}h`} tone="ink" />
           <KpiCard label="Total pay out"  value={formatCurrency(stats.payOut)} tone="danger" />
@@ -389,11 +398,30 @@ export default function ShiftsClient({
 
 // ── Tiny presentational sub-components ───────────────────────────────────────
 function KpiCard({ label, value, tone }: { label: string; value: string; tone: 'accent'|'ink'|'success'|'danger' }) {
-  const cls = tone === 'accent' ? 'text-accent' : tone === 'success' ? 'text-success' : tone === 'danger' ? 'text-danger' : 'text-ink'
+  const valCls  = tone === 'accent' ? 'text-accent' : tone === 'success' ? 'text-success' : tone === 'danger' ? 'text-danger' : 'text-ink'
+  const barCls  = tone === 'accent' ? 'bg-gradient-to-r from-accent to-accent-2'
+                : tone === 'success' ? 'bg-gradient-to-r from-success/80 to-success'
+                : tone === 'danger'  ? 'bg-gradient-to-r from-danger/70 to-danger'
+                : 'bg-gradient-to-r from-ink-4/50 to-ink-3/60'
+  const iconBg  = tone === 'accent' ? 'bg-accent-dim text-accent'
+                : tone === 'success' ? 'bg-success/12 text-success'
+                : tone === 'danger'  ? 'bg-danger/10 text-danger'
+                : 'bg-surface-3 text-ink-3'
+  const icon = tone === 'accent'
+    ? <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.3"/><path d="M1.5 11.5c0-2.485 2.239-4.5 5-4.5s5 2.015 5 4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+    : tone === 'success'
+    ? <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    : tone === 'danger'
+    ? <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1.5" y="3.5" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M4.5 3.5V3a2 2 0 014 0v.5M4.5 7h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+    : <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.3"/><path d="M6.5 4v2.5l1.5 1.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
   return (
-    <div className="glass rounded-xl p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-ink-4">{label}</p>
-      <p className={`text-2xl font-bold tabular mt-1 ${cls}`}>{value}</p>
+    <div className="glass rounded-xl p-4 relative overflow-hidden">
+      <div className={`absolute inset-x-0 top-0 h-[2px] ${barCls}`} />
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-ink-4">{label}</p>
+        <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${iconBg}`}>{icon}</div>
+      </div>
+      <p className={`text-2xl font-bold tabular ${valCls}`}>{value}</p>
     </div>
   )
 }

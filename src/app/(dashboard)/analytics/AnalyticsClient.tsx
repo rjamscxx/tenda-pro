@@ -240,79 +240,165 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
     <div className="p-4 sm:p-6 space-y-5 max-w-5xl mx-auto w-full pb-10">
 
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <h1 className="text-xl font-semibold text-ink">Advanced Analytics</h1>
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-warn/15 text-warn text-[11px] font-semibold">
-          💎 Premium
+      <div className="card-enter card-d0 glass rounded-xl px-5 py-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 12L5.5 7.5 8 10l3.5-5 3 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 5h3v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-ink tracking-tight">Advanced Analytics</h1>
+            <p className="text-xs text-ink-4 mt-0.5">90-day insights + 7-day revenue forecast</p>
+          </div>
+        </div>
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-warn/12 text-warn text-[11px] font-semibold border border-warn/20 shrink-0">
+          Premium
         </span>
       </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="glass card-glow rounded-xl p-4 space-y-1">
-          <p className="text-[11px] text-ink-4 uppercase tracking-wider font-medium">90-Day Revenue</p>
-          <p className="text-xl font-semibold tabular text-ink">{fmt(totalRevenue90)}</p>
+      <div className="card-enter card-d1 grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent via-accent-2 to-accent" />
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] text-ink-4 uppercase tracking-widest font-medium">90-Day Revenue</p>
+            <div className="w-7 h-7 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M1.5 9.5L4.5 6l2 2L10 4l2.5 2.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <p className="text-[1.5rem] font-bold tabular tracking-tight leading-none text-ink">{fmt(totalRevenue90)}</p>
+          <p className="text-[11px] text-ink-4">{daysWithSales} trading day{daysWithSales !== 1 ? 's' : ''}</p>
         </div>
-        <div className="glass card-glow rounded-xl p-4 space-y-1">
-          <p className="text-[11px] text-ink-4 uppercase tracking-wider font-medium">Avg / Trading Day</p>
-          <p className="text-xl font-semibold tabular text-ink">{avgDaily > 0 ? fmt(avgDaily) : '—'}</p>
+        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent via-accent-2 to-accent" />
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] text-ink-4 uppercase tracking-widest font-medium">Avg / Day</p>
+            <div className="w-7 h-7 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M1.5 6.5h10M4 4l-2.5 2.5L4 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <p className="text-[1.5rem] font-bold tabular tracking-tight leading-none text-ink">{avgDaily > 0 ? fmt(avgDaily) : '—'}</p>
+          <p className="text-[11px] text-ink-4">per trading day</p>
         </div>
-        <div className="glass card-glow rounded-xl p-4 space-y-1">
-          <p className="text-[11px] text-ink-4 uppercase tracking-wider font-medium">Best Day of Week</p>
-          <p className="text-xl font-semibold text-ink">{revenueByDow[bestDowIdx] > 0 ? DOW_LABELS[bestDowIdx] : '—'}</p>
+        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-success to-success/60" />
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] text-ink-4 uppercase tracking-widest font-medium">Best Day</p>
+            <div className="w-7 h-7 rounded-lg bg-success/12 flex items-center justify-center shrink-0 text-success">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M6.5 1l1.3 4H12L8.8 7.5l1.3 4L6.5 9.5 3.2 11.5l1.3-4L1 5h4.2z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <p className="text-[1.5rem] font-bold tracking-tight leading-none text-ink">{revenueByDow[bestDowIdx] > 0 ? DOW_LABELS[bestDowIdx] : '—'}</p>
           {revenueByDow[bestDowIdx] > 0 && (
-            <p className="text-xs tabular text-accent">{fmt(revenueByDow[bestDowIdx])} avg</p>
+            <p className="text-[11px] tabular text-accent">{fmt(revenueByDow[bestDowIdx])} avg</p>
           )}
         </div>
-        <div className="glass card-glow rounded-xl p-4 space-y-1">
-          <p className="text-[11px] text-ink-4 uppercase tracking-wider font-medium">7-Day Forecast</p>
-          <p className="text-xl font-semibold tabular text-accent">{forecastTotal > 0 ? fmt(forecastTotal) : '—'}</p>
+        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent-2 to-accent" />
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] text-ink-4 uppercase tracking-widest font-medium">7-Day Forecast</p>
+            <div className="w-7 h-7 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M1.5 3.5h10M1.5 6.5h7M1.5 9.5h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                <circle cx="11" cy="9.5" r="2" stroke="currentColor" strokeWidth="1.2"/>
+              </svg>
+            </div>
+          </div>
+          <p className="text-[1.5rem] font-bold tabular tracking-tight leading-none text-accent">{forecastTotal > 0 ? fmt(forecastTotal) : '—'}</p>
+          <p className="text-[11px] text-ink-4">projected next 7 days</p>
         </div>
       </div>
 
       {/* Revenue Trend */}
-      <section className="glass card-glow rounded-xl p-5 space-y-3">
-        <div>
-          <h2 className="text-sm font-semibold text-ink">90-Day Revenue Trend</h2>
-          <p className="text-xs text-ink-4 mt-0.5">Line shows 7-day moving average</p>
+      <section className="card-enter card-d2 glass card-glow rounded-xl p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+              <path d="M1 8.5L3.5 5.5 5.5 7.5 8.5 3.5 10 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">90-Day Revenue Trend</p>
+            <p className="text-xs text-ink-4 mt-0.5">Line shows 7-day moving average</p>
+          </div>
         </div>
         <TrendChart data={dailyRevenue} />
       </section>
 
       {/* Day of Week + Forecast */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <section className="glass card-glow rounded-xl p-5 space-y-3">
-          <div>
-            <h2 className="text-sm font-semibold text-ink">Revenue by Day of Week</h2>
-            <p className="text-xs text-ink-4 mt-0.5">Average revenue per day (last 90 days)</p>
+      <div className="card-enter card-d3 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <section className="glass card-glow rounded-xl p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                <rect x="1" y="2" width="9" height="8" rx="1" stroke="currentColor" strokeWidth="1.3"/>
+                <path d="M1 5h9M4 2V1M7 2V1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Revenue by Day of Week</p>
+              <p className="text-xs text-ink-4 mt-0.5">Average revenue per day (last 90 days)</p>
+            </div>
           </div>
           <DowChart revenueByDow={revenueByDow} />
         </section>
 
-        <section className="glass card-glow rounded-xl p-5 space-y-3">
-          <div>
-            <h2 className="text-sm font-semibold text-ink">7-Day Revenue Forecast</h2>
-            <p className="text-xs text-ink-4 mt-0.5">Predicted from your day-of-week history</p>
+        <section className="glass card-glow rounded-xl p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                <path d="M1 5.5h9M7 3l2.5 2.5L7 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">7-Day Revenue Forecast</p>
+              <p className="text-xs text-ink-4 mt-0.5">Predicted from your day-of-week history</p>
+            </div>
           </div>
           <ForecastCard days={forecastDays} />
         </section>
       </div>
 
       {/* Expense Breakdown */}
-      <section className="glass card-glow rounded-xl p-5 space-y-3">
-        <div>
-          <h2 className="text-sm font-semibold text-ink">Expense Breakdown (Last 90 Days)</h2>
-          <p className="text-xs text-ink-4 mt-0.5">Total by category — {expensesByCategory.length > 0 ? fmt(expensesByCategory.reduce((s, d) => s + d.amount, 0)) + ' total' : 'no data yet'}</p>
+      <section className="card-enter card-d4 glass card-glow rounded-xl p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+              <path d="M1.5 1.5h4.5l4 4-4.5 4.5-4-4z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+              <circle cx="4" cy="4" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <div>
+            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Expense Breakdown — Last 90 Days</p>
+            <p className="text-xs text-ink-4 mt-0.5">{expensesByCategory.length > 0 ? fmt(expensesByCategory.reduce((s, d) => s + d.amount, 0)) + ' total by category' : 'no expenses yet'}</p>
+          </div>
         </div>
         <ExpenseChart data={expensesByCategory} />
       </section>
 
       {/* Monthly P&L */}
-      <section className="glass card-glow rounded-xl p-5 space-y-3">
-        <div>
-          <h2 className="text-sm font-semibold text-ink">Monthly P&L</h2>
-          <p className="text-xs text-ink-4 mt-0.5">Last 6 months — revenue, expenses, and profit</p>
+      <section className="card-enter card-d5 glass card-glow rounded-xl overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-hair flex items-center gap-2">
+          <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+              <path d="M1 10V7.5M3.5 10V5M6 10V7M8.5 10V3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Monthly P&L</p>
+            <p className="text-xs text-ink-4 mt-0.5">Last 6 months — revenue, expenses, and profit</p>
+          </div>
         </div>
+        <div className="p-5">
+        <div className="overflow-x-auto">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -348,6 +434,7 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
               })}
             </tbody>
           </table>
+        </div>
         </div>
       </section>
 

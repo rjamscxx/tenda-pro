@@ -120,14 +120,23 @@ export default function EmployeesClient({ employees }: Props) {
     <>
       {/* Header */}
       <div className="px-6 py-5 border-b border-hair flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-[15px] font-semibold text-ink">Employees</h1>
-          <p className="text-[12px] text-ink-4 mt-0.5">
-            {employees.length === 0
-              ? 'Manage staff records, pay rates, and status.'
-              : [active.length > 0 && `${active.length} active`, inactive.length > 0 && `${inactive.length} inactive`].filter(Boolean).join(' · ')
-            }
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="6" cy="5" r="3" stroke="currentColor" strokeWidth="1.4"/>
+              <path d="M1 14c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+              <path d="M12 7a2.5 2.5 0 100-5M15 14c0-2.5-1.5-4.7-3.5-5.7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-ink tracking-tight">Employees</h1>
+            <p className="text-sm text-ink-4 mt-0.5">
+              {employees.length === 0
+                ? 'Manage staff records, pay rates, and status.'
+                : [active.length > 0 && `${active.length} active`, inactive.length > 0 && `${inactive.length} inactive`].filter(Boolean).join(' · ')
+              }
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <div className="relative">
@@ -149,22 +158,39 @@ export default function EmployeesClient({ employees }: Props) {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats KPI strip */}
       <div className="px-6 py-3 border-b border-hair flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-6">
-          <div>
-            <p className="text-[10px] text-ink-4 uppercase tracking-wider font-semibold">Active Staff</p>
-            <p className="text-[20px] font-semibold tabular text-ink leading-tight">{active.length}</p>
+        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <circle cx="6" cy="4.5" r="2.5" stroke="currentColor" strokeWidth="1.3"/>
+                <path d="M1 11c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-[10px] text-ink-4 uppercase tracking-widest font-semibold">Active Staff</p>
+              <p className="text-[18px] font-bold tabular text-ink leading-tight">{active.length}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-[10px] text-ink-4 uppercase tracking-wider font-semibold">Est. Monthly Labor</p>
-            <p className="text-[20px] font-semibold tabular text-ink leading-tight">{formatCurrency(monthlyLaborEstimate)}</p>
+          <div className="w-px h-8 bg-hair shrink-0" />
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md bg-danger/10 flex items-center justify-center shrink-0 text-danger">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M6 1v6M3.5 10.5h5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                <path d="M9 4L6 7 3 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <p className="text-[10px] text-ink-4 uppercase tracking-widest font-semibold">Est. Monthly Labor</p>
+              <p className="text-[18px] font-bold tabular text-ink leading-tight">{formatCurrency(monthlyLaborEstimate)}</p>
+            </div>
           </div>
         </div>
         {inactive.length > 0 && (
           <button
             onClick={() => setShowInactive(v => !v)}
-            className="text-[12px] text-ink-4 hover:text-ink transition-colors"
+            className="text-[12px] text-ink-4 hover:text-ink transition-colors px-2.5 py-1 rounded-lg hover:bg-surface-2"
           >
             {showInactive ? 'Hide inactive' : `Show ${inactive.length} inactive`}
           </button>

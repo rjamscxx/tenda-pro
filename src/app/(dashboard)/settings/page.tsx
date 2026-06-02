@@ -94,10 +94,19 @@ export default async function SettingsPage() {
   ])
 
   return (
-    <div className="p-6 max-w-2xl w-full space-y-6">
-      <div>
-        <h1 className="text-xl font-semibold text-ink tracking-tight">Settings</h1>
-        <p className="text-sm text-ink-4 mt-0.5">Manage your business and account preferences.</p>
+    <div className="p-4 sm:p-6 max-w-2xl w-full space-y-5">
+      <div className="card-enter card-d0 glass rounded-xl px-5 py-4 flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M7 2H4a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+            <circle cx="11.5" cy="4.5" r="3" stroke="currentColor" strokeWidth="1.3"/>
+            <path d="M10 4.5h3M11.5 3v3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1 className="text-xl font-semibold text-ink tracking-tight">Settings</h1>
+          <p className="text-sm text-ink-4 mt-0.5">Manage your business and account preferences.</p>
+        </div>
       </div>
       <SettingsClient
         initialTheme={theme}
