@@ -283,6 +283,12 @@ export default async function DashboardPage() {
       delta: todayDelta,
       deltaLabel: 'vs yesterday',
       status: 'neutral' as const,
+      icon: (
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M1.5 10L5 6.5l2.5 2.5 5.5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M10 3h3v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      ),
     },
     {
       label: 'Month Revenue',
@@ -291,6 +297,12 @@ export default async function DashboardPage() {
       delta: monthDelta,
       deltaLabel: 'vs last month',
       status: 'neutral' as const,
+      icon: (
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="1.5" y="3" width="11" height="9.5" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
+          <path d="M1.5 6.5h11M5 1.5v3M9 1.5v3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+        </svg>
+      ),
     },
     ...(showFin ? [
       {
@@ -302,6 +314,14 @@ export default async function DashboardPage() {
         delta: null,
         deltaLabel: '',
         status: foodCostPct !== null && foodCostPct > (venue.foodCostTarget ?? 35) ? 'warn' as const : 'good' as const,
+        icon: (
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.3"/>
+            <path d="M4.5 9.5l5-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+            <circle cx="5" cy="4.75" r="1" fill="currentColor"/>
+            <circle cx="9" cy="9.25" r="1" fill="currentColor"/>
+          </svg>
+        ),
       },
       {
         label: 'Gross Margin',
@@ -310,6 +330,11 @@ export default async function DashboardPage() {
         delta: null,
         deltaLabel: '',
         status: grossMarginPct !== null && grossMarginPct < 30 ? 'warn' as const : 'neutral' as const,
+        icon: (
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 11.5V8.5M5.5 11.5V5.5M9 11.5V7.5M12.5 11.5V3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        ),
       },
     ] : []),
   ]
@@ -532,9 +557,11 @@ export default async function DashboardPage() {
             }`} />
             <div className="flex items-center justify-between">
               <p className="text-[11px] font-medium text-ink-4 uppercase tracking-widest">{kpi.label}</p>
-              <span className={`w-1.5 h-1.5 rounded-full ${
-                kpi.status === 'warn' ? 'bg-warn animate-pulse' : kpi.status === 'good' ? 'bg-success' : 'bg-hair-2'
-              }`} />
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                kpi.status === 'warn' ? 'bg-warn/15 text-warn' : kpi.status === 'good' ? 'bg-success/15 text-success' : 'bg-accent-dim text-accent'
+              }`}>
+                {kpi.icon}
+              </div>
             </div>
             <p className={`text-[1.65rem] font-bold tabular tracking-tight leading-none ${
               kpi.status === 'warn' ? 'text-warn' : 'text-ink'
@@ -564,9 +591,14 @@ export default async function DashboardPage() {
           }`} />
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-medium text-ink-4 uppercase tracking-widest">Stock Alerts</p>
-            <span className={`w-1.5 h-1.5 rounded-full ${
-              outOfStock.length > 0 ? 'bg-danger animate-pulse' : lowStockCount > 0 ? 'bg-warn animate-pulse' : 'bg-success'
-            }`} />
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+              outOfStock.length > 0 ? 'bg-danger/15 text-danger' : lowStockCount > 0 ? 'bg-warn/15 text-warn' : 'bg-success/15 text-success'
+            }`}>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1.5" y="4" width="11" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
+                <path d="M1.5 7h11M5 4V2.5h4V4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+              </svg>
+            </div>
           </div>
           <p className={`text-[1.65rem] font-bold tabular tracking-tight leading-none ${
             outOfStock.length > 0 ? 'text-danger' : lowStockCount > 0 ? 'text-warn' : 'text-success'
@@ -584,7 +616,14 @@ export default async function DashboardPage() {
       {/* Monthly P&L summary */}
       <div className="card-enter card-d2 glass card-glow rounded-xl overflow-hidden">
         <div className="px-5 py-3 border-b border-hair flex items-center justify-between">
-          <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Monthly P&amp;L — {monthLabel}</p>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                <path d="M1 10V7.5M3.5 10V5M6 10V7M8.5 10V3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Monthly P&amp;L — {monthLabel}</p>
+          </div>
           <Link href="/expenses" className="text-[11px] text-accent hover:underline underline-offset-2">View Expenses →</Link>
         </div>
         <div className={`grid ${showFin ? 'grid-cols-4' : 'grid-cols-3'} divide-x divide-hair`}>
@@ -638,7 +677,14 @@ export default async function DashboardPage() {
       {/* Week over Week */}
       <div className="card-enter card-d3 glass card-glow rounded-xl overflow-hidden">
         <div className="px-5 py-3 border-b border-hair">
-          <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">This Week vs Last Week</p>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                <path d="M1 5.5h9M7 3l2.5 2.5L7 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">This Week vs Last Week</p>
+          </div>
         </div>
         <div className="grid grid-cols-3 divide-x divide-hair">
           <div className="px-4 py-4 space-y-1.5">
@@ -758,8 +804,17 @@ export default async function DashboardPage() {
         <div className="lg:col-span-2 glass card-glow rounded-xl p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">30-Day Cashflow</p>
-              <p className="text-xs text-ink-4 mt-0.5">Revenue vs Expenses</p>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M1 8.5L3.5 5.5 5.5 7.5 8.5 3.5 10 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">30-Day Cashflow</p>
+                  <p className="text-xs text-ink-4 mt-0.5">Revenue vs Expenses</p>
+                </div>
+              </div>
             </div>
             <div className="flex items-center gap-4 text-[11px] text-ink-3">
               <span className="flex items-center gap-1.5">
@@ -781,7 +836,14 @@ export default async function DashboardPage() {
           {/* Top sellers by gross profit */}
           <div className="glass card-glow rounded-xl p-4 space-y-3 flex-1">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Today&apos;s Top by Profit</p>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                    <path d="M5.5 1l1.1 3.4H10L7.2 6.5l1.1 3.4L5.5 8 2.7 9.9l1.1-3.4L1 4.4h3.4z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Today&apos;s Top by Profit</p>
+              </div>
               <span className="text-[9px] text-ink-4 uppercase tracking-wider font-medium">gross ₱</span>
             </div>
             {topDishesRows.length > 0 ? (
@@ -815,7 +877,14 @@ export default async function DashboardPage() {
 
           {/* Channel breakdown */}
           <div className="glass card-glow rounded-xl p-4 space-y-3">
-            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Today by Channel</p>
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <path d="M1 9h9M1 6.5h6M1 4h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Today by Channel</p>
+            </div>
             {channelRows.length > 0 ? (
               <div className="space-y-3">
                 {channelRows.map((row) => {
@@ -857,7 +926,14 @@ export default async function DashboardPage() {
       {/* Waste tracker */}
       <div className="card-enter card-d6 glass card-glow rounded-xl px-5 py-4 flex items-center justify-between gap-6">
         <div className="space-y-1 min-w-0">
-          <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Today&apos;s Waste</p>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-md bg-warn/12 flex items-center justify-center shrink-0 text-warn">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                <path d="M1.5 3h8M4 3V2h3v1M3.5 3l.5 6.5h3.5L8 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Today&apos;s Waste</p>
+          </div>
           <div className="flex items-baseline gap-2 flex-wrap">
             <p className={`text-2xl font-bold tabular ${todayWaste > 0 ? 'text-warn' : 'text-ink-4'}`}>
               {formatCurrency(todayWaste)}
@@ -893,7 +969,15 @@ export default async function DashboardPage() {
       {expenseCategories.length > 0 && (
         <div className="card-enter card-d7 glass card-glow rounded-xl p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Expenses by Category — {monthLabel}</p>
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+                <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                  <path d="M1.5 1.5h4.5l4 4-4.5 4.5-4-4z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+                  <circle cx="4" cy="4" r="1" fill="currentColor"/>
+                </svg>
+              </div>
+              <p className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Expenses by Category — {monthLabel}</p>
+            </div>
             <Link href="/expenses" className="text-[11px] text-accent hover:underline underline-offset-2">All expenses →</Link>
           </div>
           <div className="space-y-3">

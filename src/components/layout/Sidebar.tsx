@@ -20,7 +20,7 @@ const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
     label: 'Overview',
     items: [
       { href: '/dashboard', label: 'Dashboard', icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/></svg>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/><rect x="9" y="1" width="6" height="3" rx="1.5" fill="currentColor" opacity=".9"/><rect x="9" y="6" width="6" height="3" rx="1.5" fill="currentColor" opacity=".55"/><rect x="1" y="9" width="6" height="3" rx="1.5" fill="currentColor" opacity=".55"/><rect x="1" y="13" width="6" height="2" rx="1" fill="currentColor" opacity=".3"/><rect x="9" y="11" width="6" height="4" rx="1.5" fill="currentColor" opacity=".9"/></svg>
       )},
     ],
   },
@@ -28,19 +28,19 @@ const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
     label: 'Operations',
     items: [
       { href: '/pos', label: 'POS', icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M4 8.5h8M4 11h3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><circle cx="11.5" cy="11" r="0.75" fill="currentColor"/><path d="M5 4V2.5h6V4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="4.5" width="14" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M5 4.5V3h6v1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 8.5h8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M4 11h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><rect x="9.5" y="9.75" width="3" height="2.5" rx="0.75" fill="currentColor" opacity=".7"/></svg>
       )},
       { href: '/sales', label: 'Sales', icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 11.5L6 7l3 3 5-5.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/><path d="M11 5.5h3v3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 11.5L5.5 7.5l3 2.5 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M11 4h3v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M2 14.5h12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity=".35"/></svg>
       )},
       { href: '/menu', label: 'Menu', icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="1.5"/><path d="M5.5 8h5M8 5.5v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4.5h10M3 8h10M3 11.5h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><circle cx="12.5" cy="11.5" r="2" fill="currentColor" opacity=".2" stroke="currentColor" strokeWidth="1.3"/><path d="M11.5 11.5h2M12.5 10.5v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
       )},
       { href: '/expenses', label: 'Expenses', icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4.5L6 9l3-3 5 5.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/><path d="M11 10.5h3v-3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4.5L5.5 8l3-2.5 5 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M10.5 11h3v-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M2 14.5h12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity=".35"/></svg>
       )},
       { href: '/inventory', label: 'Inventory', icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/><path d="M5 8h6M5 5.5h6M5 10.5h3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><circle cx="12" cy="10.5" r="1" fill="currentColor" opacity=".6"/></svg>
       )},
       { href: '/suppliers', label: 'Suppliers', proOnly: true, icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="5" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/><path d="M11 8h1.5l1.5 3v2H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="4" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3"/><circle cx="12" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M4 5V3.5h6V5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
@@ -68,7 +68,7 @@ const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
     label: 'Insights',
     items: [
       { href: '/reports', label: 'Reports', ownerOnly: true, icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13V9M6 13V6M9 13V8M12 13V4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13V9M6 13V6M9 13V8M12 13V4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/><path d="M1.5 13.5h13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity=".4"/></svg>
       )},
       { href: '/analytics', label: 'Analytics', proOnly: true, ownerOnly: true, icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 10l3.5-3.5 2.5 2.5L12 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="12.5" cy="3.5" r="1.5" fill="currentColor" opacity=".7"/><path d="M2 14h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" opacity=".4"/></svg>
@@ -135,7 +135,9 @@ function NavItem({
         isActive ? 'nav-active' : locked ? 'text-ink-4 hover:text-ink-3 hover:bg-surface/70' : 'text-ink-3 hover:text-ink hover:bg-surface/80'
       }`}
     >
-      <span className="shrink-0">{icon}</span>
+      <span className={`shrink-0 w-[22px] h-[22px] flex items-center justify-center rounded-[5px] transition-colors ${
+        isActive ? 'bg-accent/12' : ''
+      }`}>{icon}</span>
       {label}
       {locked && (
         <span className="ml-auto shrink-0 text-[10px] text-ink-4 opacity-60">
