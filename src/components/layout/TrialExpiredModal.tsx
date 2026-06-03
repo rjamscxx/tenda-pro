@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { downgradeTofree } from '@/app/(dashboard)/settings/actions'
 
 interface Props {
@@ -21,6 +22,9 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
   // 'choose' | 'form' | 'sent'
   const [screen, setScreen] = useState<'choose' | 'form' | 'sent'>('choose')
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly')
+  const [qrOpen, setQrOpen] = useState<{ name: string; src: string } | null>(null)
+  const portalRef = useRef<Element | null>(null)
+  useEffect(() => { portalRef.current = document.body }, [])
 
   // Form fields
   const [fullName, setFullName] = useState(userFullName)
@@ -165,24 +169,23 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
               <p className="text-sm text-ink-4 pl-6">Pay via any option below, then fill out the form with your receipt.</p>
             </div>
 
-            {/* QR codes — tap opens full-screen in new tab for scanning */}
+            {/* QR codes — tap to zoom in */}
             <div className="space-y-1.5">
-              <p className="text-[11px] text-ink-4 text-center">Tap a QR to open full-screen for scanning</p>
+              <p className="text-[11px] text-ink-4 text-center">Tap a QR to zoom in for scanning</p>
               <div className="flex gap-3">
                 {QR_CODES.map(({ name, src }) => (
-                  <a
+                  <button
                     key={name}
-                    href={src}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 flex flex-col items-center gap-1.5 group"
+                    type="button"
+                    onClick={() => setQrOpen({ name, src })}
+                    className="flex-1 flex flex-col items-center gap-1.5 group active:scale-95 transition-transform"
                   >
-                    <div className="w-full bg-white rounded-xl border border-hair overflow-hidden p-1.5 group-hover:ring-2 group-hover:ring-accent/50 group-active:scale-95 transition-all">
+                    <div className="w-full bg-white rounded-xl border-2 border-transparent group-hover:border-accent/50 group-active:border-accent overflow-hidden p-1.5 transition-all shadow-sm">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={src} alt={`${name} QR code`} className="w-full aspect-square object-contain" />
                     </div>
                     <span className="text-xs font-semibold text-ink-3 group-hover:text-accent transition-colors">{name}</span>
-                  </a>
+                  </button>
                 ))}
               </div>
             </div>
@@ -281,6 +284,38 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
 
       </div>
     </div>
+
+    {/* QR zoom lightbox — portalled to document.body to escape all stacking contexts */}
+    {qrOpen && portalRef.current && createPortal(
+      <div
+        className="fixed inset-0 flex items-center justify-center p-6"
+        style={{ zIndex: 99999, background: 'rgba(0,0,0,0.88)' }}
+        onClick={() => setQrOpen(null)}
+      >
+        <div
+          className="relative bg-white rounded-2xl p-4 shadow-2xl w-full"
+          style={{ maxWidth: 340 }}
+          onClick={e => e.stopPropagation()}
+        >
+          {/* X button */}
+          <button
+            type="button"
+            onClick={() => setQrOpen(null)}
+            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 active:bg-gray-300 flex items-center justify-center transition-colors"
+            aria-label="Close"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 2l10 10M12 2L2 12" stroke="#374151" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
+          <p className="text-center text-sm font-semibold text-gray-700 mb-3">{qrOpen.name}</p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={qrOpen.src} alt={`${qrOpen.name} QR code`} className="w-full aspect-square object-contain rounded-xl" />
+          <p className="text-center text-xs text-gray-400 mt-3">Tap outside or press × to go back</p>
+        </div>
+      </div>,
+      portalRef.current
+    )}
     </>
   )
 }
