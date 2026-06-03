@@ -13,6 +13,7 @@ interface NavItemDef {
   proOnly?: boolean
   premiumOnly?: boolean
   ownerOnly?: boolean // hidden from staff (reveals financials)
+  adminOnly?: boolean // hidden from all non-admin accounts
 }
 
 const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
@@ -61,6 +62,14 @@ const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
       )},
       { href: '/payroll', label: 'Payroll', proOnly: true, icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="5" width="13" height="8.5" rx="1.5" stroke="currentColor" strokeWidth="1.5"/><path d="M5 5V3.5h6V5M8 8.5v.5m0 1.5v.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><circle cx="8" cy="9.75" r="1.5" stroke="currentColor" strokeWidth="1.3"/></svg>
+      )},
+    ],
+  },
+  {
+    label: 'Admin',
+    items: [
+      { href: '/members', label: 'Members', adminOnly: true, icon: (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.4"/><path d="M1 14c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M11.5 6.5a2 2 0 100-4M13.5 13c0-1.93-1.12-3.6-2.75-4.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
       )},
     ],
   },
@@ -174,11 +183,12 @@ interface SidebarProps {
   role?: string
   isPro?: boolean
   isPremium?: boolean
+  isAdmin?: boolean
   onClose?: () => void
   pendingSubRequests?: number
 }
 
-export default function Sidebar({ venueName, venues, activeVenueId, fullName, role, isPro, isPremium, onClose, pendingSubRequests }: SidebarProps) {
+export default function Sidebar({ venueName, venues, activeVenueId, fullName, role, isPro, isPremium, isAdmin, onClose, pendingSubRequests }: SidebarProps) {
   const router = useRouter()
 
   async function handleSignOut() {
@@ -227,7 +237,10 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
       {/* Main nav — staff role doesn't see ownerOnly items (Reports, Analytics) */}
       <nav className="relative z-10 flex-1 py-3 px-2 space-y-4 overflow-y-auto">
         {NAV_SECTIONS.map(section => {
-          const visible = section.items.filter(it => !(it.ownerOnly && role !== 'owner'))
+          const visible = section.items.filter(it =>
+            !(it.ownerOnly && role !== 'owner') &&
+            !(it.adminOnly && !isAdmin)
+          )
           if (!visible.length) return null
           return (
             <div key={section.label}>

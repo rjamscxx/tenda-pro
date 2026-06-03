@@ -7,7 +7,7 @@ import SizzleLogo from '@/components/ui/SizzleLogo'
 
 interface MobileNavVenue { id: string; name: string }
 
-export default function MobileNav({ venueName, venues, activeVenueId, fullName, role, isPro, isPremium, pendingSubRequests }: { venueName: string; venues?: MobileNavVenue[]; activeVenueId?: string; fullName?: string; role?: string; isPro?: boolean; isPremium?: boolean; pendingSubRequests?: number }) {
+export default function MobileNav({ venueName, venues, activeVenueId, fullName, role, isPro, isPremium, isAdmin, pendingSubRequests }: { venueName: string; venues?: MobileNavVenue[]; activeVenueId?: string; fullName?: string; role?: string; isPro?: boolean; isPremium?: boolean; isAdmin?: boolean; pendingSubRequests?: number }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
@@ -45,12 +45,12 @@ export default function MobileNav({ venueName, venues, activeVenueId, fullName, 
         transition-transform duration-200 ease-out
         ${open ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <Sidebar venueName={venueName} venues={venues} activeVenueId={activeVenueId} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} onClose={() => setOpen(false)} pendingSubRequests={pendingSubRequests} />
+        <Sidebar venueName={venueName} venues={venues} activeVenueId={activeVenueId} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} isAdmin={isAdmin} onClose={() => setOpen(false)} pendingSubRequests={pendingSubRequests} />
       </div>
 
       {/* Desktop sidebar — always visible */}
       <div className="hidden lg:block h-full shrink-0">
-        <Sidebar venueName={venueName} venues={venues} activeVenueId={activeVenueId} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} pendingSubRequests={pendingSubRequests} />
+        <Sidebar venueName={venueName} venues={venues} activeVenueId={activeVenueId} fullName={fullName} role={role} isPro={isPro} isPremium={isPremium} isAdmin={isAdmin} pendingSubRequests={pendingSubRequests} />
       </div>
     </>
   )
