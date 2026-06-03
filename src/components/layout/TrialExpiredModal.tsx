@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { createPortal } from 'react-dom'
 import { downgradeTofree } from '@/app/(dashboard)/settings/actions'
 
 interface Props {
@@ -87,18 +88,20 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
 
   return (
     <>
-    {/* QR lightbox */}
-    {lightboxSrc && (
+    {/* QR lightbox — portalled to body so backdrop-filter stacking contexts can't trap it */}
+    {lightboxSrc && createPortal(
       <div
-        className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+        className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 p-6"
         onClick={() => setLightboxSrc(null)}
+        style={{ backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
       >
-        <div className="bg-white rounded-2xl p-3 max-w-xs w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="bg-white rounded-2xl p-3 w-full shadow-2xl" style={{ maxWidth: 320 }} onClick={e => e.stopPropagation()}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={lightboxSrc} alt="QR code" className="w-full aspect-square object-contain rounded-lg" />
-          <p className="text-center text-xs text-gray-500 mt-2">Tap outside to close</p>
+          <p className="text-center text-xs mt-2" style={{ color: '#6b7280' }}>Tap outside to close</p>
         </div>
-      </div>
+      </div>,
+      document.body
     )}
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
       <div className="glass rounded-2xl w-full max-w-lg my-auto p-8 space-y-6 shadow-2xl border border-hair">
