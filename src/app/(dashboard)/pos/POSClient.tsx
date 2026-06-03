@@ -174,14 +174,14 @@ export default function POSClient({
           #sizzle-receipt-print * { visibility: visible !important; }
           #sizzle-receipt-print {
             position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
+            inset: 0 !important;
             background: #fff !important;
             color: #000 !important;
-            padding: 28px !important;
-            max-width: 380px !important;
+            padding: 32px 28px !important;
+            max-width: 400px !important;
             margin: 0 auto !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
           }
         }
       `}</style>
@@ -606,72 +606,81 @@ export default function POSClient({
       >
         {receipt && (
           <>
-            <div id="sizzle-receipt-print" className="space-y-3">
-
-              <div className="text-center pb-3 border-b border-hair">
-                <p className="text-base font-bold text-ink">{venueName}</p>
-                <p className="text-[11px] text-ink-4 mt-0.5 uppercase tracking-wider">Official Receipt</p>
+            {/* Receipt — white card, solid black text, clean paper style */}
+            <div
+              id="sizzle-receipt-print"
+              className="rounded-xl overflow-hidden"
+              style={{ background: '#fff', color: '#111', fontFamily: 'inherit' }}
+            >
+              {/* Header */}
+              <div className="px-5 pt-5 pb-4 text-center" style={{ borderBottom: '1px dashed #d1d5db' }}>
+                <p className="text-lg font-bold tracking-tight" style={{ color: '#111' }}>{venueName}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mt-0.5" style={{ color: '#6b7280' }}>Official Receipt</p>
               </div>
 
+              {/* Order-for chip */}
               {receipt.customerName && (
-                <div className="rounded-lg bg-accent/10 border border-accent/30 px-3 py-2 text-center">
-                  <p className="text-[10px] uppercase tracking-widest text-accent/80 font-semibold">Order for</p>
-                  <p className="text-xl font-extrabold text-ink mt-0.5 leading-tight">{receipt.customerName}</p>
+                <div className="mx-5 mt-4 rounded-lg px-3 py-2 text-center" style={{ background: '#f3f4f6' }}>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.15em]" style={{ color: '#9ca3af' }}>Order for</p>
+                  <p className="text-xl font-extrabold leading-tight mt-0.5" style={{ color: '#111' }}>{receipt.customerName}</p>
                 </div>
               )}
 
-              <div className="flex items-center justify-between text-xs text-ink-3">
-                <span className="font-mono font-semibold text-ink-2">{receipt.receiptNumber}</span>
-                <span className="tabular">
-                  {receipt.soldAt.toLocaleString('en-PH', {
-                    timeZone: 'Asia/Manila', month: 'short', day: 'numeric',
-                    year: 'numeric', hour: '2-digit', minute: '2-digit',
-                  })}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-xs flex-wrap">
-                <span className="text-ink-3">Channel:</span>
-                <span className={`px-2 py-0.5 rounded-md font-medium ${CHANNEL_BADGE[receipt.channel] ?? 'bg-surface-3 text-ink-3'}`}>
-                  {CHANNELS.find(c => c.value === receipt.channel)?.label}
-                </span>
-                {receipt.tableNum && (
-                  <span className="px-2 py-0.5 rounded-md font-semibold bg-surface-2 text-ink-2">
-                    Table: {receipt.tableNum}
+              {/* Meta row */}
+              <div className="px-5 pt-4 pb-3 space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-mono font-bold" style={{ color: '#374151' }}>{receipt.receiptNumber}</span>
+                  <span className="tabular" style={{ color: '#6b7280' }}>
+                    {receipt.soldAt.toLocaleString('en-PH', {
+                      timeZone: 'Asia/Manila', month: 'short', day: 'numeric',
+                      year: 'numeric', hour: '2-digit', minute: '2-digit',
+                    })}
                   </span>
-                )}
-                {receipt.note && <span className="text-ink-4">· {receipt.note}</span>}
+                </div>
+                <div className="flex items-center gap-2 text-xs flex-wrap">
+                  <span style={{ color: '#9ca3af' }}>Channel:</span>
+                  <span className="font-semibold" style={{ color: '#374151' }}>
+                    {CHANNELS.find(c => c.value === receipt.channel)?.label}
+                  </span>
+                  {receipt.tableNum && (
+                    <span className="font-semibold" style={{ color: '#374151' }}>· Table {receipt.tableNum}</span>
+                  )}
+                  {receipt.note && <span style={{ color: '#9ca3af' }}>· {receipt.note}</span>}
+                </div>
               </div>
 
-              <div className="border-t border-dashed border-hair pt-3 space-y-2">
+              {/* Items */}
+              <div className="px-5 py-3 space-y-2" style={{ borderTop: '1px dashed #d1d5db' }}>
                 {receipt.items.map(item => (
-                  <div key={item.dishId} className="flex items-center gap-2 text-sm">
-                    <span className="flex-1 text-ink truncate">{item.dishName}</span>
-                    <span className="text-ink-4 tabular shrink-0">×{item.qty}</span>
-                    <span className="text-ink tabular font-medium w-20 text-right shrink-0">
+                  <div key={item.dishId} className="flex items-start gap-2 text-sm">
+                    <span className="flex-1 leading-snug" style={{ color: '#111' }}>{item.dishName}</span>
+                    <span className="tabular shrink-0 text-xs mt-0.5" style={{ color: '#9ca3af' }}>×{item.qty}</span>
+                    <span className="tabular font-semibold w-20 text-right shrink-0" style={{ color: '#111' }}>
                       {formatCurrency(item.qty * item.unitPrice)}
                     </span>
                   </div>
                 ))}
               </div>
 
+              {/* Totals */}
               {receipt.vatRegistered ? (
-                <div className="border-t border-hair pt-3 space-y-1.5">
+                <div className="px-5 py-3 space-y-1.5" style={{ borderTop: '1px dashed #d1d5db' }}>
                   {(receipt.discount > 0 || receipt.serviceCharge > 0) && (
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-xs text-ink-4">Subtotal</span>
-                      <span className="text-sm tabular text-ink-3">{formatCurrency(receipt.subtotal)}</span>
+                    <div className="flex items-baseline justify-between text-sm">
+                      <span style={{ color: '#6b7280' }}>Subtotal</span>
+                      <span className="tabular" style={{ color: '#374151' }}>{formatCurrency(receipt.subtotal)}</span>
                     </div>
                   )}
                   {receipt.discount > 0 && (
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-xs text-danger">Discount</span>
-                      <span className="text-sm tabular text-danger">−{formatCurrency(receipt.discount)}</span>
+                    <div className="flex items-baseline justify-between text-sm">
+                      <span style={{ color: '#dc2626' }}>Discount</span>
+                      <span className="tabular" style={{ color: '#dc2626' }}>−{formatCurrency(receipt.discount)}</span>
                     </div>
                   )}
                   {receipt.serviceCharge > 0 && (
-                    <div className="flex items-baseline justify-between">
-                      <span className="text-xs text-accent">Service Charge</span>
-                      <span className="text-sm tabular text-accent">+{formatCurrency(receipt.serviceCharge)}</span>
+                    <div className="flex items-baseline justify-between text-sm">
+                      <span style={{ color: '#374151' }}>Service Charge</span>
+                      <span className="tabular" style={{ color: '#374151' }}>+{formatCurrency(receipt.serviceCharge)}</span>
                     </div>
                   )}
                   {(() => {
@@ -679,58 +688,58 @@ export default function POSClient({
                     const vatAmt = receipt.total - vatNet
                     return (
                       <>
-                        <div className="flex items-baseline justify-between">
-                          <span className="text-xs text-ink-4">Net Amount (excl. VAT)</span>
-                          <span className="text-sm tabular text-ink-3">{formatCurrency(vatNet)}</span>
+                        <div className="flex items-baseline justify-between text-xs" style={{ color: '#9ca3af' }}>
+                          <span>Net Amount (excl. VAT)</span>
+                          <span className="tabular">{formatCurrency(vatNet)}</span>
                         </div>
-                        <div className="flex items-baseline justify-between">
-                          <span className="text-xs text-ink-4">VAT (12%)</span>
-                          <span className="text-sm tabular text-ink-3">{formatCurrency(vatAmt)}</span>
+                        <div className="flex items-baseline justify-between text-xs" style={{ color: '#9ca3af' }}>
+                          <span>VAT (12%)</span>
+                          <span className="tabular">{formatCurrency(vatAmt)}</span>
                         </div>
-                        <div className="border-t border-dashed border-hair pt-1.5 flex items-baseline justify-between">
-                          <span className="text-xs font-semibold text-ink-3 uppercase tracking-wider">Total (VAT incl.)</span>
-                          <span className="text-2xl font-bold tabular text-accent">{formatCurrency(receipt.total)}</span>
+                        <div className="flex items-baseline justify-between pt-2 mt-1" style={{ borderTop: '2px solid #111' }}>
+                          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: '#111' }}>Total (VAT incl.)</span>
+                          <span className="text-2xl font-black tabular" style={{ color: '#111' }}>{formatCurrency(receipt.total)}</span>
                         </div>
                       </>
                     )
                   })()}
                 </div>
               ) : (
-                <div className="border-t border-hair pt-3 space-y-1.5">
+                <div className="px-5 py-3 space-y-1.5" style={{ borderTop: '1px dashed #d1d5db' }}>
                   {(receipt.discount > 0 || receipt.serviceCharge > 0) && (
                     <>
-                      <div className="flex items-baseline justify-between">
-                        <span className="text-xs text-ink-4">Subtotal</span>
-                        <span className="text-sm tabular text-ink-3">{formatCurrency(receipt.subtotal)}</span>
+                      <div className="flex items-baseline justify-between text-sm">
+                        <span style={{ color: '#6b7280' }}>Subtotal</span>
+                        <span className="tabular" style={{ color: '#374151' }}>{formatCurrency(receipt.subtotal)}</span>
                       </div>
                       {receipt.discount > 0 && (
-                        <div className="flex items-baseline justify-between">
-                          <span className="text-xs text-danger">Discount</span>
-                          <span className="text-sm tabular text-danger">−{formatCurrency(receipt.discount)}</span>
+                        <div className="flex items-baseline justify-between text-sm">
+                          <span style={{ color: '#dc2626' }}>Discount</span>
+                          <span className="tabular" style={{ color: '#dc2626' }}>−{formatCurrency(receipt.discount)}</span>
                         </div>
                       )}
                       {receipt.serviceCharge > 0 && (
-                        <div className="flex items-baseline justify-between">
-                          <span className="text-xs text-accent">Service Charge</span>
-                          <span className="text-sm tabular text-accent">+{formatCurrency(receipt.serviceCharge)}</span>
+                        <div className="flex items-baseline justify-between text-sm">
+                          <span style={{ color: '#374151' }}>Service Charge</span>
+                          <span className="tabular" style={{ color: '#374151' }}>+{formatCurrency(receipt.serviceCharge)}</span>
                         </div>
                       )}
-                      <div className="border-t border-dashed border-hair pt-1.5" />
                     </>
                   )}
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-xs font-semibold text-ink-3 uppercase tracking-wider">Total</span>
-                    <span className="text-2xl font-bold tabular text-accent">{formatCurrency(receipt.total)}</span>
+                  <div className="flex items-baseline justify-between pt-2 mt-1" style={{ borderTop: '2px solid #111' }}>
+                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: '#111' }}>Total</span>
+                    <span className="text-2xl font-black tabular" style={{ color: '#111' }}>{formatCurrency(receipt.total)}</span>
                   </div>
                 </div>
               )}
 
-              <p className="text-center text-[10px] text-ink-4 pt-1 border-t border-dashed border-hair">
-                Thank you for your order!
-              </p>
-              {receipt.vatRegistered && (
-                <p className="text-center text-[9px] text-ink-4">VAT Reg. · Prices VAT-inclusive</p>
-              )}
+              {/* Footer */}
+              <div className="px-5 pb-5 pt-3 text-center" style={{ borderTop: '1px dashed #d1d5db' }}>
+                <p className="text-[10px] font-semibold" style={{ color: '#9ca3af' }}>Thank you for your order!</p>
+                {receipt.vatRegistered && (
+                  <p className="text-[9px] mt-0.5" style={{ color: '#d1d5db' }}>VAT Registered · Prices are VAT-inclusive</p>
+                )}
+              </div>
             </div>
 
             {/* Kitchen margin summary — owner-facing, hidden from print */}
