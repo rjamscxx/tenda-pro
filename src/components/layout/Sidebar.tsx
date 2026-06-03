@@ -235,7 +235,7 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
       </div>
 
       {/* Main nav — staff role doesn't see ownerOnly items (Reports, Analytics) */}
-      <nav className="relative z-10 flex-1 py-3 px-2 space-y-4 overflow-y-auto">
+      <nav className="relative z-10 flex-1 py-3 px-2 space-y-4 overflow-y-auto scrollbar-thin">
         {NAV_SECTIONS.map(section => {
           const visible = section.items.filter(it =>
             !(it.ownerOnly && role !== 'owner') &&
