@@ -55,6 +55,10 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
     title: 'Sizzle',
   },
+  icons: {
+    icon: '/api/pwa-icon?size=192',
+    apple: [{ url: '/api/pwa-icon?size=180', sizes: '180x180', type: 'image/png' }],
+  },
   formatDetection: { telephone: false },
 }
 

@@ -80,6 +80,7 @@ export default function POSClient({
   const [loading, setLoading]   = useState(false)
   const [error, setError]       = useState('')
   const [receipt, setReceipt]   = useState<ReceiptData | null>(null)
+  const [mobileCartOpen, setMobileCartOpen] = useState(false)
 
   const [discountType, setDiscountType] = useState<'%' | '₱'>('%')
   const [discountVal, setDiscountVal]   = useState('')
@@ -336,11 +337,20 @@ export default function POSClient({
           </div>
         </div>
 
-        {/* Right: Cart */}
-        <div className="w-72 xl:w-80 flex flex-col border-l border-hair bg-surface shrink-0">
+        {/* Right: Cart — always visible md+, full-screen overlay on mobile */}
+        <div className={`flex flex-col border-l border-hair bg-surface shrink-0 md:w-72 xl:w-80 ${mobileCartOpen ? 'fixed inset-0 z-50 bg-canvas w-full border-l-0' : 'hidden md:flex'}`}>
 
           <div className="px-4 py-3 border-b border-hair shrink-0 flex items-center justify-between">
-            <p className="text-xs font-semibold text-ink-3 uppercase tracking-wider">Order</p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setMobileCartOpen(false)}
+                className="md:hidden p-1 -ml-1 text-ink-4 hover:text-ink transition-colors"
+                aria-label="Back to menu"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+              <p className="text-xs font-semibold text-ink-3 uppercase tracking-wider">Order</p>
+            </div>
             {order.length > 0 && (
               <button
                 onClick={() => setOrder([])}
@@ -567,6 +577,20 @@ export default function POSClient({
           </div>
         </div>
       </div>
+
+      {/* ── Mobile floating "View Order" bar ─────────────────────────────────── */}
+      {order.length > 0 && !mobileCartOpen && (
+        <div className="md:hidden fixed bottom-0 inset-x-0 z-40 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-canvas/90 backdrop-blur-xl border-t border-hair">
+          <button
+            onClick={() => setMobileCartOpen(true)}
+            className="w-full py-3 btn-primary rounded-xl text-sm font-semibold flex items-center justify-between px-5"
+          >
+            <span className="tabular">{order.reduce((s, i) => s + i.qty, 0)} item{order.reduce((s, i) => s + i.qty, 0) !== 1 ? 's' : ''}</span>
+            <span>View Order</span>
+            <span className="tabular">{formatCurrency(total)}</span>
+          </button>
+        </div>
+      )}
 
       {/* ── Receipt Modal ───────────────────────────────────────────────────── */}
       <Modal

@@ -165,12 +165,12 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
             </div>
 
             {/* QR codes */}
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               {QR_CODES.map(({ name, src }) => (
-                <div key={name} className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full bg-white rounded-lg border border-hair overflow-hidden">
+                <div key={name} className="flex-1 flex flex-col items-center gap-1.5">
+                  <div className="w-full bg-white rounded-xl border border-hair overflow-hidden p-1.5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt={`${name} QR code`} className="w-full h-40 object-contain" />
+                    <img src={src} alt={`${name} QR code`} className="w-full aspect-square object-contain" />
                   </div>
                   <span className="text-xs font-semibold text-ink-3">{name}</span>
                 </div>
