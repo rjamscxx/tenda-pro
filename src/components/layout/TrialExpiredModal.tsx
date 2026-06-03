@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { createPortal } from 'react-dom'
 import { downgradeTofree } from '@/app/(dashboard)/settings/actions'
 
 interface Props {
@@ -21,7 +20,6 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
 
   // 'choose' | 'form' | 'sent'
   const [screen, setScreen] = useState<'choose' | 'form' | 'sent'>('choose')
-  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly')
 
   // Form fields
@@ -88,21 +86,6 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
 
   return (
     <>
-    {/* QR lightbox — portalled to body so backdrop-filter stacking contexts can't trap it */}
-    {lightboxSrc && createPortal(
-      <div
-        className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 p-6"
-        onClick={() => setLightboxSrc(null)}
-        style={{ backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
-      >
-        <div className="bg-white rounded-2xl p-3 w-full shadow-2xl" style={{ maxWidth: 320 }} onClick={e => e.stopPropagation()}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={lightboxSrc} alt="QR code" className="w-full aspect-square object-contain rounded-lg" />
-          <p className="text-center text-xs mt-2" style={{ color: '#6b7280' }}>Tap outside to close</p>
-        </div>
-      </div>,
-      document.body
-    )}
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
       <div className="glass rounded-2xl w-full max-w-lg my-auto p-8 space-y-6 shadow-2xl border border-hair">
 
@@ -182,23 +165,24 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
               <p className="text-sm text-ink-4 pl-6">Pay via any option below, then fill out the form with your receipt.</p>
             </div>
 
-            {/* QR codes — tap to enlarge */}
+            {/* QR codes — tap opens full-screen in new tab for scanning */}
             <div className="space-y-1.5">
-              <p className="text-[11px] text-ink-4 text-center">Tap a QR to enlarge for scanning</p>
+              <p className="text-[11px] text-ink-4 text-center">Tap a QR to open full-screen for scanning</p>
               <div className="flex gap-3">
                 {QR_CODES.map(({ name, src }) => (
-                  <button
+                  <a
                     key={name}
-                    type="button"
-                    onClick={() => setLightboxSrc(src)}
+                    href={src}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex-1 flex flex-col items-center gap-1.5 group"
                   >
-                    <div className="w-full bg-white rounded-xl border border-hair overflow-hidden p-1.5 group-hover:ring-2 group-hover:ring-accent/50 transition-all">
+                    <div className="w-full bg-white rounded-xl border border-hair overflow-hidden p-1.5 group-hover:ring-2 group-hover:ring-accent/50 group-active:scale-95 transition-all">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={src} alt={`${name} QR code`} className="w-full aspect-square object-contain" />
                     </div>
                     <span className="text-xs font-semibold text-ink-3 group-hover:text-accent transition-colors">{name}</span>
-                  </button>
+                  </a>
                 ))}
               </div>
             </div>
