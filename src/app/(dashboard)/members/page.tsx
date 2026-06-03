@@ -4,7 +4,6 @@ import { isAdmin as checkIsAdmin } from '@/lib/admin'
 import { db } from '@/lib/db'
 import { accounts, users, venues } from '@/lib/db/schema'
 import { eq, desc } from 'drizzle-orm'
-import { formatCurrency } from '@/lib/utils'
 
 export const metadata = { title: 'Members — Sizzle' }
 

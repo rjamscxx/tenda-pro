@@ -399,7 +399,6 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
         </div>
         <div className="p-5">
         <div className="overflow-x-auto">
-        <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-hair">
