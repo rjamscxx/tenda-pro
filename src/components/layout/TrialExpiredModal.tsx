@@ -20,6 +20,7 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
 
   // 'choose' | 'form' | 'sent'
   const [screen, setScreen] = useState<'choose' | 'form' | 'sent'>('choose')
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly')
 
   // Form fields
@@ -85,6 +86,20 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
   }
 
   return (
+    <>
+    {/* QR lightbox */}
+    {lightboxSrc && (
+      <div
+        className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+        onClick={() => setLightboxSrc(null)}
+      >
+        <div className="bg-white rounded-2xl p-3 max-w-xs w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={lightboxSrc} alt="QR code" className="w-full aspect-square object-contain rounded-lg" />
+          <p className="text-center text-xs text-gray-500 mt-2">Tap outside to close</p>
+        </div>
+      </div>
+    )}
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto">
       <div className="glass rounded-2xl w-full max-w-lg my-auto p-8 space-y-6 shadow-2xl border border-hair">
 
@@ -164,17 +179,25 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
               <p className="text-sm text-ink-4 pl-6">Pay via any option below, then fill out the form with your receipt.</p>
             </div>
 
-            {/* QR codes */}
-            <div className="flex gap-3">
-              {QR_CODES.map(({ name, src }) => (
-                <div key={name} className="flex-1 flex flex-col items-center gap-1.5">
-                  <div className="w-full bg-white rounded-xl border border-hair overflow-hidden p-1.5">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt={`${name} QR code`} className="w-full aspect-square object-contain" />
-                  </div>
-                  <span className="text-xs font-semibold text-ink-3">{name}</span>
-                </div>
-              ))}
+            {/* QR codes — tap to enlarge */}
+            <div className="space-y-1.5">
+              <p className="text-[11px] text-ink-4 text-center">Tap a QR to enlarge for scanning</p>
+              <div className="flex gap-3">
+                {QR_CODES.map(({ name, src }) => (
+                  <button
+                    key={name}
+                    type="button"
+                    onClick={() => setLightboxSrc(src)}
+                    className="flex-1 flex flex-col items-center gap-1.5 group"
+                  >
+                    <div className="w-full bg-white rounded-xl border border-hair overflow-hidden p-1.5 group-hover:ring-2 group-hover:ring-accent/50 transition-all">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={src} alt={`${name} QR code`} className="w-full aspect-square object-contain" />
+                    </div>
+                    <span className="text-xs font-semibold text-ink-3 group-hover:text-accent transition-colors">{name}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Form fields */}
@@ -271,5 +294,6 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
 
       </div>
     </div>
+    </>
   )
 }

@@ -33,7 +33,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <ToastProvider>
       <div className="flex h-full">
-        <MobileNav venueName={venue.name} venues={venueList} activeVenueId={venue.id} fullName={dbUser.fullName ?? ''} role={dbUser.role} isPro={pro} isPremium={premium} pendingSubRequests={pendingSubRequests} />
+        <MobileNav venueName={venue.name} venues={venueList} activeVenueId={venue.id} fullName={dbUser.fullName ?? ''} role={dbUser.role} isPro={pro} isPremium={premium} isAdmin={isAdmin(authUser)} pendingSubRequests={pendingSubRequests} />
         <main className="flex-1 flex flex-col min-w-0 overflow-y-auto dashboard-bg">
           <div className="lg:hidden h-12 w-full shrink-0" />
           {trialActive && daysLeft !== null && <TrialBanner daysLeft={daysLeft} />}
