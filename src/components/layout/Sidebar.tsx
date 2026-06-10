@@ -31,6 +31,12 @@ const NAV_SECTIONS: { label: string; items: NavItemDef[] }[] = [
       { href: '/pos', label: 'POS', icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="4.5" width="14" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M5 4.5V3h6v1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 8.5h8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M4 11h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><rect x="9.5" y="9.75" width="3" height="2.5" rx="0.75" fill="currentColor" opacity=".7"/></svg>
       )},
+      { href: '/kds', label: 'Kitchen', proOnly: true, icon: (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 6c0-2 1.5-3.5 3.5-3.5S10 4 10 6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M3 5.5h7v1.5H3z" fill="currentColor" opacity=".25"/><rect x="2" y="7" width="9" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M2 10h9" stroke="currentColor" strokeWidth="1.2" opacity=".5"/><path d="M12 4l2 1v9l-2 1z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/></svg>
+      )},
+      { href: '/checklists', label: 'Checklists', icon: (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.4"/><path d="M5 6l1.5 1.5L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M5 10h6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M5 12.5h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity=".55"/></svg>
+      )},
       { href: '/sales', label: 'Sales', icon: (
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 11.5L5.5 7.5l3 2.5 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M11 4h3v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M2 14.5h12" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity=".35"/></svg>
       )},

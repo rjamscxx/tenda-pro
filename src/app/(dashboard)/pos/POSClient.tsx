@@ -143,6 +143,10 @@ export default function POSClient({
       note,
       items: order,
       customerName: customerName.trim() || undefined,
+      // Dine-in & takeout flow through the kitchen; delivery/other skip it
+      // because those usually arrive via aggregator apps that confirm prep
+      // elsewhere. Owner can still bump them from the Sales page later.
+      sendToKitchen: channel === 'dine_in' || channel === 'takeout',
     })
     if (result?.error) { setError(result.error); setLoading(false); return }
     const receiptData: ReceiptData = {

@@ -15,6 +15,8 @@ export const wasteReasonEnum = pgEnum('waste_reason', ['spoilage', 'overcooked',
 export const payTypeEnum = pgEnum('pay_type', ['daily', 'monthly', 'hourly'])
 export const shiftTypeEnum   = pgEnum('shift_type',   ['opening', 'mid', 'closing', 'full', 'custom'])
 export const shiftStatusEnum = pgEnum('shift_status', ['present', 'late', 'absent', 'leave'])
+export const kitchenStatusEnum  = pgEnum('kitchen_status', ['new', 'preparing', 'ready', 'served'])
+export const checklistKindEnum  = pgEnum('checklist_kind', ['opening', 'closing'])
 
 // ── Accounts ──────────────────────────────────────────────────────────────────
 
@@ -60,7 +62,7 @@ export const venues = pgTable('venues', {
   vatRegistered:         boolean('vat_registered').notNull().default(false),
   dailyRevenueTarget:    integer('daily_revenue_target').notNull().default(0),   // cents; 0 = derive from monthly
   foodCostTarget:        integer('food_cost_target').notNull().default(35),      // %; "good" threshold
-  menuTheme:             text('menu_theme').notNull().default('sage-dark'),       // theme applied to /m/[venueId] public menu
+  menuTheme:             text('menu_theme').notNull().default('ember'),           // theme applied to /m/[venueId] public menu
   createdAt:             timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt:             timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index('venues_account_idx').on(t.accountId)])
@@ -136,6 +138,12 @@ export const sales = pgTable('sales', {
   note:         text('note'),
   customerName: text('customer_name'),                  // shown on receipts so staff can call out the customer
   isPaid:       boolean('is_paid').notNull().default(true), // false = open tab / utang / pending GCash
+  // Kitchen Display System fields. Default 'served' so manual/historical sales
+  // don't appear on /kds; POS marks new orders 'new' when sendToKitchen=true.
+  kitchenStatus:    kitchenStatusEnum('kitchen_status').notNull().default('served'),
+  kitchenStartedAt: timestamp('kitchen_started_at', { withTimezone: true }),
+  kitchenReadyAt:   timestamp('kitchen_ready_at',   { withTimezone: true }),
+  kitchenServedAt:  timestamp('kitchen_served_at',  { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
   index('sales_venue_idx').on(t.venueId),
@@ -143,6 +151,9 @@ export const sales = pgTable('sales', {
   index('sales_venue_date_idx').on(t.venueId, t.soldAt),
   // Partial index — open tabs / utang / pending GCash are the minority of rows.
   index('sales_venue_unpaid_idx').on(t.venueId).where(sql`${t.isPaid} = false`),
+  // Partial index for KDS — active kitchen orders are a tiny minority.
+  index('sales_venue_kitchen_active_idx').on(t.venueId)
+    .where(sql`${t.kitchenStatus} <> 'served'`),
 ])
 
 // ── Sale Items ────────────────────────────────────────────────────────────────
@@ -288,6 +299,62 @@ export const wasteLogs = pgTable('waste_logs', {
   index('waste_logs_date_idx').on(t.wastedAt),
 ])
 
+// ── Checklist Templates ───────────────────────────────────────────────────────
+// Two templates per venue (opening + closing) editable in /checklists. A
+// single template per (venue, kind) is the v1 contract — enforced by unique
+// constraint. Item labels live on `checklist_items`.
+
+export const checklistTemplates = pgTable('checklist_templates', {
+  id:         uuid('id').primaryKey().defaultRandom(),
+  venueId:    uuid('venue_id').notNull().references(() => venues.id, { onDelete: 'cascade' }),
+  kind:       checklistKindEnum('kind').notNull(),
+  name:       text('name').notNull(), // e.g. "Opening checklist"
+  createdAt:  timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt:  timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('checklist_templates_venue_idx').on(t.venueId),
+  unique('checklist_templates_one_per_kind').on(t.venueId, t.kind),
+])
+
+export const checklistItems = pgTable('checklist_items', {
+  id:         uuid('id').primaryKey().defaultRandom(),
+  templateId: uuid('template_id').notNull().references(() => checklistTemplates.id, { onDelete: 'cascade' }),
+  position:   integer('position').notNull().default(0),
+  label:      text('label').notNull(),
+  createdAt:  timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('checklist_items_template_idx').on(t.templateId),
+])
+
+// One run per (venue, kind, runDate) — uniqueness enforced.
+export const checklistRuns = pgTable('checklist_runs', {
+  id:           uuid('id').primaryKey().defaultRandom(),
+  venueId:      uuid('venue_id').notNull().references(() => venues.id, { onDelete: 'cascade' }),
+  templateId:   uuid('template_id').references(() => checklistTemplates.id, { onDelete: 'set null' }),
+  kind:         checklistKindEnum('kind').notNull(),
+  runDate:      date('run_date').notNull(),  // venue-local date
+  startedAt:    timestamp('started_at',    { withTimezone: true }).notNull().defaultNow(),
+  completedAt:  timestamp('completed_at',  { withTimezone: true }),
+  completedBy:  uuid('completed_by').references(() => users.id, { onDelete: 'set null' }),
+  note:         text('note'),
+}, (t) => [
+  index('checklist_runs_venue_idx').on(t.venueId),
+  index('checklist_runs_date_idx').on(t.runDate),
+  unique('checklist_runs_one_per_day').on(t.venueId, t.kind, t.runDate),
+])
+
+export const checklistRunItems = pgTable('checklist_run_items', {
+  id:         uuid('id').primaryKey().defaultRandom(),
+  runId:      uuid('run_id').notNull().references(() => checklistRuns.id, { onDelete: 'cascade' }),
+  position:   integer('position').notNull().default(0),
+  label:      text('label').notNull(),       // snapshot in case template item is later edited
+  checked:    boolean('checked').notNull().default(false),
+  checkedAt:  timestamp('checked_at', { withTimezone: true }),
+  checkedBy:  uuid('checked_by').references(() => users.id, { onDelete: 'set null' }),
+}, (t) => [
+  index('checklist_run_items_run_idx').on(t.runId),
+])
+
 // ── Relations ─────────────────────────────────────────────────────────────────
 
 export const accountsRelations = relations(accounts, ({ many }) => ({
@@ -303,15 +370,17 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 }))
 
 export const venuesRelations = relations(venues, ({ one, many }) => ({
-  account:      one(accounts, { fields: [venues.accountId], references: [accounts.id] }),
-  suppliers:    many(suppliers),
-  ingredients:  many(ingredients),
-  dishes:       many(dishes),
-  sales:        many(sales),
-  expenses:     many(expenses),
-  employees:    many(employees),
-  payrollRuns:  many(payrollRuns),
-  wasteLogs:    many(wasteLogs),
+  account:            one(accounts, { fields: [venues.accountId], references: [accounts.id] }),
+  suppliers:          many(suppliers),
+  ingredients:        many(ingredients),
+  dishes:             many(dishes),
+  sales:              many(sales),
+  expenses:           many(expenses),
+  employees:          many(employees),
+  payrollRuns:        many(payrollRuns),
+  wasteLogs:          many(wasteLogs),
+  checklistTemplates: many(checklistTemplates),
+  checklistRuns:      many(checklistRuns),
 }))
 
 export const suppliersRelations = relations(suppliers, ({ one, many }) => ({
@@ -372,4 +441,26 @@ export const wasteLogsRelations = relations(wasteLogs, ({ one }) => ({
   venue:      one(venues, { fields: [wasteLogs.venueId], references: [venues.id] }),
   ingredient: one(ingredients, { fields: [wasteLogs.ingredientId], references: [ingredients.id] }),
   user:       one(users, { fields: [wasteLogs.userId], references: [users.id] }),
+}))
+
+export const checklistTemplatesRelations = relations(checklistTemplates, ({ one, many }) => ({
+  venue: one(venues, { fields: [checklistTemplates.venueId], references: [venues.id] }),
+  items: many(checklistItems),
+  runs:  many(checklistRuns),
+}))
+
+export const checklistItemsRelations = relations(checklistItems, ({ one }) => ({
+  template: one(checklistTemplates, { fields: [checklistItems.templateId], references: [checklistTemplates.id] }),
+}))
+
+export const checklistRunsRelations = relations(checklistRuns, ({ one, many }) => ({
+  venue:    one(venues, { fields: [checklistRuns.venueId], references: [venues.id] }),
+  template: one(checklistTemplates, { fields: [checklistRuns.templateId], references: [checklistTemplates.id] }),
+  user:     one(users, { fields: [checklistRuns.completedBy], references: [users.id] }),
+  items:    many(checklistRunItems),
+}))
+
+export const checklistRunItemsRelations = relations(checklistRunItems, ({ one }) => ({
+  run:  one(checklistRuns, { fields: [checklistRunItems.runId], references: [checklistRuns.id] }),
+  user: one(users, { fields: [checklistRunItems.checkedBy], references: [users.id] }),
 }))

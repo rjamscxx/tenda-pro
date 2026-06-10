@@ -10,6 +10,7 @@ import EodSummary from './EodSummary'
 import AiTodayPush from '@/components/layout/AiTodayPush'
 import { getOrGenerateTodayPush } from '@/lib/ai/todayPush'
 import { refreshTodayPush } from './ai-actions'
+import { getTodayChecklistSummary } from '../checklists/actions'
 import Link from 'next/link'
 
 export const metadata = { title: 'Dashboard — Sizzle' }
@@ -389,6 +390,9 @@ export default async function DashboardPage() {
   const laborCost = Number(expensesAgg[0].catLabor)
   const laborPct  = revenueMonth > 0 ? (laborCost / revenueMonth) * 100 : null
 
+  // Today's opening/closing checklist progress — single indexed read pair.
+  const checklistSummary = await getTodayChecklistSummary()
+
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto w-full space-y-5">
 
@@ -547,6 +551,44 @@ export default async function DashboardPage() {
           refresh={refreshTodayPush}
         />
       )}
+
+      {/* Today's checklists — opening + closing progress at a glance */}
+      <Link
+        href="/checklists"
+        className="card-enter card-d2 glass rounded-xl border border-hair flex flex-wrap items-center gap-3 px-4 py-3 hover:border-accent/40 transition-colors"
+      >
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="w-6 h-6 rounded-lg bg-accent-dim flex items-center justify-center text-[12px]" aria-hidden>📋</span>
+          <span className="text-[12px] font-semibold text-ink uppercase tracking-widest">Daily Routine</span>
+        </div>
+        {(['opening', 'closing'] as const).map(kind => {
+          const s = checklistSummary[kind]
+          const pct = s.total === 0 ? 0 : Math.round((s.done / s.total) * 100)
+          const tone =
+            s.state === 'done' ? 'text-success bg-success/10 border-success/30' :
+            s.state === 'in-progress' ? 'text-accent bg-accent/10 border-accent/30' :
+            'text-ink-4 bg-surface-2 border-hair'
+          return (
+            <div key={kind} className={`flex-1 min-w-[160px] flex items-center gap-2.5 px-3 py-1.5 rounded-lg border ${tone}`}>
+              <span className="text-[14px]" aria-hidden>{kind === 'opening' ? '🌅' : '🌙'}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-wide leading-tight">
+                  {kind === 'opening' ? 'Opening' : 'Closing'}
+                </p>
+                <p className="text-[10px] opacity-80 leading-tight">
+                  {s.state === 'not-started' && 'not started'}
+                  {s.state === 'in-progress' && `${s.done}/${s.total} steps`}
+                  {s.state === 'done' && 'done ✓'}
+                </p>
+              </div>
+              {s.total > 0 && (
+                <span className="text-[10px] tabular font-bold">{pct}%</span>
+              )}
+            </div>
+          )
+        })}
+        <span className="text-[11px] text-ink-4 shrink-0 hover:text-ink">Open →</span>
+      </Link>
 
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
