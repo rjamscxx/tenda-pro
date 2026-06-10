@@ -295,7 +295,7 @@ function TemplateEditor({
       </div>
 
       <p className="px-4 pb-3 text-[10px] text-ink-4 leading-relaxed">
-        Edits apply to future runs. Today's run keeps its current steps so checked items don't disappear mid-shift.
+        Edits apply to future runs. Today&apos;s run keeps its current steps so checked items don&apos;t disappear mid-shift.
       </p>
     </section>
   )

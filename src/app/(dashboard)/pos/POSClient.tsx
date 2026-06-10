@@ -15,13 +15,6 @@ const CHANNELS = [
   { value: 'other',    label: 'Other' },
 ]
 
-const CHANNEL_BADGE: Record<string, string> = {
-  dine_in:  'bg-accent/15 text-accent',
-  takeout:  'bg-sky-400/15 text-sky-400',
-  delivery: 'bg-warn/15 text-warn',
-  other:    'bg-surface-3 text-ink-3',
-}
-
 interface DishOption {
   id: string
   name: string

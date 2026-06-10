@@ -17,7 +17,7 @@ interface WasteRow { id: string; ingredientName: string; qty: string; unit: stri
 interface OpenTab { id: string; soldAt: string; total: number; customerName: string | null; note: string | null; channel: string }
 
 export default function CloseDayClient({
-  venueName, ownerName, today, kpi, topSellers, expenses, waste, openTabs,
+  venueName, today, kpi, topSellers, expenses, waste, openTabs,
 }: {
   venueName: string
   ownerEmail: string | null

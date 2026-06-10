@@ -13,16 +13,23 @@ beforeEach(() => {
   process.env.PAYMONGO_WEBHOOK_SECRET = SECRET
 })
 
+// Helper — returns a Unix-seconds timestamp string that's inside the 5-minute
+// replay window (so verifyWebhookSignature doesn't reject it as stale).
+function freshTimestamp(): string {
+  return Math.floor(Date.now() / 1000).toString()
+}
+
 describe('verifyWebhookSignature', () => {
   it('returns true for a valid signature', () => {
     const body = JSON.stringify({ data: { attributes: { type: 'checkout_session.payment.paid' } } })
-    const sig = makeSignature(body, '1234567890')
+    const ts = freshTimestamp()
+    const sig = makeSignature(body, ts)
     expect(verifyWebhookSignature(body, sig)).toBe(true)
   })
 
   it('returns false when signature is tampered', () => {
     const body = JSON.stringify({ data: {} })
-    const sig = makeSignature(body, '1234567890')
+    const sig = makeSignature(body, freshTimestamp())
     expect(verifyWebhookSignature(body + 'x', sig)).toBe(false)
   })
 
@@ -33,12 +40,19 @@ describe('verifyWebhookSignature', () => {
 
   it('returns false when te is missing', () => {
     const body = '{}'
-    expect(verifyWebhookSignature(body, 't=1234567890')).toBe(false)
+    expect(verifyWebhookSignature(body, `t=${freshTimestamp()}`)).toBe(false)
   })
 
   it('returns false with wrong secret', () => {
     const body = '{}'
-    const sig = makeSignature(body, '1234567890', 'wrong_secret')
+    const sig = makeSignature(body, freshTimestamp(), 'wrong_secret')
+    expect(verifyWebhookSignature(body, sig)).toBe(false)
+  })
+
+  it('returns false for a stale timestamp (replay-attack window)', () => {
+    const body = '{}'
+    const staleTs = (Math.floor(Date.now() / 1000) - 600).toString() // 10 min old
+    const sig = makeSignature(body, staleTs)
     expect(verifyWebhookSignature(body, sig)).toBe(false)
   })
 
