@@ -7,7 +7,7 @@ const BUSINESS_TYPES = [
   {
     id: 'cafe',
     label: 'Café / Coffee',
-    theme: 'espresso',
+    theme: 'almond-milk',
     icon: (
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
         <path d="M4 7h10v8a3 3 0 01-3 3H7a3 3 0 01-3-3V7z" stroke="currentColor" strokeWidth="1.5"/>
@@ -31,7 +31,7 @@ const BUSINESS_TYPES = [
   {
     id: 'bbq',
     label: 'BBQ & Grill',
-    theme: 'ember',
+    theme: 'kimchi',
     icon: (
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
         <path d="M3 10h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -44,7 +44,7 @@ const BUSINESS_TYPES = [
   {
     id: 'bakery',
     label: 'Bakery',
-    theme: 'ivory',
+    theme: 'chiffon',
     icon: (
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
         <path d="M4 12c0-3.87 3.13-7 7-7s7 3.13 7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -56,7 +56,7 @@ const BUSINESS_TYPES = [
   {
     id: 'fastfood',
     label: 'Fast Food',
-    theme: 'citrus',
+    theme: 'tangerine',
     icon: (
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
         <path d="M4 12h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -68,7 +68,7 @@ const BUSINESS_TYPES = [
   {
     id: 'bar',
     label: 'Bar & Drinks',
-    theme: 'midnight',
+    theme: 'smoke-blue',
     icon: (
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
         <path d="M5 3h12l-5 7v7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -80,7 +80,7 @@ const BUSINESS_TYPES = [
   {
     id: 'foodtruck',
     label: 'Food Truck',
-    theme: 'harvest',
+    theme: 'streetlight',
     icon: (
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
         <rect x="2" y="7" width="14" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
@@ -94,7 +94,7 @@ const BUSINESS_TYPES = [
   {
     id: 'other',
     label: 'Other',
-    theme: 'ocean',
+    theme: 'porcelain',
     icon: (
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
         <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.5"/>

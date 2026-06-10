@@ -13,33 +13,28 @@ interface ThemeDef {
 }
 
 const THEMES: ThemeDef[] = [
-  { id: 'sage-dark',   name: 'Sage Dark',    label: 'Default',       dark: true,  canvas: '#0E1714', surface: '#18231F', accent: '#58C098', accentEnd: '#3DA87A', ink: '#ECE6D5' },
-  { id: 'sage-light',  name: 'Sage Light',   label: 'Light',         dark: false, canvas: '#F4F0E7', surface: '#FFFFFF', accent: '#1F5F4A', accentEnd: '#174D3A', ink: '#1A2420' },
-  { id: 'espresso',    name: 'Espresso',     label: 'Coffee',        dark: true,  canvas: '#1A1410', surface: '#26201A', accent: '#D9A876', accentEnd: '#B8824E', ink: '#F0E8DA' },
-  { id: 'citrus',      name: 'Citrus',       label: 'Fresh',         dark: true,  canvas: '#0F1410', surface: '#1A211A', accent: '#C9E663', accentEnd: '#A8C240', ink: '#EEF0D8' },
-  { id: 'crimson',     name: 'Crimson',      label: 'Steakhouse',    dark: true,  canvas: '#14100F', surface: '#201A18', accent: '#DC2626', accentEnd: '#B91C1C', ink: '#F0E8E0' },
-  { id: 'ocean',       name: 'Ocean',        label: 'Seafood',       dark: true,  canvas: '#060D14', surface: '#0D1820', accent: '#0EA5E9', accentEnd: '#0284C7', ink: '#DCF0F8' },
-  { id: 'rose',        name: 'Rose',         label: 'Bakery',        dark: true,  canvas: '#150C10', surface: '#221520', accent: '#E879A6', accentEnd: '#DB2777', ink: '#F8ECF4' },
-  { id: 'ember',       name: 'Ember',        label: 'BBQ & Grill',   dark: true,  canvas: '#130A04', surface: '#1F1408', accent: '#F97316', accentEnd: '#EA580C', ink: '#F8ECE0' },
-  { id: 'midnight',    name: 'Midnight',     label: 'Fine Dining',   dark: true,  canvas: '#070714', surface: '#10111E', accent: '#818CF8', accentEnd: '#6366F1', ink: '#E8E8F8' },
-  { id: 'harvest',     name: 'Harvest',      label: 'Brewery',       dark: true,  canvas: '#14100A', surface: '#201C14', accent: '#F59E0B', accentEnd: '#D97706', ink: '#F8F0D8' },
-  { id: 'jade',        name: 'Jade',         label: 'Tea House',     dark: true,  canvas: '#071010', surface: '#101E20', accent: '#10B981', accentEnd: '#059669', ink: '#DCF0EC' },
-  { id: 'slate',       name: 'Slate',        label: 'Modern Café',   dark: true,  canvas: '#0E1017', surface: '#181B24', accent: '#14B8A6', accentEnd: '#0D9488', ink: '#E0E4F0' },
-  // ── Food-business themes ────────────────────────────────────────────────────
-  { id: 'wasabi',      name: 'Wasabi',       label: 'Japanese · Sushi', dark: true,  canvas: '#0B1010', surface: '#161E1B', accent: '#84CC16', accentEnd: '#65A30D', ink: '#E8F0E4' },
-  { id: 'trattoria',   name: 'Trattoria',    label: 'Italian',           dark: true,  canvas: '#15100C', surface: '#221A14', accent: '#D97746', accentEnd: '#B25E33', ink: '#F4ECD8' },
-  { id: 'mariachi',    name: 'Mariachi',     label: 'Mexican',           dark: true,  canvas: '#14080A', surface: '#251114', accent: '#FBBF24', accentEnd: '#D97706', ink: '#FCE9D6' },
-  { id: 'imperial',    name: 'Imperial',     label: 'Chinese Banquet',   dark: true,  canvas: '#100808', surface: '#1F1010', accent: '#EAB308', accentEnd: '#CA8A04', ink: '#F5E9CC' },
-  { id: 'saffron',     name: 'Saffron',      label: 'Indian · Curry',    dark: true,  canvas: '#140C04', surface: '#25180D', accent: '#F97316', accentEnd: '#C2410C', ink: '#FCEACB' },
-  { id: 'diner',       name: 'Diner',        label: 'American Diner',    dark: true,  canvas: '#080C14', surface: '#131B2C', accent: '#38BDF8', accentEnd: '#0284C7', ink: '#E8EEF8' },
-  { id: 'halo',        name: 'Halo',         label: 'Halo-halo · Filipino Dessert', dark: true,  canvas: '#110A18', surface: '#1E1428', accent: '#C084FC', accentEnd: '#9333EA', ink: '#F2E8F5' },
-  { id: 'boba',        name: 'Boba',         label: 'Bubble Tea · Milk Tea', dark: true,  canvas: '#14100E', surface: '#221C1A', accent: '#F472B6', accentEnd: '#DB2777', ink: '#F8ECE6' },
-  // ── Light themes ────────────────────────────────────────────────────────────
-  { id: 'cloud',       name: 'Cloud',        label: 'Minimal Light',     dark: false, canvas: '#FAFAFA', surface: '#FFFFFF', accent: '#0EA5E9', accentEnd: '#0284C7', ink: '#18181B' },
-  { id: 'linen',       name: 'Linen',        label: 'Café Light',        dark: false, canvas: '#FAF6EE', surface: '#FFFEF9', accent: '#92400E', accentEnd: '#78350F', ink: '#2A1F12' },
-  { id: 'mint',        name: 'Mint',         label: 'Fresh Light',       dark: false, canvas: '#F3FAF6', surface: '#FFFFFF', accent: '#047857', accentEnd: '#065F46', ink: '#0F2A1C' },
-  { id: 'sand',        name: 'Sand',         label: 'Warm Beige',        dark: false, canvas: '#FBF7EE', surface: '#FFFFFF', accent: '#B45309', accentEnd: '#92400E', ink: '#292014' },
-  { id: 'lavender',    name: 'Lavender',     label: 'Floral Light',      dark: false, canvas: '#F8F5FB', surface: '#FFFFFF', accent: '#7C3AED', accentEnd: '#6D28D9', ink: '#1F1430' },
+  // ── Dark themes (10) — food-industry palettes ───────────────────────────────
+  { id: 'ember',          name: 'Ember',          label: 'Grill · BBQ (Default)', dark: true,  canvas: '#130A04', surface: '#1F1408', accent: '#F97316', accentEnd: '#EA580C', ink: '#F8ECE0' },
+  { id: 'carbon-steel',   name: 'Carbon Steel',   label: 'Modern Steakhouse',     dark: true,  canvas: '#0F1114', surface: '#1B1F25', accent: '#B5BAC5', accentEnd: '#909AA8', ink: '#E8EBF0' },
+  { id: 'truffle',        name: 'Truffle',        label: 'Fine Dining',           dark: true,  canvas: '#0C0A0A', surface: '#18161A', accent: '#D4AF37', accentEnd: '#A07C20', ink: '#F4ECD8' },
+  { id: 'kimchi',         name: 'Kimchi',         label: 'Korean BBQ',            dark: true,  canvas: '#110909', surface: '#1E1311', accent: '#DA3B1C', accentEnd: '#A02810', ink: '#F8E5DC' },
+  { id: 'cardamom',       name: 'Cardamom',       label: 'Indian Spice Kitchen',  dark: true,  canvas: '#08120F', surface: '#112019', accent: '#E0B340', accentEnd: '#B08820', ink: '#F0E8C8' },
+  { id: 'bourbon',        name: 'Bourbon',        label: 'Whiskey Bar',           dark: true,  canvas: '#110A05', surface: '#1F160F', accent: '#C58940', accentEnd: '#946326', ink: '#F4E5D0' },
+  { id: 'smoke-blue',     name: 'Smoke Blue',     label: 'Cocktail Lounge',       dark: true,  canvas: '#0A0E14', surface: '#131A24', accent: '#3F8FE0', accentEnd: '#2466B5', ink: '#E4EDF8' },
+  { id: 'forest-floor',   name: 'Forest Floor',   label: 'Foraging · Nordic',     dark: true,  canvas: '#0A100B', surface: '#141C15', accent: '#7AA85C', accentEnd: '#557E3D', ink: '#E6EFE0' },
+  { id: 'velvet-cake',    name: 'Velvet Cake',    label: 'Dessert Bar',           dark: true,  canvas: '#110709', surface: '#1E0F14', accent: '#D34C7B', accentEnd: '#9C2B58', ink: '#F4DCE2' },
+  { id: 'streetlight',    name: 'Streetlight',    label: 'Night Street Food',     dark: true,  canvas: '#0E0D08', surface: '#1B1810', accent: '#FFB200', accentEnd: '#C28600', ink: '#F4EBC8' },
+  // ── Light themes (10) — food-industry palettes ──────────────────────────────
+  { id: 'porcelain',      name: 'Porcelain',      label: 'Fine China',            dark: false, canvas: '#FCFCFD', surface: '#FFFFFF', accent: '#1E3A5F', accentEnd: '#122845', ink: '#0F1419' },
+  { id: 'chiffon',        name: 'Chiffon',        label: 'Pastry · Soft Bake',    dark: false, canvas: '#FFFBE8', surface: '#FFFEF5', accent: '#C9A100', accentEnd: '#997900', ink: '#2A2204' },
+  { id: 'macaron',        name: 'Macaron',        label: 'French Dessert',        dark: false, canvas: '#FDF3F5', surface: '#FFFAFC', accent: '#E8568D', accentEnd: '#B83669', ink: '#2A0F18' },
+  { id: 'almond-milk',    name: 'Almond Milk',    label: 'Vegan Café',            dark: false, canvas: '#FAF3E8', surface: '#FFFAEF', accent: '#B47749', accentEnd: '#885229', ink: '#2A1F10' },
+  { id: 'iced-matcha',    name: 'Iced Matcha',    label: 'Matcha Bar',            dark: false, canvas: '#EEF6E5', surface: '#F7FCEE', accent: '#4F7C2F', accentEnd: '#34571C', ink: '#1A2810' },
+  { id: 'tangerine',      name: 'Tangerine',      label: 'Citrus Juice Bar',      dark: false, canvas: '#FFF1E2', surface: '#FFF8EE', accent: '#E26F1E', accentEnd: '#A84B0E', ink: '#2A1505' },
+  { id: 'mint-leaf',      name: 'Mint Leaf',      label: 'Fresh Herb · Mojito',   dark: false, canvas: '#ECF7F2', surface: '#F5FCF8', accent: '#2D9D7F', accentEnd: '#1B6E58', ink: '#0F2820' },
+  { id: 'lavender-honey', name: 'Lavender Honey', label: 'Boutique Tea',          dark: false, canvas: '#F6F1FB', surface: '#FCF8FF', accent: '#8B6FB8', accentEnd: '#654E8E', ink: '#1F1230' },
+  { id: 'coconut-cream',  name: 'Coconut Cream',  label: 'Tropical',              dark: false, canvas: '#FCF6EE', surface: '#FFFBF4', accent: '#E55B5B', accentEnd: '#AC3838', ink: '#2A1818' },
+  { id: 'fig-jam',        name: 'Fig Jam',        label: 'Artisan Preserves',     dark: false, canvas: '#F8EFF1', surface: '#FCF6F7', accent: '#A03B5C', accentEnd: '#71243F', ink: '#2A0F1B' },
 ]
 
 const TIMEZONES = [

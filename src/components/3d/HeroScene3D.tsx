@@ -54,7 +54,7 @@ function Particles() {
 
 interface Props { theme?: string }
 
-export default function HeroScene3D({ theme = 'sage-dark' }: Props) {
+export default function HeroScene3D({ theme = 'ember' }: Props) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const panelRef   = useRef<HTMLDivElement>(null)
 

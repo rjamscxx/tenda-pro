@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
-/* ── Theme 1: Ember / Orange (default) ────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────────────
+   SIZZLE THEMES — Food-industry palettes (20 total)
+   10 dark + 10 light, each curated for a different food-business vibe.
+   `:root` aliases the default (ember) so any element without [data-theme]
+   still renders with brand colors.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ════════════════════ DARK THEMES (10) ════════════════════ */
+
+/* ── Dark 1: Ember — Grill / BBQ (default) ───────────────────────────────── */
 :root,
 [data-theme="ember"] {
   --canvas:      #130A04;
@@ -13,7 +22,7 @@
   --ink:         #F8ECE0;
   --ink-2:       #D0A880;
   --ink-3:       #B88A5D;
-  --ink-4:       #A57450;  /* WCAG AA: 4.86:1 on canvas, 4.49:1 on surface */
+  --ink-4:       #A57450;
 
   --hair:        #3E2810;
   --hair-2:      #342008;
@@ -35,165 +44,63 @@
   --gradient-hero: linear-gradient(135deg, #130A04 0%, #1C1008 50%, #130A04 100%);
 }
 
-/* ── Theme 2: Sage Dark ────────────────────────────────────────────────────── */
-[data-theme="sage-dark"] {
-  --canvas:      #0E1714;
-  --canvas-2:    #121D19;
-  --sidebar:     #131E1A;
-  --surface:     #18231F;
-  --surface-2:   #1E2A25;
-  --surface-3:   #243029;
+/* ── Dark 2: Carbon Steel — Modern steakhouse, graphite + steel pewter ───── */
+[data-theme="carbon-steel"] {
+  --canvas:      #0F1114;
+  --canvas-2:    #161A1F;
+  --sidebar:     #14181C;
+  --surface:     #1B1F25;
+  --surface-2:   #232830;
+  --surface-3:   #2C323B;
 
-  --ink:         #ECE6D5;
-  --ink-2:       #B4BDB4;
-  --ink-3:       #929B93;
-  --ink-4:       #8E978F;  /* WCAG AA: 4.65:1 on surface, 5.12:1 on canvas */
+  --ink:         #E8EBF0;
+  --ink-2:       #B0B5BE;
+  --ink-3:       #8E95A0;
+  --ink-4:       #88909C;
 
-  --hair:        #28332E;
-  --hair-2:      #212C27;
+  --hair:        #2A303A;
+  --hair-2:      #20262E;
 
-  --accent:      #58C098;
-  --accent-2:    #79D1AE;
-  --accent-dim:  rgba(88, 192, 152, 0.12);
-  --accent-tint: rgba(88, 192, 152, 0.22);
-  --accent-glow: rgba(88, 192, 152, 0.18);
-  --accent-end:  #3DA87A;
+  --accent:      #B5BAC5;
+  --accent-2:    #D4D8E0;
+  --accent-dim:  rgba(181, 186, 197, 0.12);
+  --accent-tint: rgba(181, 186, 197, 0.22);
+  --accent-glow: rgba(181, 186, 197, 0.18);
+  --accent-end:  #909AA8;
 
-  --danger:      #E48865;
-  --danger-dim:  rgba(228, 136, 101, 0.12);
-  --warn:        #E8C96A;
-  --warn-dim:    rgba(232, 201, 106, 0.12);
-  --success:     #58C098;
-  --success-dim: rgba(88, 192, 152, 0.12);
+  --danger:      #F87171;
+  --danger-dim:  rgba(248, 113, 113, 0.12);
+  --warn:        #FBBF24;
+  --warn-dim:    rgba(251, 191, 36, 0.12);
+  --success:     #4ADE80;
+  --success-dim: rgba(74, 222, 128, 0.12);
 
-  --gradient-hero: linear-gradient(135deg, #0E1714 0%, #121F1A 50%, #0E1714 100%);
+  --gradient-hero: linear-gradient(135deg, #0F1114 0%, #181C22 50%, #0F1114 100%);
 }
 
-/* ── Theme 2: Sage Light ───────────────────────────────────────────────────── */
-[data-theme="sage-light"] {
-  --canvas:      #F4F0E7;
-  --canvas-2:    #EDE8DE;
-  --sidebar:     #E8E3D9;
-  --surface:     #FFFFFF;
-  --surface-2:   #F7F4EE;
-  --surface-3:   #EDE8DE;
+/* ── Dark 3: Truffle — Fine dining, black + champagne gold ───────────────── */
+[data-theme="truffle"] {
+  --canvas:      #0C0A0A;
+  --canvas-2:    #131110;
+  --sidebar:     #121010;
+  --surface:     #18161A;
+  --surface-2:   #1F1C20;
+  --surface-3:   #262229;
 
-  --ink:         #1A2420;
-  --ink-2:       #3D5048;
-  --ink-3:       #4C5D57;
-  --ink-4:       #636F6B;
+  --ink:         #F4ECD8;
+  --ink-2:       #C9B89A;
+  --ink-3:       #9F8E70;
+  --ink-4:       #95846A;
 
-  --hair:        #D8D2C6;
-  --hair-2:      #E4DFDA;
+  --hair:        #2D2620;
+  --hair-2:      #241F18;
 
-  --accent:      #1F5F4A;
-  --accent-2:    #2D7A61;
-  --accent-dim:  rgba(31, 95, 74, 0.10);
-  --accent-tint: rgba(31, 95, 74, 0.18);
-  --accent-glow: rgba(31, 95, 74, 0.12);
-  --accent-end:  #174D3A;
-
-  --danger:      #B2492E;
-  --danger-dim:  rgba(178, 73, 46, 0.10);
-  --warn:        #875800;
-  --warn-dim:    rgba(135, 88, 0, 0.10);
-  --success:     #1F5F4A;
-  --success-dim: rgba(31, 95, 74, 0.10);
-
-  --gradient-hero: linear-gradient(135deg, #F4F0E7 0%, #EAE5DB 50%, #F4F0E7 100%);
-}
-
-/* ── Theme 3: Espresso ─────────────────────────────────────────────────────── */
-[data-theme="espresso"] {
-  --canvas:      #1A1410;
-  --canvas-2:    #201A15;
-  --sidebar:     #1E1811;
-  --surface:     #26201A;
-  --surface-2:   #2D261F;
-  --surface-3:   #342D25;
-
-  --ink:         #F0E8DA;
-  --ink-2:       #C4B49E;
-  --ink-3:       #AA9985;
-  --ink-4:       #9D8E7A;
-
-  --hair:        #3A3028;
-  --hair-2:      #302820;
-
-  --accent:      #D9A876;
-  --accent-2:    #E8BF92;
-  --accent-dim:  rgba(217, 168, 118, 0.12);
-  --accent-tint: rgba(217, 168, 118, 0.22);
-  --accent-glow: rgba(217, 168, 118, 0.18);
-  --accent-end:  #B8824E;
-
-  --danger:      #D67659;
-  --danger-dim:  rgba(214, 118, 89, 0.12);
-  --warn:        #E8C96A;
-  --warn-dim:    rgba(232, 201, 106, 0.12);
-  --success:     #7DC48A;
-  --success-dim: rgba(125, 196, 138, 0.12);
-
-  --gradient-hero: linear-gradient(135deg, #1A1410 0%, #221912 50%, #1A1410 100%);
-}
-
-/* ── Theme 4: Citrus ───────────────────────────────────────────────────────── */
-[data-theme="citrus"] {
-  --canvas:      #0F1410;
-  --canvas-2:    #141A14;
-  --sidebar:     #131913;
-  --surface:     #1A211A;
-  --surface-2:   #202820;
-  --surface-3:   #272F27;
-
-  --ink:         #EEF0D8;
-  --ink-2:       #B8BEA0;
-  --ink-3:       #979D83;
-  --ink-4:       #87937B;
-
-  --hair:        #2C3528;
-  --hair-2:      #242C20;
-
-  --accent:      #C9E663;
-  --accent-2:    #D8F07A;
-  --accent-dim:  rgba(201, 230, 99, 0.12);
-  --accent-tint: rgba(201, 230, 99, 0.22);
-  --accent-glow: rgba(201, 230, 99, 0.18);
-  --accent-end:  #A8C240;
-
-  --danger:      #F0B065;
-  --danger-dim:  rgba(240, 176, 101, 0.12);
-  --warn:        #F0D060;
-  --warn-dim:    rgba(240, 208, 96, 0.12);
-  --success:     #78D68A;
-  --success-dim: rgba(120, 214, 138, 0.12);
-
-  --gradient-hero: linear-gradient(135deg, #0F1410 0%, #141B10 50%, #0F1410 100%);
-}
-
-/* ── Theme 5: Crimson — Steakhouse / Italian ──────────────────────────────── */
-[data-theme="crimson"] {
-  --canvas:      #14100F;
-  --canvas-2:    #1A1513;
-  --sidebar:     #181210;
-  --surface:     #201A18;
-  --surface-2:   #272019;
-  --surface-3:   #2E2620;
-
-  --ink:         #F0E8E0;
-  --ink-2:       #C0AEAA;
-  --ink-3:       #B18E8E;
-  --ink-4:       #A28383;
-
-  --hair:        #3A2828;
-  --hair-2:      #302020;
-
-  --accent:      #DC2626;
-  --accent-2:    #EF4444;
-  --accent-dim:  rgba(220, 38, 38, 0.12);
-  --accent-tint: rgba(220, 38, 38, 0.22);
-  --accent-glow: rgba(220, 38, 38, 0.18);
-  --accent-end:  #B91C1C;
+  --accent:      #D4AF37;
+  --accent-2:    #E5C868;
+  --accent-dim:  rgba(212, 175, 55, 0.12);
+  --accent-tint: rgba(212, 175, 55, 0.22);
+  --accent-glow: rgba(212, 175, 55, 0.18);
+  --accent-end:  #A07C20;
 
   --danger:      #E48865;
   --danger-dim:  rgba(228, 136, 101, 0.12);
@@ -202,406 +109,587 @@
   --success:     #78C488;
   --success-dim: rgba(120, 196, 136, 0.12);
 
-  --gradient-hero: linear-gradient(135deg, #14100F 0%, #1C1210 50%, #14100F 100%);
+  --gradient-hero: linear-gradient(135deg, #0C0A0A 0%, #14110E 50%, #0C0A0A 100%);
 }
 
-/* ── Theme 6: Ocean — Seafood / Beach Bar ─────────────────────────────────── */
-[data-theme="ocean"] {
-  --canvas:      #060D14;
-  --canvas-2:    #091218;
-  --sidebar:     #081118;
-  --surface:     #0D1820;
-  --surface-2:   #121E28;
-  --surface-3:   #182530;
+/* ── Dark 4: Kimchi — Korean BBQ, dark stone + gochujang red ─────────────── */
+[data-theme="kimchi"] {
+  --canvas:      #110909;
+  --canvas-2:    #170D0C;
+  --sidebar:     #160B0B;
+  --surface:     #1E1311;
+  --surface-2:   #261817;
+  --surface-3:   #2E1F1D;
 
-  --ink:         #DCF0F8;
-  --ink-2:       #9AB8C8;
-  --ink-3:       #7C97A8;
-  --ink-4:       #708AA3;
+  --ink:         #F8E5DC;
+  --ink-2:       #D0AC9F;
+  --ink-3:       #A88578;
+  --ink-4:       #9C7B6F;
 
-  --hair:        #1A2E3C;
-  --hair-2:      #132430;
+  --hair:        #321D18;
+  --hair-2:      #281612;
 
-  --accent:      #0EA5E9;
-  --accent-2:    #38BDF8;
-  --accent-dim:  rgba(14, 165, 233, 0.12);
-  --accent-tint: rgba(14, 165, 233, 0.22);
-  --accent-glow: rgba(14, 165, 233, 0.18);
-  --accent-end:  #0284C7;
+  --accent:      #DA3B1C;
+  --accent-2:    #F25638;
+  --accent-dim:  rgba(218, 59, 28, 0.14);
+  --accent-tint: rgba(218, 59, 28, 0.22);
+  --accent-glow: rgba(218, 59, 28, 0.18);
+  --accent-end:  #A02810;
 
   --danger:      #F87171;
   --danger-dim:  rgba(248, 113, 113, 0.12);
-  --warn:        #FCD34D;
-  --warn-dim:    rgba(252, 211, 77, 0.12);
-  --success:     #34D399;
-  --success-dim: rgba(52, 211, 153, 0.12);
+  --warn:        #FACC15;
+  --warn-dim:    rgba(250, 204, 21, 0.12);
+  --success:     #84CC16;
+  --success-dim: rgba(132, 204, 22, 0.12);
 
-  --gradient-hero: linear-gradient(135deg, #060D14 0%, #0A1520 50%, #060D14 100%);
+  --gradient-hero: linear-gradient(135deg, #110909 0%, #1A0C0B 50%, #110909 100%);
 }
 
-/* ── Theme 7: Rose — Bakery / Patisserie ──────────────────────────────────── */
-[data-theme="rose"] {
-  --canvas:      #150C10;
-  --canvas-2:    #1C1118;
-  --sidebar:     #1A1016;
-  --surface:     #221520;
-  --surface-2:   #2A1B28;
-  --surface-3:   #312030;
+/* ── Dark 5: Cardamom — Indian spice kitchen, deep teal + turmeric gold ──── */
+[data-theme="cardamom"] {
+  --canvas:      #08120F;
+  --canvas-2:    #0D1A16;
+  --sidebar:     #0B1714;
+  --surface:     #112019;
+  --surface-2:   #172A21;
+  --surface-3:   #1E3429;
 
-  --ink:         #F8ECF4;
-  --ink-2:       #D0A8C8;
-  --ink-3:       #B588A3;
-  --ink-4:       #AC7AA0;
+  --ink:         #F0E8C8;
+  --ink-2:       #C5B58A;
+  --ink-3:       #9A8C66;
+  --ink-4:       #91845F;
 
-  --hair:        #3E2038;
-  --hair-2:      #341830;
+  --hair:        #1F3326;
+  --hair-2:      #182A1F;
 
-  --accent:      #E879A6;
-  --accent-2:    #F099C0;
-  --accent-dim:  rgba(232, 121, 166, 0.12);
-  --accent-tint: rgba(232, 121, 166, 0.22);
-  --accent-glow: rgba(232, 121, 166, 0.18);
-  --accent-end:  #DB2777;
+  --accent:      #E0B340;
+  --accent-2:    #ECC868;
+  --accent-dim:  rgba(224, 179, 64, 0.12);
+  --accent-tint: rgba(224, 179, 64, 0.22);
+  --accent-glow: rgba(224, 179, 64, 0.18);
+  --accent-end:  #B08820;
 
-  --danger:      #F87171;
-  --danger-dim:  rgba(248, 113, 113, 0.12);
-  --warn:        #FCD34D;
-  --warn-dim:    rgba(252, 211, 77, 0.12);
-  --success:     #6EE7B7;
-  --success-dim: rgba(110, 231, 183, 0.12);
+  --danger:      #E87B6F;
+  --danger-dim:  rgba(232, 123, 111, 0.12);
+  --warn:        #F0C060;
+  --warn-dim:    rgba(240, 192, 96, 0.12);
+  --success:     #84CC16;
+  --success-dim: rgba(132, 204, 22, 0.12);
 
-  --gradient-hero: linear-gradient(135deg, #150C10 0%, #1E1018 50%, #150C10 100%);
+  --gradient-hero: linear-gradient(135deg, #08120F 0%, #0E1B16 50%, #08120F 100%);
 }
 
-/* ── Theme 9: Midnight — Fine Dining / Bar ──────────────────────────────── */
-[data-theme="midnight"] {
-  --canvas:      #070714;
-  --canvas-2:    #0C0C1A;
-  --sidebar:     #0A0A18;
-  --surface:     #10111E;
-  --surface-2:   #161828;
-  --surface-3:   #1C1E30;
+/* ── Dark 6: Bourbon — Whiskey bar, dark walnut + bourbon amber ──────────── */
+[data-theme="bourbon"] {
+  --canvas:      #110A05;
+  --canvas-2:    #18100A;
+  --sidebar:     #170F08;
+  --surface:     #1F160F;
+  --surface-2:   #271D14;
+  --surface-3:   #30251B;
 
-  --ink:         #E8E8F8;
-  --ink-2:       #A8A8D8;
-  --ink-3:       #8B8BCA;
-  --ink-4:       #7B7BD5;
+  --ink:         #F4E5D0;
+  --ink-2:       #C8AE8A;
+  --ink-3:       #9D866A;
+  --ink-4:       #927B62;
 
-  --hair:        #222250;
-  --hair-2:      #1A1A40;
+  --hair:        #34261A;
+  --hair-2:      #291D13;
 
-  --accent:      #818CF8;
-  --accent-2:    #A5B0FA;
-  --accent-dim:  rgba(129, 140, 248, 0.12);
-  --accent-tint: rgba(129, 140, 248, 0.22);
-  --accent-glow: rgba(129, 140, 248, 0.18);
-  --accent-end:  #6366F1;
-
-  --danger:      #F87171;
-  --danger-dim:  rgba(248, 113, 113, 0.12);
-  --warn:        #FCD34D;
-  --warn-dim:    rgba(252, 211, 77, 0.12);
-  --success:     #6EE7B7;
-  --success-dim: rgba(110, 231, 183, 0.12);
-
-  --gradient-hero: linear-gradient(135deg, #070714 0%, #0C0C1C 50%, #070714 100%);
-}
-
-/* ── Theme 10: Harvest — Brewery / Farm-to-Table ──────────────────────────── */
-[data-theme="harvest"] {
-  --canvas:      #14100A;
-  --canvas-2:    #1A1610;
-  --sidebar:     #181410;
-  --surface:     #201C14;
-  --surface-2:   #28221A;
-  --surface-3:   #302A20;
-
-  --ink:         #F8F0D8;
-  --ink-2:       #D0B880;
-  --ink-3:       #A09060;
-  --ink-4:       #9D885C;
-
-  --hair:        #3E3020;
-  --hair-2:      #342818;
-
-  --accent:      #F59E0B;
-  --accent-2:    #FBBF24;
-  --accent-dim:  rgba(245, 158, 11, 0.12);
-  --accent-tint: rgba(245, 158, 11, 0.22);
-  --accent-glow: rgba(245, 158, 11, 0.18);
-  --accent-end:  #D97706;
+  --accent:      #C58940;
+  --accent-2:    #DDA262;
+  --accent-dim:  rgba(197, 137, 64, 0.12);
+  --accent-tint: rgba(197, 137, 64, 0.22);
+  --accent-glow: rgba(197, 137, 64, 0.18);
+  --accent-end:  #946326;
 
   --danger:      #DC2626;
   --danger-dim:  rgba(220, 38, 38, 0.12);
-  --warn:        #FACC15;
-  --warn-dim:    rgba(250, 204, 21, 0.12);
+  --warn:        #F59E0B;
+  --warn-dim:    rgba(245, 158, 11, 0.12);
   --success:     #78C488;
   --success-dim: rgba(120, 196, 136, 0.12);
 
-  --gradient-hero: linear-gradient(135deg, #14100A 0%, #1C1810 50%, #14100A 100%);
+  --gradient-hero: linear-gradient(135deg, #110A05 0%, #1A1108 50%, #110A05 100%);
 }
 
-/* ── Theme 11: Jade — Tea House / Asian ───────────────────────────────────── */
-[data-theme="jade"] {
-  --canvas:      #071010;
-  --canvas-2:    #0C1618;
-  --sidebar:     #0A1416;
-  --surface:     #101E20;
-  --surface-2:   #162628;
-  --surface-3:   #1C2E30;
+/* ── Dark 7: Smoke Blue — Cocktail lounge, smoky charcoal + electric blue ── */
+[data-theme="smoke-blue"] {
+  --canvas:      #0A0E14;
+  --canvas-2:    #0F141C;
+  --sidebar:     #0D131B;
+  --surface:     #131A24;
+  --surface-2:   #19222F;
+  --surface-3:   #202B3A;
 
-  --ink:         #DCF0EC;
-  --ink-2:       #90C0B8;
-  --ink-3:       #72A198;
-  --ink-4:       #559983;
+  --ink:         #E4EDF8;
+  --ink-2:       #A8B5C8;
+  --ink-3:       #8595AC;
+  --ink-4:       #7E8FA8;
 
-  --hair:        #1E3C38;
-  --hair-2:      #183030;
+  --hair:        #1E2A3A;
+  --hair-2:      #16202D;
 
-  --accent:      #10B981;
-  --accent-2:    #34D399;
-  --accent-dim:  rgba(16, 185, 129, 0.12);
-  --accent-tint: rgba(16, 185, 129, 0.22);
-  --accent-glow: rgba(16, 185, 129, 0.18);
-  --accent-end:  #059669;
+  --accent:      #3F8FE0;
+  --accent-2:    #65A8EC;
+  --accent-dim:  rgba(63, 143, 224, 0.12);
+  --accent-tint: rgba(63, 143, 224, 0.22);
+  --accent-glow: rgba(63, 143, 224, 0.18);
+  --accent-end:  #2466B5;
 
   --danger:      #F87171;
   --danger-dim:  rgba(248, 113, 113, 0.12);
   --warn:        #FCD34D;
   --warn-dim:    rgba(252, 211, 77, 0.12);
-  --success:     #10B981;
-  --success-dim: rgba(16, 185, 129, 0.12);
+  --success:     #4ADE80;
+  --success-dim: rgba(74, 222, 128, 0.12);
 
-  --gradient-hero: linear-gradient(135deg, #071010 0%, #0C1618 50%, #071010 100%);
+  --gradient-hero: linear-gradient(135deg, #0A0E14 0%, #101720 50%, #0A0E14 100%);
 }
 
-/* ── Theme 12: Slate — Modern Café ────────────────────────────────────────── */
-[data-theme="slate"] {
-  --canvas:      #0E1017;
-  --canvas-2:    #13161E;
-  --sidebar:     #11141C;
-  --surface:     #181B24;
-  --surface-2:   #1E222C;
-  --surface-3:   #242834;
+/* ── Dark 8: Forest Floor — Foraging / new Nordic, dark forest + moss ────── */
+[data-theme="forest-floor"] {
+  --canvas:      #0A100B;
+  --canvas-2:    #0F1610;
+  --sidebar:     #0E1510;
+  --surface:     #141C15;
+  --surface-2:   #19241A;
+  --surface-3:   #1F2C20;
 
-  --ink:         #E0E4F0;
-  --ink-2:       #A0A8C0;
-  --ink-3:       #8C96BD;
-  --ink-4:       #7C89BD;
+  --ink:         #E6EFE0;
+  --ink-2:       #ACBEA0;
+  --ink-3:       #889A82;
+  --ink-4:       #84957C;
 
-  --hair:        #2A3048;
-  --hair-2:      #22283C;
+  --hair:        #22301F;
+  --hair-2:      #1B2719;
 
-  --accent:      #14B8A6;
-  --accent-2:    #2DD4BF;
-  --accent-dim:  rgba(20, 184, 166, 0.12);
-  --accent-tint: rgba(20, 184, 166, 0.22);
-  --accent-glow: rgba(20, 184, 166, 0.18);
-  --accent-end:  #0D9488;
+  --accent:      #7AA85C;
+  --accent-2:    #9BC080;
+  --accent-dim:  rgba(122, 168, 92, 0.12);
+  --accent-tint: rgba(122, 168, 92, 0.22);
+  --accent-glow: rgba(122, 168, 92, 0.18);
+  --accent-end:  #557E3D;
+
+  --danger:      #E87B6F;
+  --danger-dim:  rgba(232, 123, 111, 0.12);
+  --warn:        #E8C56A;
+  --warn-dim:    rgba(232, 197, 106, 0.12);
+  --success:     #7AA85C;
+  --success-dim: rgba(122, 168, 92, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #0A100B 0%, #101810 50%, #0A100B 100%);
+}
+
+/* ── Dark 9: Velvet Cake — Dark dessert bar, cocoa + ruby pink ───────────── */
+[data-theme="velvet-cake"] {
+  --canvas:      #110709;
+  --canvas-2:    #180A0D;
+  --sidebar:     #160910;
+  --surface:     #1E0F14;
+  --surface-2:   #26141A;
+  --surface-3:   #2F1A22;
+
+  --ink:         #F4DCE2;
+  --ink-2:       #CCA2AE;
+  --ink-3:       #A07F89;
+  --ink-4:       #93747E;
+
+  --hair:        #321820;
+  --hair-2:      #281319;
+
+  --accent:      #D34C7B;
+  --accent-2:    #E36B96;
+  --accent-dim:  rgba(211, 76, 123, 0.12);
+  --accent-tint: rgba(211, 76, 123, 0.22);
+  --accent-glow: rgba(211, 76, 123, 0.18);
+  --accent-end:  #9C2B58;
 
   --danger:      #F87171;
   --danger-dim:  rgba(248, 113, 113, 0.12);
   --warn:        #FCD34D;
   --warn-dim:    rgba(252, 211, 77, 0.12);
-  --success:     #34D399;
-  --success-dim: rgba(52, 211, 153, 0.12);
+  --success:     #84CC16;
+  --success-dim: rgba(132, 204, 22, 0.12);
 
-  --gradient-hero: linear-gradient(135deg, #0E1017 0%, #141820 50%, #0E1017 100%);
+  --gradient-hero: linear-gradient(135deg, #110709 0%, #1A0A0E 50%, #110709 100%);
 }
 
-/* ── Theme 13: Wasabi — Japanese / Sushi (dark, cool greens) ──────────────── */
-[data-theme="wasabi"] {
-  --canvas: #0B1010; --canvas-2: #101715; --sidebar: #111814;
-  --surface: #161E1B; --surface-2: #1C2622; --surface-3: #232D28;
-  --ink: #E8F0E4; --ink-2: #B2C1B2; --ink-3: #889889; --ink-4: #818F82;
-  --hair: #243029; --hair-2: #1D2722;
-  --accent: #84CC16; --accent-2: #A3E635;
-  --accent-dim: rgba(132,204,22,0.12); --accent-tint: rgba(132,204,22,0.22);
-  --accent-glow: rgba(132,204,22,0.18); --accent-end: #65A30D;
-  --danger: #F87171; --danger-dim: rgba(248,113,113,0.12);
-  --warn: #FBBF24; --warn-dim: rgba(251,191,36,0.12);
-  --success: #84CC16; --success-dim: rgba(132,204,22,0.12);
-  --gradient-hero: linear-gradient(135deg, #0B1010 0%, #131A16 50%, #0B1010 100%);
+/* ── Dark 10: Streetlight — Late-night street food, dark asphalt + neon ──── */
+[data-theme="streetlight"] {
+  --canvas:      #0E0D08;
+  --canvas-2:    #15130C;
+  --sidebar:     #13120B;
+  --surface:     #1B1810;
+  --surface-2:   #231F15;
+  --surface-3:   #2C271B;
+
+  --ink:         #F4EBC8;
+  --ink-2:       #CDBE88;
+  --ink-3:       #A29462;
+  --ink-4:       #968955;
+
+  --hair:        #30281A;
+  --hair-2:      #251F14;
+
+  --accent:      #FFB200;
+  --accent-2:    #FFC940;
+  --accent-dim:  rgba(255, 178, 0, 0.12);
+  --accent-tint: rgba(255, 178, 0, 0.22);
+  --accent-glow: rgba(255, 178, 0, 0.18);
+  --accent-end:  #C28600;
+
+  --danger:      #FF5470;
+  --danger-dim:  rgba(255, 84, 112, 0.14);
+  --warn:        #FFD43B;
+  --warn-dim:    rgba(255, 212, 59, 0.12);
+  --success:     #84CC16;
+  --success-dim: rgba(132, 204, 22, 0.12);
+
+  --gradient-hero: linear-gradient(135deg, #0E0D08 0%, #16140C 50%, #0E0D08 100%);
 }
 
-/* ── Theme 14: Trattoria — Italian (dark, terracotta + olive) ─────────────── */
-[data-theme="trattoria"] {
-  --canvas: #15100C; --canvas-2: #1B1410; --sidebar: #1C1612;
-  --surface: #221A14; --surface-2: #2A2118; --surface-3: #33291E;
-  --ink: #F4ECD8; --ink-2: #C9B89D; --ink-3: #A6957E; --ink-4: #9C8973;
-  --hair: #2D2418; --hair-2: #261D14;
-  --accent: #D97746; --accent-2: #E89368;
-  --accent-dim: rgba(217,119,70,0.12); --accent-tint: rgba(217,119,70,0.22);
-  --accent-glow: rgba(217,119,70,0.18); --accent-end: #B25E33;
-  --danger: #DC2626; --danger-dim: rgba(220,38,38,0.12);
-  --warn: #F59E0B; --warn-dim: rgba(245,158,11,0.12);
-  --success: #84CC16; --success-dim: rgba(132,204,22,0.12);
-  --gradient-hero: linear-gradient(135deg, #15100C 0%, #1F1814 50%, #15100C 100%);
+/* ════════════════════ LIGHT THEMES (10) ════════════════════ */
+
+/* ── Light 1: Porcelain — Fine china, white + navy ───────────────────────── */
+[data-theme="porcelain"] {
+  --canvas:      #FCFCFD;
+  --canvas-2:    #F4F4F8;
+  --sidebar:     #F0F0F5;
+  --surface:     #FFFFFF;
+  --surface-2:   #F8F8FC;
+  --surface-3:   #ECEDF2;
+
+  --ink:         #0F1419;
+  --ink-2:       #2E3641;
+  --ink-3:       #4F5763;
+  --ink-4:       #65707C;
+
+  --hair:        #E0E2EA;
+  --hair-2:      #EDEEF4;
+
+  --accent:      #1E3A5F;
+  --accent-2:    #2C5283;
+  --accent-dim:  rgba(30, 58, 95, 0.08);
+  --accent-tint: rgba(30, 58, 95, 0.16);
+  --accent-glow: rgba(30, 58, 95, 0.10);
+  --accent-end:  #122845;
+
+  --danger:      #B91C1C;
+  --danger-dim:  rgba(185, 28, 28, 0.08);
+  --warn:        #B45309;
+  --warn-dim:    rgba(180, 83, 9, 0.10);
+  --success:     #047857;
+  --success-dim: rgba(4, 120, 87, 0.08);
+
+  --gradient-hero: linear-gradient(135deg, #FCFCFD 0%, #F2F3F8 50%, #FCFCFD 100%);
 }
 
-/* ── Theme 15: Mariachi — Mexican (dark, vibrant red + yellow) ────────────── */
-[data-theme="mariachi"] {
-  --canvas: #14080A; --canvas-2: #1B0C0E; --sidebar: #1E0E10;
-  --surface: #251114; --surface-2: #2E161A; --surface-3: #381B20;
-  --ink: #FCE9D6; --ink-2: #D6B69B; --ink-3: #A18269; --ink-4: #9E8067;
-  --hair: #2F1A1D; --hair-2: #281418;
-  --accent: #FBBF24; --accent-2: #FCD34D;
-  --accent-dim: rgba(251,191,36,0.12); --accent-tint: rgba(251,191,36,0.22);
-  --accent-glow: rgba(251,191,36,0.18); --accent-end: #D97706;
-  --danger: #EF4444; --danger-dim: rgba(239,68,68,0.14);
-  --warn: #F97316; --warn-dim: rgba(249,115,22,0.12);
-  --success: #84CC16; --success-dim: rgba(132,204,22,0.12);
-  --gradient-hero: linear-gradient(135deg, #14080A 0%, #1F0D11 50%, #14080A 100%);
+/* ── Light 2: Chiffon — Pastry, pale yellow + sunbeam gold ───────────────── */
+[data-theme="chiffon"] {
+  --canvas:      #FFFBE8;
+  --canvas-2:    #FBF4CC;
+  --sidebar:     #F7EFBA;
+  --surface:     #FFFEF5;
+  --surface-2:   #FCF6D0;
+  --surface-3:   #F2EAA8;
+
+  --ink:         #2A2204;
+  --ink-2:       #524219;
+  --ink-3:       #6E5C28;
+  --ink-4:       #75674A;
+
+  --hair:        #ECDA88;
+  --hair-2:      #F4E7A8;
+
+  --accent:      #C9A100;
+  --accent-2:    #E5BB1A;
+  --accent-dim:  rgba(201, 161, 0, 0.10);
+  --accent-tint: rgba(201, 161, 0, 0.18);
+  --accent-glow: rgba(201, 161, 0, 0.12);
+  --accent-end:  #997900;
+
+  --danger:      #B91C1C;
+  --danger-dim:  rgba(185, 28, 28, 0.08);
+  --warn:        #92400E;
+  --warn-dim:    rgba(146, 64, 14, 0.10);
+  --success:     #15803D;
+  --success-dim: rgba(21, 128, 61, 0.08);
+
+  --gradient-hero: linear-gradient(135deg, #FFFBE8 0%, #F9EFB8 50%, #FFFBE8 100%);
 }
 
-/* ── Theme 16: Imperial — Chinese / Asian banquet (dark, red + gold) ──────── */
-[data-theme="imperial"] {
-  --canvas: #100808; --canvas-2: #170B0B; --sidebar: #190C0C;
-  --surface: #1F1010; --surface-2: #281414; --surface-3: #321A1A;
-  --ink: #F5E9CC; --ink-2: #D1BC8A; --ink-3: #9D8B62; --ink-4: #93805B;
-  --hair: #2D1818; --hair-2: #261313;
-  --accent: #EAB308; --accent-2: #FACC15;
-  --accent-dim: rgba(234,179,8,0.12); --accent-tint: rgba(234,179,8,0.22);
-  --accent-glow: rgba(234,179,8,0.18); --accent-end: #CA8A04;
-  --danger: #DC2626; --danger-dim: rgba(220,38,38,0.14);
-  --warn: #F59E0B; --warn-dim: rgba(245,158,11,0.12);
-  --success: #65A30D; --success-dim: rgba(101,163,13,0.12);
-  --gradient-hero: linear-gradient(135deg, #100808 0%, #1A0C0C 50%, #100808 100%);
+/* ── Light 3: Macaron — French dessert, soft cream + rose pink ───────────── */
+[data-theme="macaron"] {
+  --canvas:      #FDF3F5;
+  --canvas-2:    #F8E6EB;
+  --sidebar:     #F4DDE4;
+  --surface:     #FFFAFC;
+  --surface-2:   #F9E8EE;
+  --surface-3:   #EFD4DC;
+
+  --ink:         #2A0F18;
+  --ink-2:       #51202F;
+  --ink-3:       #6F3447;
+  --ink-4:       #784E5E;
+
+  --hair:        #E5C0CD;
+  --hair-2:      #EFD0D8;
+
+  --accent:      #E8568D;
+  --accent-2:    #F079A8;
+  --accent-dim:  rgba(232, 86, 141, 0.10);
+  --accent-tint: rgba(232, 86, 141, 0.18);
+  --accent-glow: rgba(232, 86, 141, 0.12);
+  --accent-end:  #B83669;
+
+  --danger:      #B91C1C;
+  --danger-dim:  rgba(185, 28, 28, 0.08);
+  --warn:        #92400E;
+  --warn-dim:    rgba(146, 64, 14, 0.10);
+  --success:     #15803D;
+  --success-dim: rgba(21, 128, 61, 0.08);
+
+  --gradient-hero: linear-gradient(135deg, #FDF3F5 0%, #F4DDE3 50%, #FDF3F5 100%);
 }
 
-/* ── Theme 17: Saffron — Indian / South Asian (dark, warm spice) ──────────── */
-[data-theme="saffron"] {
-  --canvas: #140C04; --canvas-2: #1C1008; --sidebar: #1E120A;
-  --surface: #25180D; --surface-2: #2E1E12; --surface-3: #382517;
-  --ink: #FCEACB; --ink-2: #D5BB91; --ink-3: #AD936F; --ink-4: #9F8768;
-  --hair: #322218; --hair-2: #2A1B12;
-  --accent: #F97316; --accent-2: #FB923C;
-  --accent-dim: rgba(249,115,22,0.12); --accent-tint: rgba(249,115,22,0.22);
-  --accent-glow: rgba(249,115,22,0.18); --accent-end: #C2410C;
-  --danger: #DC2626; --danger-dim: rgba(220,38,38,0.12);
-  --warn: #EAB308; --warn-dim: rgba(234,179,8,0.12);
-  --success: #84CC16; --success-dim: rgba(132,204,22,0.12);
-  --gradient-hero: linear-gradient(135deg, #140C04 0%, #1F140A 50%, #140C04 100%);
+/* ── Light 4: Almond Milk — Vegan café, warm almond + caramel brown ──────── */
+[data-theme="almond-milk"] {
+  --canvas:      #FAF3E8;
+  --canvas-2:    #F2E8D5;
+  --sidebar:     #EEE2CB;
+  --surface:     #FFFAEF;
+  --surface-2:   #F5EAD3;
+  --surface-3:   #E9DBB8;
+
+  --ink:         #2A1F10;
+  --ink-2:       #4C3A1F;
+  --ink-3:       #6D5630;
+  --ink-4:       #786648;
+
+  --hair:        #DCC9A5;
+  --hair-2:      #E5D5B5;
+
+  --accent:      #B47749;
+  --accent-2:    #CC9264;
+  --accent-dim:  rgba(180, 119, 73, 0.10);
+  --accent-tint: rgba(180, 119, 73, 0.18);
+  --accent-glow: rgba(180, 119, 73, 0.12);
+  --accent-end:  #885229;
+
+  --danger:      #A52A2A;
+  --danger-dim:  rgba(165, 42, 42, 0.08);
+  --warn:        #B45309;
+  --warn-dim:    rgba(180, 83, 9, 0.10);
+  --success:     #4D7C0F;
+  --success-dim: rgba(77, 124, 15, 0.08);
+
+  --gradient-hero: linear-gradient(135deg, #FAF3E8 0%, #F0E3CC 50%, #FAF3E8 100%);
 }
 
-/* ── Theme 18: Diner — American diner (dark, retro blue + cherry) ─────────── */
-[data-theme="diner"] {
-  --canvas: #080C14; --canvas-2: #0D1220; --sidebar: #0E1322;
-  --surface: #131B2C; --surface-2: #182238; --surface-3: #1F2B45;
-  --ink: #E8EEF8; --ink-2: #B0BCD2; --ink-3: #8B98B0; --ink-4: #7E8CA9;
-  --hair: #1F2D45; --hair-2: #1A2538;
-  --accent: #38BDF8; --accent-2: #7DD3FC;
-  --accent-dim: rgba(56,189,248,0.12); --accent-tint: rgba(56,189,248,0.22);
-  --accent-glow: rgba(56,189,248,0.18); --accent-end: #0284C7;
-  --danger: #F43F5E; --danger-dim: rgba(244,63,94,0.14);
-  --warn: #FCD34D; --warn-dim: rgba(252,211,77,0.12);
-  --success: #4ADE80; --success-dim: rgba(74,222,128,0.12);
-  --gradient-hero: linear-gradient(135deg, #080C14 0%, #0F1626 50%, #080C14 100%);
+/* ── Light 5: Iced Matcha — Matcha bar, pale matcha + matcha green ───────── */
+[data-theme="iced-matcha"] {
+  --canvas:      #EEF6E5;
+  --canvas-2:    #E2EDD2;
+  --sidebar:     #D8E4C6;
+  --surface:     #F7FCEE;
+  --surface-2:   #E5EFD2;
+  --surface-3:   #D0DEB5;
+
+  --ink:         #1A2810;
+  --ink-2:       #324523;
+  --ink-3:       #4A5E33;
+  --ink-4:       #586E48;
+
+  --hair:        #C4D6A5;
+  --hair-2:      #D2E0B5;
+
+  --accent:      #4F7C2F;
+  --accent-2:    #6B9A48;
+  --accent-dim:  rgba(79, 124, 47, 0.10);
+  --accent-tint: rgba(79, 124, 47, 0.18);
+  --accent-glow: rgba(79, 124, 47, 0.12);
+  --accent-end:  #34571C;
+
+  --danger:      #B91C1C;
+  --danger-dim:  rgba(185, 28, 28, 0.08);
+  --warn:        #92400E;
+  --warn-dim:    rgba(146, 64, 14, 0.10);
+  --success:     #4F7C2F;
+  --success-dim: rgba(79, 124, 47, 0.10);
+
+  --gradient-hero: linear-gradient(135deg, #EEF6E5 0%, #E3EDCE 50%, #EEF6E5 100%);
 }
 
-/* ── Theme 19: Halo — Filipino dessert / halo-halo (dark, playful purple) ── */
-[data-theme="halo"] {
-  --canvas: #110A18; --canvas-2: #170F20; --sidebar: #181023;
-  --surface: #1E1428; --surface-2: #261A33; --surface-3: #2F213F;
-  --ink: #F2E8F5; --ink-2: #CDB7D8; --ink-3: #9B86A6; --ink-4: #947FA8;
-  --hair: #2A1F38; --hair-2: #221830;
-  --accent: #C084FC; --accent-2: #D8B4FE;
-  --accent-dim: rgba(192,132,252,0.12); --accent-tint: rgba(192,132,252,0.22);
-  --accent-glow: rgba(192,132,252,0.18); --accent-end: #9333EA;
-  --danger: #FB7185; --danger-dim: rgba(251,113,133,0.12);
-  --warn: #FCD34D; --warn-dim: rgba(252,211,77,0.12);
-  --success: #4ADE80; --success-dim: rgba(74,222,128,0.12);
-  --gradient-hero: linear-gradient(135deg, #110A18 0%, #1A1124 50%, #110A18 100%);
+/* ── Light 6: Tangerine — Citrus juice bar, pale orange + tangerine ──────── */
+[data-theme="tangerine"] {
+  --canvas:      #FFF1E2;
+  --canvas-2:    #FBE3C8;
+  --sidebar:     #F8D9B8;
+  --surface:     #FFF8EE;
+  --surface-2:   #FBE6CD;
+  --surface-3:   #F2D2A8;
+
+  --ink:         #2A1505;
+  --ink-2:       #4F2D14;
+  --ink-3:       #714425;
+  --ink-4:       #785238;
+
+  --hair:        #E8C188;
+  --hair-2:      #EFD2A2;
+
+  --accent:      #E26F1E;
+  --accent-2:    #F08C42;
+  --accent-dim:  rgba(226, 111, 30, 0.10);
+  --accent-tint: rgba(226, 111, 30, 0.18);
+  --accent-glow: rgba(226, 111, 30, 0.12);
+  --accent-end:  #A84B0E;
+
+  --danger:      #B91C1C;
+  --danger-dim:  rgba(185, 28, 28, 0.08);
+  --warn:        #92400E;
+  --warn-dim:    rgba(146, 64, 14, 0.10);
+  --success:     #15803D;
+  --success-dim: rgba(21, 128, 61, 0.08);
+
+  --gradient-hero: linear-gradient(135deg, #FFF1E2 0%, #F8DCBC 50%, #FFF1E2 100%);
 }
 
-/* ── Theme 20: Boba — Bubble tea / dessert parlor (dark, soft pink + cream) ─ */
-[data-theme="boba"] {
-  --canvas: #14100E; --canvas-2: #1B1614; --sidebar: #1C1816;
-  --surface: #221C1A; --surface-2: #2A2320; --surface-3: #322A26;
-  --ink: #F8ECE6; --ink-2: #D6BFB4; --ink-3: #A28C81; --ink-4: #9E877C;
-  --hair: #2F2520; --hair-2: #281F1A;
-  --accent: #F472B6; --accent-2: #F9A8D4;
-  --accent-dim: rgba(244,114,182,0.12); --accent-tint: rgba(244,114,182,0.22);
-  --accent-glow: rgba(244,114,182,0.18); --accent-end: #DB2777;
-  --danger: #EF4444; --danger-dim: rgba(239,68,68,0.12);
-  --warn: #F59E0B; --warn-dim: rgba(245,158,11,0.12);
-  --success: #84CC16; --success-dim: rgba(132,204,22,0.12);
-  --gradient-hero: linear-gradient(135deg, #14100E 0%, #1E1815 50%, #14100E 100%);
+/* ── Light 7: Mint Leaf — Fresh herb / mojito, pale mint + cool mint ─────── */
+[data-theme="mint-leaf"] {
+  --canvas:      #ECF7F2;
+  --canvas-2:    #DEEDE5;
+  --sidebar:     #D2E5DC;
+  --surface:     #F5FCF8;
+  --surface-2:   #E0EFE7;
+  --surface-3:   #CBE0D2;
+
+  --ink:         #0F2820;
+  --ink-2:       #244538;
+  --ink-3:       #386154;
+  --ink-4:       #4B7367;
+
+  --hair:        #B8D4C5;
+  --hair-2:      #CADFD2;
+
+  --accent:      #2D9D7F;
+  --accent-2:    #4DBA9A;
+  --accent-dim:  rgba(45, 157, 127, 0.10);
+  --accent-tint: rgba(45, 157, 127, 0.18);
+  --accent-glow: rgba(45, 157, 127, 0.12);
+  --accent-end:  #1B6E58;
+
+  --danger:      #B91C1C;
+  --danger-dim:  rgba(185, 28, 28, 0.08);
+  --warn:        #B45309;
+  --warn-dim:    rgba(180, 83, 9, 0.10);
+  --success:     #2D9D7F;
+  --success-dim: rgba(45, 157, 127, 0.10);
+
+  --gradient-hero: linear-gradient(135deg, #ECF7F2 0%, #DFEDE3 50%, #ECF7F2 100%);
 }
 
-/* ── Theme 21: Cloud — Clean minimal (light, neutral white) ───────────────── */
-[data-theme="cloud"] {
-  --canvas: #FAFAFA; --canvas-2: #F4F4F5; --sidebar: #F4F4F5;
-  --surface: #FFFFFF; --surface-2: #F4F4F5; --surface-3: #E4E4E7;
-  --ink: #18181B; --ink-2: #3F3F46; --ink-3: #5C5C63; --ink-4: #6E6E75;
-  --hair: #E4E4E7; --hair-2: #EBEBEE;
-  --accent: #0EA5E9; --accent-2: #38BDF8;
-  --accent-dim: rgba(14,165,233,0.10); --accent-tint: rgba(14,165,233,0.18);
-  --accent-glow: rgba(14,165,233,0.12); --accent-end: #0284C7;
-  --danger: #DC2626; --danger-dim: rgba(220,38,38,0.10);
-  --warn: #B45309; --warn-dim: rgba(180,83,9,0.10);
-  --success: #16A34A; --success-dim: rgba(22,163,74,0.10);
-  --gradient-hero: linear-gradient(135deg, #FAFAFA 0%, #F0F0F2 50%, #FAFAFA 100%);
+/* ── Light 8: Lavender Honey — Boutique tea house, soft lilac + violet ───── */
+[data-theme="lavender-honey"] {
+  --canvas:      #F6F1FB;
+  --canvas-2:    #EDE3F4;
+  --sidebar:     #E5D9EE;
+  --surface:     #FCF8FF;
+  --surface-2:   #EEE2F5;
+  --surface-3:   #DCCAE8;
+
+  --ink:         #1F1230;
+  --ink-2:       #432F58;
+  --ink-3:       #67517F;
+  --ink-4:       #786A8B;
+
+  --hair:        #D6BFE2;
+  --hair-2:      #E2CFEB;
+
+  --accent:      #8B6FB8;
+  --accent-2:    #A78ED0;
+  --accent-dim:  rgba(139, 111, 184, 0.10);
+  --accent-tint: rgba(139, 111, 184, 0.18);
+  --accent-glow: rgba(139, 111, 184, 0.12);
+  --accent-end:  #654E8E;
+
+  --danger:      #B91C1C;
+  --danger-dim:  rgba(185, 28, 28, 0.08);
+  --warn:        #B45309;
+  --warn-dim:    rgba(180, 83, 9, 0.10);
+  --success:     #15803D;
+  --success-dim: rgba(21, 128, 61, 0.08);
+
+  --gradient-hero: linear-gradient(135deg, #F6F1FB 0%, #EBE0F4 50%, #F6F1FB 100%);
 }
 
-/* ── Theme 22: Linen — Warm off-white café (light, ivory + brown) ─────────── */
-[data-theme="linen"] {
-  --canvas: #FAF6EE; --canvas-2: #F4EFE3; --sidebar: #F0EAD9;
-  --surface: #FFFEF9; --surface-2: #F7F0DE; --surface-3: #ECE3D0;
-  --ink: #2A1F12; --ink-2: #54422B; --ink-3: #816A4D; --ink-4: #796A56;
-  --hair: #E0D4BC; --hair-2: #EADFC8;
-  --accent: #92400E; --accent-2: #B45309;
-  --accent-dim: rgba(146,64,14,0.08); --accent-tint: rgba(146,64,14,0.16);
-  --accent-glow: rgba(146,64,14,0.10); --accent-end: #78350F;
-  --danger: #B91C1C; --danger-dim: rgba(185,28,28,0.08);
-  --warn: #B45309; --warn-dim: rgba(180,83,9,0.10);
-  --success: #15803D; --success-dim: rgba(21,128,61,0.08);
-  --gradient-hero: linear-gradient(135deg, #FAF6EE 0%, #F0E9D7 50%, #FAF6EE 100%);
+/* ── Light 9: Coconut Cream — Tropical, coconut white + tropical coral ───── */
+[data-theme="coconut-cream"] {
+  --canvas:      #FCF6EE;
+  --canvas-2:    #F4ECDD;
+  --sidebar:     #EEE4D0;
+  --surface:     #FFFBF4;
+  --surface-2:   #F8EFDB;
+  --surface-3:   #ECDDBE;
+
+  --ink:         #2A1818;
+  --ink-2:       #51302C;
+  --ink-3:       #714C44;
+  --ink-4:       #786258;
+
+  --hair:        #E0CFB4;
+  --hair-2:      #ECDDC0;
+
+  --accent:      #E55B5B;
+  --accent-2:    #F07C7C;
+  --accent-dim:  rgba(229, 91, 91, 0.10);
+  --accent-tint: rgba(229, 91, 91, 0.18);
+  --accent-glow: rgba(229, 91, 91, 0.12);
+  --accent-end:  #AC3838;
+
+  --danger:      #B91C1C;
+  --danger-dim:  rgba(185, 28, 28, 0.08);
+  --warn:        #B45309;
+  --warn-dim:    rgba(180, 83, 9, 0.10);
+  --success:     #4D7C0F;
+  --success-dim: rgba(77, 124, 15, 0.08);
+
+  --gradient-hero: linear-gradient(135deg, #FCF6EE 0%, #F2E6CD 50%, #FCF6EE 100%);
 }
 
-/* ── Theme 23: Mint — Fresh light (light, soft mint green) ────────────────── */
-[data-theme="mint"] {
-  --canvas: #F3FAF6; --canvas-2: #EAF5EE; --sidebar: #E5F1E9;
-  --surface: #FFFFFF; --surface-2: #ECF7F0; --surface-3: #DAEDE0;
-  --ink: #0F2A1C; --ink-2: #325240; --ink-3: #486352; --ink-4: #637369;
-  --hair: #D2E4D7; --hair-2: #DEEDE2;
-  --accent: #047857; --accent-2: #0F8466;
-  --accent-dim: rgba(4,120,87,0.08); --accent-tint: rgba(4,120,87,0.16);
-  --accent-glow: rgba(4,120,87,0.10); --accent-end: #065F46;
-  --danger: #B91C1C; --danger-dim: rgba(185,28,28,0.08);
-  --warn: #B45309; --warn-dim: rgba(180,83,9,0.10);
-  --success: #047857; --success-dim: rgba(4,120,87,0.10);
-  --gradient-hero: linear-gradient(135deg, #F3FAF6 0%, #E8F4ED 50%, #F3FAF6 100%);
-}
+/* ── Light 10: Fig Jam — Artisan preserves, pale + deep plum magenta ─────── */
+[data-theme="fig-jam"] {
+  --canvas:      #F8EFF1;
+  --canvas-2:    #EFDFE2;
+  --sidebar:     #E8D4D8;
+  --surface:     #FCF6F7;
+  --surface-2:   #F0E0E3;
+  --surface-3:   #DEC8CC;
 
-/* ── Theme 24: Sand — Warm beige (light, tan + amber) ─────────────────────── */
-[data-theme="sand"] {
-  --canvas: #FBF7EE; --canvas-2: #F4EEDF; --sidebar: #EFE7D2;
-  --surface: #FFFFFF; --surface-2: #F8F0DC; --surface-3: #EBE0C5;
-  --ink: #292014; --ink-2: #54452B; --ink-3: #68573E; --ink-4: #796B52;
-  --hair: #E0D2B5; --hair-2: #EBDEC0;
-  --accent: #B45309; --accent-2: #D97706;
-  --accent-dim: rgba(180,83,9,0.10); --accent-tint: rgba(180,83,9,0.18);
-  --accent-glow: rgba(180,83,9,0.12); --accent-end: #92400E;
-  --danger: #B91C1C; --danger-dim: rgba(185,28,28,0.08);
-  --warn: #92400E; --warn-dim: rgba(146,64,14,0.10);
-  --success: #65A30D; --success-dim: rgba(101,163,13,0.10);
-  --gradient-hero: linear-gradient(135deg, #FBF7EE 0%, #F2EAD3 50%, #FBF7EE 100%);
-}
+  --ink:         #2A0F1B;
+  --ink-2:       #501F33;
+  --ink-3:       #6F3349;
+  --ink-4:       #784A60;
 
-/* ── Theme 25: Lavender — Pale purple (light, gentle floral) ──────────────── */
-[data-theme="lavender"] {
-  --canvas: #F8F5FB; --canvas-2: #F1ECF7; --sidebar: #EEE7F4;
-  --surface: #FFFFFF; --surface-2: #F1ECF7; --surface-3: #E1D6EE;
-  --ink: #1F1430; --ink-2: #463357; --ink-3: #715E84; --ink-4: #72677D;
-  --hair: #D9C9E5; --hair-2: #E3D6EC;
-  --accent: #7C3AED; --accent-2: #9333EA;
-  --accent-dim: rgba(124,58,237,0.08); --accent-tint: rgba(124,58,237,0.16);
-  --accent-glow: rgba(124,58,237,0.10); --accent-end: #6D28D9;
-  --danger: #B91C1C; --danger-dim: rgba(185,28,28,0.08);
-  --warn: #B45309; --warn-dim: rgba(180,83,9,0.10);
-  --success: #15803D; --success-dim: rgba(21,128,61,0.08);
-  --gradient-hero: linear-gradient(135deg, #F8F5FB 0%, #EFE7F5 50%, #F8F5FB 100%);
+  --hair:        #DDB8C2;
+  --hair-2:      #E8CAD2;
+
+  --accent:      #A03B5C;
+  --accent-2:    #BF5A7A;
+  --accent-dim:  rgba(160, 59, 92, 0.10);
+  --accent-tint: rgba(160, 59, 92, 0.18);
+  --accent-glow: rgba(160, 59, 92, 0.12);
+  --accent-end:  #71243F;
+
+  --danger:      #B91C1C;
+  --danger-dim:  rgba(185, 28, 28, 0.08);
+  --warn:        #B45309;
+  --warn-dim:    rgba(180, 83, 9, 0.10);
+  --success:     #15803D;
+  --success-dim: rgba(21, 128, 61, 0.08);
+
+  --gradient-hero: linear-gradient(135deg, #F8EFF1 0%, #ECD8DE 50%, #F8EFF1 100%);
 }
 
 /* ── Global tokens (theme-independent) ────────────────────────────────────── */
