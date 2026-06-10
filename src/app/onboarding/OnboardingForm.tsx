@@ -110,10 +110,17 @@ const TYPE_THEME: Record<BusinessTypeId, string> = Object.fromEntries(
   BUSINESS_TYPES.map(t => [t.id, t.theme])
 ) as Record<BusinessTypeId, string>
 
-export default function OnboardingForm({ userId, email }: { userId: string; email: string }) {
+export default function OnboardingForm({
+  userId, email, contactNumber: initialContactNumber = '',
+}: {
+  userId: string
+  email: string
+  contactNumber?: string
+}) {
   const [businessType, setBusinessType] = useState<BusinessTypeId>('restaurant')
   const [venueName, setVenueName]       = useState('')
   const [fullName, setFullName]         = useState('')
+  const [contactNumber, setContactNumber] = useState(initialContactNumber)
   const [withDemo, setWithDemo]         = useState(true)
   const [error, setError]               = useState('')
   const [loading, setLoading]           = useState(false)
@@ -132,6 +139,7 @@ export default function OnboardingForm({ userId, email }: { userId: string; emai
       email,
       venueName,
       fullName,
+      contactNumber,
       theme: TYPE_THEME[businessType],
       withDemo,
     })
@@ -196,6 +204,20 @@ export default function OnboardingForm({ userId, email }: { userId: string; emai
             onChange={e => setFullName(e.target.value)}
             className="w-full px-3 py-2.5 rounded-lg bg-surface border border-hair text-ink text-sm placeholder:text-ink-4 focus:outline-none focus:border-accent transition-colors"
             placeholder="Lina Hartono"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-ink-3 uppercase tracking-wider">
+            Contact number <span className="text-ink-4 normal-case tracking-normal text-[10px]">(optional)</span>
+          </label>
+          <input
+            type="tel"
+            autoComplete="tel"
+            inputMode="tel"
+            value={contactNumber}
+            onChange={e => setContactNumber(e.target.value)}
+            className="w-full px-3 py-2.5 rounded-lg bg-surface border border-hair text-ink text-sm placeholder:text-ink-4 focus:outline-none focus:border-accent transition-colors"
+            placeholder="09XX XXX XXXX"
           />
         </div>
       </div>

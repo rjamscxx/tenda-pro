@@ -38,7 +38,17 @@ export default async function OnboardingPage() {
           <h1 className="text-2xl font-semibold text-ink">Set up your business</h1>
           <p className="text-sm text-ink-3">You can change this later in Settings.</p>
         </div>
-        <OnboardingForm userId={user.id} email={user.email ?? ''} />
+        <OnboardingForm
+          userId={user.id}
+          email={user.email ?? ''}
+          contactNumber={
+            // Captured from the signup form into auth user_metadata so the
+            // owner doesn't have to re-type it during onboarding.
+            typeof user.user_metadata?.contact_number === 'string'
+              ? user.user_metadata.contact_number
+              : ''
+          }
+        />
       </div>
     </div>
   )
