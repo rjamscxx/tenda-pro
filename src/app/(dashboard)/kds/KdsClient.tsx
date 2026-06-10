@@ -68,7 +68,10 @@ export default function KdsClient({
   const [lastSync, setLastSync] = useState<Date>(new Date())
   const seenIdsRef = useRef<Set<string>>(new Set(initialTickets.map(t => t.saleId)))
   const mutedRef = useRef(false)
-  mutedRef.current = muted
+
+  // Mirror `muted` into a ref so the polling closure (which captures mutedRef
+  // stably via useCallback below) reads the current value without re-binding.
+  useEffect(() => { mutedRef.current = muted }, [muted])
 
   // Forces age-pill re-render every 15s without re-fetching.
   useEffect(() => {

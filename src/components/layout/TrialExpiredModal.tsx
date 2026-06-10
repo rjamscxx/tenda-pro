@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useEffect, useRef } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { createPortal } from 'react-dom'
 import { downgradeTofree } from '@/app/(dashboard)/settings/actions'
 
@@ -23,8 +23,13 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
   const [screen, setScreen] = useState<'choose' | 'form' | 'sent'>('choose')
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly')
   const [qrOpen, setQrOpen] = useState<{ name: string; src: string } | null>(null)
-  const portalRef = useRef<Element | null>(null)
-  useEffect(() => { portalRef.current = document.body }, [])
+
+  // QR lightbox is portalled to <body> so backdrop-filter on glass ancestors
+  // doesn't establish a stacking context that traps it. `mounted` gates the
+  // portal until after hydration so SSR sees no portal output.
+  const [mounted, setMounted] = useState(false)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMounted(true) }, [])
 
   // Form fields
   const [fullName, setFullName] = useState(userFullName)
@@ -286,7 +291,7 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
     </div>
 
     {/* QR zoom lightbox — portalled to document.body to escape all stacking contexts */}
-    {qrOpen && portalRef.current && createPortal(
+    {qrOpen && mounted && createPortal(
       <div
         className="fixed inset-0 flex items-center justify-center p-6"
         style={{ zIndex: 99999, background: 'rgba(0,0,0,0.88)' }}
@@ -314,7 +319,7 @@ export default function TrialExpiredModal({ trialExpired, userEmail, userFullNam
           <p className="text-center text-xs text-gray-400 mt-3">Tap outside or press × to go back</p>
         </div>
       </div>,
-      portalRef.current
+      document.body
     )}
     </>
   )
