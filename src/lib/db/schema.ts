@@ -41,12 +41,13 @@ export const accounts = pgTable('accounts', {
 // ── Users (mirrors Supabase auth.users) ──────────────────────────────────────
 
 export const users = pgTable('users', {
-  id:         uuid('id').primaryKey(), // = Supabase auth.users.id
-  accountId:  uuid('account_id').notNull().references(() => accounts.id, { onDelete: 'cascade' }),
-  role:       userRoleEnum('role').notNull().default('owner'),
-  fullName:   text('full_name'),
-  email:      text('email'),
-  createdAt:  timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  id:            uuid('id').primaryKey(), // = Supabase auth.users.id
+  accountId:     uuid('account_id').notNull().references(() => accounts.id, { onDelete: 'cascade' }),
+  role:          userRoleEnum('role').notNull().default('owner'),
+  fullName:      text('full_name'),
+  email:         text('email'),
+  contactNumber: text('contact_number'),
+  createdAt:     timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index('users_account_idx').on(t.accountId), index('users_email_idx').on(t.email)])
 
 // ── Venues (1 per account in v1; schema is multi-venue ready) ────────────────

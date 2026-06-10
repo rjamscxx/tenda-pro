@@ -43,6 +43,7 @@ export default async function MembersPage() {
       accountCreated: accounts.createdAt,
       fullName:       users.fullName,
       email:          users.email,
+      contactNumber:  users.contactNumber,
       userCreated:    users.createdAt,
       venueName:      venues.name,
     })
@@ -58,14 +59,15 @@ export default async function MembersPage() {
     const trialExpired = isTrial && r.planExpiresAt! < now
     const effectivePlan = trialExpired ? 'free' : r.plan
     return {
-      accountId:    r.accountId,
-      plan:         effectivePlan,
-      isTrial:      isTrial && !trialExpired,
+      accountId:     r.accountId,
+      plan:          effectivePlan,
+      isTrial:       isTrial && !trialExpired,
       planExpiresAt: r.planExpiresAt,
-      joinedAt:     r.accountCreated,
-      fullName:     r.fullName ?? '—',
-      email:        r.email ?? '—',
-      venueName:    r.venueName ?? '—',
+      joinedAt:      r.accountCreated,
+      fullName:      r.fullName ?? '—',
+      email:         r.email ?? '—',
+      contactNumber: r.contactNumber ?? '—',
+      venueName:     r.venueName ?? '—',
     }
   })
 
@@ -137,6 +139,7 @@ export default async function MembersPage() {
                 <tr className="border-b border-hair text-[10px] font-semibold uppercase tracking-widest text-ink-4">
                   <th className="px-4 py-2.5 text-left">Name</th>
                   <th className="px-4 py-2.5 text-left">Email</th>
+                  <th className="px-4 py-2.5 text-left hidden lg:table-cell">Contact</th>
                   <th className="px-4 py-2.5 text-left hidden sm:table-cell">Venue</th>
                   <th className="px-4 py-2.5 text-left">Plan</th>
                   <th className="px-4 py-2.5 text-left hidden md:table-cell">Expires</th>
@@ -147,7 +150,16 @@ export default async function MembersPage() {
                 {members.map((m, i) => (
                   <tr key={m.accountId} className={`hover:bg-surface/40 transition-colors ${i % 2 === 1 ? 'bg-surface/20' : ''}`}>
                     <td className="px-4 py-3 font-medium text-ink truncate max-w-[140px]">{m.fullName}</td>
-                    <td className="px-4 py-3 text-ink-3 truncate max-w-[180px]">{m.email}</td>
+                    <td className="px-4 py-3 text-ink-3 truncate max-w-[180px]">
+                      {m.email !== '—' ? (
+                        <a href={`mailto:${m.email}`} className="hover:text-accent hover:underline">{m.email}</a>
+                      ) : m.email}
+                    </td>
+                    <td className="px-4 py-3 text-ink-3 hidden lg:table-cell whitespace-nowrap tabular">
+                      {m.contactNumber !== '—' ? (
+                        <a href={`tel:${m.contactNumber}`} className="hover:text-accent hover:underline">{m.contactNumber}</a>
+                      ) : <span className="text-ink-4">—</span>}
+                    </td>
                     <td className="px-4 py-3 text-ink-3 truncate max-w-[140px] hidden sm:table-cell">{m.venueName}</td>
                     <td className="px-4 py-3">
                       <PlanBadge plan={m.plan} isTrial={m.isTrial} />

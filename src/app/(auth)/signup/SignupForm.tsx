@@ -14,22 +14,45 @@ function friendlyError(msg: string): string {
   return SUPABASE_ERRORS[msg] ?? msg
 }
 
+// Loose PH-friendly phone validation. Accepts +63 or 09 starts, 10-13 digits
+// total once you strip whitespace, dashes and parens. Empty string allowed
+// (contact number is optional at signup; user can add it later in Settings).
+function isValidPhone(raw: string): boolean {
+  const v = raw.replace(/[\s\-().]/g, '')
+  if (v === '') return true
+  return /^(\+?\d{10,13})$/.test(v)
+}
+
 export default function SignupForm() {
   const router = useRouter()
-  const [email, setEmail]         = useState('')
-  const [password, setPassword]   = useState('')
-  const [showPass, setShowPass]   = useState(false)
-  const [error, setError]         = useState('')
-  const [loading, setLoading]     = useState(false)
-  const [emailSent, setEmailSent] = useState(false)
+  const [email, setEmail]                 = useState('')
+  const [contactNumber, setContactNumber] = useState('')
+  const [password, setPassword]           = useState('')
+  const [showPass, setShowPass]           = useState(false)
+  const [error, setError]                 = useState('')
+  const [loading, setLoading]             = useState(false)
+  const [emailSent, setEmailSent]         = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
 
+    if (!isValidPhone(contactNumber)) {
+      setError('Contact number looks invalid — use 09XX XXX XXXX or +63 9XX XXX XXXX.')
+      setLoading(false)
+      return
+    }
+
     const supabase = createClient()
-    const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
+    // contact_number rides on the auth user_metadata so it survives the email
+    // verification round-trip and onboarding can persist it into our users
+    // table alongside fullName.
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { contact_number: contactNumber.trim() || null } },
+    })
 
     if (signUpError) {
       setError(friendlyError(signUpError.message))
@@ -107,6 +130,21 @@ export default function SignupForm() {
           onChange={e => setEmail(e.target.value)}
           className="w-full px-3 py-2.5 rounded-lg bg-surface border border-hair text-ink text-sm placeholder:text-ink-4 focus:outline-none focus:border-accent transition-colors"
           placeholder="you@example.com"
+        />
+      </div>
+
+      <div className="space-y-1">
+        <label className="text-xs font-medium text-ink-3 uppercase tracking-wider">
+          Contact number <span className="text-ink-4 normal-case tracking-normal text-[10px]">(optional)</span>
+        </label>
+        <input
+          type="tel"
+          autoComplete="tel"
+          inputMode="tel"
+          value={contactNumber}
+          onChange={e => setContactNumber(e.target.value)}
+          className="w-full px-3 py-2.5 rounded-lg bg-surface border border-hair text-ink text-sm placeholder:text-ink-4 focus:outline-none focus:border-accent transition-colors"
+          placeholder="09XX XXX XXXX"
         />
       </div>
 

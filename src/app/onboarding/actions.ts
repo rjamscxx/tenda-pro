@@ -7,15 +7,18 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 interface CreateVenueInput {
-  userId:    string
-  email:     string
-  venueName: string
-  fullName:  string
-  theme:     string
-  withDemo?: boolean
+  userId:         string
+  email:          string
+  venueName:      string
+  fullName:       string
+  contactNumber?: string
+  theme:          string
+  withDemo?:      boolean
 }
 
-export async function createVenue({ userId, email, venueName, fullName, theme, withDemo }: CreateVenueInput) {
+export async function createVenue({
+  userId, email, venueName, fullName, contactNumber, theme, withDemo,
+}: CreateVenueInput) {
   const existing = await db.select().from(users).where(eq(users.id, userId)).limit(1)
   if (existing.length > 0) redirect('/dashboard')
 
@@ -30,11 +33,12 @@ export async function createVenue({ userId, email, venueName, fullName, theme, w
       planExpiresAt:  trialExpiry,
     }).returning()
     await db.insert(users).values({
-      id:        userId,
-      accountId: account.id,
-      role:      'owner',
-      fullName:  fullName.trim() || null,
-      email:     email.trim() || null,
+      id:            userId,
+      accountId:     account.id,
+      role:          'owner',
+      fullName:      fullName.trim() || null,
+      email:         email.trim() || null,
+      contactNumber: contactNumber?.trim() || null,
     })
     const [venue] = await db.insert(venues).values({
       accountId: account.id,
