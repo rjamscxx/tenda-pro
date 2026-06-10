@@ -70,17 +70,16 @@ export const viewport: Viewport = {
 }
 
 // Inline pre-paint theme bootstrap. Two behaviors, picked by URL:
-// • Landing (`/`): no cookie read, no cookie write — pick a RANDOM theme
-//   on every visit so each load feels fresh. Each landing render samples
-//   one of the 25 themes; great for marketing-page polish.
+// • Landing (`/`): default to ember — brand-aligned warm tone. The on-page
+//   theme picker still lets visitors browse other themes for the session,
+//   but no cookie write happens so we never persist a landing pick.
 // • App (everywhere else): respect the sizzle-theme cookie set in Settings.
-//   The owner's choice persists across sessions and never randomizes.
+//   The owner's choice persists across sessions; default is ember.
 // Runs before the body paints; layout stays static + bf-cache friendly.
 const THEME_INIT = `(function(){try{
   var p=location.pathname;
   if(p==='/'||p===''){
-    var T=['sage-dark','sage-light','espresso','citrus','crimson','ocean','rose','ember','midnight','harvest','jade','slate','wasabi','trattoria','mariachi','imperial','saffron','diner','halo','boba','linen','lavender','cloud','mint','sand'];
-    document.documentElement.setAttribute('data-theme',T[Math.floor(Math.random()*T.length)]);
+    document.documentElement.setAttribute('data-theme','ember');
     return;
   }
   var m=document.cookie.match(/(?:^|; )sizzle-theme=([^;]+)/);

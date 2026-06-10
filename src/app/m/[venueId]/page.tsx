@@ -75,7 +75,7 @@ export default async function PublicMenuPage({ params }: { params: Promise<{ ven
 
   const venue = venueRow[0]
   const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' })
-  const theme = venue.menuTheme || 'sage-dark'
+  const theme = venue.menuTheme || 'ember'
 
   // Group dishes by Title-Cased category, then sort categories by intent
   const grouped = dishRows.reduce<Record<string, typeof dishRows>>((acc, dish) => {

@@ -182,31 +182,28 @@ const FEATURES = [
 
 
 const THEMES = [
-  { id: 'sage-dark',   label: 'Sage',        canvas: '#0E1714', accent: '#58C098' },
-  { id: 'sage-light',  label: 'Sage Light',  canvas: '#F4F0E7', accent: '#1F5F4A' },
-  { id: 'espresso',    label: 'Espresso',    canvas: '#1A1410', accent: '#D9A876' },
-  { id: 'citrus',      label: 'Citrus',      canvas: '#0F1410', accent: '#C9E663' },
-  { id: 'crimson',     label: 'Crimson',     canvas: '#14100F', accent: '#DC2626' },
-  { id: 'ocean',       label: 'Ocean',       canvas: '#060D14', accent: '#0EA5E9' },
-  { id: 'rose',        label: 'Rose',        canvas: '#150C10', accent: '#E879A6' },
-  { id: 'ember',       label: 'Ember',       canvas: '#130A04', accent: '#F97316' },
-  { id: 'midnight',    label: 'Midnight',    canvas: '#070714', accent: '#818CF8' },
-  { id: 'harvest',     label: 'Harvest',     canvas: '#14100A', accent: '#F59E0B' },
-  { id: 'jade',        label: 'Jade',        canvas: '#071010', accent: '#10B981' },
-  { id: 'slate',       label: 'Slate',       canvas: '#0E1017', accent: '#14B8A6' },
-  { id: 'wasabi',      label: 'Wasabi',      canvas: '#0B1010', accent: '#84CC16' },
-  { id: 'trattoria',   label: 'Trattoria',   canvas: '#15100C', accent: '#D97746' },
-  { id: 'mariachi',    label: 'Mariachi',    canvas: '#14080A', accent: '#FBBF24' },
-  { id: 'imperial',    label: 'Imperial',    canvas: '#100808', accent: '#EAB308' },
-  { id: 'saffron',     label: 'Saffron',     canvas: '#140C04', accent: '#F97316' },
-  { id: 'diner',       label: 'Diner',       canvas: '#080C14', accent: '#38BDF8' },
-  { id: 'halo',        label: 'Halo',        canvas: '#110A18', accent: '#C084FC' },
-  { id: 'boba',        label: 'Boba',        canvas: '#14100E', accent: '#F472B6' },
-  { id: 'cloud',       label: 'Cloud',       canvas: '#FAFAFA', accent: '#0EA5E9' },
-  { id: 'linen',       label: 'Linen',       canvas: '#FAF6EE', accent: '#92400E' },
-  { id: 'mint',        label: 'Mint',        canvas: '#F3FAF6', accent: '#047857' },
-  { id: 'sand',        label: 'Sand',        canvas: '#FBF7EE', accent: '#B45309' },
-  { id: 'lavender',    label: 'Lavender',    canvas: '#F8F5FB', accent: '#7C3AED' },
+  // Dark themes (10) — food industry
+  { id: 'ember',          label: 'Ember',          canvas: '#130A04', accent: '#F97316' },
+  { id: 'carbon-steel',   label: 'Carbon Steel',   canvas: '#0F1114', accent: '#B5BAC5' },
+  { id: 'truffle',        label: 'Truffle',        canvas: '#0C0A0A', accent: '#D4AF37' },
+  { id: 'kimchi',         label: 'Kimchi',         canvas: '#110909', accent: '#DA3B1C' },
+  { id: 'cardamom',       label: 'Cardamom',       canvas: '#08120F', accent: '#E0B340' },
+  { id: 'bourbon',        label: 'Bourbon',        canvas: '#110A05', accent: '#C58940' },
+  { id: 'smoke-blue',     label: 'Smoke Blue',     canvas: '#0A0E14', accent: '#3F8FE0' },
+  { id: 'forest-floor',   label: 'Forest Floor',   canvas: '#0A100B', accent: '#7AA85C' },
+  { id: 'velvet-cake',    label: 'Velvet Cake',    canvas: '#110709', accent: '#D34C7B' },
+  { id: 'streetlight',    label: 'Streetlight',    canvas: '#0E0D08', accent: '#FFB200' },
+  // Light themes (10) — food industry
+  { id: 'porcelain',      label: 'Porcelain',      canvas: '#FCFCFD', accent: '#1E3A5F' },
+  { id: 'chiffon',        label: 'Chiffon',        canvas: '#FFFBE8', accent: '#C9A100' },
+  { id: 'macaron',        label: 'Macaron',        canvas: '#FDF3F5', accent: '#E8568D' },
+  { id: 'almond-milk',    label: 'Almond Milk',    canvas: '#FAF3E8', accent: '#B47749' },
+  { id: 'iced-matcha',    label: 'Iced Matcha',    canvas: '#EEF6E5', accent: '#4F7C2F' },
+  { id: 'tangerine',      label: 'Tangerine',      canvas: '#FFF1E2', accent: '#E26F1E' },
+  { id: 'mint-leaf',      label: 'Mint Leaf',      canvas: '#ECF7F2', accent: '#2D9D7F' },
+  { id: 'lavender-honey', label: 'Lavender Honey', canvas: '#F6F1FB', accent: '#8B6FB8' },
+  { id: 'coconut-cream',  label: 'Coconut Cream',  canvas: '#FCF6EE', accent: '#E55B5B' },
+  { id: 'fig-jam',        label: 'Fig Jam',        canvas: '#F8EFF1', accent: '#A03B5C' },
 ]
 
 const NAV_LINKS = [
@@ -241,7 +238,7 @@ export default function LandingClient() {
   const [scrolled, setScrolled]       = useState(false)
   const [activeTheme, setActiveTheme] = useState(readInitialTheme)
   const currentTheme = THEMES.find(t => t.id === activeTheme) ?? THEMES[0]
-  const { ref: themeCountRef, count: themeCountVal } = useCountUp(25)
+  const { ref: themeCountRef, count: themeCountVal } = useCountUp(20)
   // Landing always renders as logged-out. The rare logged-in visitor who hits
   // "/" sees the marketing CTAs; clicking "Start free" / "Sign in" routes
   // them to /signup or /login, both of which server-check auth and redirect
@@ -634,7 +631,7 @@ export default function LandingClient() {
               'Multi-venue',
               'AI Assistant',
               'POS',
-              '25 themes',
+              '20 themes',
               'QR Menu',
               'Inventory forecasting',
               'Daily digest email',
@@ -1250,12 +1247,12 @@ export default function LandingClient() {
         <div className="max-w-6xl mx-auto space-y-12">
 
           <div className="lp-fade-up text-center">
-            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">25 themes</p>
+            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">20 themes</p>
             <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold tracking-tighter text-ink leading-tight">
               Your dashboard, your style.
             </h2>
             <p className="text-base text-ink-3 mt-4 leading-relaxed max-w-[52ch] mx-auto">
-              Click any theme below — the hero preview above updates live. 14 dark, 6 light, and 5 cuisine-inspired palettes. Every color you see is exactly how your dashboard will look.
+              Click any theme below — the hero preview above updates live. 10 dark, 10 light, all curated for food-industry vibes. Every color you see is exactly how your dashboard will look.
             </p>
           </div>
 
@@ -1353,7 +1350,7 @@ export default function LandingClient() {
                 <p className="text-xs text-ink-4 mt-1">Forever. One business.</p>
               </div>
               <ul className="space-y-3 text-sm text-ink-3">
-                {['Sales & expense tracking', 'Menu with recipe costing', 'Inventory alerts', '6-month reports', 'All 25 themes'].map(f => (
+                {['Sales & expense tracking', 'Menu with recipe costing', 'Inventory alerts', '6-month reports', 'All 20 themes'].map(f => (
                   <li key={f} className="flex items-center gap-2.5">
                     <svg className="w-3.5 h-3.5 text-accent shrink-0" viewBox="0 0 14 14" fill="none">
                       <path d="M2.5 7.5L5.5 10.5 11.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
