@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import ServiceWorkerRegistrar from '@/components/layout/ServiceWorkerRegistrar'
 
-// SF Pro is Apple-licensed and cannot be hosted via @font-face on the web.
-// The standard approach is the Apple system-font stack: real SF Pro renders
-// on macOS/iOS (where it ships as the OS UI font), and Windows/Android fall
-// back to their closest system font (Segoe UI / Roboto). Stack lives in
-// globals.css under --font-sans, applied to body.
-const geistMono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'] })
+// Geist Sans is the UI face — clean, modern, ownable without being loud, and a
+// perfect pair with Geist Mono (used for all numbers). The Apple system stack
+// stays as the fallback in globals.css's --font-sans, so SF Pro / Segoe still
+// render if the web font is slow.
+const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'], display: 'swap' })
+const geistMono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'], display: 'swap' })
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sizzle.app'
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#58C098',
+  themeColor: '#F97316',
   width: 'device-width',
   initialScale: 1,
   minimumScale: 1,
@@ -90,7 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${geistMono.variable} h-full`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full`}
       suppressHydrationWarning
     >
       <head>

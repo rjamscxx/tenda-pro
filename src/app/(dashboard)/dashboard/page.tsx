@@ -394,7 +394,7 @@ export default async function DashboardPage() {
   const checklistSummary = await getTodayChecklistSummary()
 
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto w-full space-y-5">
+    <div className="p-5 sm:p-8 max-w-7xl mx-auto w-full space-y-7">
 
       {/* Header */}
       <div className="card-enter card-d0 flex flex-col gap-3">
@@ -591,12 +591,16 @@ export default async function DashboardPage() {
       </Link>
 
       {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {kpis.map((kpi, idx) => (
           <div key={kpi.label} className={`card-enter card-d${idx + 1} glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden`}>
-            <div className={`absolute inset-x-0 top-0 h-[2px] ${
-              kpi.status === 'warn' ? 'bg-warn' : kpi.status === 'good' ? 'bg-success' : 'bg-gradient-to-r from-accent via-accent-2 to-accent'
-            }`} />
+            {/* Status edge only where it carries real meaning (over-target /
+                healthy) — softened. Neutral cards stay clean: no decoration. */}
+            {kpi.status !== 'neutral' && (
+              <div className={`absolute inset-x-0 top-0 h-px ${
+                kpi.status === 'warn' ? 'bg-warn/60' : 'bg-success/60'
+              }`} />
+            )}
             <div className="flex items-center justify-between">
               <p className="text-[11px] font-medium text-ink-4 uppercase tracking-widest">{kpi.label}</p>
               <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${

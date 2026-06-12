@@ -714,12 +714,13 @@
 
 /* ── Tailwind theme bridge ─────────────────────────────────────────────────── */
 @theme inline {
-  /* Apple system-font stack. SF Pro is Apple-licensed and can't be hosted
-     via @font-face, so we use the OS-native stack: real SF Pro renders on
-     macOS / iOS, Windows falls back to Segoe UI, Android to Roboto. */
+  /* Geist Sans is the UI face (loaded via next/font as --font-geist-sans).
+     The Apple system stack follows as the fallback: SF Pro on macOS/iOS,
+     Segoe UI on Windows, Roboto on Android — so text renders instantly even
+     before the web font swaps in. */
   --font-sans:
-    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-mono);
   /* Used on the public QR menu for a real-restaurant typographic feel.
      Georgia is system-installed everywhere; no extra network request. */
@@ -761,22 +762,19 @@ button:not(:disabled),
 
 /* Dashboard gradient background — two soft accent glows, auto-matches theme */
 .dashboard-bg {
-  background:
-    radial-gradient(ellipse 65% 45% at 85% 0%,   var(--accent-tint), transparent 70%),
-    radial-gradient(ellipse 45% 35% at 5%  100%, var(--accent-dim),  transparent 60%),
-    var(--canvas);
+  /* Apple-clean: a flat, calm canvas. The old ember poster-glows are gone —
+     separation now comes from precise hairline frames and quiet elevation,
+     not colored background light. */
+  background: var(--canvas);
 }
 
 body {
   background: var(--canvas);
   color: var(--ink);
-  font-family:
-    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* SF Pro is metric-perfect at default tracking; drop the −1% Outfit
-     compensation that used to be here. */
+  letter-spacing: -0.011em; /* Geist sits a touch tight — quiet, intentional */
 }
 
 input:focus, select:focus, textarea:focus {
@@ -813,17 +811,16 @@ input:focus, select:focus, textarea:focus {
   animation: shimmer 1.6s ease-in-out infinite;
 }
 
-/* Glass card — frosted surface with accent-tinted border + inner top highlight */
+/* Frame — the clean, flat card primitive. Solid surface, neutral hairline
+   border, and one crisp lit top edge (the refined dark-UI signature). No
+   frosted blur, no accent-tinted edge, no colored glow. This is the Apple-clean
+   foundation every dashboard frame is built on. */
 .glass {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--surface) 85%, transparent),
-    color-mix(in srgb, var(--surface-2) 90%, transparent)
-  );
-  border: 1px solid color-mix(in srgb, var(--hair) 80%, var(--accent) 20%);
-  backdrop-filter: blur(14px) saturate(130%);
-  -webkit-backdrop-filter: blur(14px) saturate(130%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.08);
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 1px 2px rgba(0, 0, 0, 0.18);
 }
 
 /* Gradient text — accent sweep */
@@ -834,21 +831,34 @@ input:focus, select:focus, textarea:focus {
   -webkit-text-fill-color: transparent;
 }
 
-/* Glow shadows */
+/* Elevation — quiet, neutral depth. No colored glow; depth reads as soft
+   diffuse shadow + the lit top edge, the way Apple's dark surfaces do. */
 .glow {
-  box-shadow: 0 0 0 1px var(--accent-glow), 0 4px 24px var(--accent-glow), 0 1px 4px rgba(0,0,0,0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 4px 24px rgba(0, 0, 0, 0.28),
+    0 1px 2px rgba(0, 0, 0, 0.22);
 }
 .glow-sm {
-  box-shadow: 0 0 0 1px var(--accent-glow), 0 2px 12px var(--accent-glow);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* Card glow with hover lift */
+/* Interactive frame — resting flat, lifts gently on hover via a calm shadow
+   and a faintly brighter neutral edge. Never an ember halo. */
 .card-glow {
-  box-shadow: 0 0 0 1px var(--accent-glow), 0 4px 20px var(--accent-glow);
-  transition: box-shadow 0.2s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 1px 2px rgba(0, 0, 0, 0.18);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 }
 .card-glow:hover {
-  box-shadow: 0 0 0 1px var(--accent-glow), 0 12px 40px var(--accent-glow), 0 4px 12px rgba(0,0,0,0.25);
+  border-color: color-mix(in srgb, var(--hair) 55%, var(--ink-4) 45%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.30),
+    0 2px 6px rgba(0, 0, 0, 0.20);
 }
 
 /* Gradient primary button — shimmer on hover */
