@@ -7,64 +7,64 @@
 
 ## 1. Visual Theme & Atmosphere
 
-Sizzle is an operator-grade restaurant management dashboard designed to feel like a **premium kitchen command center** — not a generic SaaS app. The atmosphere is:
+Sizzle is a **financial operating dashboard** for small restaurant and café owners — non-technical people who open it late at night to see if they made money today. The aesthetic is **calm, clean, and professional**: a warm-dark console where every peso reads clearly and nothing screams for attention. It should feel like a steady hand, not a casino. Trust and legibility beat spectacle at every turn.
 
-- **Dark-first, warm-neutral base** — deep forest or espresso backgrounds that feel rich and enveloping, not harsh. Every dark surface has a subtle undertone (green, brown, navy, or charcoal) that matches the restaurant's vertical.
-- **Density: 5/10 (Daily App Balanced)** — generous whitespace inside cards, compact table rows and sidebar nav. Information density increases as the user goes deeper (dashboard → POS → reports).
-- **Variance: 6/10 (Offset Asymmetric)** — split-panel layouts, left-aligned headers, asymmetric KPI grids. No centered hero sections in the dashboard. No three-equal-column feature rows.
-- **Motion: 6/10 (Fluid Spring)** — all transitions use a spring physics curve. Page loads stagger in via cascade delays. Nav transitions show a micro-spin indicator. No animation feels instant or linear.
+- **Dark-first, warm-neutral base** — deep warm near-black backgrounds (ember/espresso undertone) that feel grounded and easy on the eyes at night. Never harsh, never pure black.
+- **Density: 7/10 (Cockpit, breathing)** — real data lives here (KPIs, tables, charts), but generous gutters and clear grouping keep every screen scannable. When in doubt, add whitespace and remove a card. Density rises as the user goes deeper (dashboard → POS → reports).
+- **Variance: 3/10 in the app (Predictable, scannable)** — the same KPI lives in the same place every day so owners build muscle memory. Left-aligned headers, structured grids. **Higher variance (5/10) is allowed only on the marketing landing hero.**
+- **Motion: 3/10 (Restrained)** — subtle entrance fades and clean state transitions only. A financial dashboard that animates constantly erodes trust. No perpetual loops on data; reserve any live motion for a single genuine real-time indicator.
 
-The overall impression: **a well-lit, late-night restaurant back-office.** Confident. Operational. Premium without ostentation.
+The overall impression: **a well-run kitchen pass at night** — focused, unhurried, everything in its place. Confident. Operational. Minimal without feeling empty.
 
-**Theme system:** Sizzle ships 14 curated themes, each mapped to a restaurant archetype (Sage Dark = Modern Café default, Espresso = Coffee Bar, Crimson = Steakhouse, Ocean = Seafood, Ember = BBQ, Rose = Bakery, Midnight = Fine Dining, Harvest = Brewery, etc.). All themes share identical token names — only the hex values change. Design against **Sage Dark** unless specified.
+**Theme system:** Sizzle ships **20 curated food-named palettes** (`ember`, `bourbon`, `truffle`, `fig-jam`, `velvet-cake`, `forest-floor`, `carbon-steel`, `smoke-blue`, `streetlight`, `kimchi`, `tangerine`, `cardamom`, `mint-leaf` — plus light palettes `almond-milk`, `chiffon`, `coconut-cream`, `porcelain`, `macaron`, `iced-matcha`, `lavender-honey`). All themes share identical token names — only the hex values change. **Design against `ember` (the default) unless specified.**
 
 ---
 
 ## 2. Color Palette & Roles
 
-### Default: Sage Dark (deep forest green)
+### Default: Ember (warm-dark, fire-orange accent) — real `:root` tokens
 
-- **Deep Forest Canvas** (`#0E1714`) — Primary page background. The darkest layer. Nearly black with a visible green undertone. Never pure black.
-- **Canvas Depth** (`#121D19`) — Used in the dashboard radial gradient background. One step lighter than canvas.
-- **Sidebar Surface** (`#131E1A`) — Sidebar column background. Barely distinct from canvas — intentional.
-- **Raised Surface** (`#18231F`) — Card fill, modal backgrounds, primary elevated containers.
-- **Mid Surface** (`#1E2A25`) — Table row hover states, nested card fills, dropdown backgrounds.
-- **Deep Surface** (`#243029`) — Tertiary fills, active dropdown items, deepest inset panels.
-- **Cream Ink** (`#ECE6D5`) — Primary text. Warm cream, not clinical white. Reads warm against forest canvas.
-- **Sage Ink** (`#B4BDB4`) — Secondary text, subtitles, sidebar venue name, helper copy.
-- **Muted Sage** (`#929B93`) — Tertiary text, timestamps, table column headers.
-- **Ghost Sage** (`#5C655F`) — Disabled text, lowest-priority metadata, icon fills at rest.
-- **Hair Border** (`#28332E`) — All structural 1px dividers — between sections, table rows, card edges.
-- **Deep Hair** (`#212C27`) — Nested borders, double-border effects inside panels.
-- **Sage Mint Accent** (`#58C098`) — THE SINGLE ACCENT. Used for: primary buttons, active nav left-border indicator, focus rings, KPI positive values, progress fills, chart lines, badge fills. Saturation 58% — confident, never electric.
-- **Lifted Accent** (`#79D1AE`) — Hover variant of accent; gradient endpoint for primary button shimmer.
-- **Accent Glow** (`rgba(88, 192, 152, 0.18)`) — Box-shadow glow behind primary buttons and the active nav item. Warm halo, not neon ring.
-- **Accent Dim** (`rgba(88, 192, 152, 0.12)`) — Badge backgrounds, KPI card highlight fills, subtle tint overlays.
-- **Accent Tint** (`rgba(88, 192, 152, 0.22)`) — Dashboard background glow (top-right radial ellipse).
-- **Danger Terracotta** (`#E48865`) — Destructive actions, negative financial values, error states, low-stock warnings. Warm orange-red — never alarm red.
-- **Warn Amber** (`#E8C96A`) — Caution states, medium-priority alerts, expiring subscription banners.
-- **Dashboard Gradient** — Two radial glows on the content background: accent-tint (22% opacity) at 85% right / 0% top; accent-dim (12% opacity) at 5% left / 100% bottom. Subtle depth without poster-glow.
+- **Deep Ember Canvas** (`#130A04`) — Primary page background. The darkest layer. Warm near-black, visible amber undertone. Never pure black.
+- **Canvas Raise** (`#1A1008`) — Subtle raised background bands; dashboard depth.
+- **Sidebar Char** (`#180E06`) — Sidebar column background. Barely distinct from canvas — intentional.
+- **Surface** (`#1F1408`) — Card fill, modal backgrounds, primary elevated containers.
+- **Surface Raise** (`#281A0C`) — Table row hover states, nested card fills, dropdown backgrounds.
+- **Surface Deep** (`#301F10`) — Tertiary fills, active dropdown items, deepest inset panels.
+- **Primary Ink** (`#F8ECE0`) — Primary text & key figures. Warm off-white, not clinical white.
+- **Secondary Ink** (`#D0A880`) — Secondary text, subtitles, sidebar venue name, helper copy.
+- **Tertiary Ink** (`#B88A5D`) — Tertiary text, timestamps, table column headers, axis labels.
+- **Muted Ink** (`#A57450`) — Faintest metadata, icon fills at rest. **WCAG-AA on canvas/surface — do not go lower.**
+- **Hairline** (`#3E2810`) — All structural 1px dividers — sections, table rows, card edges (the primary structural line).
+- **Hairline Deep** (`#342008`) — Nested borders, double-border effects inside panels.
+- **Ember Accent** (`#F97316`) — THE SINGLE ACCENT. Primary buttons, active nav indicator, focus rings, the one hero number, progress fills, chart primary series. Use it *sparingly* — it means "act here" or "this is the number that matters."
+- **Ember Light** (`#FB923C`) — Hover variant of accent; gradient endpoint for the primary button.
+- **Ember End** (`#EA580C`) — Deeper gradient stop for the primary button.
+- **Ember Wash** (`rgba(249,115,22,0.12)`) — Badge backgrounds, active-row tint, subtle overlays (a flat fill, **not** a glow).
+- **Warn Amber** (`#F59E0B`) — Low stock, expiring trial, attention-needed. Distinct from the ember accent (don't confuse the two).
+- **Danger Red** (`#DC2626`) — Loss, over-budget, destructive actions, errors. Reserved & semantic — never decorative.
 
-### Light Variant: Sage Light (for light-mode preference)
-- **Warm Linen Canvas** (`#F4F0E7`) — Parchment warmth, not clinical white.
-- **Pure Surface** (`#FFFFFF`) — Card fill only (sparingly).
-- **Dark Forest Ink** (`#1A2420`) — Primary text.
-- **Forest Accent** (`#1F5F4A`) — Same role as Sage Mint but darker for contrast on light backgrounds.
+> **Financial semantics are reserved.** Positive (theme green token) / Danger / Warn carry meaning (up, loss, attention) — never used to "brighten up" a layout. Ember is the only decorative-capable color, and it's earned by rarity.
+
+> **Glow restraint (retune):** legacy `--accent-glow` / radial dashboard glows exist in the codebase. On **new** work, prefer flat `Ember Wash` tints and hairline structure over ember halos — calmer reads more professional.
+
+### Light palettes (e.g. `porcelain`, `almond-milk`, `chiffon`)
+Same token roles, inverted: warm off-white canvas (never pure `#FFFFFF` as the page), deep warm ink, a darker accent for AA contrast. Cards may use pure white sparingly as a raised surface.
 
 ### Stitch Color Principle
-Always describe colors by **role and descriptive name** — never just a hex. Example: "Sage Mint Accent (#58C098) on the primary CTA" not just "#58C098 button". Stitch interprets the semantic context.
+Always describe colors by **role and descriptive name** — never just a hex. Example: "Ember Accent (#F97316) on the primary CTA" not just "#F97316 button". Stitch interprets the semantic context.
 
 ---
 
 ## 3. Typography Rules
 
-**Primary Font:** `Outfit` — A geometric sans-serif with rounded character terminals and confident numerals. Installed via `--font-outfit` CSS variable. Set on `body` globally. **Never substitute Inter, Roboto, or system-ui for primary text.**
+**Primary (UI) Font — current reality:** the **native system sans stack** (`--font-sans`: `-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, …`). This renders as SF Pro on Apple, Segoe on Windows — clean, fast, zero web-font payload, and genuinely "seamless/native." It is the intended face today, not a fallback.
 
-**Monospace Font:** System monospace stack via `--font-mono`. Used exclusively for financial figures, timestamps, percentages, IDs, receipt numbers, and quantity counts. Applied via `.tabular` class.
+> **Recommended upgrade (for a more distinctive, premium-yet-minimal feel):** adopt **`Geist` Sans** as the UI face. You already load **`Geist Mono`** via `next/font`, so adding `Geist` Sans is a one-line change and pairs perfectly with it. Geist is clean, modern, and ownable without being loud — a better fit for "professional" than the generic system stack. **Do NOT use `Inter`** (generic AI tell) or any serif. If staying on system for now, that's acceptable and still clean.
+
+**Monospace Font:** **`Geist Mono`** (loaded via `next/font`, `--font-mono`). Used exclusively for financial figures, currency, timestamps, percentages, IDs, receipt numbers, and quantity counts. Applied via `.tabular`. **Every peso amount and count is mono** (density > 7 → monospace alignment is mandatory; money columns align on the decimal).
 
 **Global settings on `body`:**
-- `letter-spacing: -0.01em` — gives Outfit a tighter, premium feel across all text.
-- `font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11'` — enables Outfit's alternate character forms.
+- `letter-spacing: -0.01em` — a slightly tighter, intentional feel across all text.
 - `-webkit-font-smoothing: antialiased` — crisp rendering on retina displays.
 
 **Scale & Weight Hierarchy:**
@@ -85,7 +85,7 @@ Always describe colors by **role and descriptive name** — never just a hex. Ex
 - `tracking-tight` (`-0.025em`) on all headings 16px and above.
 - Financial figures, all quantities, all dates: **must use `.tabular` class**.
 - Gradient text (`.gradient-text`): accent → accent-2 diagonal sweep. Reserved for the Sizzle wordmark in the sidebar and hero headings on the marketing page only. **Never on buttons or interactive elements.**
-- **No serif fonts in this dashboard.** Outfit (sans-serif) everywhere. No Times, Georgia, Garamond.
+- **No serif fonts in this dashboard.** Sans-serif everywhere (system stack or Geist). No Times, Georgia, Garamond.
 
 ---
 
@@ -94,7 +94,7 @@ Always describe colors by **role and descriptive name** — never just a hex. Ex
 ### Primary Button (`.btn-primary`)
 A gradient pill that flows between accent → accent-end → accent-2. The gradient **slides** on hover — it's a moving shimmer, not a flat fill.
 
-- **Resting:** `linear-gradient(135deg, #58C098 0%, #3DA87A 50%, #79D1AE 100%)` at `background-position: 0%`. Text color: Deep Forest Canvas (the darkest background color).
+- **Resting:** ember gradient `linear-gradient(135deg, var(--accent) 0%, var(--accent-end) 50%, var(--accent-2) 100%)` (ember `#F97316` → `#EA580C` → `#FB923C`) at `background-position: 0%`. Text color: Deep Ember Canvas (the darkest background color). *(Calmer option for a more minimal read: a flat `var(--accent)` fill with no gradient slide.)*
 - **Hover:** `background-position: 100%` (gradient slides right), `brightness(1.05)`, soft `box-shadow: 0 2px 20px rgba(88,192,152,0.18)`.
 - **Active:** `brightness(0.92)`, gradient position resets to `0%`. Tactile −1px settle feel.
 - **Disabled:** `opacity: 0.45`, `cursor: not-allowed`.
@@ -129,7 +129,7 @@ Soft danger-dim background (terracotta at 12% opacity) + danger-colored text.
 
 ### Form Inputs (`.input-field`)
 - **Resting:** `bg-canvas`, `border: 1px solid var(--hair)`, `rounded-lg`, `text-sm`, `text-ink`.
-- **Focus:** `border-color: var(--accent)`, `box-shadow: 0 0 0 3px var(--accent-glow)` — a soft sage focus ring.
+- **Focus:** `border-color: var(--accent)`, `box-shadow: 0 0 0 3px var(--accent-glow)` — a soft ember focus ring.
 - **Label:** Always above the input. `text-xs font-medium text-ink-3 uppercase tracking-wider`. Never floating labels.
 - **Error text:** Always below the input in danger color.
 - **Placeholder:** `text-ink-4`.
@@ -137,8 +137,8 @@ Soft danger-dim background (terracotta at 12% opacity) + danger-colored text.
 
 ### Badges (`.badge`)
 Pill-shaped, `rounded-md` (6px), 11px text, 5 semantic variants:
-- **Accent:** sage-dim bg, sage text — positive KPIs, active, pro features.
-- **Success:** same as accent in Sage Dark (shared token).
+- **Accent:** ember-dim bg, ember text — active, pro features, highlighted figures.
+- **Success:** positive (green) token bg + text — healthy margin, in-budget, revenue up.
 - **Danger:** terracotta-dim bg, terracotta text — low stock, errors, deleted.
 - **Warn:** amber-dim bg, amber text — expiring, medium priority.
 - **Neutral:** surface-3 bg, ink-3 text — inactive, archived, secondary states.
@@ -249,8 +249,8 @@ These are hard bans. If any appear in a generated screen, regenerate:
 
 | Banned | Reason |
 |---|---|
-| `Inter` font | Sizzle uses `Outfit`. Inter is generic. |
-| Pure black `#000000` | Minimum darkness: `#0E1714` (Deep Forest Canvas). |
+| `Inter` font | Generic AI tell. Sizzle uses the system sans stack (or Geist). Never Inter. |
+| Pure black `#000000` | Minimum darkness: `#130A04` (Deep Ember Canvas). Warm near-blacks only. |
 | Neon outer glow | Glows must use `var(--accent-glow)` (18% opacity max). No full-saturation color shadows. |
 | Oversaturated accent | Accent saturation stays below 80%. No electric teal, hot green, or neon pink. |
 | AI purple/blue neon aesthetic | Except the intentional Midnight theme (indigo). Never as default. |
@@ -260,7 +260,7 @@ These are hard bans. If any appear in a generated screen, regenerate:
 | Custom mouse cursor | `cursor: pointer` and `cursor: not-allowed` only. Nothing else. |
 | Floating form labels | Labels always above the input field. Never floating. |
 | Generic circular spinners | Use layout-matched shimmer skeletons for all loading states. |
-| Serif fonts in dashboard | Outfit (sans-serif) everywhere. No Times, Georgia, Garamond, Palatino. |
+| Serif fonts in dashboard | Sans-serif everywhere (system or Geist). No Times, Georgia, Garamond, Palatino. |
 | Emojis in UI | Zero emoji anywhere except the locked nav item `🔒` indicator (which is itself a design exception). |
 | AI copywriting clichés | Banned words: "Elevate", "Seamless", "Unleash", "Next-Gen", "Powerful", "Revolutionize", "Game-Changing". |
 | Filler UI chrome | No "Scroll to explore", scroll arrows, bouncing chevrons, "Swipe down" prompts. |
@@ -274,26 +274,13 @@ These are hard bans. If any appear in a generated screen, regenerate:
 
 ## 8. Theme Palette Reference
 
-All 14 themes share identical token names. Only hex values differ.
+All **20 food-named themes** share identical token names. Only hex values differ. The default is **`ember`** (the `:root` palette).
 
-| Theme | Archetype | Canvas | Accent |
-|---|---|---|---|
-| `sage-dark` | Modern Café (default) | `#0E1714` | `#58C098` sage mint |
-| `sage-light` | Modern Café (light) | `#F4F0E7` | `#1F5F4A` dark forest |
-| `espresso` | Coffee Bar | `#1A1410` | `#D9A876` warm caramel |
-| `citrus` | Fast Casual | `#0F1410` | `#C9E663` lime yellow |
-| `crimson` | Steakhouse / Italian | `#14100F` | `#DC2626` bold red |
-| `ocean` | Seafood / Beach Bar | `#060D14` | `#0EA5E9` sky blue |
-| `rose` | Bakery / Patisserie | `#150C10` | `#E879A6` rose pink |
-| `ember` | BBQ / Grill | `#130A04` | `#F97316` fire orange |
-| `midnight` | Fine Dining / Bar | `#070714` | `#818CF8` soft indigo |
-| `harvest` | Brewery / Farm-to-Table | `#14100A` | `#F59E0B` golden amber |
-| `jade` | Tea House / Asian | `#071010` | `#10B981` emerald |
-| `slate` | Modern Café (cool) | `#0E1017` | `#14B8A6` teal |
-| `terracotta` | Mediterranean | `#140C08` | `#C2613B` terracotta orange |
-| `ivory` | Premium Brunch (light) | `#FAFAF7` | `#8B5E3C` warm brown |
+**Dark palettes:** `ember` (default · warm fire-orange), `bourbon`, `truffle`, `fig-jam`, `velvet-cake`, `forest-floor`, `carbon-steel`, `smoke-blue`, `streetlight`, `kimchi`, `tangerine`, `cardamom`, `mint-leaf`.
 
-When generating a new screen: match the theme to the restaurant type in context. Apply via `[data-theme]` on `<html>`. All CSS token names (`--canvas`, `--accent`, `--ink`, etc.) are identical across every theme — only their resolved values change.
+**Light palettes:** `almond-milk`, `chiffon`, `coconut-cream`, `porcelain`, `macaron`, `iced-matcha`, `lavender-honey`.
+
+When generating a new screen, design against **`ember`** unless told otherwise. Apply themes via `[data-theme]` on `<html>`. All CSS token names (`--canvas`, `--surface`, `--accent`, `--ink`, `--ink-4`, `--hair`, etc.) are identical across every theme — only their resolved values change, so a screen built with tokens (never hard-coded hex) works in all 20 automatically. **Always reference tokens, not literal hex, in generated component code.**
 
 ---
 
