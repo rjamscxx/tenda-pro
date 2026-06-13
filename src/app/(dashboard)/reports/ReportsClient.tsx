@@ -144,7 +144,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
     const csv = lines.map(r => r.join(',')).join('\n')
     const a = Object.assign(document.createElement('a'), {
       href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })),
-      download: `sizzle-report-${data.month}.csv`,
+      download: `tenda-report-${data.month}.csv`,
     })
     a.click()
     URL.revokeObjectURL(a.href)
