@@ -13,7 +13,7 @@ import { refreshTodayPush } from './ai-actions'
 import { getTodayChecklistSummary } from '../checklists/actions'
 import Link from 'next/link'
 
-export const metadata = { title: 'Dashboard — Sizzle' }
+export const metadata = { title: 'Dashboard — Tenda' }
 
 function greet(tz: string) {
   const h = parseInt(

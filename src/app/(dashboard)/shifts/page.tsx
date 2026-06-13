@@ -7,7 +7,7 @@ import ProLockPage from '@/components/ui/ProLockPage'
 import ShiftsClient from './ShiftsClient'
 
 export const revalidate = 30
-export const metadata = { title: 'Shifts — Sizzle' }
+export const metadata = { title: 'Shifts — Tenda' }
 
 export default async function ShiftsPage() {
   const { venue, account, dbUser } = await requireVenue()

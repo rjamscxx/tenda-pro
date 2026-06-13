@@ -4,11 +4,11 @@ interface Props {
   variant?: 'mark' | 'badge'
 }
 
-// Brand color is always the Sizzle orange — independent of the active theme.
+// Brand color is always the Tenda orange — independent of the active theme.
 const BRAND = '#F97316'
 const BRAND_LIGHT = '#FB923C'
 
-export default function SizzleLogo({ size = 24, className = '', variant = 'mark' }: Props) {
+export default function TendaLogo({ size = 24, className = '', variant = 'mark' }: Props) {
   if (variant === 'badge') {
     return (
       <svg width={size} height={size} viewBox="0 0 32 32" fill="none" className={className}>

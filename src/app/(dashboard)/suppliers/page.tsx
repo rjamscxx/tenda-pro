@@ -5,7 +5,7 @@ import { requireVenue } from '@/lib/queries/auth'
 import SuppliersClient from './SuppliersClient'
 
 export const revalidate = 30
-export const metadata = { title: 'Suppliers — Sizzle' }
+export const metadata = { title: 'Suppliers — Tenda' }
 
 export default async function SuppliersPage() {
   const { venue } = await requireVenue()

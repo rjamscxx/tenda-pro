@@ -11,8 +11,8 @@ const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'], dis
 const geistMono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'], display: 'swap' })
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sizzle.app'
-const TITLE = 'Sizzle — Know your margins. Run your kitchen.'
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tenda.ph'
+const TITLE = 'Tenda — Know your margins. Run your kitchen.'
 const DESCRIPTION =
   'The all-in-one operating dashboard for restaurant and café owners in the Philippines. Track sales, cost recipes, manage staff, and watch inventory — without spreadsheets.'
 
@@ -20,10 +20,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: TITLE,
-    template: '%s · Sizzle',
+    template: '%s · Tenda',
   },
   description: DESCRIPTION,
-  applicationName: 'Sizzle',
+  applicationName: 'Tenda',
   keywords: [
     'restaurant management',
     'café POS',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
-    siteName: 'Sizzle',
+    siteName: 'Tenda',
     title: TITLE,
     description: DESCRIPTION,
     url: '/',
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Sizzle',
+    title: 'Tenda',
   },
   icons: {
     icon: '/api/pwa-icon?size=192',

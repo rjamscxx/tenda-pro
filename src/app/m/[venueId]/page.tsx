@@ -210,7 +210,7 @@ export default async function PublicMenuPage({ params }: { params: Promise<{ ven
               rel="noopener noreferrer"
               className="text-accent hover:underline underline-offset-2"
             >
-              Sizzle
+              Tenda
             </a>
           </p>
         </div>

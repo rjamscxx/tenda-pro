@@ -209,7 +209,7 @@ export default function DishesClient({
               </svg>
             }
             title="No dishes yet"
-            body="Add your menu items, attach ingredients, and Sizzle calculates your food cost and gross margin automatically."
+            body="Add your menu items, attach ingredients, and Tenda calculates your food cost and gross margin automatically."
             action={{ label: '+ Add dish', onClick: openAddDish }}
           />
         ) : (

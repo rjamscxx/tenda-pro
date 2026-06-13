@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sizzle.app'
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tenda.ph'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()

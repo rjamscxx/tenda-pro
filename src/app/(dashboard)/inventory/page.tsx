@@ -7,7 +7,7 @@ import { computeInventoryForecast } from '@/lib/queries/inventory-forecast'
 import InventoryClient from './InventoryClient'
 
 export const revalidate = 30
-export const metadata = { title: 'Inventory — Sizzle' }
+export const metadata = { title: 'Inventory — Tenda' }
 
 export default async function InventoryPage() {
   const { venue, account } = await requireVenue()

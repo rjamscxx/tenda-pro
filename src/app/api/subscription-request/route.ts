@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
   const planLabel = billing === 'annual' ? 'Pro Annual — ₱4,000/yr' : 'Pro Monthly — ₱399/mo'
   const html = `
-    <h2>New Sizzle Subscription Request</h2>
+    <h2>New Tenda Subscription Request</h2>
     <table cellpadding="8" style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
       <tr><td><strong>Plan</strong></td><td>${esc(planLabel)}</td></tr>
       <tr><td><strong>Full Name</strong></td><td>${esc(fullName)}</td></tr>
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
     from: FROM_EMAIL,
     to: ADMIN_EMAIL,
     replyTo: email,
-    subject: `[Sizzle] Subscription request — ${fullName} (${planLabel})`,
+    subject: `[Tenda] Subscription request — ${fullName} (${planLabel})`,
     html,
   })
   if (emailError) {

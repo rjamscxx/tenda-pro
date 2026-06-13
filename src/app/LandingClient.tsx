@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useCountUp } from '@/hooks/useCountUp'
-import SizzleLogo from '@/components/ui/SizzleLogo'
+import TendaLogo from '@/components/ui/TendaLogo'
 
 const HeroScene3D = dynamic(() => import('@/components/3d/HeroScene3D'), {
   ssr: false,
@@ -84,7 +84,7 @@ const FEATURES = [
     ),
     iconBg: 'bg-warn-dim',
     title: 'Expense Tracking',
-    body: 'Categorize every cost — ingredients, labor, rent, utilities. Mark expenses as recurring and Sizzle auto-logs them each month.',
+    body: 'Categorize every cost — ingredients, labor, rent, utilities. Mark expenses as recurring and Tenda auto-logs them each month.',
   },
   {
     icon: (
@@ -95,7 +95,7 @@ const FEATURES = [
     ),
     iconBg: 'bg-danger-dim',
     title: 'Menu & Recipe Costing',
-    body: 'Build recipes from your ingredients. Sizzle calculates real food cost per dish and gross margin — so you price with confidence.',
+    body: 'Build recipes from your ingredients. Tenda calculates real food cost per dish and gross margin — so you price with confidence.',
   },
   {
     icon: (
@@ -176,7 +176,7 @@ const FEATURES = [
     ),
     iconBg: 'bg-surface-3',
     title: 'Install as App',
-    body: 'Add Sizzle to your home screen on Android or desktop. Works as a progressive web app — fast, native-feeling, no app store required.',
+    body: 'Add Tenda to your home screen on Android or desktop. Works as a progressive web app — fast, native-feeling, no app store required.',
   },
 ]
 
@@ -449,8 +449,8 @@ export default function LandingClient() {
           }`}
         >
           <div className="flex items-center gap-2.5">
-            <SizzleLogo size={26} variant="badge" />
-            <span className="font-semibold text-ink tracking-tight">Sizzle</span>
+            <TendaLogo size={26} variant="badge" />
+            <span className="font-semibold text-ink tracking-tight">Tenda</span>
           </div>
 
           <div className="hidden md:flex items-center gap-7 text-sm text-ink-3">
@@ -551,7 +551,7 @@ export default function LandingClient() {
             </h1>
 
             <p className="hero-sub-el text-base text-ink-3 leading-relaxed max-w-[50ch]">
-              Sizzle gives restaurant and café owners a single dashboard to track sales, log expenses,
+              Tenda gives restaurant and café owners a single dashboard to track sales, log expenses,
               cost every recipe, manage staff, and watch inventory — without spreadsheets.
             </p>
 
@@ -693,7 +693,7 @@ export default function LandingClient() {
                   </svg>
                 ),
                 title: 'No early warnings',
-                body: "You find out stock ran out when a customer orders it. You learn about a bad month after the month is already over. Sizzle catches it before it hurts.",
+                body: "You find out stock ran out when a customer orders it. You learn about a bad month after the month is already over. Tenda catches it before it hurts.",
               },
             ].map(item => (
               <div key={item.title} className="pain-card glass rounded-2xl p-7 space-y-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ opacity: 0 }}>
@@ -708,7 +708,7 @@ export default function LandingClient() {
         </div>
       </section>
 
-      {/* ── How owners actually use Sizzle (animated tablet + phone scene) ──── */}
+      {/* ── How owners actually use Tenda (animated tablet + phone scene) ──── */}
       <OwnerScene />
 
       {/* ── Features ──────────────────────────────────────────────────────────── */}
@@ -716,7 +716,7 @@ export default function LandingClient() {
         <div className="max-w-6xl mx-auto space-y-12">
 
           <div>
-            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">What Sizzle does</p>
+            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">What Tenda does</p>
             <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold tracking-tighter text-ink leading-tight max-w-[20ch]">
               Every tool your café actually needs.
             </h2>
@@ -818,7 +818,7 @@ export default function LandingClient() {
               {
                 step: '02',
                 title: 'Log sales daily',
-                body: "Tap a dish, enter the channel, hit save. Under 30 seconds per sale. Sizzle does the food cost math automatically.",
+                body: "Tap a dish, enter the channel, hit save. Under 30 seconds per sale. Tenda does the food cost math automatically.",
                 icon: (
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-accent">
                     <path d="M3.5 9.5l3.5 3.5 7.5-7.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
@@ -882,7 +882,7 @@ export default function LandingClient() {
               Stop running out of the things that sell.
             </h2>
             <p className="text-base text-ink-3 leading-relaxed max-w-[44ch]">
-              Set a low-stock threshold on every ingredient. Sizzle flags anything running low directly
+              Set a low-stock threshold on every ingredient. Tenda flags anything running low directly
               on the dashboard — no more 86&apos;d dishes mid-service.
             </p>
             <ul className="space-y-3.5">
@@ -904,7 +904,7 @@ export default function LandingClient() {
 
           <div className="inventory-mock relative" style={{ opacity: 0 }}>
             <div className="absolute -inset-6 bg-warn/6 rounded-3xl blur-3xl pointer-events-none" />
-            <AppFrame url="sizzle.app/inventory" height={380}>
+            <AppFrame url="tenda.ph/inventory" height={380}>
               <InventoryMock />
             </AppFrame>
           </div>
@@ -956,7 +956,7 @@ export default function LandingClient() {
               </ul>
               <div className="relative">
                 <div className="absolute -inset-4 bg-accent/5 rounded-2xl blur-2xl pointer-events-none" />
-                <AppFrame url="sizzle.app/pos" height={280}>
+                <AppFrame url="tenda.ph/pos" height={280}>
                   <POSMock />
                 </AppFrame>
               </div>
@@ -996,7 +996,7 @@ export default function LandingClient() {
               </ul>
               <div className="relative">
                 <div className="absolute -inset-4 bg-accent/5 rounded-2xl blur-2xl pointer-events-none" />
-                <AppFrame url="sizzle.app/m/your-venue" height={280}>
+                <AppFrame url="tenda.ph/m/your-venue" height={280}>
                   <QRMenuMock />
                 </AppFrame>
               </div>
@@ -1027,7 +1027,7 @@ export default function LandingClient() {
               <div>
                 <h3 className="text-lg font-semibold text-ink tracking-tight">Waste Log</h3>
                 <p className="text-sm text-ink-3 mt-2 leading-relaxed">
-                  Log spoilage and dropped plates by ingredient. Sizzle calculates the estimated peso
+                  Log spoilage and dropped plates by ingredient. Tenda calculates the estimated peso
                   loss and surfaces it monthly — so you can actually cut it.
                 </p>
               </div>
@@ -1100,7 +1100,7 @@ export default function LandingClient() {
                 <h3 className="text-lg font-semibold text-ink tracking-tight">Payroll Runs</h3>
                 <p className="text-sm text-ink-3 mt-2 leading-relaxed">
                   Process payroll by period. Set days worked, gross pay auto-calculates from rate, add
-                  deductions, and Sizzle keeps the full history of every run.
+                  deductions, and Tenda keeps the full history of every run.
                 </p>
               </div>
               <div className="bg-surface-2 rounded-xl p-4 space-y-2.5">
@@ -1142,12 +1142,12 @@ export default function LandingClient() {
           {/* Row 1: Sales (large) + Menu */}
           <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none lg:grid lg:grid-cols-[1.6fr_1fr] lg:overflow-x-visible lg:pb-0">
             <div className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] lg:w-auto" style={{ opacity: 0 }}>
-              <AppFrame url="sizzle.app/sales" height={320} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
+              <AppFrame url="tenda.ph/sales" height={320} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
                 <SalesMock />
               </AppFrame>
             </div>
             <div className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] lg:w-auto" style={{ opacity: 0 }}>
-              <AppFrame url="sizzle.app/menu" height={320} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
+              <AppFrame url="tenda.ph/menu" height={320} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
                 <MenuMock />
               </AppFrame>
             </div>
@@ -1156,9 +1156,9 @@ export default function LandingClient() {
           {/* Row 2: Expenses · Reports · Employees */}
           <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0">
             {([
-              ['sizzle.app/expenses',  <ExpensesMock key="exp" />],
-              ['sizzle.app/reports',   <ReportsMock  key="rep" />],
-              ['sizzle.app/employees', <EmployeesMock key="emp" />],
+              ['tenda.ph/expenses',  <ExpensesMock key="exp" />],
+              ['tenda.ph/reports',   <ReportsMock  key="rep" />],
+              ['tenda.ph/employees', <EmployeesMock key="emp" />],
             ] as [string, React.ReactNode][]).map(([url, mock]) => (
               <div key={url} className="ss-card group snap-start shrink-0 w-[72vw] sm:w-[50vw] md:w-auto" style={{ opacity: 0 }}>
                 <AppFrame url={url} height={220} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
@@ -1171,8 +1171,8 @@ export default function LandingClient() {
           {/* Row 3: Waste · Payroll */}
           <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none md:grid md:grid-cols-2 md:overflow-x-visible md:pb-0">
             {([
-              ['sizzle.app/waste',   <WasteMock   key="waste"   />],
-              ['sizzle.app/payroll', <PayrollMock key="payroll" />],
+              ['tenda.ph/waste',   <WasteMock   key="waste"   />],
+              ['tenda.ph/payroll', <PayrollMock key="payroll" />],
             ] as [string, React.ReactNode][]).map(([url, mock]) => (
               <div key={url} className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] md:w-auto" style={{ opacity: 0 }}>
                 <AppFrame url={url} height={260} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
@@ -1185,8 +1185,8 @@ export default function LandingClient() {
           {/* Row 4: POS · QR Menu */}
           <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none md:grid md:grid-cols-2 md:overflow-x-visible md:pb-0">
             {([
-              ['sizzle.app/pos',          <POSMock   key="pos" />],
-              ['sizzle.app/m/your-venue', <QRMenuMock key="qr" />],
+              ['tenda.ph/pos',          <POSMock   key="pos" />],
+              ['tenda.ph/m/your-venue', <QRMenuMock key="qr" />],
             ] as [string, React.ReactNode][]).map(([url, mock]) => (
               <div key={url} className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] md:w-auto" style={{ opacity: 0 }}>
                 <AppFrame url={url} height={260} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
@@ -1206,7 +1206,7 @@ export default function LandingClient() {
           {/* Left: Report mock */}
           <div className="relative order-2 lg:order-1 lp-fade-up">
             <div className="absolute -inset-6 bg-accent/6 rounded-3xl blur-3xl pointer-events-none" />
-            <AppFrame url="sizzle.app/reports" height={400}>
+            <AppFrame url="tenda.ph/reports" height={400}>
               <ReportsMock />
             </AppFrame>
           </div>
@@ -1462,8 +1462,8 @@ export default function LandingClient() {
             {/* Brand col */}
             <div className="space-y-4">
               <div className="flex items-center gap-2.5">
-                <SizzleLogo size={24} variant="badge" />
-                <span className="text-sm font-semibold text-ink">Sizzle</span>
+                <TendaLogo size={24} variant="badge" />
+                <span className="text-sm font-semibold text-ink">Tenda</span>
               </div>
               <p className="text-sm text-ink-4 leading-relaxed max-w-[28ch]">
                 The all-in-one operating dashboard for restaurant and café owners in the Philippines.
@@ -1529,7 +1529,7 @@ export default function LandingClient() {
 
           {/* Bottom bar */}
           <div className="pt-8 flex items-center justify-between gap-4 flex-wrap">
-            <p className="text-xs text-ink-4">© 2026 Sizzle. All rights reserved.</p>
+            <p className="text-xs text-ink-4">© 2026 Tenda. All rights reserved.</p>
             <p className="text-xs text-ink-4">Built for restaurant owners who want clarity, not complexity.</p>
           </div>
         </div>

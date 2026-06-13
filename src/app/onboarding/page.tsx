@@ -3,10 +3,10 @@ import { createClient } from '@/lib/supabase/server'
 import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
-import SizzleLogo from '@/components/ui/SizzleLogo'
+import TendaLogo from '@/components/ui/TendaLogo'
 import OnboardingForm from './OnboardingForm'
 
-export const metadata = { title: 'Set up your business — Sizzle' }
+export const metadata = { title: 'Set up your business — Tenda' }
 
 export default async function OnboardingPage() {
   const supabase = await createClient()
@@ -32,8 +32,8 @@ export default async function OnboardingPage() {
       <div className="relative z-10 w-full max-w-md glass glow rounded-2xl p-8 space-y-8">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5 mb-4">
-            <SizzleLogo size={28} variant="badge" />
-            <span className="font-semibold text-[17px] tracking-tight gradient-text">Sizzle</span>
+            <TendaLogo size={28} variant="badge" />
+            <span className="font-semibold text-[17px] tracking-tight gradient-text">Tenda</span>
           </div>
           <h1 className="text-2xl font-semibold text-ink">Set up your business</h1>
           <p className="text-sm text-ink-3">You can change this later in Settings.</p>

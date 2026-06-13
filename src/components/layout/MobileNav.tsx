@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Sidebar from './Sidebar'
-import SizzleLogo from '@/components/ui/SizzleLogo'
+import TendaLogo from '@/components/ui/TendaLogo'
 
 interface MobileNavVenue { id: string; name: string }
 
@@ -24,8 +24,8 @@ export default function MobileNav({ venueName, venues, activeVenueId, fullName, 
         className="lg:hidden fixed top-3 left-3 z-[var(--z-dropdown)] flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-xl bg-surface border border-hair text-ink-3 hover:text-ink shadow-sm"
         aria-label="Open menu"
       >
-        <SizzleLogo size={22} variant="badge" />
-        <span className="font-semibold text-[14px] tracking-tight gradient-text leading-none">Sizzle</span>
+        <TendaLogo size={22} variant="badge" />
+        <span className="font-semibold text-[14px] tracking-tight gradient-text leading-none">Tenda</span>
         <svg width="14" height="14" viewBox="0 0 18 18" fill="none" className="ml-1 shrink-0">
           <path d="M2 4.5h14M2 9h14M2 13.5h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
         </svg>
