@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Sidebar from './Sidebar'
 import TendaLogo from '@/components/ui/TendaLogo'
+import Wordmark from '@/components/ui/Wordmark'
 
 interface MobileNavVenue { id: string; name: string }
 
@@ -25,7 +26,7 @@ export default function MobileNav({ venueName, venues, activeVenueId, fullName, 
         aria-label="Open menu"
       >
         <TendaLogo size={22} variant="badge" />
-        <span className="font-semibold text-[14px] tracking-[-0.02em] gradient-text leading-none">Tenda Pro</span>
+        <Wordmark className="text-[14px]" />
         <svg width="14" height="14" viewBox="0 0 18 18" fill="none" className="ml-1 shrink-0">
           <path d="M2 4.5h14M2 9h14M2 13.5h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
         </svg>

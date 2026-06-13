@@ -1,3 +1,7 @@
+'use client'
+
+import { useId } from 'react'
+
 interface Props {
   size?: number
   className?: string
@@ -37,17 +41,21 @@ function Cart({ color, spin }: { color: string; spin?: boolean }) {
 }
 
 export default function TendaLogo({ size = 24, className = '', variant = 'mark', animated = false }: Props) {
+  // Unique gradient id per instance — multiple logos on one page (sidebar +
+  // venue switcher + intro, etc.) otherwise collide on a shared id and the later
+  // ones render unfilled (dark).
+  const gid = `tenda-g-${useId().replace(/:/g, '')}`
   if (variant === 'badge') {
     return (
       <svg width={size} height={size} viewBox="0 0 32 32" fill="none" className={className}>
         <defs>
-          <linearGradient id="tenda-badge-g" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={BRAND_LIGHT} />
             <stop offset="55%" stopColor={BRAND} />
             <stop offset="100%" stopColor={BRAND_DEEP} />
           </linearGradient>
         </defs>
-        <rect width="32" height="32" rx="7.5" fill="url(#tenda-badge-g)" />
+        <rect width="32" height="32" rx="7.5" fill={`url(#${gid})`} />
         <rect x="0.5" y="0.5" width="31" height="31" rx="7" fill="none" stroke="#FFFFFF" strokeOpacity="0.18" />
         <Cart color="#FFF8F0" spin={animated} />
       </svg>
@@ -57,12 +65,12 @@ export default function TendaLogo({ size = 24, className = '', variant = 'mark',
   return (
     <svg width={size} height={h} viewBox="2 4 28 24" fill="none" className={className}>
       <defs>
-        <linearGradient id="tenda-mark-g" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={BRAND_LIGHT} />
           <stop offset="100%" stopColor={BRAND_DEEP} />
         </linearGradient>
       </defs>
-      <Cart color="url(#tenda-mark-g)" spin={animated} />
+      <Cart color={`url(#${gid})`} spin={animated} />
     </svg>
   )
 }

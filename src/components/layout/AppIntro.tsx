@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import TendaLogo from '@/components/ui/TendaLogo'
+import Wordmark from '@/components/ui/Wordmark'
 
 // A brief brand intro that plays once per browser session when the user first
 // lands on an app surface (login / signup / dashboard / etc.). The pushcart
@@ -40,10 +41,8 @@ export default function AppIntro() {
         <TendaLogo size={96} variant="badge" animated />
       </div>
       <div className="tp-intro-word">
-        <div className="gradient-text font-semibold tracking-[-0.02em]" style={{ fontSize: 30, lineHeight: 1 }}>
-          Tenda Pro
-        </div>
-        <div className="text-ink-4 text-sm mt-2.5">Know your margins. Run your kitchen.</div>
+        <Wordmark className="text-[30px]" />
+        <div className="text-ink-4 text-sm mt-3">Know your margins. Run your kitchen.</div>
       </div>
     </div>
   )

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import TendaLogo from '@/components/ui/TendaLogo'
+import Wordmark from '@/components/ui/Wordmark'
 import SignupForm from './SignupForm'
 
 export const metadata = { title: 'Create account — Tenda Pro' }
@@ -28,7 +29,7 @@ export default async function SignupPage() {
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <TendaLogo size={26} variant="badge" />
-            <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda Pro</span>
+            <Wordmark className="text-[17px]" />
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-semibold text-ink">Start for free</h1>
