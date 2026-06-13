@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 import TendaLogo from '@/components/ui/TendaLogo'
+import Wordmark from '@/components/ui/Wordmark'
 import OnboardingForm from './OnboardingForm'
 
 export const metadata = { title: 'Set up your business — Tenda Pro' }
@@ -33,7 +34,7 @@ export default async function OnboardingPage() {
         <div className="space-y-1">
           <div className="flex items-center gap-2 mb-4">
             <TendaLogo size={26} variant="badge" />
-            <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda Pro</span>
+            <Wordmark className="text-[17px]" />
           </div>
           <h1 className="text-2xl font-semibold text-ink">Set up your business</h1>
           <p className="text-sm text-ink-3">You can change this later in Settings.</p>

@@ -4,6 +4,7 @@ import { useTransition, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import TendaLogo from '@/components/ui/TendaLogo'
+import Wordmark from '@/components/ui/Wordmark'
 import VenueSwitcher from './VenueSwitcher'
 
 interface NavItemDef {
@@ -227,7 +228,7 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
       <div className="relative z-10 h-[60px] flex flex-col justify-center px-4 border-b border-hair gap-1">
         <div className="flex items-center gap-2">
           <TendaLogo size={26} variant="badge" />
-          <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda Pro</span>
+          <Wordmark className="text-[17px]" />
           {onClose && (
             <button
               onClick={onClose}
