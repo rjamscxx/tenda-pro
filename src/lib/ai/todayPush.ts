@@ -109,7 +109,14 @@ export async function generateTodayPush(venueId: string): Promise<string | null>
     const text = block && 'text' in block ? block.text.trim() : null
     return text || null
   } catch (e) {
-    console.error('generateTodayPush error:', e)
+    // This push is optional and already degrades to null (the card just hides).
+    // When AI isn't really set up — invalid/expired key, no billing credits, or
+    // rate limit — that's expected, so stay quiet instead of spamming the
+    // console. Only surface genuinely unexpected failures (e.g. a DB error
+    // while building context) that a developer would actually want to see.
+    const status = (e as { status?: number } | null)?.status
+    const expected = status === 401 || status === 402 || status === 403 || status === 429
+    if (!expected) console.error('generateTodayPush error:', e)
     return null
   }
 }
