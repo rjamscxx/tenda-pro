@@ -26,9 +26,9 @@ export default async function LoginPage() {
 
       <div className="glass glow rounded-2xl p-8 space-y-8">
         <div className="space-y-3">
-          <div className="flex items-center gap-2.5">
-            <TendaLogo size={28} variant="badge" />
-            <span className="font-semibold text-[17px] tracking-tight gradient-text">Tenda</span>
+          <div className="flex items-center gap-2">
+            <TendaLogo size={26} variant="badge" />
+            <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda</span>
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-semibold text-ink">Welcome back</h1>

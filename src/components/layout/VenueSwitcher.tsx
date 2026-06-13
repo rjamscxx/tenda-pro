@@ -71,7 +71,7 @@ export default function VenueSwitcher({
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-1.5 text-left pl-[38px] -mt-0.5 group"
+        className="w-full flex items-center gap-1.5 text-left pl-[34px] -mt-0.5 group"
         aria-haspopup="listbox"
         aria-expanded={open}
       >

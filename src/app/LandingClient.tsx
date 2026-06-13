@@ -448,9 +448,9 @@ export default function LandingClient() {
               : 'bg-transparent border border-transparent'
           }`}
         >
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <TendaLogo size={26} variant="badge" />
-            <span className="font-semibold text-ink tracking-tight">Tenda</span>
+            <span className="font-semibold text-ink tracking-[-0.02em] leading-none">Tenda</span>
           </div>
 
           <div className="hidden md:flex items-center gap-7 text-sm text-ink-3">
@@ -1461,9 +1461,9 @@ export default function LandingClient() {
 
             {/* Brand col */}
             <div className="space-y-4">
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2">
                 <TendaLogo size={24} variant="badge" />
-                <span className="text-sm font-semibold text-ink">Tenda</span>
+                <span className="text-sm font-semibold text-ink tracking-[-0.02em] leading-none">Tenda</span>
               </div>
               <p className="text-sm text-ink-4 leading-relaxed max-w-[28ch]">
                 The all-in-one operating dashboard for restaurant and café owners in the Philippines.
