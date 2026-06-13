@@ -6,30 +6,31 @@ interface Props {
   animated?: boolean
 }
 
-// Tenda Pro brand mark — a street vendor's PUSHCART (kariton / tinda cart): an
-// awning canopy over a stall box on two wheels, with a push handle. A direct,
-// ownable nod to "tinda" (to sell). Ember is the brand color, theme-independent.
+// Tenda Pro brand mark — a clean grocery SHOPPING CART (commerce icon, a nod to
+// "tinda" = to sell). Monoline basket + handle, solid wheels. Ember is the brand
+// color, theme-independent.
 const BRAND = '#F97316'
 const BRAND_LIGHT = '#FB923C'
 const BRAND_DEEP = '#EA580C'
 
-// Pushcart drawn on a shared 32-unit grid. `stroke` is the line color, `wheelHub`
-// the small hub dot. `spin` adds the wheel-rotation class for the animated intro.
+// Shopping cart on a shared 32-unit grid. Handle+base and basket are strokes of
+// a single weight; wheels are solid. `spin` rotates the wheels for the intro.
 function Cart({ color, spin }: { color: string; spin?: boolean }) {
+  const sw = 2.1
   return (
     <g>
-      {/* awning — one clean curved canopy (no scallops) */}
-      <path d="M4.5 11.8 Q16 7 27.5 11.8 L27.5 12.7 Q16 8.1 4.5 12.7 Z" fill={color} />
-      {/* stall box — single clean rounded form */}
-      <rect x="6" y="13.6" width="20" height="6" rx="1.5" fill={color} />
-      {/* push handle — one stroke */}
-      <path d="M26 15 L29.5 12.7" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
-      {/* two clean wheels (no hubs) */}
-      <g className={spin ? 'tp-wheel' : ''} style={{ transformOrigin: '11px 22.3px' }}>
-        <circle cx="11" cy="22.3" r="2.5" fill={color} />
+      {/* handle grip → diagonal → base rail */}
+      <path d={`M4 7.5 H7 L10 18 H24`} stroke={color} strokeWidth={sw} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      {/* basket — open trapezoid sitting on the rail */}
+      <path d={`M8.4 10 H27 L24.4 18 H10.6`} stroke={color} strokeWidth={sw} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      {/* two basket dividers (grocery-basket detail) */}
+      <path d="M14.6 10.4 L13.9 17.6 M19.5 10.4 L19.9 17.6" stroke={color} strokeWidth="1.3" strokeLinecap="round" opacity="0.75" />
+      {/* wheels */}
+      <g className={spin ? 'tp-wheel' : ''} style={{ transformOrigin: '13px 22.5px' }}>
+        <circle cx="13" cy="22.5" r="2.4" fill={color} />
       </g>
-      <g className={spin ? 'tp-wheel' : ''} style={{ transformOrigin: '21px 22.3px' }}>
-        <circle cx="21" cy="22.3" r="2.5" fill={color} />
+      <g className={spin ? 'tp-wheel' : ''} style={{ transformOrigin: '22px 22.5px' }}>
+        <circle cx="22" cy="22.5" r="2.4" fill={color} />
       </g>
     </g>
   )
