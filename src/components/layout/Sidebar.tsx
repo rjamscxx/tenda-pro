@@ -218,9 +218,9 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
       />
       {/* Logo */}
       <div className="relative z-10 h-[60px] flex flex-col justify-center px-4 border-b border-hair gap-1">
-        <div className="flex items-center gap-2.5">
-          <TendaLogo size={28} variant="badge" />
-          <span className="font-semibold text-[17px] tracking-tight gradient-text leading-none">Tenda</span>
+        <div className="flex items-center gap-2">
+          <TendaLogo size={26} variant="badge" />
+          <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda</span>
           {onClose && (
             <button
               onClick={onClose}
@@ -236,7 +236,7 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
         {venues && venues.length > 0 && activeVenueId ? (
           <VenueSwitcher venues={venues} activeVenueId={activeVenueId} isPremium={!!isPremium} />
         ) : (
-          <p className="text-[11px] text-ink-4 truncate leading-none pl-[38px]">{venueName}</p>
+          <p className="text-[11px] text-ink-4 truncate leading-none pl-[34px]">{venueName}</p>
         )}
       </div>
 
