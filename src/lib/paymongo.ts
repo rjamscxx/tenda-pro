@@ -22,7 +22,7 @@ export async function createCheckoutSession(opts: {
 }): Promise<string> {
   const key = opts.billing === 'annual' ? 'pro_annual' : 'pro_monthly'
   const amount = PLAN_AMOUNTS[key]
-  const label = opts.billing === 'annual' ? 'Tenda Pro (Annual)' : 'Tenda Pro (Monthly)'
+  const label = opts.billing === 'annual' ? 'Tenda Pro Pro (Annual)' : 'Tenda Pro Pro (Monthly)'
   const description = opts.billing === 'annual'
     ? 'Annual subscription — all Pro features (₱4,000/year, save ₱788)'
     : 'Monthly subscription — all Pro features (test)'
@@ -50,7 +50,7 @@ export async function createCheckoutSession(opts: {
           cancel_url: opts.cancelUrl,
           metadata: { account_id: opts.accountId },
           send_email_receipt: true,
-          statement_descriptor: 'Tenda Pro',
+          statement_descriptor: 'Tenda Pro Pro',
           description: `${label} Subscription`,
         },
       },

@@ -79,7 +79,7 @@ export default function InstallButton() {
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
         <path d="M7.5 1v9M4.5 7l3 3 3-3M2 11v1.5A1.5 1.5 0 003.5 14h8A1.5 1.5 0 0013 12.5V11" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
-      Install Tenda on this device
+      Install Tenda Pro on this device
     </button>
   )
 }

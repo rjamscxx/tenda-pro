@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm'
 import TendaLogo from '@/components/ui/TendaLogo'
 import OnboardingForm from './OnboardingForm'
 
-export const metadata = { title: 'Set up your business — Tenda' }
+export const metadata = { title: 'Set up your business — Tenda Pro' }
 
 export default async function OnboardingPage() {
   const supabase = await createClient()
@@ -33,7 +33,7 @@ export default async function OnboardingPage() {
         <div className="space-y-1">
           <div className="flex items-center gap-2 mb-4">
             <TendaLogo size={26} variant="badge" />
-            <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda</span>
+            <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda Pro</span>
           </div>
           <h1 className="text-2xl font-semibold text-ink">Set up your business</h1>
           <p className="text-sm text-ink-3">You can change this later in Settings.</p>

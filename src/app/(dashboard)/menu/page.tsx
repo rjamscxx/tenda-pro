@@ -7,7 +7,7 @@ import { canSeeFinancials } from '@/lib/permissions'
 import MenuClient from './MenuClient'
 
 export const revalidate = 30
-export const metadata = { title: 'Menu — Tenda' }
+export const metadata = { title: 'Menu — Tenda Pro' }
 
 export default async function MenuPage() {
   const { venue, account, dbUser } = await requireVenue()

@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import TendaLogo from '@/components/ui/TendaLogo'
 import LoginForm from './LoginForm'
 
-export const metadata = { title: 'Sign in — Tenda' }
+export const metadata = { title: 'Sign in — Tenda Pro' }
 
 export default async function LoginPage() {
   const supabase = await createClient()
@@ -28,7 +28,7 @@ export default async function LoginPage() {
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <TendaLogo size={26} variant="badge" />
-            <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda</span>
+            <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda Pro</span>
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-semibold text-ink">Welcome back</h1>

@@ -20,7 +20,7 @@ export default function AppFrame({ children, url, height = 320, className = '' }
               <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2"/>
               <path d="M6 10h8M10 6v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             </svg>
-            Tenda
+            Tenda Pro
           </div>
           <div className="flex-1" />
         </div>

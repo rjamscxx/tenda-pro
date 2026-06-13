@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'], disp
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tenda.ph'
-const TITLE = 'Tenda — Know your margins. Run your kitchen.'
+const TITLE = 'Tenda Pro — Know your margins. Run your kitchen.'
 const DESCRIPTION =
   'The all-in-one operating dashboard for restaurant and café owners in the Philippines. Track sales, cost recipes, manage staff, and watch inventory — without spreadsheets.'
 
@@ -20,10 +20,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: TITLE,
-    template: '%s · Tenda',
+    template: '%s · Tenda Pro',
   },
   description: DESCRIPTION,
-  applicationName: 'Tenda',
+  applicationName: 'Tenda Pro',
   keywords: [
     'restaurant management',
     'café POS',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
-    siteName: 'Tenda',
+    siteName: 'Tenda Pro',
     title: TITLE,
     description: DESCRIPTION,
     url: '/',
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Tenda',
+    title: 'Tenda Pro',
   },
   icons: {
     icon: '/api/pwa-icon?size=192',

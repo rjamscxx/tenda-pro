@@ -4,7 +4,7 @@ export default function FounderStory() {
   return (
     <div className="max-w-3xl mx-auto">
       <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3 text-center">
-        Why Tenda exists
+        Why Tenda Pro exists
       </p>
       <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold tracking-tighter text-ink leading-tight mb-12 text-center max-w-[24ch] mx-auto">
         Built by one person, for café owners like you.
@@ -40,7 +40,7 @@ export default function FounderStory() {
             tells you straight up what your real margin is.
           </p>
           <p>
-            That&apos;s Tenda. It&apos;s the first tool I&apos;ve shipped to the public, and
+            That&apos;s Tenda Pro. It&apos;s the first tool I&apos;ve shipped to the public, and
             I&apos;m hands-on with every feature, every bug, and every customer email. If you
             try it and something doesn&apos;t work the way you need, message me directly — my
             email is below.
@@ -68,7 +68,7 @@ export default function FounderStory() {
       </div>
 
       <p className="text-center text-xs text-ink-4 mt-6 max-w-[44ch] mx-auto leading-relaxed">
-        Tenda just launched. If you&apos;re among the first 100 café owners to sign up, you get
+        Tenda Pro just launched. If you&apos;re among the first 100 café owners to sign up, you get
         direct access to me and a real seat at the table for what gets built next.
       </p>
     </div>

@@ -105,7 +105,7 @@ export default function ComparisonTable() {
               <p className="text-[10px] text-ink-4 mt-1">The usual stitched stack</p>
             </div>
             <div className="text-center rounded-xl bg-accent/10 border border-accent/20 py-1.5 -my-1.5">
-              <p className="text-[11px] font-bold text-accent uppercase tracking-widest">Tenda</p>
+              <p className="text-[11px] font-bold text-accent uppercase tracking-widest">Tenda Pro</p>
               <p className="text-[10px] text-accent/80 mt-1">All-in-one</p>
             </div>
           </div>

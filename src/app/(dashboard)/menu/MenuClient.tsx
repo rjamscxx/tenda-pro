@@ -237,7 +237,7 @@ export default function MenuClient({
                   </svg>
                 }
                 title="No ingredients yet"
-                body="Add your ingredients with unit costs. Tenda uses them to calculate the real food cost of every dish."
+                body="Add your ingredients with unit costs. Tenda Pro uses them to calculate the real food cost of every dish."
                 action={{ label: '+ Add ingredient', onClick: openAdd }}
               />
             ) : (

@@ -1,9 +1,9 @@
 import LandingClient from './LandingClient'
 
 export const metadata = {
-  title: 'Tenda — The Operating Dashboard for Restaurant Owners',
+  title: 'Tenda Pro — The Operating Dashboard for Restaurant Owners',
   description:
-    'Track every peso, cut waste, and grow your margins. Tenda gives restaurant and café owners a clear financial picture in one dashboard.',
+    'Track every peso, cut waste, and grow your margins. Tenda Pro gives restaurant and café owners a clear financial picture in one dashboard.',
 }
 
 // Landing is fully static so it can enter the browser bf-cache. Auth + theme

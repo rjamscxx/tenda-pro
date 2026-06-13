@@ -5,7 +5,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 /**
- * OwnerScene — "A day with Tenda" section.
+ * OwnerScene — "A day with Tenda Pro" section.
  * Tablet mockup built from CSS-themed primitives (so theme switching propagates
  * through it correctly) + floating POS phone + scroll-synced day timeline.
  */
@@ -194,13 +194,13 @@ export default function OwnerScene() {
         {/* ── Eyebrow + heading ───────────────────────────────── */}
         <div className="text-center max-w-[60ch] mx-auto mb-16">
           <p className="owner-eyebrow text-xs text-accent font-semibold uppercase tracking-widest mb-3" style={{ opacity: 0 }}>
-            A day with Tenda
+            A day with Tenda Pro
           </p>
           <h2 className="owner-title text-[clamp(2rem,4vw,3.2rem)] font-semibold tracking-tighter text-ink leading-tight" style={{ opacity: 0 }}>
             One screen. Every shift.
           </h2>
           <p className="owner-sub text-base text-ink-3 mt-4 leading-relaxed" style={{ opacity: 0 }}>
-            Real café owners run their whole day through Tenda — opening prep, lunch rush, restock,
+            Real café owners run their whole day through Tenda Pro — opening prep, lunch rush, restock,
             close-out. Tap once, get the answer. No spreadsheet detective work.
           </p>
         </div>
@@ -255,13 +255,13 @@ export default function OwnerScene() {
                 <div
                   className="relative rounded-[1.3rem] overflow-hidden bg-canvas aspect-[16/10] flex"
                   role="img"
-                  aria-label="Tenda dashboard mock — KPIs, 30-day cashflow chart, top sellers, low-stock alerts, AI assistant"
+                  aria-label="Tenda Pro dashboard mock — KPIs, 30-day cashflow chart, top sellers, low-stock alerts, AI assistant"
                 >
                   {/* sidebar */}
                   <aside className="hidden sm:flex w-[16%] shrink-0 flex-col gap-1 px-2 py-3 border-r border-hair bg-surface/60">
                     <div className="flex items-center gap-1 px-1 mb-1">
                       <span className="w-2 h-2 rounded-sm bg-accent" aria-hidden />
-                      <span className="text-[7px] font-semibold tracking-widest text-ink-3 uppercase">Tenda</span>
+                      <span className="text-[7px] font-semibold tracking-widest text-ink-3 uppercase">Tenda Pro</span>
                     </div>
                     {['Dashboard','Sales','POS','Menu','Inventory','Reports','Settings'].map((l, i) => (
                       <div key={l} className={`flex items-center gap-1.5 px-1.5 py-1 rounded ${i===0 ? 'bg-accent/12 text-accent' : 'text-ink-4'}`}>
@@ -362,7 +362,7 @@ export default function OwnerScene() {
                         ))}
                       </div>
                       <div className="rounded-md border border-accent/40 bg-accent/5 px-1.5 py-1 flex flex-col gap-0.5">
-                        <p className="text-[6px] uppercase tracking-widest text-accent/80">Tenda AI</p>
+                        <p className="text-[6px] uppercase tracking-widest text-accent/80">Tenda Pro AI</p>
                         <p className="text-[6.5px] text-ink leading-snug">
                           “Tuna sandwich margin dropped 4% — tomatoes up to ₱85/kg.”
                         </p>

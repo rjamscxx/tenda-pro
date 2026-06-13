@@ -7,7 +7,7 @@ import ProLockPage from '@/components/ui/ProLockPage'
 import PayrollClient from './PayrollClient'
 
 export const revalidate = 30
-export const metadata = { title: 'Payroll — Tenda' }
+export const metadata = { title: 'Payroll — Tenda Pro' }
 
 export default async function PayrollPage() {
   const { venue, account } = await requireVenue()
