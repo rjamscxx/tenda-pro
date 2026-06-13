@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Modal from '@/components/ui/Modal'
 import { logSale, deleteSale, toggleSalePaid, settleAllUnpaid } from './actions'
+import { confirmOnlineOrder, rejectOnlineOrder } from '@/app/m/[venueId]/actions'
 import { formatCurrency, parseCents } from '@/lib/utils'
 import { useToast } from '@/components/ui/Toast'
 import EmptyState from '@/components/ui/EmptyState'
@@ -60,6 +61,24 @@ interface DishOption {
   soldOutDate:  string | null
 }
 
+interface PendingOrderItem {
+  id:       string
+  dishName: string | null
+  qty:      number
+}
+
+interface PendingOrder {
+  id:            string
+  channel:       string
+  total:         number
+  note:          string | null
+  customerName:  string | null
+  customerPhone: string | null
+  paymentRef:    string | null
+  soldAt:        string
+  items:         PendingOrderItem[]
+}
+
 interface OrderItem {
   dishId:    string
   dishName:  string
@@ -94,14 +113,120 @@ function downloadCSV(filename: string, content: string) {
   URL.revokeObjectURL(url)
 }
 
+function OnlineOrderCard({
+  order,
+  onDone,
+}: {
+  order: PendingOrder
+  onDone: () => void
+}) {
+  const toast = useToast()
+  const [busy, setBusy] = useState<'confirm' | 'reject' | null>(null)
+
+  async function handleConfirm() {
+    setBusy('confirm')
+    const res = await confirmOnlineOrder(order.id)
+    if (!res.ok) { setBusy(null); toast(res.error ?? 'Could not confirm', 'error'); return }
+    toast('Payment confirmed · sent to kitchen')
+    onDone()
+  }
+
+  async function handleReject() {
+    if (!confirm(`Reject this order from ${order.customerName ?? 'this customer'}? This cannot be undone.`)) return
+    setBusy('reject')
+    const res = await rejectOnlineOrder(order.id)
+    if (!res.ok) { setBusy(null); toast(res.error ?? 'Could not reject', 'error'); return }
+    toast('Order rejected', 'info')
+    onDone()
+  }
+
+  const time = new Date(order.soldAt).toLocaleString('en-PH', {
+    timeZone: 'Asia/Manila', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true,
+  })
+
+  return (
+    <article className="rounded-xl border border-accent/30 bg-accent/[0.04] p-4 space-y-3">
+      <header className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-semibold text-ink">{order.customerName ?? 'Customer'}</span>
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium ${CHANNEL_BADGE[order.channel] ?? 'bg-surface-3 text-ink-3'}`}>
+              {CHANNELS.find(c => c.value === order.channel)?.label ?? order.channel}
+            </span>
+          </div>
+          {order.customerPhone && (
+            <a href={`tel:${order.customerPhone}`} className="text-xs text-ink-3 tabular hover:text-accent transition-colors">
+              {order.customerPhone}
+            </a>
+          )}
+        </div>
+        <div className="text-right shrink-0">
+          <p className="tabular font-bold text-accent text-base whitespace-nowrap">{formatCurrency(order.total)}</p>
+          <p className="text-[11px] tabular text-ink-4 whitespace-nowrap">{time}</p>
+        </div>
+      </header>
+
+      {/* Items */}
+      {order.items.length > 0 && (
+        <div className="rounded-lg border border-hair bg-surface/40 px-3 py-2 space-y-1">
+          {order.items.map(item => (
+            <div key={item.id} className="flex items-center justify-between text-sm">
+              <span className="text-ink truncate">
+                {item.dishName ?? <span className="text-ink-4 italic">deleted item</span>}
+              </span>
+              <span className="text-ink-3 tabular shrink-0 ml-3">×{item.qty}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* GCash ref + note */}
+      <div className="flex items-center justify-between gap-3 text-xs">
+        <span className="text-ink-4 uppercase tracking-wider">GCash ref</span>
+        <span className="tabular font-medium text-ink truncate">
+          {order.paymentRef ? order.paymentRef : <span className="text-warn">none provided</span>}
+        </span>
+      </div>
+      {order.note && (
+        <p className="text-xs text-ink-4">
+          <span className="text-ink-3 font-medium">Note:</span> {order.note}
+        </p>
+      )}
+
+      {/* Actions */}
+      <div className="flex gap-2 pt-0.5">
+        <button
+          type="button"
+          onClick={handleConfirm}
+          disabled={busy !== null}
+          className="flex-1 py-2 btn-primary rounded-lg text-xs font-semibold disabled:opacity-50"
+        >
+          {busy === 'confirm' ? 'Confirming…' : 'Confirm payment'}
+        </button>
+        <button
+          type="button"
+          onClick={handleReject}
+          disabled={busy !== null}
+          className="flex-1 py-2 rounded-lg text-xs font-medium border border-hair text-ink-4 hover:border-danger hover:text-danger transition-colors disabled:opacity-50"
+        >
+          {busy === 'reject' ? 'Rejecting…' : 'Reject'}
+        </button>
+      </div>
+    </article>
+  )
+}
+
 export default function SalesClient({
   sales,
   dishes,
+  pendingOrders,
 }: {
   sales: Sale[]
   dishes: DishOption[]
+  pendingOrders: PendingOrder[]
 }) {
   const toast = useToast()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const [open, setOpen]       = useState(() => searchParams.get('log') === '1')
   const [loading, setLoading] = useState(false)
@@ -260,7 +385,19 @@ export default function SalesClient({
             </svg>
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-ink tracking-tight">Sales</h1>
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-xl font-semibold text-ink tracking-tight">Sales</h1>
+              {pendingOrders.length > 0 && (
+                <a
+                  href="#online-orders"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/15 border border-accent/30 text-accent text-xs font-semibold animate-pulse"
+                  title="New online orders awaiting confirmation"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                  {pendingOrders.length} new {pendingOrders.length === 1 ? 'order' : 'orders'}
+                </a>
+              )}
+            </div>
             <p className="text-sm text-ink-4 mt-0.5">
               <span className="tabular">{displayed.length}</span> entries
               <span className="mx-1.5 text-hair-2">·</span>
@@ -359,6 +496,25 @@ export default function SalesClient({
 
       {/* ── Sales list (cards with inline items) ────────────────────────────── */}
       <div className="flex-1 overflow-y-auto min-h-0">
+
+        {/* New online orders awaiting GCash confirmation */}
+        {pendingOrders.length > 0 && (
+          <section id="online-orders" className="px-6 py-5 border-b border-hair bg-accent/[0.02]">
+            <div className="flex items-center gap-2.5 mb-4">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <h2 className="text-sm font-semibold text-ink tracking-tight">New Online Orders</h2>
+              <span className="text-xs text-ink-4 tabular">({pendingOrders.length})</span>
+              <span className="flex-1" />
+              <span className="text-[11px] text-ink-4">Verify the GCash payment, then confirm.</span>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {pendingOrders.map(order => (
+                <OnlineOrderCard key={order.id} order={order} onDone={() => router.refresh()} />
+              ))}
+            </div>
+          </section>
+        )}
+
         {displayed.length === 0 ? (
           period === 'all' && paidFilter === 'all' && chanFilter === 'all' ? (
             <EmptyState

@@ -29,6 +29,12 @@ const UpdateProfileSchema = z.object({
   fullName: z.string().max(120),
 })
 
+const UpdateOnlineOrderingSchema = z.object({
+  onlineOrderingEnabled: z.boolean(),
+  gcashNumber: z.string().max(40),
+  gcashName:   z.string().max(80),
+})
+
 export async function updateVenue(input: {
   name: string
   timezone: string
@@ -58,6 +64,26 @@ export async function updateVenue(input: {
     .where(eq(venues.id, venue.id))
   revalidatePath('/settings')
   revalidatePath('/(dashboard)', 'layout')
+}
+
+export async function updateOnlineOrdering(input: {
+  onlineOrderingEnabled: boolean
+  gcashNumber: string
+  gcashName: string
+}) {
+  const parsed = UpdateOnlineOrderingSchema.safeParse(input)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input.' }
+  const { venue } = await requireVenue()
+  await db
+    .update(venues)
+    .set({
+      onlineOrderingEnabled: parsed.data.onlineOrderingEnabled,
+      gcashNumber: parsed.data.gcashNumber.trim() || null,
+      gcashName:   parsed.data.gcashName.trim() || null,
+      updatedAt: new Date(),
+    })
+    .where(eq(venues.id, venue.id))
+  revalidatePath('/settings')
 }
 
 export async function updateProfile(input: { fullName: string }) {

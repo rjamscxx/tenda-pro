@@ -2,8 +2,9 @@
 
 import { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { updateVenue, updateProfile, downgradeTofree, deleteAccount, startTrial, activateSubscriptionRequest, rejectSubscriptionRequest, adjustSubscriptionDays } from './actions'
+import { updateVenue, updateProfile, updateOnlineOrdering, downgradeTofree, deleteAccount, startTrial, activateSubscriptionRequest, rejectSubscriptionRequest, adjustSubscriptionDays } from './actions'
 import InstallButton from '@/components/layout/InstallButton'
+import QRModal from '@/app/(dashboard)/menu/QRModal'
 
 // ── Theme picker ──────────────────────────────────────────────────────────────
 
@@ -459,7 +460,7 @@ interface Props {
   plan: 'free' | 'pro' | 'premium'
   planExpiresAt: string | null
   trialStartedAt: string | null
-  venue: { name: string; timezone: string; monthlyRevenueGoal: number; monthlyExpenseBudget: number; vatRegistered: boolean; dailyRevenueTarget: number; foodCostTarget: number }
+  venue: { id: string; name: string; timezone: string; monthlyRevenueGoal: number; monthlyExpenseBudget: number; vatRegistered: boolean; dailyRevenueTarget: number; foodCostTarget: number; onlineOrderingEnabled: boolean; gcashNumber: string; gcashName: string }
   profile: { fullName: string; email: string }
   recentActivity: ActivityEntry[]
   isAdmin?: boolean
@@ -540,6 +541,14 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
   const [profileState, setProfileState] = useState<SaveState>('idle')
   const [profileError, setProfileError] = useState('')
 
+  // Online ordering form
+  const [orderingEnabled, setOrderingEnabled] = useState(venue.onlineOrderingEnabled)
+  const [gcashNumber, setGcashNumber] = useState(venue.gcashNumber)
+  const [gcashName, setGcashName] = useState(venue.gcashName)
+  const [orderingState, setOrderingState] = useState<SaveState>('idle')
+  const [orderingError, setOrderingError] = useState('')
+  const [qrOpen, setQrOpen] = useState(false)
+
   // Delete account modal
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
@@ -576,6 +585,24 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
     } else {
       setVenueState('saved')
       setTimeout(() => setVenueState('idle'), 2000)
+    }
+  }
+
+  async function handleOrderingSave(e: React.FormEvent) {
+    e.preventDefault()
+    setOrderingState('saving')
+    setOrderingError('')
+    const result = await updateOnlineOrdering({
+      onlineOrderingEnabled: orderingEnabled,
+      gcashNumber,
+      gcashName,
+    })
+    if (result?.error) {
+      setOrderingError(result.error)
+      setOrderingState('error')
+    } else {
+      setOrderingState('saved')
+      setTimeout(() => setOrderingState('idle'), 2000)
     }
   }
 
@@ -744,6 +771,114 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
           <SaveRow state={venueState} error={venueError} />
         </form>
       </section>
+
+      {/* ── Online Ordering ──────────────────────────────────────────── */}
+      <section className="card-enter card-d2 glass card-glow rounded-xl p-6 space-y-5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <rect x="2.5" y="1" width="7" height="10" rx="1.2" stroke="currentColor" strokeWidth="1.1"/>
+              <path d="M5 9.5h2" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-[13px] font-semibold text-ink">Online Ordering</h2>
+            <p className="text-xs text-ink-4 mt-0.5">Let customers order &amp; pay via GCash straight from your QR menu.</p>
+          </div>
+        </div>
+        <form onSubmit={handleOrderingSave} className="space-y-4">
+          {/* Enable toggle */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={orderingEnabled}
+                onClick={() => { setOrderingEnabled(v => !v); setOrderingState('idle') }}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 focus:outline-none ${
+                  orderingEnabled ? 'bg-accent' : 'bg-surface-3'
+                }`}
+              >
+                <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform duration-200 ${
+                  orderingEnabled ? 'translate-x-4' : 'translate-x-1'
+                }`} />
+              </button>
+              <div>
+                <p className="text-sm font-medium text-ink">Accept online orders</p>
+                <p className="text-xs text-ink-4">When on, your public menu becomes a self-service cart.</p>
+              </div>
+            </label>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-ink-3 uppercase tracking-wider">GCash number</label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                value={gcashNumber}
+                onChange={e => { setGcashNumber(e.target.value); setOrderingState('idle') }}
+                className="w-full px-3 py-2.5 rounded-lg bg-canvas border border-hair text-ink text-sm tabular"
+                placeholder="09XX XXX XXXX"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-ink-3 uppercase tracking-wider">GCash account name</label>
+              <input
+                type="text"
+                value={gcashName}
+                onChange={e => { setGcashName(e.target.value); setOrderingState('idle') }}
+                className="w-full px-3 py-2.5 rounded-lg bg-canvas border border-hair text-ink text-sm"
+                placeholder="Juan D."
+              />
+            </div>
+          </div>
+
+          {orderingEnabled && !gcashNumber.trim() && (
+            <div className="flex items-start gap-2 rounded-lg border border-warn/30 bg-warn/5 px-3 py-2.5">
+              <span className="mt-0.5 text-warn shrink-0">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                  <path d="M6.5 1L12 11H1z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+                  <path d="M6.5 5v2.5M6.5 9v.01" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                </svg>
+              </span>
+              <p className="text-xs text-warn leading-relaxed">
+                Add your GCash number so customers see payment instructions at checkout. Until then, they can&apos;t complete an order.
+              </p>
+            </div>
+          )}
+
+          {/* Public order link */}
+          <div className="rounded-lg border border-hair bg-surface/40 p-3.5 space-y-2.5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-ink">Public menu &amp; order link</p>
+                <p className="text-[11px] text-ink-4 mt-0.5">Share or print this as a QR for tables.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setQrOpen(true)}
+                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hair text-xs font-medium text-ink-3 hover:border-accent hover:text-accent transition-colors"
+              >
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                  <rect x="1" y="1" width="4.5" height="4.5" rx="0.8" stroke="currentColor" strokeWidth="1.2"/>
+                  <rect x="7.5" y="1" width="4.5" height="4.5" rx="0.8" stroke="currentColor" strokeWidth="1.2"/>
+                  <rect x="1" y="7.5" width="4.5" height="4.5" rx="0.8" stroke="currentColor" strokeWidth="1.2"/>
+                  <path d="M7.5 7.5h1.5v1.5H7.5zM10.5 7.5H12v1.5h-1.5zM7.5 10.5H9V12H7.5zM10.5 10.5H12V12h-1.5z" fill="currentColor"/>
+                </svg>
+                Show QR
+              </button>
+            </div>
+            <p className="text-[11px] text-ink-3 break-all font-mono bg-surface-2 rounded-lg px-3 py-2">
+              {`/m/${venue.id}`}
+            </p>
+          </div>
+
+          <SaveRow state={orderingState} error={orderingError} />
+        </form>
+      </section>
+
+      <QRModal open={qrOpen} onClose={() => setQrOpen(false)} venueId={venue.id} venueName={venue.name} />
 
       {/* ── Account ──────────────────────────────────────────────────── */}
       <section className="card-enter card-d2 glass card-glow rounded-xl p-6 space-y-5">
