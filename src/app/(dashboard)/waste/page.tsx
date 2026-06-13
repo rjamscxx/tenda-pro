@@ -7,7 +7,7 @@ import ProLockPage from '@/components/ui/ProLockPage'
 import WasteClient from './WasteClient'
 
 export const revalidate = 30
-export const metadata = { title: 'Waste Log — Sizzle' }
+export const metadata = { title: 'Waste Log — Tenda' }
 
 export default async function WastePage() {
   const { venue, account } = await requireVenue()

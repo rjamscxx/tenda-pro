@@ -152,7 +152,7 @@ export default function VenueSwitcher({
                   autoFocus
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
-                  placeholder="e.g. Sizzle Cebu"
+                  placeholder="e.g. Tenda Cebu"
                   disabled={pending}
                   className="input-field w-full text-[12px] px-2.5 py-1.5"
                 />

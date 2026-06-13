@@ -3,7 +3,7 @@
 import { useTransition } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import SizzleLogo from '@/components/ui/SizzleLogo'
+import TendaLogo from '@/components/ui/TendaLogo'
 import VenueSwitcher from './VenueSwitcher'
 
 interface NavItemDef {
@@ -219,8 +219,8 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
       {/* Logo */}
       <div className="relative z-10 h-[60px] flex flex-col justify-center px-4 border-b border-hair gap-1">
         <div className="flex items-center gap-2.5">
-          <SizzleLogo size={28} variant="badge" />
-          <span className="font-semibold text-[17px] tracking-tight gradient-text leading-none">Sizzle</span>
+          <TendaLogo size={28} variant="badge" />
+          <span className="font-semibold text-[17px] tracking-tight gradient-text leading-none">Tenda</span>
           {onClose && (
             <button
               onClick={onClose}

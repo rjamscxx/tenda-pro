@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import SizzleLogo from '@/components/ui/SizzleLogo'
+import TendaLogo from '@/components/ui/TendaLogo'
 import ForgotPasswordForm from './ForgotPasswordForm'
 
-export const metadata = { title: 'Reset password — Sizzle' }
+export const metadata = { title: 'Reset password — Tenda' }
 
 export default function ForgotPasswordPage() {
   return (
@@ -20,8 +20,8 @@ export default function ForgotPasswordPage() {
       <div className="glass glow rounded-2xl p-8 space-y-8">
         <div className="space-y-3">
           <div className="flex items-center gap-2.5">
-            <SizzleLogo size={28} variant="badge" />
-            <span className="font-semibold text-[17px] tracking-tight gradient-text">Sizzle</span>
+            <TendaLogo size={28} variant="badge" />
+            <span className="font-semibold text-[17px] tracking-tight gradient-text">Tenda</span>
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-semibold text-ink">Forgot your password?</h1>

@@ -7,7 +7,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isAdmin as checkIsAdmin } from '@/lib/admin'
 import SettingsClient from './SettingsClient'
 
-export const metadata = { title: 'Settings — Sizzle' }
+export const metadata = { title: 'Settings — Tenda' }
 
 interface SubRequest {
   id: string

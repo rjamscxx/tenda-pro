@@ -6,7 +6,7 @@ import Link from 'next/link'
 import POSClient from './POSClient'
 
 export const revalidate = 30
-export const metadata = { title: 'POS — Sizzle' }
+export const metadata = { title: 'POS — Tenda' }
 
 export default async function POSPage() {
   const { venue } = await requireVenue()

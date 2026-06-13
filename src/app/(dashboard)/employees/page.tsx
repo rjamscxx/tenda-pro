@@ -7,7 +7,7 @@ import ProLockPage from '@/components/ui/ProLockPage'
 import EmployeesClient from './EmployeesClient'
 
 export const revalidate = 30
-export const metadata = { title: 'Employees — Sizzle' }
+export const metadata = { title: 'Employees — Tenda' }
 
 export default async function EmployeesPage() {
   const { venue, account } = await requireVenue()

@@ -8,7 +8,7 @@ import Link from 'next/link'
 import ReportsClient, { type MonthData } from './ReportsClient'
 
 export const revalidate = 30
-export const metadata = { title: 'Reports — Sizzle' }
+export const metadata = { title: 'Reports — Tenda' }
 
 const CATEGORY_LABELS: Record<string, string> = {
   ingredients: 'Ingredients', labor: 'Labor', rent: 'Rent',

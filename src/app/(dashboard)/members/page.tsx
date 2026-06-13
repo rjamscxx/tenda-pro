@@ -5,7 +5,7 @@ import { db } from '@/lib/db'
 import { accounts, users, venues } from '@/lib/db/schema'
 import { eq, desc } from 'drizzle-orm'
 
-export const metadata = { title: 'Members — Sizzle' }
+export const metadata = { title: 'Members — Tenda' }
 
 function PlanBadge({ plan, isTrial }: { plan: string; isTrial: boolean }) {
   if (isTrial) return (

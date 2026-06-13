@@ -7,11 +7,11 @@ export function GET(req: NextRequest) {
   const size = Math.min(512, Math.max(16, parseInt(req.nextUrl.searchParams.get('size') ?? '192', 10)))
   const r = Math.round(size * 0.22)
 
-  // Brand orange gradient — matches SizzleLogo badge variant
+  // Brand orange gradient — matches TendaLogo badge variant
   const BRAND       = '#F97316'
   const BRAND_LIGHT = '#FB923C'
 
-  // The Sizzle S-curve path is defined in a 32×32 viewBox with a 4px left offset (translate(4,0)).
+  // The Tenda S-curve path is defined in a 32×32 viewBox with a 4px left offset (translate(4,0)).
   // We scale it to fit inside the icon square with comfortable padding (~18% each side).
   const pad  = size * 0.18
   const inner = size - pad * 2
@@ -29,7 +29,7 @@ export function GET(req: NextRequest) {
           justifyContent: 'center',
         }}
       >
-        {/* S-curve logo in white, matching SizzleLogo badge variant */}
+        {/* S-curve logo in white, matching TendaLogo badge variant */}
         <svg
           width={inner}
           height={inner}

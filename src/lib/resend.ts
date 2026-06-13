@@ -2,14 +2,14 @@ import nodemailer, { type Transporter } from 'nodemailer'
 
 // Email via Brevo SMTP. Replaces Resend, which could not send: Resend's free
 // tier requires a verified sender *domain*, and we only have a gmail address +
-// a parked sizzle.app — so every send 403'd ("domain is not verified"). Brevo
+// a parked tenda.ph — so every send 403'd ("domain is not verified"). Brevo
 // is already verified to send from rjamscxx@gmail.com (same account Courtside
 // uses). This keeps the old Resend call shape — `resend.emails.send({ from,
 // to, subject, html })` returning `{ data, error }` — so callers are unchanged.
 // (File name kept as resend.ts only to avoid churn; it is Brevo under the hood.)
 
 const SENDER_EMAIL = process.env.BREVO_SENDER || 'rjamscxx@gmail.com'
-const SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Sizzle'
+const SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Tenda'
 
 // Lazy transport — created on first send so the build never constructs it.
 let _tx: Transporter | null = null

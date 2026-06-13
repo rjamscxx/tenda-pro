@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Terms of Service — Sizzle',
-  description: 'Terms of Service for Sizzle, the restaurant and café management dashboard.',
+  title: 'Terms of Service — Tenda',
+  description: 'Terms of Service for Tenda, the restaurant and café management dashboard.',
 }
 
 export default function TermsPage() {
@@ -18,7 +18,7 @@ export default function TermsPage() {
                 <path d="M7 6V2M5 4l2-2 2 2" stroke="var(--canvas)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <span className="text-sm font-semibold text-ink group-hover:text-accent transition-colors">Sizzle</span>
+            <span className="text-sm font-semibold text-ink group-hover:text-accent transition-colors">Tenda</span>
           </Link>
           <Link href="/" className="text-sm text-ink-4 hover:text-ink transition-colors">
             Back to home
@@ -38,9 +38,9 @@ export default function TermsPage() {
 
           <section className="space-y-4">
             <p className="text-base text-ink-3">
-              These Terms of Service (&ldquo;Terms&rdquo;) govern your access to and use of Sizzle, a restaurant and
+              These Terms of Service (&ldquo;Terms&rdquo;) govern your access to and use of Tenda, a restaurant and
               café management platform operated by RJ Cabansay (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;).
-              By creating an account or using Sizzle, you agree to be bound by these Terms. If you do not agree,
+              By creating an account or using Tenda, you agree to be bound by these Terms. If you do not agree,
               you may not use the service.
             </p>
           </section>
@@ -49,7 +49,7 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">1. Description of Service</h2>
             <p>
-              Sizzle is a web-based software-as-a-service platform (&ldquo;Service&rdquo;) that provides restaurant and
+              Tenda is a web-based software-as-a-service platform (&ldquo;Service&rdquo;) that provides restaurant and
               café owners with tools to track sales, log expenses, cost menu recipes, manage inventory, process
               payroll, monitor waste, and generate financial reports. The Service is primarily designed for
               food and beverage businesses operating in the Philippines.
@@ -60,7 +60,7 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">2. Account Registration</h2>
             <p>
-              To access Sizzle, you must register for an account by providing a valid email address and
+              To access Tenda, you must register for an account by providing a valid email address and
               creating a password. You agree to:
             </p>
             <ul className="space-y-2 pl-5 list-disc marker:text-ink-4">
@@ -79,7 +79,7 @@ export default function TermsPage() {
           {/* 3 */}
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">3. Subscription Plans and Pricing</h2>
-            <p>Sizzle offers the following subscription tiers:</p>
+            <p>Tenda offers the following subscription tiers:</p>
 
             <div className="space-y-5">
               <div className="rounded-xl border border-hair bg-surface-2 p-5 space-y-2">
@@ -175,7 +175,7 @@ export default function TermsPage() {
           {/* 7 */}
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">7. Acceptable Use</h2>
-            <p>You agree to use Sizzle only for lawful purposes and in accordance with these Terms. You must not:</p>
+            <p>You agree to use Tenda only for lawful purposes and in accordance with these Terms. You must not:</p>
             <ul className="space-y-2 pl-5 list-disc marker:text-ink-4">
               <li>Use the Service to store, transmit, or process data that violates any applicable law.</li>
               <li>Attempt to gain unauthorized access to any part of the Service or its underlying infrastructure.</li>
@@ -191,7 +191,7 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">8. Your Data</h2>
             <p>
-              All business data you enter into Sizzle &mdash; including sales records, menu items, expenses,
+              All business data you enter into Tenda &mdash; including sales records, menu items, expenses,
               employee information, and inventory &mdash; remains yours. We do not claim ownership of your data.
             </p>
             <p>
@@ -208,7 +208,7 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">9. Intellectual Property</h2>
             <p>
-              The Sizzle name, logo, product design, and all underlying software are the intellectual
+              The Tenda name, logo, product design, and all underlying software are the intellectual
               property of RJ Cabansay. Nothing in these Terms grants you any right to use our trademarks,
               brand elements, or proprietary technology outside of your normal use of the Service.
             </p>
@@ -224,7 +224,7 @@ export default function TermsPage() {
               planned downtime in advance.
             </p>
             <p>
-              Sizzle is not liable for any loss arising from temporary unavailability of the Service.
+              Tenda is not liable for any loss arising from temporary unavailability of the Service.
             </p>
           </section>
 
@@ -232,7 +232,7 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">11. Limitation of Liability</h2>
             <p>
-              To the fullest extent permitted by applicable law, Sizzle and its operators shall not be
+              To the fullest extent permitted by applicable law, Tenda and its operators shall not be
               liable for any indirect, incidental, special, consequential, or punitive damages, including
               loss of revenue, loss of data, or business interruption, arising from your use of or inability
               to use the Service.
@@ -250,7 +250,7 @@ export default function TermsPage() {
             <p>
               The Service is provided &ldquo;as is&rdquo; and &ldquo;as available&rdquo; without warranties of any kind, either
               express or implied. We do not warrant that the Service will be error-free, secure, or meet
-              your specific business requirements. Financial data and calculations generated by Sizzle
+              your specific business requirements. Financial data and calculations generated by Tenda
               are for informational purposes only and should be verified by a qualified accountant before
               being used for tax, legal, or regulatory purposes.
             </p>
@@ -299,7 +299,7 @@ export default function TermsPage() {
               For questions, concerns, or formal notices regarding these Terms, please contact us at:
             </p>
             <div className="rounded-xl border border-hair bg-surface-2 p-5 space-y-1 text-sm">
-              <p className="font-medium text-ink">Sizzle</p>
+              <p className="font-medium text-ink">Tenda</p>
               <p>Operated by RJ Cabansay</p>
               <p>Philippines</p>
               <p>
@@ -315,7 +315,7 @@ export default function TermsPage() {
 
         {/* Footer nav */}
         <div className="mt-14 pt-8 border-t border-hair flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-xs text-ink-4">© 2026 Sizzle. All rights reserved.</p>
+          <p className="text-xs text-ink-4">© 2026 Tenda. All rights reserved.</p>
           <div className="flex items-center gap-5 text-xs text-ink-4">
             <Link href="/legal/terms" className="text-accent">Terms of Service</Link>
             <Link href="/legal/privacy" className="hover:text-ink transition-colors">Privacy Policy</Link>

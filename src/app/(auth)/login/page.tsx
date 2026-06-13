@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import SizzleLogo from '@/components/ui/SizzleLogo'
+import TendaLogo from '@/components/ui/TendaLogo'
 import LoginForm from './LoginForm'
 
-export const metadata = { title: 'Sign in — Sizzle' }
+export const metadata = { title: 'Sign in — Tenda' }
 
 export default async function LoginPage() {
   const supabase = await createClient()
@@ -27,8 +27,8 @@ export default async function LoginPage() {
       <div className="glass glow rounded-2xl p-8 space-y-8">
         <div className="space-y-3">
           <div className="flex items-center gap-2.5">
-            <SizzleLogo size={28} variant="badge" />
-            <span className="font-semibold text-[17px] tracking-tight gradient-text">Sizzle</span>
+            <TendaLogo size={28} variant="badge" />
+            <span className="font-semibold text-[17px] tracking-tight gradient-text">Tenda</span>
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-semibold text-ink">Welcome back</h1>

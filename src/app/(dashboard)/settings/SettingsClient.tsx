@@ -793,7 +793,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
               {effectivePlan === 'pro'
                 ? isOnTrial
                   ? `Pro trial — ${trialDaysLeft} day${trialDaysLeft === 1 ? '' : 's'} remaining.`
-                  : 'You\'re on Sizzle Pro — all features unlocked.'
+                  : 'You\'re on Tenda Pro — all features unlocked.'
                 : 'You\'re on the Basic plan.'}
             </p>
           </div>
@@ -1183,7 +1183,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
       <section className="glass card-glow rounded-xl p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-ink">Install App</h2>
-          <p className="text-sm text-ink-4 mt-0.5">Add Sizzle to your home screen for fast access — no app store needed.</p>
+          <p className="text-sm text-ink-4 mt-0.5">Add Tenda to your home screen for fast access — no app store needed.</p>
         </div>
         <InstallButton />
       </section>

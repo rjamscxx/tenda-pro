@@ -5,7 +5,7 @@ import { requireVenue } from '@/lib/queries/auth'
 import ExpensesClient from './ExpensesClient'
 
 export const revalidate = 30
-export const metadata = { title: 'Expenses — Sizzle' }
+export const metadata = { title: 'Expenses — Tenda' }
 
 export default async function ExpensesPage() {
   const { venue } = await requireVenue()
