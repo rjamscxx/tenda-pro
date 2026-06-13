@@ -74,8 +74,15 @@ function SubscriptionCountdown({
   // ms since epoch — reactive. Trials tick once per minute (60s) which is
   // plenty. Paid plans tick every second for the live H:M:S display.
   const [nowMs, setNowMs] = useState(() => Date.now())
+  // The countdown is "now"-based, so a server render and the client's first
+  // render never match → hydration mismatch. Gate the live values behind a
+  // mounted flag: server + first client render show a neutral placeholder, then
+  // the real countdown fills in on mount.
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+    setNowMs(Date.now())
     const intervalMs = isTrial ? 60_000 : 1000
     const id = setInterval(() => setNowMs(Date.now()), intervalMs)
     return () => clearInterval(id)
@@ -89,9 +96,10 @@ function SubscriptionCountdown({
   const seconds = totalSeconds % 60
 
   const expires = new Date(target)
+  // Fixed timeZone so the formatted string is identical on server + client.
   const expiryStr = expires.toLocaleString('en-PH', {
     year: 'numeric', month: 'short', day: 'numeric',
-    hour: 'numeric', minute: '2-digit', hour12: true,
+    hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Manila',
   })
 
   const urgent = diffMs <= 3 * 86400 * 1000 // ≤3 days
@@ -109,13 +117,12 @@ function SubscriptionCountdown({
             {isTrial ? 'Trial ends in' : 'Subscription ends in'}
           </p>
           {isTrial ? (
-            <p className={`text-2xl font-bold tabular tracking-tight mt-1 ${labelTone}`}>
-              {days === 0 ? `${hours}h ${minutes}m` : `${days} ${days === 1 ? 'day' : 'days'}`}
+            <p className={`text-2xl font-bold tabular tracking-tight mt-1 ${labelTone}`} suppressHydrationWarning>
+              {!mounted ? '—' : days === 0 ? `${hours}h ${minutes}m` : `${days} ${days === 1 ? 'day' : 'days'}`}
             </p>
           ) : (
-            <p className={`text-2xl font-bold tabular tracking-tight mt-1 ${labelTone}`}>
-              <span>{days}d</span>{' '}
-              <span>{pad2(hours)}:{pad2(minutes)}:{pad2(seconds)}</span>
+            <p className={`text-2xl font-bold tabular tracking-tight mt-1 ${labelTone}`} suppressHydrationWarning>
+              {!mounted ? '—' : `${days}d ${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}`}
             </p>
           )}
         </div>
@@ -129,17 +136,18 @@ function SubscriptionCountdown({
       <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${barTone} transition-all duration-700`}
-          style={{ width: `${pctRemaining}%` }}
+          style={{ width: `${mounted ? pctRemaining : 100}%` }}
+          suppressHydrationWarning
         />
       </div>
-      {urgent && diffMs > 0 && (
+      {mounted && urgent && diffMs > 0 && (
         <p className="text-[11px] text-danger leading-snug">
           {isTrial
             ? 'Your trial ends soon. Subscribe below to keep your Pro features.'
             : 'Your subscription ends soon. Renew below to avoid losing access.'}
         </p>
       )}
-      {diffMs === 0 && (
+      {mounted && diffMs === 0 && (
         <p className="text-[11px] text-danger leading-snug">
           Your subscription has ended. Renew below to restore access.
         </p>
@@ -234,8 +242,8 @@ function SubscribedAccountCard({ acct }: { acct: SubscribedAccount }) {
   const pct = Math.min(100, Math.max(0, (remainingMs / totalMs) * 100))
   const urgent = daysLeft <= 5
 
-  const activatedStr = new Date(acct.activatedAt).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
-  const expiresStr   = new Date(acct.planExpiresAt).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+  const activatedStr = new Date(acct.activatedAt).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'Asia/Manila' })
+  const expiresStr   = new Date(acct.planExpiresAt).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'Asia/Manila' })
 
   const [editing, setEditing] = useState(false)
   const [daysInput, setDaysInput] = useState(String(daysLeft))
@@ -312,7 +320,7 @@ function SubscribedAccountCard({ acct }: { acct: SubscribedAccount }) {
           </div>
           <p className="text-[11px] text-ink-4">
             New expiry: {daysInput && !isNaN(parseInt(daysInput))
-              ? new Date(now + parseInt(daysInput) * 864e5).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+              ? new Date(now + parseInt(daysInput) * 864e5).toLocaleString('en-PH', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'Asia/Manila' })
               : '—'}
           </p>
           {saveError && <p className="text-xs text-danger">{saveError}</p>}
@@ -351,7 +359,7 @@ function AdminSubRequestRow({ req }: { req: SubRequest }) {
           <p className="text-sm font-semibold text-ink">{req.fullName}</p>
           <p className="text-xs text-ink-4">{req.email} · {req.phone}</p>
           <p className="text-xs text-ink-3">{req.billing === 'annual' ? 'Pro Annual — ₱4,000/yr' : 'Pro Monthly — ₱399/mo'}</p>
-          <p className="text-[11px] text-ink-4">{new Date(req.createdAt).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}</p>
+          <p className="text-[11px] text-ink-4" suppressHydrationWarning>{new Date(req.createdAt).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Manila' })}</p>
         </div>
         <span className={`text-[11px] font-semibold uppercase tracking-wide ${statusColor}`}>{req.status}</span>
       </div>
@@ -1297,7 +1305,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
             {recentActivity.map(entry => {
               const ts = new Date(entry.createdAt)
               const timeStr = ts.toLocaleString('en-PH', {
-                month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true,
+                month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Manila',
               })
               const isDelete = entry.action.includes('.deleted')
               return (
