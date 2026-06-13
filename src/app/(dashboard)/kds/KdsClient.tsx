@@ -135,7 +135,7 @@ export default function KdsClient({
       <header className="px-4 sm:px-6 py-4 border-b border-hair flex items-center gap-3 flex-wrap">
         <div className="flex-1 min-w-[200px]">
           <h1 className="text-[15px] font-semibold text-ink tracking-tight">Kitchen</h1>
-          <p className="text-[11px] text-ink-4">
+          <p className="text-[11px] text-ink-4" suppressHydrationWarning>
             {venueName} · {tickets.length} active · synced {lastSync.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
           </p>
         </div>
@@ -197,7 +197,7 @@ export default function KdsClient({
                                 {CHANNEL_LABEL[t.channel]} · {formatCurrency(t.total)}
                               </p>
                             </div>
-                            <span className={`shrink-0 text-[10px] tabular px-1.5 py-0.5 rounded-full ${hot ? 'bg-danger/15 text-danger' : 'bg-surface-2 text-ink-4'}`}>
+                            <span suppressHydrationWarning className={`shrink-0 text-[10px] tabular px-1.5 py-0.5 rounded-full ${hot ? 'bg-danger/15 text-danger' : 'bg-surface-2 text-ink-4'}`}>
                               {ageLabel(min)}
                             </span>
                           </div>

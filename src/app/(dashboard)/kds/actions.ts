@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db'
 import { sales, saleItems, dishes } from '@/lib/db/schema'
-import { and, eq, ne, asc, sql } from 'drizzle-orm'
+import { and, eq, ne, asc, inArray } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { requireVenue } from '@/lib/queries/auth'
 
@@ -57,7 +57,7 @@ export async function getActiveTickets(): Promise<KdsTicket[]> {
     })
     .from(saleItems)
     .leftJoin(dishes, eq(saleItems.dishId, dishes.id))
-    .where(sql`${saleItems.saleId} = ANY(${ids})`)
+    .where(inArray(saleItems.saleId, ids))
 
   const byId = new Map<string, { dishName: string; qty: number }[]>()
   for (const it of itemRows) {

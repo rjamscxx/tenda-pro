@@ -4,7 +4,7 @@ import { db } from '@/lib/db'
 import {
   checklistTemplates, checklistItems, checklistRuns, checklistRunItems,
 } from '@/lib/db/schema'
-import { and, asc, eq, sql } from 'drizzle-orm'
+import { and, asc, eq, sql, inArray } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { requireVenue } from '@/lib/queries/auth'
 import { z } from 'zod'
@@ -72,7 +72,7 @@ export async function getChecklistsState() {
     label:      checklistItems.label,
   })
     .from(checklistItems)
-    .where(sql`${checklistItems.templateId} = ANY(${templateIds})`)
+    .where(inArray(checklistItems.templateId, templateIds))
     .orderBy(asc(checklistItems.position))
 
   const today = todayManila()
@@ -98,7 +98,7 @@ export async function getChecklistsState() {
       checkedAt: checklistRunItems.checkedAt,
     })
       .from(checklistRunItems)
-      .where(sql`${checklistRunItems.runId} = ANY(${runs.map(r => r.id)})`)
+      .where(inArray(checklistRunItems.runId, runs.map(r => r.id)))
       .orderBy(asc(checklistRunItems.position))
   }
 
@@ -293,13 +293,15 @@ export async function getTodayChecklistSummary() {
   }
 
   const runIds = runs.map(r => r.id)
-  const counts = await db.execute<{ run_id: string; total: string; done: string }>(sql`
-    SELECT run_id, count(*)::text AS total,
-           count(*) filter (where checked) ::text AS done
-    FROM checklist_run_items
-    WHERE run_id = ANY(${runIds})
-    GROUP BY run_id
-  `)
+  const counts = runIds.length === 0 ? [] : await db
+    .select({
+      run_id: checklistRunItems.runId,
+      total:  sql<string>`count(*)::text`,
+      done:   sql<string>`count(*) filter (where ${checklistRunItems.checked})::text`,
+    })
+    .from(checklistRunItems)
+    .where(inArray(checklistRunItems.runId, runIds))
+    .groupBy(checklistRunItems.runId)
 
   const get = (kind: Kind) => {
     const r = runs.find(x => x.kind === kind)
