@@ -224,8 +224,10 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
         className="absolute top-0 left-0 right-0 h-36 pointer-events-none z-0"
         style={{ background: 'radial-gradient(ellipse 90% 60% at 50% -10%, var(--accent-tint), transparent 70%)' }}
       />
-      {/* Logo */}
-      <div className="relative z-10 h-[60px] flex flex-col justify-center px-4 border-b border-hair gap-1">
+      {/* Logo — z-30 so the VenueSwitcher dropdown (absolutely positioned here)
+          paints above the nav below, which also sits at z-10 and otherwise wins
+          on DOM order, leaving the open menu behind the nav links. */}
+      <div className="relative z-30 h-[60px] flex flex-col justify-center px-4 border-b border-hair gap-1">
         <div className="flex items-center gap-2">
           <TendaLogo size={26} variant="badge" />
           <Wordmark className="text-[17px]" />
