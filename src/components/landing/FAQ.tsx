@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 const items = [
   {
-    q: 'Is Tenda really free?',
+    q: 'Is Tenda Pro really free?',
     a: 'Yes — the Basic plan is free forever for one business with no time limit. Sales tracking, expense logging, menu with recipe costing (up to 20 dishes), inventory, and 6-month reports are all included at no cost. Pro (₱399/mo or ₱4,000/yr) unlocks unlimited dishes, employees, payroll, waste log, advanced analytics, forecasting, daily digest email, and CSV exports.',
   },
   {
@@ -16,12 +16,12 @@ const items = [
     a: 'Yes — Pro subscriptions are billed through PayMongo. You can pay with GCash, Maya, GrabPay, credit/debit card, or direct bank transfer. Choose monthly (₱399/mo) or annual (₱4,000/yr) — no contracts, cancel anytime.',
   },
   {
-    q: 'Does Tenda issue official BIR receipts?',
-    a: 'Not yet. Tenda handles your internal numbers — what you sold, what you spent, what your real margin is. For customer-facing official receipts you still use your existing BIR-registered receipt printer or pad. This is on the roadmap.',
+    q: 'Does Tenda Pro issue official BIR receipts?',
+    a: 'Not yet. Tenda Pro handles your internal numbers — what you sold, what you spent, what your real margin is. For customer-facing official receipts you still use your existing BIR-registered receipt printer or pad. This is on the roadmap.',
   },
   {
     q: 'What if my internet goes down mid-shift?',
-    a: "Tenda is a PWA, so the app shell stays loaded even on a flaky connection. Live sales/expense logging needs the network to talk to the database, so during a full outage we recommend the classic backup — paper sales slips you log into Tenda once you're back online. Full offline mode is on the roadmap.",
+    a: "Tenda Pro is a PWA, so the app shell stays loaded even on a flaky connection. Live sales/expense logging needs the network to talk to the database, so during a full outage we recommend the classic backup — paper sales slips you log into Tenda Pro once you're back online. Full offline mode is on the roadmap.",
   },
   {
     q: 'Can I import my data from Excel or another tool?',
@@ -29,26 +29,26 @@ const items = [
   },
   {
     q: 'Is my data safe? Can I export it?',
-    a: 'All data is stored in a secure PostgreSQL database (Supabase) with row-level security — your data is completely isolated from other accounts. Connections are encrypted. You can export any report to CSV from the Reports page, and Tenda never sells or shares your data.',
+    a: 'All data is stored in a secure PostgreSQL database (Supabase) with row-level security — your data is completely isolated from other accounts. Connections are encrypted. You can export any report to CSV from the Reports page, and Tenda Pro never sells or shares your data.',
   },
   {
     q: 'Does it work on mobile?',
-    a: "Yes. Tenda works in any modern browser on desktop, tablet, or phone. You can install it as a PWA on Android or desktop — tap 'Install' in the Settings page and you get a home-screen icon that opens like a native app.",
+    a: "Yes. Tenda Pro works in any modern browser on desktop, tablet, or phone. You can install it as a PWA on Android or desktop — tap 'Install' in the Settings page and you get a home-screen icon that opens like a native app.",
   },
   {
     q: 'How does recipe costing work?',
-    a: 'You add your ingredients with their unit cost (e.g., chicken breast at ₱280/kg). Then you build a recipe — how much of each ingredient goes into one serving of a dish. Tenda calculates the exact food cost per plate and your gross margin. When you log a sale, the recipe quantities are automatically deducted from your inventory.',
+    a: 'You add your ingredients with their unit cost (e.g., chicken breast at ₱280/kg). Then you build a recipe — how much of each ingredient goes into one serving of a dish. Tenda Pro calculates the exact food cost per plate and your gross margin. When you log a sale, the recipe quantities are automatically deducted from your inventory.',
   },
   {
     q: 'How is this different from Square or a regular POS?',
-    a: "A POS records sales. Tenda records sales AND tells you whether you actually made money — by tracking your real food cost per dish, your expenses, your waste, and your payroll alongside your revenue. Square's strength is hardware integration and card processing; Tenda's strength is the back-of-house numbers Square can't see.",
+    a: "A POS records sales. Tenda Pro records sales AND tells you whether you actually made money — by tracking your real food cost per dish, your expenses, your waste, and your payroll alongside your revenue. Square's strength is hardware integration and card processing; Tenda Pro's strength is the back-of-house numbers Square can't see.",
   },
   {
     q: 'Can I cancel or downgrade anytime?',
     a: "Yes. If you're on Pro and want to go back to Basic, you can downgrade from the Settings page at any time. There are no long-term contracts or cancellation fees. Your historical data stays intact and remains exportable.",
   },
   {
-    q: 'Why is Tenda built specifically for the Philippines?',
+    q: 'Why is Tenda Pro built specifically for the Philippines?',
     a: 'Pricing is in Philippine Peso, the workflow is designed around how local restaurants and cafés actually operate, and the default themes were chosen with Filipino café aesthetics in mind. Built by a Filipino indie developer, not a foreign SaaS team adapting their product.',
   },
 ];

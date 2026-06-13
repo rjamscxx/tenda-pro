@@ -84,7 +84,7 @@ const FEATURES = [
     ),
     iconBg: 'bg-warn-dim',
     title: 'Expense Tracking',
-    body: 'Categorize every cost — ingredients, labor, rent, utilities. Mark expenses as recurring and Tenda auto-logs them each month.',
+    body: 'Categorize every cost — ingredients, labor, rent, utilities. Mark expenses as recurring and Tenda Pro auto-logs them each month.',
   },
   {
     icon: (
@@ -95,7 +95,7 @@ const FEATURES = [
     ),
     iconBg: 'bg-danger-dim',
     title: 'Menu & Recipe Costing',
-    body: 'Build recipes from your ingredients. Tenda calculates real food cost per dish and gross margin — so you price with confidence.',
+    body: 'Build recipes from your ingredients. Tenda Pro calculates real food cost per dish and gross margin — so you price with confidence.',
   },
   {
     icon: (
@@ -176,7 +176,7 @@ const FEATURES = [
     ),
     iconBg: 'bg-surface-3',
     title: 'Install as App',
-    body: 'Add Tenda to your home screen on Android or desktop. Works as a progressive web app — fast, native-feeling, no app store required.',
+    body: 'Add Tenda Pro to your home screen on Android or desktop. Works as a progressive web app — fast, native-feeling, no app store required.',
   },
 ]
 
@@ -450,7 +450,7 @@ export default function LandingClient() {
         >
           <div className="flex items-center gap-2">
             <TendaLogo size={26} variant="badge" />
-            <span className="font-semibold text-ink tracking-[-0.02em] leading-none">Tenda</span>
+            <span className="font-semibold text-ink tracking-[-0.02em] leading-none">Tenda Pro</span>
           </div>
 
           <div className="hidden md:flex items-center gap-7 text-sm text-ink-3">
@@ -551,7 +551,7 @@ export default function LandingClient() {
             </h1>
 
             <p className="hero-sub-el text-base text-ink-3 leading-relaxed max-w-[50ch]">
-              Tenda gives restaurant and café owners a single dashboard to track sales, log expenses,
+              Tenda Pro gives restaurant and café owners a single dashboard to track sales, log expenses,
               cost every recipe, manage staff, and watch inventory — without spreadsheets.
             </p>
 
@@ -693,7 +693,7 @@ export default function LandingClient() {
                   </svg>
                 ),
                 title: 'No early warnings',
-                body: "You find out stock ran out when a customer orders it. You learn about a bad month after the month is already over. Tenda catches it before it hurts.",
+                body: "You find out stock ran out when a customer orders it. You learn about a bad month after the month is already over. Tenda Pro catches it before it hurts.",
               },
             ].map(item => (
               <div key={item.title} className="pain-card glass rounded-2xl p-7 space-y-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" style={{ opacity: 0 }}>
@@ -708,7 +708,7 @@ export default function LandingClient() {
         </div>
       </section>
 
-      {/* ── How owners actually use Tenda (animated tablet + phone scene) ──── */}
+      {/* ── How owners actually use Tenda Pro (animated tablet + phone scene) ──── */}
       <OwnerScene />
 
       {/* ── Features ──────────────────────────────────────────────────────────── */}
@@ -716,7 +716,7 @@ export default function LandingClient() {
         <div className="max-w-6xl mx-auto space-y-12">
 
           <div>
-            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">What Tenda does</p>
+            <p className="text-xs text-accent font-semibold uppercase tracking-widest mb-3">What Tenda Pro does</p>
             <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-semibold tracking-tighter text-ink leading-tight max-w-[20ch]">
               Every tool your café actually needs.
             </h2>
@@ -818,7 +818,7 @@ export default function LandingClient() {
               {
                 step: '02',
                 title: 'Log sales daily',
-                body: "Tap a dish, enter the channel, hit save. Under 30 seconds per sale. Tenda does the food cost math automatically.",
+                body: "Tap a dish, enter the channel, hit save. Under 30 seconds per sale. Tenda Pro does the food cost math automatically.",
                 icon: (
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-accent">
                     <path d="M3.5 9.5l3.5 3.5 7.5-7.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
@@ -882,7 +882,7 @@ export default function LandingClient() {
               Stop running out of the things that sell.
             </h2>
             <p className="text-base text-ink-3 leading-relaxed max-w-[44ch]">
-              Set a low-stock threshold on every ingredient. Tenda flags anything running low directly
+              Set a low-stock threshold on every ingredient. Tenda Pro flags anything running low directly
               on the dashboard — no more 86&apos;d dishes mid-service.
             </p>
             <ul className="space-y-3.5">
@@ -1027,7 +1027,7 @@ export default function LandingClient() {
               <div>
                 <h3 className="text-lg font-semibold text-ink tracking-tight">Waste Log</h3>
                 <p className="text-sm text-ink-3 mt-2 leading-relaxed">
-                  Log spoilage and dropped plates by ingredient. Tenda calculates the estimated peso
+                  Log spoilage and dropped plates by ingredient. Tenda Pro calculates the estimated peso
                   loss and surfaces it monthly — so you can actually cut it.
                 </p>
               </div>
@@ -1100,7 +1100,7 @@ export default function LandingClient() {
                 <h3 className="text-lg font-semibold text-ink tracking-tight">Payroll Runs</h3>
                 <p className="text-sm text-ink-3 mt-2 leading-relaxed">
                   Process payroll by period. Set days worked, gross pay auto-calculates from rate, add
-                  deductions, and Tenda keeps the full history of every run.
+                  deductions, and Tenda Pro keeps the full history of every run.
                 </p>
               </div>
               <div className="bg-surface-2 rounded-xl p-4 space-y-2.5">
@@ -1463,7 +1463,7 @@ export default function LandingClient() {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <TendaLogo size={24} variant="badge" />
-                <span className="text-sm font-semibold text-ink tracking-[-0.02em] leading-none">Tenda</span>
+                <span className="text-sm font-semibold text-ink tracking-[-0.02em] leading-none">Tenda Pro</span>
               </div>
               <p className="text-sm text-ink-4 leading-relaxed max-w-[28ch]">
                 The all-in-one operating dashboard for restaurant and café owners in the Philippines.
@@ -1529,7 +1529,7 @@ export default function LandingClient() {
 
           {/* Bottom bar */}
           <div className="pt-8 flex items-center justify-between gap-4 flex-wrap">
-            <p className="text-xs text-ink-4">© 2026 Tenda. All rights reserved.</p>
+            <p className="text-xs text-ink-4">© 2026 Tenda Pro. All rights reserved.</p>
             <p className="text-xs text-ink-4">Built for restaurant owners who want clarity, not complexity.</p>
           </div>
         </div>

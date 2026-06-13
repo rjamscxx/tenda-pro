@@ -9,7 +9,7 @@ import nodemailer, { type Transporter } from 'nodemailer'
 // (File name kept as resend.ts only to avoid churn; it is Brevo under the hood.)
 
 const SENDER_EMAIL = process.env.BREVO_SENDER || 'rjamscxx@gmail.com'
-const SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Tenda'
+const SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Tenda Pro'
 
 // Lazy transport — created on first send so the build never constructs it.
 let _tx: Transporter | null = null

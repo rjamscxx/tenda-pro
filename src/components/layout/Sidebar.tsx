@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useTransition, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import TendaLogo from '@/components/ui/TendaLogo'
@@ -134,6 +134,13 @@ function NavItem({
   const active   = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
   const isActive = active || isPending
 
+  // Pre-warm every unlocked route once the sidebar mounts, so the RSC payload
+  // is already cached by the time the user clicks — navigation feels instant
+  // instead of waiting on a cold server round-trip (the source of the tab lag).
+  useEffect(() => {
+    if (!locked && !active) router.prefetch(href)
+  }, [href, locked, active, router])
+
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault()
     if (active) return
@@ -220,7 +227,7 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
       <div className="relative z-10 h-[60px] flex flex-col justify-center px-4 border-b border-hair gap-1">
         <div className="flex items-center gap-2">
           <TendaLogo size={26} variant="badge" />
-          <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda</span>
+          <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda Pro</span>
           {onClose && (
             <button
               onClick={onClose}

@@ -123,7 +123,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
   function downloadCSV() {
     const fmt = (cents: number) => (cents / 100).toFixed(2)
     const lines: string[][] = [
-      [`Tenda P&L Report — ${data.label}`],
+      [`Tenda Pro P&L Report — ${data.label}`],
       [],
       ['SUMMARY', 'Amount (₱)'],
       ['Revenue', fmt(data.revenue)],

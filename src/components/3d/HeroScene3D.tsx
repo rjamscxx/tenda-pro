@@ -128,7 +128,7 @@ export default function HeroScene3D({ theme = 'ember' }: Props) {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: '5px 5px 0 0', background: '#1e2328', border: '1px solid rgba(255,255,255,0.07)', borderBottom: 'none', fontSize: 9, color: 'rgba(255,255,255,0.62)', fontFamily: 'system-ui' }}>
                 <svg width="8" height="8" viewBox="0 0 14 14" fill="none"><path d="M3 11C3 8 5 6 7 6C9 6 11 8 11 11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><path d="M7 6V2M5 4l2-2 2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                Tenda
+                Tenda Pro
               </div>
             </div>
             <div style={{ display: 'flex', padding: '4px 0 8px' }}>

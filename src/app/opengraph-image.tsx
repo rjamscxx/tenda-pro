@@ -4,7 +4,7 @@ export const runtime = 'edge'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 export const alt =
-  'Tenda — All-in-one operating dashboard for restaurants and cafés'
+  'Tenda Pro — All-in-one operating dashboard for restaurants and cafés'
 
 const CANVAS = '#130A04'
 const SURFACE = '#1F1408'
@@ -60,7 +60,7 @@ export default async function Image() {
               color: INK,
             }}
           >
-            Tenda
+            Tenda Pro
           </span>
         </div>
 

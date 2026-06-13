@@ -258,7 +258,7 @@ export default function OnboardingForm({
         disabled={loading || !venueName.trim()}
         className="w-full py-2.5 btn-primary rounded-lg text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? 'Setting up…' : 'Launch Tenda →'}
+        {loading ? 'Setting up…' : 'Launch Tenda Pro →'}
       </button>
     </form>
   )

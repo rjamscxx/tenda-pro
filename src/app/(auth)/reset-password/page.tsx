@@ -1,7 +1,7 @@
 import TendaLogo from '@/components/ui/TendaLogo'
 import ResetPasswordForm from './ResetPasswordForm'
 
-export const metadata = { title: 'Set new password — Tenda' }
+export const metadata = { title: 'Set new password — Tenda Pro' }
 
 export default function ResetPasswordPage() {
   return (
@@ -10,7 +10,7 @@ export default function ResetPasswordPage() {
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <TendaLogo size={26} variant="badge" />
-            <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda</span>
+            <span className="font-semibold text-[17px] tracking-[-0.02em] gradient-text leading-none">Tenda Pro</span>
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-semibold text-ink">Set new password</h1>

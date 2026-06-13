@@ -7,7 +7,7 @@ import { sales, saleItems, expenses, wasteLogs, dishes } from '@/lib/db/schema'
 import { and, eq, sql, desc } from 'drizzle-orm'
 import CloseDayClient from './CloseDayClient'
 
-export const metadata = { title: 'Close Day — Tenda' }
+export const metadata = { title: 'Close Day — Tenda Pro' }
 
 export default async function CloseDayPage() {
   const { venue, dbUser } = await requireVenue()

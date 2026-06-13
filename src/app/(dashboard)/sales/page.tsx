@@ -4,7 +4,7 @@ import { eq, desc, and, asc, inArray } from 'drizzle-orm'
 import { requireVenue } from '@/lib/queries/auth'
 import SalesClient from './SalesClient'
 
-export const metadata = { title: 'Sales — Tenda' }
+export const metadata = { title: 'Sales — Tenda Pro' }
 
 export default async function SalesPage() {
   const { venue } = await requireVenue()

@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Privacy Policy — Tenda',
-  description: 'Privacy Policy for Tenda, the restaurant and café management dashboard.',
+  title: 'Privacy Policy — Tenda Pro',
+  description: 'Privacy Policy for Tenda Pro, the restaurant and café management dashboard.',
 }
 
 export default function PrivacyPage() {
@@ -18,7 +18,7 @@ export default function PrivacyPage() {
                 <path d="M7 6V2M5 4l2-2 2 2" stroke="var(--canvas)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <span className="text-sm font-semibold text-ink group-hover:text-accent transition-colors">Tenda</span>
+            <span className="text-sm font-semibold text-ink group-hover:text-accent transition-colors">Tenda Pro</span>
           </Link>
           <Link href="/" className="text-sm text-ink-4 hover:text-ink transition-colors">
             Back to home
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
 
           <section className="space-y-4">
             <p className="text-base text-ink-3">
-              This Privacy Policy describes how Tenda, operated by RJ Cabansay (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;),
+              This Privacy Policy describes how Tenda Pro, operated by RJ Cabansay (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;),
               collects, uses, stores, and protects the personal information you provide when using our
               restaurant and café management platform. We are committed to protecting your privacy and
               processing your personal data in accordance with the Data Privacy Act of 2012 (Republic
@@ -64,7 +64,7 @@ export default function PrivacyPage() {
               <div>
                 <h3 className="text-sm font-semibold text-ink mb-2">1.2 Business Data You Enter</h3>
                 <p className="text-sm mb-2">
-                  All data you input into Tenda belongs to you. This may include:
+                  All data you input into Tenda Pro belongs to you. This may include:
                 </p>
                 <ul className="space-y-2 pl-5 list-disc marker:text-ink-4 text-sm">
                   <li>Business name, address, and type of cuisine or concept</li>
@@ -128,12 +128,12 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">3. Data Hosting and Storage</h2>
             <p>
-              Tenda is built on Supabase, a managed database and authentication platform. Your data is
+              Tenda Pro is built on Supabase, a managed database and authentication platform. Your data is
               stored in Supabase-managed PostgreSQL databases hosted on cloud infrastructure. Supabase
               uses industry-standard encryption for data at rest (AES-256) and in transit (TLS 1.2+).
             </p>
             <p>
-              Data may be stored on servers located outside the Philippines. By using Tenda, you consent
+              Data may be stored on servers located outside the Philippines. By using Tenda Pro, you consent
               to the transfer and storage of your personal data in these locations. We ensure that any
               third-party infrastructure provider we use maintains security standards appropriate to the
               sensitivity of the data processed.
@@ -144,7 +144,7 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">4. Third-Party Services</h2>
             <p>
-              We use a limited number of trusted third-party services to operate Tenda. Each service
+              We use a limited number of trusted third-party services to operate Tenda Pro. Each service
               receives only the data it needs to perform its function:
             </p>
 
@@ -178,7 +178,7 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">5. Cookies and Local Storage</h2>
             <p>
-              Tenda uses cookies and browser local storage for the following purposes:
+              Tenda Pro uses cookies and browser local storage for the following purposes:
             </p>
             <ul className="space-y-2 pl-5 list-disc marker:text-ink-4">
               <li>Authentication session tokens (to keep you logged in securely).</li>
@@ -318,7 +318,7 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-lg font-semibold text-ink tracking-tight">10. Children&apos;s Privacy</h2>
             <p>
-              Tenda is not directed at individuals under 18 years of age. We do not knowingly collect
+              Tenda Pro is not directed at individuals under 18 years of age. We do not knowingly collect
               personal information from minors. If we become aware that we have collected data from a
               person under 18, we will take steps to delete that information promptly.
             </p>
@@ -343,7 +343,7 @@ export default function PrivacyPage() {
               For any privacy-related questions, requests, or concerns, please contact us at:
             </p>
             <div className="rounded-xl border border-hair bg-surface-2 p-5 space-y-1 text-sm">
-              <p className="font-medium text-ink">Tenda — Privacy Inquiries</p>
+              <p className="font-medium text-ink">Tenda Pro — Privacy Inquiries</p>
               <p>Operated by RJ Cabansay</p>
               <p>Philippines</p>
               <p>
@@ -363,7 +363,7 @@ export default function PrivacyPage() {
 
         {/* Footer nav */}
         <div className="mt-14 pt-8 border-t border-hair flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-xs text-ink-4">© 2026 Tenda. All rights reserved.</p>
+          <p className="text-xs text-ink-4">© 2026 Tenda Pro. All rights reserved.</p>
           <div className="flex items-center gap-5 text-xs text-ink-4">
             <Link href="/legal/terms" className="hover:text-ink transition-colors">Terms of Service</Link>
             <Link href="/legal/privacy" className="text-accent">Privacy Policy</Link>

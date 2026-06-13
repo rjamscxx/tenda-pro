@@ -18,7 +18,7 @@ export default function GlobalError({
       <body style={{ margin: 0, background: '#0E1714', fontFamily: 'system-ui, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
         <div style={{ textAlign: 'center', padding: '2rem', maxWidth: 360 }}>
           <p style={{ color: '#F87171', fontSize: 13, marginBottom: 8 }}>Unexpected error</p>
-          <h1 style={{ color: '#ECE6D5', fontSize: 20, fontWeight: 600, margin: '0 0 16px' }}>Tenda ran into a problem</h1>
+          <h1 style={{ color: '#ECE6D5', fontSize: 20, fontWeight: 600, margin: '0 0 16px' }}>Tenda Pro ran into a problem</h1>
           {error.digest && (
             <p style={{ color: '#6B8A7E', fontSize: 12, marginBottom: 16 }}>Error ID: {error.digest}</p>
           )}

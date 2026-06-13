@@ -9,7 +9,7 @@ import AnalyticsClient from './AnalyticsClient'
 import { redirect } from 'next/navigation'
 
 export const revalidate = 60
-export const metadata = { title: 'Analytics — Tenda' }
+export const metadata = { title: 'Analytics — Tenda Pro' }
 
 const CAT_LABELS: Record<string, string> = {
   ingredients: 'Ingredients', labor: 'Labor', rent: 'Rent',

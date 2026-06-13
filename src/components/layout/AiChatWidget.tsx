@@ -183,7 +183,7 @@ export default function AiChatWidget() {
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        aria-label={open ? 'Close Tenda Assistant' : 'Open Tenda Assistant'}
+        aria-label={open ? 'Close Tenda Pro Assistant' : 'Open Tenda Pro Assistant'}
         style={{ ...buttonStyle, touchAction: 'none' }}
         className="fixed z-[var(--z-dropdown)] w-12 h-12 rounded-full btn-primary shadow-lg shadow-accent/30 flex items-center justify-center active:scale-95 transition-transform cursor-grab active:cursor-grabbing"
       >
@@ -216,7 +216,7 @@ export default function AiChatWidget() {
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-ink leading-tight">Tenda Assistant</p>
+              <p className="text-sm font-semibold text-ink leading-tight">Tenda Pro Assistant</p>
               <p className="text-[10px] text-ink-4 leading-tight">Premium · powered by Claude</p>
             </div>
           </div>

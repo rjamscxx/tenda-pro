@@ -70,7 +70,7 @@ export async function emailCloseOut() {
 <html><body style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Roboto,sans-serif;background:#f4f0e7;padding:24px;color:#1a2420;">
   <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #d8d2c6;">
     <div style="padding:24px 28px;border-bottom:1px solid #ede8de;">
-      <p style="margin:0;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#636f6b;font-weight:600;">Tenda · close of day</p>
+      <p style="margin:0;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#636f6b;font-weight:600;">Tenda Pro · close of day</p>
       <h1 style="margin:6px 0 0;font-size:22px;font-weight:700;color:#1a2420;letter-spacing:-0.01em;">${venue.name}</h1>
       <p style="margin:4px 0 0;font-size:13px;color:#4c5d57;">${dateLabel}</p>
     </div>
@@ -107,7 +107,7 @@ export async function emailCloseOut() {
       ` : ''}
     </div>
     <div style="padding:16px 28px;border-top:1px solid #ede8de;text-align:center;">
-      <p style="margin:0;font-size:11px;color:#636f6b;">Sent by <a href="https://tenda.ph" style="color:#1f5f4a;text-decoration:none;font-weight:600;">Tenda</a></p>
+      <p style="margin:0;font-size:11px;color:#636f6b;">Sent by <a href="https://tenda.ph" style="color:#1f5f4a;text-decoration:none;font-weight:600;">Tenda Pro</a></p>
     </div>
   </div>
 </body></html>`

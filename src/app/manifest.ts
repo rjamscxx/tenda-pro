@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Tenda',
-    short_name: 'Tenda',
+    name: 'Tenda Pro',
+    short_name: 'Tenda Pro',
     description: 'All-in-one operating dashboard for restaurants and cafés.',
     start_url: '/dashboard',
     display: 'standalone',

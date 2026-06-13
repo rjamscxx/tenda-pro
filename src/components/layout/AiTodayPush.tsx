@@ -42,7 +42,7 @@ export default function AiTodayPush({
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-accent/80 flex items-center gap-1.5">
-            Tenda AI · Today&apos;s push
+            Tenda Pro AI · Today&apos;s push
             <span className="px-1.5 py-0 rounded text-[8px] bg-accent/15 text-accent border border-accent/30 font-bold uppercase tracking-wider">Premium</span>
           </p>
           {pending && !text ? (
