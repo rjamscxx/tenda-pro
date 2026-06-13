@@ -1115,3 +1115,44 @@ input:focus, select:focus, textarea:focus {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* ── App intro splash (animated pushcart) ──────────────────────────────────── */
+.tp-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 42%, var(--accent-dim), transparent 70%),
+    var(--canvas);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+.tp-intro-leaving { opacity: 0; pointer-events: none; }
+
+/* the cart rolls in from the left and settles */
+@keyframes tp-roll {
+  0%   { transform: translateX(-64px); opacity: 0; }
+  55%  { opacity: 1; }
+  100% { transform: translateX(0);     opacity: 1; }
+}
+.tp-intro-cart { animation: tp-roll 1.05s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+
+/* wheels spin a turn-and-a-half as it rolls, then stop */
+@keyframes tp-spin { from { transform: rotate(0); } to { transform: rotate(540deg); } }
+.tp-wheel { animation: tp-spin 1.05s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+
+/* wordmark + tagline rise in once the cart has settled */
+@keyframes tp-rise {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.tp-intro-word { animation: tp-rise 0.55s ease-out 0.85s both; text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tp-intro-cart, .tp-wheel, .tp-intro-word { animation-duration: 0.01ms !important; animation-delay: 0ms !important; }
+}
