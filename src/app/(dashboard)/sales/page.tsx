@@ -9,14 +9,54 @@ export const metadata = { title: 'Sales — Tenda' }
 export default async function SalesPage() {
   const { venue } = await requireVenue()
 
-  const [salesRows, dishRows] = await Promise.all([
+  const [salesRows, dishRows, pendingRows] = await Promise.all([
     db.select().from(sales).where(eq(sales.venueId, venue.id)).orderBy(desc(sales.soldAt)),
     db.query.dishes.findMany({
       where: and(eq(dishes.venueId, venue.id), eq(dishes.isActive, true)),
       with: { recipeItems: { with: { ingredient: true } } },
       orderBy: [asc(dishes.category), asc(dishes.name)],
     }),
+    // Pending online orders awaiting GCash confirmation — newest first.
+    db.select()
+      .from(sales)
+      .where(and(eq(sales.venueId, venue.id), eq(sales.isOnline, true), eq(sales.isPaid, false)))
+      .orderBy(desc(sales.soldAt)),
   ])
+
+  // Items for pending online orders, joined to dish names.
+  const pendingItemRows = pendingRows.length > 0
+    ? await db
+        .select({
+          saleId:   saleItems.saleId,
+          itemId:   saleItems.id,
+          dishName: dishes.name,
+          qty:      saleItems.qty,
+        })
+        .from(saleItems)
+        .leftJoin(dishes, eq(dishes.id, saleItems.dishId))
+        .where(inArray(saleItems.saleId, pendingRows.map(s => s.id)))
+    : []
+  const pendingItemsBySale = new Map<string, typeof pendingItemRows>()
+  for (const row of pendingItemRows) {
+    if (!pendingItemsBySale.has(row.saleId)) pendingItemsBySale.set(row.saleId, [])
+    pendingItemsBySale.get(row.saleId)!.push(row)
+  }
+
+  const pendingOrders = pendingRows.map(s => ({
+    id:            s.id,
+    channel:       s.channel,
+    total:         s.total,
+    note:          s.note,
+    customerName:  s.customerName,
+    customerPhone: s.customerPhone,
+    paymentRef:    s.paymentRef,
+    soldAt:        s.soldAt.toISOString(),
+    items: (pendingItemsBySale.get(s.id) ?? []).map(i => ({
+      id:       i.itemId,
+      dishName: i.dishName,
+      qty:      i.qty,
+    })),
+  }))
 
   // Fetch all sale items in one join so each row can render its breakdown
   // inline without an additional click.
@@ -77,7 +117,7 @@ export default async function SalesPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <SalesClient sales={data} dishes={dishOptions} />
+      <SalesClient sales={data} dishes={dishOptions} pendingOrders={pendingOrders} />
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { dishes, venues } from '@/lib/db/schema'
 import { eq, and, asc } from 'drizzle-orm'
 import type { Metadata } from 'next'
+import OrderClient from './OrderClient'
 
 export const revalidate = 60
 
@@ -50,7 +51,14 @@ export default async function PublicMenuPage({ params }: { params: Promise<{ ven
   }
 
   const [venueRow, dishRows] = await Promise.all([
-    db.select({ id: venues.id, name: venues.name, menuTheme: venues.menuTheme })
+    db.select({
+      id: venues.id,
+      name: venues.name,
+      menuTheme: venues.menuTheme,
+      onlineOrderingEnabled: venues.onlineOrderingEnabled,
+      gcashNumber: venues.gcashNumber,
+      gcashName: venues.gcashName,
+    })
       .from(venues).where(eq(venues.id, venueId)).limit(1),
     db.select({
       id: dishes.id,
@@ -92,6 +100,31 @@ export default async function PublicMenuPage({ params }: { params: Promise<{ ven
   })
 
   const totalAvailable = dishRows.filter(d => d.soldOutDate !== today).length
+
+  // Online ordering ON → render the interactive cart/checkout client. The
+  // public menu stays read-only otherwise (below).
+  if (venue.onlineOrderingEnabled) {
+    return (
+      <OrderClient
+        theme={theme}
+        venueId={venue.id}
+        venueName={venue.name}
+        gcashNumber={venue.gcashNumber}
+        gcashName={venue.gcashName}
+        totalAvailable={totalAvailable}
+        categories={categories.map(cat => ({
+          name: cat,
+          dishes: grouped[cat].map(d => ({
+            id: d.id,
+            name: d.name,
+            description: d.description,
+            price: d.price,
+            soldOut: d.soldOutDate === today,
+          })),
+        }))}
+      />
+    )
+  }
 
   return (
     <div className="min-h-screen bg-canvas text-ink font-sans antialiased" data-theme={theme}>

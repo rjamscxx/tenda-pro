@@ -114,6 +114,7 @@ export default async function SettingsPage() {
         planExpiresAt={account.planExpiresAt?.toISOString() ?? null}
         trialStartedAt={account.trialStartedAt?.toISOString() ?? null}
         venue={{
+          id: venue.id,
           name: venue.name,
           timezone: venue.timezone,
           monthlyRevenueGoal: venue.monthlyRevenueGoal,
@@ -121,6 +122,9 @@ export default async function SettingsPage() {
           vatRegistered: venue.vatRegistered,
           dailyRevenueTarget: venue.dailyRevenueTarget,
           foodCostTarget: venue.foodCostTarget ?? 35,
+          onlineOrderingEnabled: venue.onlineOrderingEnabled,
+          gcashNumber: venue.gcashNumber ?? '',
+          gcashName: venue.gcashName ?? '',
         }}
         profile={{ fullName: dbUser.fullName ?? '', email: authUser.email ?? '' }}
         recentActivity={recentActivity.map(r => ({

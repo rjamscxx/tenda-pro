@@ -64,6 +64,11 @@ export const venues = pgTable('venues', {
   dailyRevenueTarget:    integer('daily_revenue_target').notNull().default(0),   // cents; 0 = derive from monthly
   foodCostTarget:        integer('food_cost_target').notNull().default(35),      // %; "good" threshold
   menuTheme:             text('menu_theme').notNull().default('ember'),           // theme applied to /m/[venueId] public menu
+  // Online ordering on the public QR menu — opt-in per venue. Customers order
+  // and pay to the owner's own GCash (no processor cut), like the in-app POS.
+  onlineOrderingEnabled: boolean('online_ordering_enabled').notNull().default(false),
+  gcashNumber:           text('gcash_number'),   // owner's GCash mobile number shown at checkout
+  gcashName:             text('gcash_name'),      // GCash account name shown so customers send to the right person
   createdAt:             timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt:             timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index('venues_account_idx').on(t.accountId)])
@@ -138,6 +143,9 @@ export const sales = pgTable('sales', {
   total:        integer('total').notNull().default(0), // cents
   note:         text('note'),
   customerName: text('customer_name'),                  // shown on receipts so staff can call out the customer
+  customerPhone: text('customer_phone'),                // online orders capture a contact number
+  paymentRef:   text('payment_ref'),                    // GCash reference the customer enters at online checkout
+  isOnline:     boolean('is_online').notNull().default(false), // true = self-service order from the public QR menu
   isPaid:       boolean('is_paid').notNull().default(true), // false = open tab / utang / pending GCash
   // Kitchen Display System fields. Default 'served' so manual/historical sales
   // don't appear on /kds; POS marks new orders 'new' when sendToKitchen=true.
