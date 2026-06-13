@@ -27,8 +27,9 @@ function Cart({ color, spin }: { color: string; spin?: boolean }) {
       <path d={`M4 7.5 H7 L10 18 H24`} stroke={color} strokeWidth={sw} fill="none" strokeLinecap="round" strokeLinejoin="round" />
       {/* basket — open trapezoid sitting on the rail */}
       <path d={`M8.4 10 H27 L24.4 18 H10.6`} stroke={color} strokeWidth={sw} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      {/* two basket dividers (grocery-basket detail) */}
-      <path d="M14.6 10.4 L13.9 17.6 M19.5 10.4 L19.9 17.6" stroke={color} strokeWidth="1.3" strokeLinecap="round" opacity="0.75" />
+      {/* groceries — two minimal items resting in the basket, peeking above the rim */}
+      <circle cx="14" cy="8.8" r="2.1" fill={color} />
+      <circle cx="19.8" cy="8.1" r="2.5" fill={color} />
       {/* wheels */}
       <g className={spin ? 'tp-wheel' : ''} style={{ transformOrigin: '13px 22.5px' }}>
         <circle cx="13" cy="22.5" r="2.4" fill={color} />

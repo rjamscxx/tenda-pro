@@ -38,7 +38,8 @@ export function GET(req: NextRequest) {
         >
           <path d="M4 7.5 H7 L10 18 H24" stroke="white" strokeWidth={2.1} fill="none" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M8.4 10 H27 L24.4 18 H10.6" stroke="white" strokeWidth={2.1} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M14.6 10.4 L13.9 17.6 M19.5 10.4 L19.9 17.6" stroke="white" strokeWidth={1.3} strokeLinecap="round" strokeOpacity={0.75} />
+          <circle cx="14" cy="8.8" r="2.1" fill="white" />
+          <circle cx="19.8" cy="8.1" r="2.5" fill="white" />
           <circle cx="13" cy="22.5" r="2.4" fill="white" />
           <circle cx="22" cy="22.5" r="2.4" fill="white" />
         </svg>
