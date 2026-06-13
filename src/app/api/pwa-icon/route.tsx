@@ -36,12 +36,11 @@ export function GET(req: NextRequest) {
           viewBox="0 0 32 32"
           fill="none"
         >
-          <path d="M3.5 11 Q16 5.5 28.5 11 L28.5 11.6 L3.5 11.6 Z" fill="white" />
-          <path d="M3.5 11.6 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 Z" fill="white" fillOpacity={0.85} />
-          <rect x="5.5" y="13.4" width="21" height="6.4" rx="1.4" fill="white" />
-          <path d="M26.5 14.6 L30 12.2" stroke="white" strokeWidth="1.7" strokeLinecap="round" />
-          <circle cx="10.5" cy="22.5" r="2.7" fill="white" />
-          <circle cx="21" cy="22.5" r="2.7" fill="white" />
+          <path d="M4.5 11.8 Q16 7 27.5 11.8 L27.5 12.7 Q16 8.1 4.5 12.7 Z" fill="white" />
+          <rect x="6" y="13.6" width="20" height="6" rx="1.5" fill="white" />
+          <path d="M26 15 L29.5 12.7" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+          <circle cx="11" cy="22.3" r="2.5" fill="white" />
+          <circle cx="21" cy="22.3" r="2.5" fill="white" />
         </svg>
       </div>
     ),

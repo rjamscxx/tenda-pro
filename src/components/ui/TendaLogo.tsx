@@ -18,27 +18,18 @@ const BRAND_DEEP = '#EA580C'
 function Cart({ color, spin }: { color: string; spin?: boolean }) {
   return (
     <g>
-      {/* awning canopy with a scalloped front valance */}
-      <path d="M3.5 11 Q16 5.5 28.5 11 L28.5 11.6 L3.5 11.6 Z" fill={color} />
-      <path
-        d="M3.5 11.6 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 Z"
-        fill={color}
-        opacity="0.85"
-      />
-      {/* stall box */}
-      <rect x="5.5" y="13.4" width="21" height="6.4" rx="1.4" fill={color} />
-      {/* a counter shelf line across the box (negative space) */}
-      <rect x="7.5" y="16.2" width="17" height="1.1" rx="0.55" fill="#000" opacity="0.18" />
-      {/* push handle */}
-      <path d="M26.5 14.6 L30 12.2" stroke={color} strokeWidth="1.7" strokeLinecap="round" />
-      {/* wheels (hub dot reads as a wheel; spin in the intro) */}
-      <g className={spin ? 'tp-wheel' : ''} style={{ transformOrigin: '10.5px 22.5px' }}>
-        <circle cx="10.5" cy="22.5" r="2.7" fill={color} />
-        <circle cx="10.5" cy="22.5" r="0.95" fill="#000" opacity="0.22" />
+      {/* awning — one clean curved canopy (no scallops) */}
+      <path d="M4.5 11.8 Q16 7 27.5 11.8 L27.5 12.7 Q16 8.1 4.5 12.7 Z" fill={color} />
+      {/* stall box — single clean rounded form */}
+      <rect x="6" y="13.6" width="20" height="6" rx="1.5" fill={color} />
+      {/* push handle — one stroke */}
+      <path d="M26 15 L29.5 12.7" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      {/* two clean wheels (no hubs) */}
+      <g className={spin ? 'tp-wheel' : ''} style={{ transformOrigin: '11px 22.3px' }}>
+        <circle cx="11" cy="22.3" r="2.5" fill={color} />
       </g>
-      <g className={spin ? 'tp-wheel' : ''} style={{ transformOrigin: '21px 22.5px' }}>
-        <circle cx="21" cy="22.5" r="2.7" fill={color} />
-        <circle cx="21" cy="22.5" r="0.95" fill="#000" opacity="0.22" />
+      <g className={spin ? 'tp-wheel' : ''} style={{ transformOrigin: '21px 22.3px' }}>
+        <circle cx="21" cy="22.3" r="2.5" fill={color} />
       </g>
     </g>
   )
