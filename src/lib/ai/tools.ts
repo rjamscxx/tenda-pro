@@ -4,7 +4,7 @@ import {
   sales, saleItems, expenses, ingredients, dishes,
   wasteLogs, employees, payrollRuns, payrollItems,
 } from '@/lib/db/schema'
-import { and, eq, gte, lt, lte, desc, sql } from 'drizzle-orm'
+import { and, eq, gte, lt, lte, desc, sql, inArray } from 'drizzle-orm'
 
 // Tool definitions sent to Claude. Kept stable across requests so they
 // can sit inside the prompt cache. Date inputs are venue-local YYYY-MM-DD.
@@ -322,7 +322,7 @@ async function getPayrollSummary(ctx: ToolCtx, args: { start_date: string; end_d
     })
     .from(payrollItems)
     .innerJoin(employees, eq(payrollItems.employeeId, employees.id))
-    .where(sql`${payrollItems.payrollRunId} = ANY(${runIds}::uuid[])`)
+    .where(inArray(payrollItems.payrollRunId, runIds))
     .groupBy(employees.fullName)
     .orderBy(desc(sql`sum(${payrollItems.netPay})`))
 
