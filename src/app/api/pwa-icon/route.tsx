@@ -13,7 +13,7 @@ export function GET(req: NextRequest) {
 
   // The Tenda Pro mark (awning + post / "T") is defined in a 32×32 viewBox, matching the
   // TendaLogo badge variant. We scale it to fit inside the icon square with comfortable padding.
-  const pad  = size * 0.18
+  const pad  = size * 0.215
   const inner = size - pad * 2
 
   return new ImageResponse(
