@@ -29,18 +29,19 @@ export function GET(req: NextRequest) {
           justifyContent: 'center',
         }}
       >
-        {/* Serif "T" monogram in white, matching the TendaLogo badge variant */}
+        {/* Pushcart mark in white, matching the TendaLogo badge variant */}
         <svg
           width={inner}
           height={inner}
           viewBox="0 0 32 32"
           fill="none"
         >
-          <rect x="6.6" y="7.6" width="18.8" height="3.5" rx="1.15" fill="white" />
-          <rect x="6.6" y="10.4" width="2.6" height="1.7" rx="0.6" fill="white" />
-          <rect x="22.8" y="10.4" width="2.6" height="1.7" rx="0.6" fill="white" />
-          <rect x="14.25" y="9.8" width="3.5" height="11.5" rx="1" fill="white" />
-          <rect x="10.8" y="21" width="10.4" height="3.4" rx="1.15" fill="white" />
+          <path d="M3.5 11 Q16 5.5 28.5 11 L28.5 11.6 L3.5 11.6 Z" fill="white" />
+          <path d="M3.5 11.6 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 q2.1 2.4 4.2 0 Z" fill="white" fillOpacity={0.85} />
+          <rect x="5.5" y="13.4" width="21" height="6.4" rx="1.4" fill="white" />
+          <path d="M26.5 14.6 L30 12.2" stroke="white" strokeWidth="1.7" strokeLinecap="round" />
+          <circle cx="10.5" cy="22.5" r="2.7" fill="white" />
+          <circle cx="21" cy="22.5" r="2.7" fill="white" />
         </svg>
       </div>
     ),

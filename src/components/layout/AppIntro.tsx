@@ -1,0 +1,50 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import TendaLogo from '@/components/ui/TendaLogo'
+
+// A brief brand intro that plays once per browser session when the user first
+// lands on an app surface (login / signup / dashboard / etc.). The pushcart
+// rolls in with spinning wheels, then "Tenda Pro" rises in, then it fades to
+// reveal the page. Skipped on the marketing landing (/) and the public customer
+// menu (/m/...). Respects prefers-reduced-motion.
+export default function AppIntro() {
+  const pathname = usePathname()
+  const [show, setShow] = useState(false)
+  const [leaving, setLeaving] = useState(false)
+
+  useEffect(() => {
+    if (!pathname || pathname === '/' || pathname.startsWith('/m/')) return
+    let seen = false
+    try {
+      seen = sessionStorage.getItem('tp-intro-v1') === '1'
+      if (!seen) sessionStorage.setItem('tp-intro-v1', '1')
+    } catch { /* private mode — just play it */ }
+    if (seen) return
+
+    setShow(true)
+    const reduce = typeof window !== 'undefined'
+      && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    const hold = reduce ? 700 : 2150
+    const t1 = setTimeout(() => setLeaving(true), hold)
+    const t2 = setTimeout(() => setShow(false), hold + 520)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
+  }, [pathname])
+
+  if (!show) return null
+
+  return (
+    <div className={`tp-intro ${leaving ? 'tp-intro-leaving' : ''}`} role="status" aria-label="Tenda Pro">
+      <div className="tp-intro-cart">
+        <TendaLogo size={96} variant="badge" animated />
+      </div>
+      <div className="tp-intro-word">
+        <div className="gradient-text font-semibold tracking-[-0.02em]" style={{ fontSize: 30, lineHeight: 1 }}>
+          Tenda Pro
+        </div>
+        <div className="text-ink-4 text-sm mt-2.5">Know your margins. Run your kitchen.</div>
+      </div>
+    </div>
+  )
+}

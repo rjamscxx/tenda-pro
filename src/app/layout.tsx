@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import ServiceWorkerRegistrar from '@/components/layout/ServiceWorkerRegistrar'
+import AppIntro from '@/components/layout/AppIntro'
 
 // Geist Sans is the UI face — clean, modern, ownable without being loud, and a
 // perfect pair with Geist Mono (used for all numbers). The Apple system stack
@@ -98,6 +99,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="h-full">
         {children}
+        <AppIntro />
         <ServiceWorkerRegistrar />
       </body>
     </html>
