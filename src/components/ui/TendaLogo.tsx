@@ -57,7 +57,10 @@ export default function TendaLogo({ size = 24, className = '', variant = 'mark',
         </defs>
         <rect width="32" height="32" rx="7.5" fill={`url(#${gid})`} />
         <rect x="0.5" y="0.5" width="31" height="31" rx="7" fill="none" stroke="#FFFFFF" strokeOpacity="0.18" />
-        <Cart color="#FFF8F0" spin={animated} />
+        {/* cart scaled down a touch for more padding inside the badge */}
+        <g transform="translate(16 16.2) scale(0.86) translate(-16 -16.2)">
+          <Cart color="#FFF8F0" spin={animated} />
+        </g>
       </svg>
     )
   }
