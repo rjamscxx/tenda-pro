@@ -278,7 +278,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
           sortBy === 'revenue' ? b.totalRevenue - a.totalRevenue : b.totalQty - a.totalQty
         )
         return (
-          <div className="card-enter card-d3 glass card-glow rounded-xl overflow-hidden">
+          <div className="card-enter card-d3 glass card-glow lift rounded-xl overflow-hidden">
             <div className="px-5 py-3.5 border-b border-hair flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
@@ -347,7 +347,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
 
       {/* Breakdown */}
       <div className="card-enter card-d4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="glass card-glow rounded-xl p-5 space-y-4">
+        <div className="glass card-glow lift rounded-xl p-5 space-y-4">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
               <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -375,7 +375,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
             </div>
           )}
         </div>
-        <div className="glass card-glow rounded-xl p-5 space-y-4">
+        <div className="glass card-glow lift rounded-xl p-5 space-y-4">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
               <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -402,7 +402,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
       </div>
 
       {/* 6-month trend table */}
-      <div className="card-enter card-d5 glass card-glow rounded-xl overflow-hidden">
+      <div className="card-enter card-d5 glass card-glow lift rounded-xl overflow-hidden">
         <div className="px-5 py-3.5 border-b border-hair flex items-center gap-2">
           <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none">

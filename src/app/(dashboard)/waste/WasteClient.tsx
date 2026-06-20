@@ -208,7 +208,7 @@ export default function WasteClient({ wasteLogs, ingredients }: Props) {
                     <button
                       onClick={() => handleDelete(w.id)}
                       disabled={deleting === w.id}
-                      className="text-ink-4 hover:text-danger transition-colors disabled:opacity-40 p-1"
+                      className="text-ink-4 hover:text-danger transition-colors active:scale-[0.9] disabled:opacity-40 p-1"
                       aria-label="Delete"
                     >
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

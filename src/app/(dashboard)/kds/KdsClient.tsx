@@ -141,7 +141,7 @@ export default function KdsClient({
         </div>
         <button
           onClick={() => setMuted(m => !m)}
-          className="px-3 py-1.5 rounded-lg border border-hair text-[12px] text-ink-3 hover:text-ink hover:bg-surface transition-colors flex items-center gap-1.5"
+          className="px-3 py-1.5 rounded-lg border border-hair text-[12px] text-ink-3 hover:text-ink hover:bg-surface transition-colors active:scale-[0.97] flex items-center gap-1.5"
           title={muted ? 'Unmute new-order bell' : 'Mute new-order bell'}
         >
           <span aria-hidden>{muted ? '🔕' : '🔔'}</span>
@@ -149,7 +149,7 @@ export default function KdsClient({
         </button>
         <button
           onClick={() => refresh()}
-          className="px-3 py-1.5 rounded-lg border border-hair text-[12px] text-ink-3 hover:text-ink hover:bg-surface transition-colors"
+          className="px-3 py-1.5 rounded-lg border border-hair text-[12px] text-ink-3 hover:text-ink hover:bg-surface transition-colors active:scale-[0.97]"
         >
           Refresh
         </button>
@@ -224,7 +224,7 @@ export default function KdsClient({
                             {t.status === 'new' && (
                               <button
                                 onClick={() => handleTransition(t.saleId, 'prepare')}
-                                className="flex-1 px-2 py-1.5 rounded-md bg-accent text-canvas text-[11px] font-bold uppercase tracking-wide hover:opacity-90"
+                                className="flex-1 px-2 py-1.5 rounded-md bg-accent text-canvas text-[11px] font-bold uppercase tracking-wide hover:opacity-90 active:scale-[0.97]"
                               >
                                 Start
                               </button>
@@ -233,14 +233,14 @@ export default function KdsClient({
                               <>
                                 <button
                                   onClick={() => handleTransition(t.saleId, 'reopen')}
-                                  className="px-2 py-1.5 rounded-md border border-hair text-[11px] text-ink-3 hover:text-ink"
+                                  className="px-2 py-1.5 rounded-md border border-hair text-[11px] text-ink-3 hover:text-ink active:scale-[0.9]"
                                   title="Move back to New"
                                 >
                                   ←
                                 </button>
                                 <button
                                   onClick={() => handleTransition(t.saleId, 'ready')}
-                                  className="flex-1 px-2 py-1.5 rounded-md bg-success text-canvas text-[11px] font-bold uppercase tracking-wide hover:opacity-90"
+                                  className="flex-1 px-2 py-1.5 rounded-md bg-success text-canvas text-[11px] font-bold uppercase tracking-wide hover:opacity-90 active:scale-[0.97]"
                                 >
                                   Ready
                                 </button>
@@ -250,14 +250,14 @@ export default function KdsClient({
                               <>
                                 <button
                                   onClick={() => handleTransition(t.saleId, 'prepare')}
-                                  className="px-2 py-1.5 rounded-md border border-hair text-[11px] text-ink-3 hover:text-ink"
+                                  className="px-2 py-1.5 rounded-md border border-hair text-[11px] text-ink-3 hover:text-ink active:scale-[0.9]"
                                   title="Move back to Preparing"
                                 >
                                   ←
                                 </button>
                                 <button
                                   onClick={() => handleTransition(t.saleId, 'served')}
-                                  className="flex-1 px-2 py-1.5 rounded-md bg-ink/85 text-canvas text-[11px] font-bold uppercase tracking-wide hover:opacity-90"
+                                  className="flex-1 px-2 py-1.5 rounded-md bg-ink/85 text-canvas text-[11px] font-bold uppercase tracking-wide hover:opacity-90 active:scale-[0.97]"
                                 >
                                   Served ✓
                                 </button>

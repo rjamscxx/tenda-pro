@@ -221,7 +221,7 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
         <div className="flex items-center gap-2">
           <button
             onClick={() => exportCSV(displayed)}
-            className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors flex items-center gap-1.5"
+            className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors active:scale-[0.97] flex items-center gap-1.5"
           >
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
               <path d="M2 9v2.5h9V9M6.5 1v7M4 6l2.5 2.5L9 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
@@ -243,7 +243,7 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
               key={i}
               onClick={() => handleQuickLog(t)}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-2 hover:bg-surface-3 border border-hair text-xs font-medium text-ink-3 hover:text-ink transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-2 hover:bg-surface-3 border border-hair text-xs font-medium text-ink-3 hover:text-ink transition-colors active:scale-[0.97] disabled:opacity-50"
             >
               <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${CATEGORY_BADGE[t.category]?.split(' ')[0] ?? 'bg-hair-2'}`} />
               {t.vendor || CATEGORIES.find(c => c.value === t.category)?.label}
@@ -260,7 +260,7 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
             <button
               key={p.value}
               onClick={() => setPeriod(p.value)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-[0.97] ${
                 period === p.value
                   ? 'bg-accent text-canvas'
                   : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink-2'
@@ -275,7 +275,7 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
         <div className="flex gap-1 flex-wrap">
           <button
             onClick={() => setCatFilter('all')}
-            className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${catFilter === 'all' ? 'bg-ink text-canvas' : 'bg-surface-2 text-ink-4 hover:bg-surface-3'}`}
+            className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors active:scale-[0.97] ${catFilter === 'all' ? 'bg-ink text-canvas' : 'bg-surface-2 text-ink-4 hover:bg-surface-3'}`}
           >
             All
           </button>
@@ -283,7 +283,7 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
             <button
               key={c.value}
               onClick={() => setCatFilter(catFilter === c.value ? 'all' : c.value)}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${
+              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors active:scale-[0.97] ${
                 catFilter === c.value
                   ? CATEGORY_BADGE[c.value]
                   : 'bg-surface-2 text-ink-4 hover:bg-surface-3'
@@ -359,7 +359,7 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
                       <button
                         onClick={() => openEdit(exp)}
-                        className="text-ink-4 hover:text-accent transition-colors p-1 rounded"
+                        className="text-ink-4 hover:text-accent transition-colors active:scale-[0.9] p-1 rounded"
                         aria-label="Edit"
                       >
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -368,7 +368,7 @@ export default function ExpensesClient({ expenses, vendors }: { expenses: Expens
                       </button>
                       <button
                         onClick={() => handleDelete(exp.id)}
-                        className="text-ink-4 hover:text-danger transition-colors p-1 rounded"
+                        className="text-ink-4 hover:text-danger transition-colors active:scale-[0.9] p-1 rounded"
                         aria-label="Delete"
                       >
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

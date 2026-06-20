@@ -659,7 +659,7 @@ export default async function DashboardPage() {
         {/* Stock alerts card — always visible so owners know stock health at a glance */}
         <Link
           href="/inventory"
-          className="card-enter glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden hover:ring-1 hover:ring-accent/30 transition-all"
+          className="card-enter glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden hover:ring-1 hover:ring-accent/30 transition-all"
         >
           <div className={`absolute inset-x-0 top-0 h-[2px] ${
             outOfStock.length > 0 ? 'bg-danger' : lowStockCount > 0 ? 'bg-warn' : 'bg-success'
@@ -689,7 +689,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Monthly P&L summary */}
-      <div className="card-enter card-d2 glass card-glow rounded-xl overflow-hidden">
+      <div className="card-enter card-d2 glass card-glow lift rounded-xl overflow-hidden">
         <div className="px-5 py-3 border-b border-hair flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
@@ -750,7 +750,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Week over Week */}
-      <div className="card-enter card-d3 glass card-glow rounded-xl overflow-hidden">
+      <div className="card-enter card-d3 glass card-glow lift rounded-xl overflow-hidden">
         <div className="px-5 py-3 border-b border-hair">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
@@ -876,7 +876,7 @@ export default async function DashboardPage() {
       <div className="card-enter card-d5 grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {/* Cashflow chart */}
-        <div className="lg:col-span-2 glass card-glow rounded-xl p-5 flex flex-col gap-4">
+        <div className="lg:col-span-2 glass card-glow lift rounded-xl p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2">
@@ -909,7 +909,7 @@ export default async function DashboardPage() {
         <div className="flex flex-col gap-4">
 
           {/* Top sellers by gross profit */}
-          <div className="glass card-glow rounded-xl p-4 space-y-3 flex-1">
+          <div className="glass card-glow lift rounded-xl p-4 space-y-3 flex-1">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
@@ -951,7 +951,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Channel breakdown */}
-          <div className="glass card-glow rounded-xl p-4 space-y-3">
+          <div className="glass card-glow lift rounded-xl p-4 space-y-3">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
                 <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -999,7 +999,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Waste tracker */}
-      <div className="card-enter card-d6 glass card-glow rounded-xl px-5 py-4 flex items-center justify-between gap-6">
+      <div className="card-enter card-d6 glass card-glow lift rounded-xl px-5 py-4 flex items-center justify-between gap-6">
         <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-warn/12 flex items-center justify-center shrink-0 text-warn">
@@ -1042,7 +1042,7 @@ export default async function DashboardPage() {
 
       {/* Expense breakdown by category */}
       {expenseCategories.length > 0 && (
-        <div className="card-enter card-d7 glass card-glow rounded-xl p-5 space-y-4">
+        <div className="card-enter card-d7 glass card-glow lift rounded-xl p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">

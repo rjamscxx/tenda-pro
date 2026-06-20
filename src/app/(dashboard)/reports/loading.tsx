@@ -21,7 +21,7 @@ export default function Loading() {
       {/* KPI cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[0, 1, 2].map(i => (
-          <div key={i} className="glass card-glow rounded-xl p-4 space-y-3">
+          <div key={i} className="glass card-glow lift rounded-xl p-4 space-y-3">
             <div className="h-3 w-20 rounded shimmer" />
             <div className="h-7 w-28 rounded shimmer" />
             <div className="h-3 w-16 rounded shimmer" />
@@ -32,7 +32,7 @@ export default function Loading() {
       {/* Breakdown cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {[0, 1].map(i => (
-          <div key={i} className="glass card-glow rounded-xl p-5 space-y-4">
+          <div key={i} className="glass card-glow lift rounded-xl p-5 space-y-4">
             <div className="h-3 w-36 rounded shimmer" />
             {[1, 0.8, 0.6].map((op, j) => (
               <div key={j} className="space-y-2" style={{ opacity: op }}>
@@ -48,7 +48,7 @@ export default function Loading() {
       </div>
 
       {/* Trend table */}
-      <div className="glass card-glow rounded-xl overflow-hidden">
+      <div className="glass card-glow lift rounded-xl overflow-hidden">
         <div className="px-5 py-4 border-b border-hair">
           <div className="h-3 w-28 rounded shimmer" />
         </div>

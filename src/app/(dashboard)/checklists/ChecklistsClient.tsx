@@ -49,11 +49,11 @@ export default function ChecklistsClient({ initial }: { initial: InitialState })
         <nav className="inline-flex rounded-lg border border-hair p-0.5 text-[12px] font-medium">
           <button
             onClick={() => setTab('today')}
-            className={`px-3 py-1 rounded-md transition-colors ${tab === 'today' ? 'bg-surface-2 text-ink' : 'text-ink-3 hover:text-ink'}`}
+            className={`px-3 py-1 rounded-md transition-colors active:scale-[0.97] ${tab === 'today' ? 'bg-surface-2 text-ink' : 'text-ink-3 hover:text-ink'}`}
           >Today</button>
           <button
             onClick={() => setTab('edit')}
-            className={`px-3 py-1 rounded-md transition-colors ${tab === 'edit' ? 'bg-surface-2 text-ink' : 'text-ink-3 hover:text-ink'}`}
+            className={`px-3 py-1 rounded-md transition-colors active:scale-[0.97] ${tab === 'edit' ? 'bg-surface-2 text-ink' : 'text-ink-3 hover:text-ink'}`}
           >Edit lists</button>
         </nav>
       </header>
@@ -70,7 +70,7 @@ export default function ChecklistsClient({ initial }: { initial: InitialState })
               <button
                 key={k}
                 onClick={() => setEditingKind(k)}
-                className={`px-3 py-1 rounded-md transition-colors ${editingKind === k ? 'bg-surface-2 text-ink' : 'text-ink-3 hover:text-ink'}`}
+                className={`px-3 py-1 rounded-md transition-colors active:scale-[0.97] ${editingKind === k ? 'bg-surface-2 text-ink' : 'text-ink-3 hover:text-ink'}`}
               >
                 {KIND_EMOJI[k]} {KIND_LABEL[k]}
               </button>
