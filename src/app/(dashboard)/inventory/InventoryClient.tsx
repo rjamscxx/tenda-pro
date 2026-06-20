@@ -457,6 +457,7 @@ export default function InventoryClient({
                           <button
                             onClick={() => handleDelete(ing.id)}
                             className="text-ink-4 hover:text-danger transition-colors active:scale-[0.9] p-1 rounded"
+                            aria-label="Delete"
                           >
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                               <path d="M2 3.5h10M5.5 3.5V2.5a.5.5 0 01.5-.5h2a.5.5 0 01.5.5v1M5.5 6v4M8.5 6v4M3 3.5l.7 7.2A1 1 0 004.7 12h4.6a1 1 0 001-.9L11 3.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
