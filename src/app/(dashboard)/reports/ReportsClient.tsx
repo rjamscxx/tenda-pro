@@ -64,7 +64,7 @@ function DonutChart({ data, total }: { data: Array<{ category: string; label: st
   )
 
   return (
-    <div className="relative w-32 h-32 shrink-0">
+    <div className="relative w-32 h-32 shrink-0 content-in">
       <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
         <circle cx="50" cy="50" r={r} fill="none" stroke="var(--surface-3)" strokeWidth="12" />
         {segments.map(({ category, pct, offset }) => {
@@ -105,7 +105,7 @@ function BarRow({ label, amount, pct, colorClass }: { label: string; amount: num
         <span className="tabular text-ink font-medium">{formatCurrency(amount)}</span>
       </div>
       <div className="h-1 bg-surface-3 rounded-full overflow-hidden">
-        <div className={`h-full rounded-full ${colorClass} opacity-60`} style={{ width: `${pct}%` }} />
+        <div className={`h-full rounded-full bar-enter ${colorClass} opacity-60`} style={{ width: `${pct}%` }} />
       </div>
       <p className="text-[10px] text-ink-4 mt-1">{pct.toFixed(1)}%</p>
     </div>
@@ -186,7 +186,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
             <button
               key={m.month}
               onClick={() => setSelected(m.month)}
-              className={`px-3 pt-1.5 pb-2 rounded-xl text-xs font-medium transition-all duration-100 min-w-[58px] ${
+              className={`px-3 pt-1.5 pb-2 rounded-xl text-xs font-medium transition-all duration-100 active:scale-[0.97] min-w-[58px] ${
                 isSel
                   ? 'bg-accent text-canvas shadow-sm'
                   : 'bg-surface-2 text-ink-3 hover:text-ink hover:bg-surface-3 border border-hair'
@@ -211,7 +211,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
 
       {/* KPI cards */}
       <div className="card-enter card-d2 grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+        <div className="glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent via-accent-2 to-accent" />
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Revenue</p>
@@ -224,7 +224,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
           <p className="text-2xl font-bold tabular tracking-tight text-ink">{formatCurrency(data.revenue)}</p>
           <p className="text-[11px] text-ink-4">{data.transactionCount} transaction{data.transactionCount !== 1 ? 's' : ''}</p>
         </div>
-        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+        <div className="glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-danger/60 to-warn/60" />
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Expenses</p>
@@ -237,7 +237,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
           <p className="text-2xl font-bold tabular tracking-tight text-ink">{formatCurrency(data.expenses)}</p>
           <p className="text-[11px] text-ink-4">{data.expenseCount} entr{data.expenseCount !== 1 ? 'ies' : 'y'}</p>
         </div>
-        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+        <div className="glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden">
           <div className={`absolute inset-x-0 top-0 h-[2px] ${data.profit >= 0 ? 'bg-success' : 'bg-danger'}`} />
           <div className="flex items-center justify-between">
             <p className="text-[11px] font-medium text-ink-3 uppercase tracking-widest">Gross Profit</p>
@@ -291,13 +291,13 @@ export default function ReportsClient({ months, currentMonth }: Props) {
               <div className="flex gap-1 bg-surface-2 rounded-lg p-0.5">
                 <button
                   onClick={() => setSortBy('revenue')}
-                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${sortBy === 'revenue' ? 'bg-accent text-canvas' : 'text-ink-3 hover:text-ink'}`}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors active:scale-[0.95] ${sortBy === 'revenue' ? 'bg-accent text-canvas' : 'text-ink-3 hover:text-ink'}`}
                 >
                   Revenue
                 </button>
                 <button
                   onClick={() => setSortBy('qty')}
-                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${sortBy === 'qty' ? 'bg-accent text-canvas' : 'text-ink-3 hover:text-ink'}`}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors active:scale-[0.95] ${sortBy === 'qty' ? 'bg-accent text-canvas' : 'text-ink-3 hover:text-ink'}`}
                 >
                   Qty
                 </button>
@@ -366,10 +366,10 @@ export default function ReportsClient({ months, currentMonth }: Props) {
             />
           ) : (
             <div className="flex items-center gap-5">
-              <DonutChart data={data.byCategory} total={data.expenses} />
+              <DonutChart key={selected} data={data.byCategory} total={data.expenses} />
               <div className="flex-1 space-y-3 min-w-0">
                 {data.byCategory.map(({ category, label, amount, pct }) => (
-                  <BarRow key={category} label={label} amount={amount} pct={pct} colorClass={CATEGORY_COLOR[category] ?? 'bg-ink-4'} />
+                  <BarRow key={`${selected}-${category}`} label={label} amount={amount} pct={pct} colorClass={CATEGORY_COLOR[category] ?? 'bg-ink-4'} />
                 ))}
               </div>
             </div>
@@ -394,7 +394,7 @@ export default function ReportsClient({ months, currentMonth }: Props) {
           ) : (
             <div className="space-y-4">
               {data.byChannel.map(({ channel, label, amount, pct }) => (
-                <BarRow key={channel} label={label} amount={amount} pct={pct} colorClass={CHANNEL_COLOR[channel] ?? 'bg-accent'} />
+                <BarRow key={`${selected}-${channel}`} label={label} amount={amount} pct={pct} colorClass={CHANNEL_COLOR[channel] ?? 'bg-accent'} />
               ))}
             </div>
           )}
