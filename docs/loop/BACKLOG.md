@@ -8,10 +8,6 @@ Edit freely to steer: add items, reorder, or retag.
 
 ## Queue
 
-- [ ] `[low-risk]` Add `/api/health` endpoint
-      done = route returns 200 with `{ status, time }` (and a cheap read-only DB
-      ping if safe); covered by a small test; gates green.
-
 - [ ] `[low-risk]` Standardize empty + loading states across dashboard modules
       done = each `(dashboard)` module uses the shared `EmptyState` and a
       `loading.tsx`; one module per iteration — split into sub-items; gates green
@@ -40,6 +36,7 @@ _(items that couldn't go green — with a one-line reason; note kept)_
 
 ## Done
 
+- [x] `[low-risk]` Add `/api/health` endpoint — `GET /api/health` returns 200 `{ status, time }`, 3-test suite, all gates green (2026-06-20) → [note](notes/009-health-endpoint.md)
 - [x] `[low-risk]` Establish a green baseline — tsc/lint/build/test/db-drift all green (2026-06-20)
 - [x] `[low-risk]` Add `.env.example` — all env vars documented, !gitignore exception added (2026-06-20)
 - [x] `[low-risk]` Run unit tests in CI — added `npm run test` step to ci.yml (2026-06-20)
