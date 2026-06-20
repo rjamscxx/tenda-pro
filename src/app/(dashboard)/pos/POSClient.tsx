@@ -228,7 +228,7 @@ export default function POSClient({
               <button
                 key={ALL_CATEGORIES}
                 onClick={() => { setCategory(ALL_CATEGORIES); setDishSearch('') }}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors active:scale-[0.97] ${
                   activeCat === ALL_CATEGORIES
                     ? 'bg-accent text-canvas'
                     : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink'
@@ -240,7 +240,7 @@ export default function POSClient({
                 <button
                   key={cat}
                   onClick={() => { setCategory(cat); setDishSearch('') }}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors active:scale-[0.97] ${
                     activeCat === cat
                       ? 'bg-accent text-canvas'
                       : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink'
@@ -281,8 +281,8 @@ export default function POSClient({
                       isSoldOut
                         ? 'border-hair bg-surface opacity-50'
                         : inOrder
-                          ? 'border-accent bg-accent/8 shadow-sm cursor-pointer'
-                          : 'border-hair bg-surface hover:border-hair-2 hover:bg-surface-2 cursor-pointer'
+                          ? 'border-accent bg-accent/8 shadow-sm cursor-pointer active:scale-[0.97]'
+                          : 'border-hair bg-surface hover:border-hair-2 hover:bg-surface-2 cursor-pointer active:scale-[0.97]'
                     }`}
                   >
                     <button
@@ -351,7 +351,7 @@ export default function POSClient({
             {order.length > 0 && (
               <button
                 onClick={() => setOrder([])}
-                className="text-[11px] text-ink-4 hover:text-danger transition-colors"
+                className="text-[11px] text-ink-4 hover:text-danger transition-colors active:scale-[0.95]"
               >
                 Clear
               </button>
@@ -378,14 +378,14 @@ export default function POSClient({
                     <div className="flex items-center gap-1 shrink-0">
                       <button
                         onClick={() => changeQty(item.dishId, -1)}
-                        className="w-6 h-6 rounded-md bg-surface-2 hover:bg-danger/15 text-ink-2 hover:text-danger flex items-center justify-center text-sm font-medium transition-colors"
+                        className="w-6 h-6 rounded-md bg-surface-2 hover:bg-danger/15 text-ink-2 hover:text-danger flex items-center justify-center text-sm font-medium transition-colors active:scale-[0.9]"
                       >
                         −
                       </button>
                       <span className="w-6 text-center text-sm font-semibold tabular text-ink">{item.qty}</span>
                       <button
                         onClick={() => changeQty(item.dishId, 1)}
-                        className="w-6 h-6 rounded-md bg-surface-2 hover:bg-accent/15 text-ink-2 hover:text-accent flex items-center justify-center text-sm font-medium transition-colors"
+                        className="w-6 h-6 rounded-md bg-surface-2 hover:bg-accent/15 text-ink-2 hover:text-accent flex items-center justify-center text-sm font-medium transition-colors active:scale-[0.9]"
                       >
                         +
                       </button>
@@ -410,7 +410,7 @@ export default function POSClient({
                   <button
                     key={c.value}
                     onClick={() => setChannel(c.value)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors ${
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors active:scale-[0.95] ${
                       channel === c.value
                         ? 'bg-accent text-canvas'
                         : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink'
@@ -502,8 +502,8 @@ export default function POSClient({
                 </div>
                 {discountType === '%' && (
                   <>
-                    <button onClick={() => setDiscountVal('10')} className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors shrink-0 ${discountVal === '10' ? 'border-accent bg-accent/10 text-accent' : 'border-hair bg-surface-2 text-ink-3 hover:text-ink'}`}>10%</button>
-                    <button onClick={() => setDiscountVal('20')} className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors shrink-0 ${discountVal === '20' ? 'border-accent bg-accent/10 text-accent' : 'border-hair bg-surface-2 text-ink-3 hover:text-ink'}`}>20%</button>
+                    <button onClick={() => setDiscountVal('10')} className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors active:scale-[0.95] shrink-0 ${discountVal === '10' ? 'border-accent bg-accent/10 text-accent' : 'border-hair bg-surface-2 text-ink-3 hover:text-ink'}`}>10%</button>
+                    <button onClick={() => setDiscountVal('20')} className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors active:scale-[0.95] shrink-0 ${discountVal === '20' ? 'border-accent bg-accent/10 text-accent' : 'border-hair bg-surface-2 text-ink-3 hover:text-ink'}`}>20%</button>
                   </>
                 )}
                 <input
@@ -527,8 +527,8 @@ export default function POSClient({
             <div>
               <p className="text-[10px] text-ink-4 uppercase tracking-wider font-semibold mb-1.5">Service Charge</p>
               <div className="flex items-center gap-1.5">
-                <button onClick={() => setServiceChargeVal('10')} className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors shrink-0 ${serviceChargeVal === '10' ? 'border-accent bg-accent/10 text-accent' : 'border-hair bg-surface-2 text-ink-3 hover:text-ink'}`}>10%</button>
-                <button onClick={() => setServiceChargeVal('12')} className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors shrink-0 ${serviceChargeVal === '12' ? 'border-accent bg-accent/10 text-accent' : 'border-hair bg-surface-2 text-ink-3 hover:text-ink'}`}>12%</button>
+                <button onClick={() => setServiceChargeVal('10')} className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors active:scale-[0.95] shrink-0 ${serviceChargeVal === '10' ? 'border-accent bg-accent/10 text-accent' : 'border-hair bg-surface-2 text-ink-3 hover:text-ink'}`}>10%</button>
+                <button onClick={() => setServiceChargeVal('12')} className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors active:scale-[0.95] shrink-0 ${serviceChargeVal === '12' ? 'border-accent bg-accent/10 text-accent' : 'border-hair bg-surface-2 text-ink-3 hover:text-ink'}`}>12%</button>
                 <input
                   type="number"
                   min="0"

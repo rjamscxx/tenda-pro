@@ -431,7 +431,7 @@ export default async function DashboardPage() {
             />
             <Link
               href="/sales?log=1"
-              className="flex-1 sm:flex-none px-4 py-2 btn-primary press rounded-lg text-sm flex items-center justify-center gap-2"
+              className="flex-1 sm:flex-none px-4 py-2 btn-primary rounded-lg text-sm flex items-center justify-center gap-2"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>

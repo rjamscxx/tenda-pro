@@ -870,7 +870,7 @@ input:focus, select:focus, textarea:focus {
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: background-position 0.4s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  transition: background-position 0.4s ease, filter 0.15s ease, box-shadow 0.15s ease, transform 140ms var(--ease-out);
 }
 .btn-primary:hover:not(:disabled) {
   background-position: 100% 50%;
@@ -880,6 +880,7 @@ input:focus, select:focus, textarea:focus {
 .btn-primary:active:not(:disabled) {
   filter: brightness(0.92);
   background-position: 0% 50%;
+  transform: scale(0.97);
 }
 .btn-primary:disabled {
   opacity: 0.45;
