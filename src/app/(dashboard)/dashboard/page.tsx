@@ -431,7 +431,7 @@ export default async function DashboardPage() {
             />
             <Link
               href="/sales?log=1"
-              className="flex-1 sm:flex-none px-4 py-2 btn-primary rounded-lg text-sm flex items-center justify-center gap-2"
+              className="flex-1 sm:flex-none px-4 py-2 btn-primary press rounded-lg text-sm flex items-center justify-center gap-2"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
@@ -459,7 +459,7 @@ export default async function DashboardPage() {
             </div>
             <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-700 ${dailyTargetMet ? 'bg-success' : 'bg-gradient-to-r from-accent to-accent-2'}`}
+                className={`h-full rounded-full bar-enter ${dailyTargetMet ? 'bg-success' : 'bg-gradient-to-r from-accent to-accent-2'}`}
                 style={{ width: `${dailyTargetPct}%` }}
               />
             </div>
@@ -620,7 +620,7 @@ export default async function DashboardPage() {
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {kpis.map((kpi, idx) => (
-          <div key={kpi.label} className={`card-enter card-d${idx + 1} glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden`}>
+          <div key={kpi.label} className={`card-enter card-d${idx + 1} glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden`}>
             {/* Status edge only where it carries real meaning (over-target /
                 healthy) — softened. Neutral cards stay clean: no decoration. */}
             {kpi.status !== 'neutral' && (
@@ -805,7 +805,7 @@ export default async function DashboardPage() {
               </div>
               <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-accent transition-all duration-500"
+                  className="h-full rounded-full bg-accent bar-enter"
                   style={{ width: `${revGoalPct}%` }}
                 />
               </div>
@@ -824,7 +824,7 @@ export default async function DashboardPage() {
               </div>
               <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all duration-500 ${overBudget ? 'bg-danger' : 'bg-success'}`}
+                  className={`h-full rounded-full bar-enter ${overBudget ? 'bg-danger' : 'bg-success'}`}
                   style={{ width: `${expBudgetPct}%` }}
                 />
               </div>
@@ -977,7 +977,7 @@ export default async function DashboardPage() {
                       </div>
                       <div className="h-1 bg-surface-3 rounded-full overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-accent transition-all duration-700"
+                          className="h-full rounded-full bg-accent bar-enter"
                           style={{ width: `${pct}%`, opacity: 0.4 + (pct / 100) * 0.6 }}
                         />
                       </div>
@@ -1069,7 +1069,7 @@ export default async function DashboardPage() {
                   </div>
                   <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-accent to-accent-2 transition-all duration-700"
+                      className="h-full rounded-full bg-gradient-to-r from-accent to-accent-2 bar-enter"
                       style={{ width: `${pct}%` }}
                     />
                   </div>

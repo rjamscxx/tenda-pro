@@ -1123,6 +1123,15 @@ input:focus, select:focus, textarea:focus {
 @keyframes content-in { from { opacity: 0; } to { opacity: 1; } }
 .content-in { animation: content-in var(--dur-base) var(--ease-out) both; }
 
+/* Progress bar entrance — scaleX(0→1) from the left edge, GPU-accelerated.
+   Apply to the filled inner div; parent must have overflow:hidden. */
+@keyframes bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.bar-enter {
+  transform-origin: left;
+  animation: bar-grow 0.65s var(--ease-out) both;
+  animation-delay: 150ms;
+}
+
 /* The single live pulse — a soft ember dot that breathes ONLY for genuinely
    live data (today's running totals). Calmer than .animate-pulse: a slow opacity
    breath plus one faint expanding ring. Use sparingly — restraint reads premium. */
