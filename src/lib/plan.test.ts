@@ -81,7 +81,7 @@ describe('isAtLeast', () => {
   })
 
   it('pro account is at least free and pro', () => {
-    const acc = { ...base, plan: 'pro', planExpiresAt: null }
+    const acc = { ...base, plan: 'pro' as const, planExpiresAt: null }
     expect(isAtLeast(acc, 'free')).toBe(true)
     expect(isAtLeast(acc, 'pro')).toBe(true)
   })
