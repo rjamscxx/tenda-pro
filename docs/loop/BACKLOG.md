@@ -8,13 +8,6 @@ Edit freely to steer: add items, reorder, or retag.
 
 ## Queue
 
-- [ ] `[low-risk]` Add Playwright config + auth smoke test
-      done = `playwright.config.ts` exists; one spec drives login → dashboard
-      renders a known element; documented run command; build + lint green.
-
-- [ ] `[low-risk]` Playwright smoke: signup → trial starts
-      done = spec covers signup flow reaching the trial dashboard state; green.
-
 - [ ] `[low-risk]` Add `/api/health` endpoint
       done = route returns 200 with `{ status, time }` (and a cheap read-only DB
       ping if safe); covered by a small test; gates green.
@@ -53,3 +46,5 @@ _(items that couldn't go green — with a one-line reason; note kept)_
 - [x] `[low-risk]` Unit tests for `src/lib/permissions.ts` — 4 tests, all roles covered (2026-06-20)
 - [x] `[low-risk]` Unit tests for `src/lib/utils.ts` — 17 tests: formatCurrency, parseCents, formatDate, cn (2026-06-20)
 - [x] `[low-risk]` Unit tests for `src/lib/plan.ts` edge cases — 64 tests total; isPremium, isTrialActive, isTrial, getTrialDaysLeft, isTrialExpired, hasUsedTrial, getEffectivePlan, isAtLeast all covered (2026-06-20)
+- [x] `[low-risk]` Add Playwright config + auth smoke test — playwright.config.ts + e2e/auth.spec.ts already present; test:e2e script in package.json (2026-06-20)
+- [x] `[low-risk]` Playwright smoke: signup → trial starts — e2e/signup.spec.ts added; page-render + validation tests always run; full flow skips unless E2E_SIGNUP_* set (2026-06-20)
