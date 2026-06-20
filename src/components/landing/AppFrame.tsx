@@ -42,9 +42,8 @@ export default function AppFrame({ children, src, url, height = 320, className =
           <Image
             src={src}
             alt={`Tenda Pro — ${url}`}
-            width={1440}
-            height={900}
-            style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover', objectPosition: 'top left' }}
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'top left' }}
           />
         ) : children}
       </div>

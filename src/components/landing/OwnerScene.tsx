@@ -258,9 +258,8 @@ export default function OwnerScene() {
                   <Image
                     src="/landing/screenshots/dashboard.png"
                     alt="Tenda Pro dashboard with real café data"
-                    width={1440}
-                    height={900}
-                    className="w-full h-auto object-cover object-top"
+                    fill
+                    className="object-cover object-top"
                     priority
                   />
 
