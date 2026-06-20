@@ -8,38 +8,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useCountUp } from '@/hooks/useCountUp'
 import TendaLogo from '@/components/ui/TendaLogo'
 
-const HeroScene3D = dynamic(() => import('@/components/3d/HeroScene3D'), {
-  ssr: false,
-  loading: () => <HeroSceneSkeleton />,
-})
-
-function HeroSceneSkeleton() {
-  return <div className="w-full h-full rounded-2xl bg-surface-2/40 animate-pulse" />
-}
-
-// Defer the Three.js + R3F + Drei bundle until the browser is idle so the
-// initial hydration thread is free for hero text + CTAs. Uses
-// requestIdleCallback with a 1500ms timeout; falls back to setTimeout(600)
-// on browsers that don't expose it (Safari ≤ 16.3).
-function LazyHeroScene({ theme }: { theme: string }) {
-  const [shouldLoad, setShouldLoad] = useState(false)
-  useEffect(() => {
-    type IdleWin = Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
-      cancelIdleCallback?: (id: number) => void
-    }
-    const w = window as IdleWin
-    if (typeof w.requestIdleCallback === 'function') {
-      const id = w.requestIdleCallback(() => setShouldLoad(true), { timeout: 1500 })
-      return () => w.cancelIdleCallback?.(id)
-    }
-    const t = setTimeout(() => setShouldLoad(true), 600)
-    return () => clearTimeout(t)
-  }, [])
-  if (!shouldLoad) return <HeroSceneSkeleton />
-  return <HeroScene3D theme={theme} />
-}
-
 // Below-fold landing sections — code-split so their JS doesn't block hydration.
 const OwnerScene = dynamic(() => import('@/components/landing/OwnerScene'), {
   loading: () => <div className="min-h-[640px]" aria-hidden="true" />,
@@ -54,11 +22,6 @@ const FAQ = dynamic(() => import('@/components/landing/FAQ'), {
   loading: () => <div className="min-h-[520px]" aria-hidden="true" />,
 })
 
-import {
-  SalesMock, MenuMock, ExpensesMock, ReportsMock,
-  EmployeesMock, WasteMock, PayrollMock, InventoryMock,
-  POSMock, QRMenuMock,
-} from '@/components/landing/AppMocks'
 import AppFrame from '@/components/landing/AppFrame'
 
 // ── Data ──────────────────────────────────────────────────────────────────────
@@ -593,9 +556,9 @@ export default function LandingClient() {
             </p>
           </div>
 
-          {/* Right: 3D floating dashboard panel */}
+          {/* Right: Real dashboard screenshot */}
           <div className="hero-mock relative h-[340px] sm:h-[420px] lg:h-[520px]" style={{ opacity: 0 }}>
-            <LazyHeroScene theme={activeTheme} />
+            <AppFrame url="tenda.ph/dashboard" src="/landing/screenshots/dashboard.png" height={440} className="shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.1)]" />
           </div>
         </div>
       </section>
@@ -904,9 +867,7 @@ export default function LandingClient() {
 
           <div className="inventory-mock relative" style={{ opacity: 0 }}>
             <div className="absolute -inset-6 bg-warn/6 rounded-3xl blur-3xl pointer-events-none" />
-            <AppFrame url="tenda.ph/inventory" height={380}>
-              <InventoryMock />
-            </AppFrame>
+            <AppFrame url="tenda.ph/inventory" height={380} src="/landing/screenshots/inventory.png" />
           </div>
 
         </div>
@@ -956,9 +917,7 @@ export default function LandingClient() {
               </ul>
               <div className="relative">
                 <div className="absolute -inset-4 bg-accent/5 rounded-2xl blur-2xl pointer-events-none" />
-                <AppFrame url="tenda.ph/pos" height={280}>
-                  <POSMock />
-                </AppFrame>
+                <AppFrame url="tenda.ph/pos" height={280} src="/landing/screenshots/pos.png" />
               </div>
             </div>
 
@@ -996,9 +955,7 @@ export default function LandingClient() {
               </ul>
               <div className="relative">
                 <div className="absolute -inset-4 bg-accent/5 rounded-2xl blur-2xl pointer-events-none" />
-                <AppFrame url="tenda.ph/m/your-venue" height={280}>
-                  <QRMenuMock />
-                </AppFrame>
+                <AppFrame url="tenda.ph/m/cafe-lina" height={280} src="/landing/screenshots/qr-menu.png" />
               </div>
             </div>
 
@@ -1018,105 +975,55 @@ export default function LandingClient() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
             {/* Waste */}
-            <div className="ops-card glass rounded-2xl p-7 space-y-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" style={{ opacity: 0 }}>
-              <div className="w-10 h-10 rounded-xl bg-danger-dim flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-danger">
-                  <path d="M3 5.5h12M7 5.5V4h4v1.5M6.5 5.5l.5 9h4l.5-9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-ink tracking-tight">Waste Log</h3>
-                <p className="text-sm text-ink-3 mt-2 leading-relaxed">
-                  Log spoilage and dropped plates by ingredient. Tenda Pro calculates the estimated peso
-                  loss and surfaces it monthly — so you can actually cut it.
-                </p>
-              </div>
-              <div className="bg-surface-2 rounded-xl p-4 space-y-2">
-                <p className="text-[9px] text-ink-4 uppercase tracking-widest">This Month — Estimated Loss</p>
-                <p className="text-2xl font-semibold tabular text-danger">₱2,840</p>
-                <div className="space-y-1.5">
-                  {[
-                    { reason: 'Spoilage', pct: 55 },
-                    { reason: 'Dropped',  pct: 28 },
-                    { reason: 'Expired',  pct: 17 },
-                  ].map(r => (
-                    <div key={r.reason} className="flex items-center gap-2">
-                      <span className="text-[10px] text-ink-4 w-14">{r.reason}</span>
-                      <div className="flex-1 h-1 bg-surface-3 rounded-full overflow-hidden">
-                        <div className="h-full bg-danger/40 rounded-full" style={{ width: `${r.pct}%` }} />
-                      </div>
-                    </div>
-                  ))}
+            <div className="ops-card space-y-4" style={{ opacity: 0 }}>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-danger-dim flex items-center justify-center shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" className="text-danger">
+                    <path d="M3 5.5h12M7 5.5V4h4v1.5M6.5 5.5l.5 9h4l.5-9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-ink tracking-tight">Waste Log</h3>
+                  <p className="text-xs text-ink-4 mt-0.5">Track spoilage by ingredient, cut losses</p>
                 </div>
               </div>
+              <AppFrame url="tenda.ph/waste" height={260} src="/landing/screenshots/waste.png" />
             </div>
 
             {/* Employees */}
-            <div className="ops-card glass rounded-2xl p-7 space-y-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" style={{ opacity: 0 }}>
-              <div className="w-10 h-10 rounded-xl bg-surface-3 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-ink-3">
-                  <circle cx="7" cy="6" r="3" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M1 16c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                  <path d="M13 8a2.5 2.5 0 100-5M16 16c0-2.4-1.34-4.5-3.38-5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
+            <div className="ops-card space-y-4" style={{ opacity: 0 }}>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-surface-3 flex items-center justify-center shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" className="text-ink-3">
+                    <circle cx="7" cy="6" r="3" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M1 16c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M13 8a2.5 2.5 0 100-5M16 16c0-2.4-1.34-4.5-3.38-5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-ink tracking-tight">Employees</h3>
+                  <p className="text-xs text-ink-4 mt-0.5">Daily, monthly or hourly staff rates</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-ink tracking-tight">Employees</h3>
-                <p className="text-sm text-ink-3 mt-2 leading-relaxed">
-                  Add staff with daily or monthly rates. Track who&apos;s active, their roles, and see your
-                  estimated monthly labor cost right beside your food cost.
-                </p>
-              </div>
-              <div className="bg-surface-2 rounded-xl p-4 space-y-2.5">
-                {[
-                  { name: 'Ana Cruz',    role: 'Barista',  type: 'Daily',   rate: '₱650/day' },
-                  { name: 'Ben Reyes',  role: 'Cook',     type: 'Monthly', rate: '₱15K/mo' },
-                  { name: 'Carla Sy',   role: 'Cashier',  type: 'Daily',   rate: '₱580/day' },
-                ].map(e => (
-                  <div key={e.name} className="flex items-center justify-between">
-                    <div>
-                      <p className="text-[12px] font-medium text-ink">{e.name}</p>
-                      <p className="text-[10px] text-ink-4">{e.role}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-[10px] text-ink-4 bg-surface rounded px-1.5 py-0.5">{e.type}</span>
-                      <p className="text-[11px] tabular text-ink-3 mt-0.5">{e.rate}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <AppFrame url="tenda.ph/employees" height={260} src="/landing/screenshots/employees.png" />
             </div>
 
             {/* Payroll */}
-            <div className="ops-card glass rounded-2xl p-7 space-y-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" style={{ opacity: 0 }}>
-              <div className="w-10 h-10 rounded-xl bg-surface-3 flex items-center justify-center">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-ink-3">
-                  <rect x="2" y="6" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M6 6V4.5h6V6M9 10v1m0 1.5v1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-                  <circle cx="9" cy="11" r="1.75" stroke="currentColor" strokeWidth="1.3"/>
-                </svg>
+            <div className="ops-card space-y-4" style={{ opacity: 0 }}>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-surface-3 flex items-center justify-center shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 18 18" fill="none" className="text-ink-3">
+                    <rect x="2" y="6" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M6 6V4.5h6V6M9 10v1m0 1.5v1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                    <circle cx="9" cy="11" r="1.75" stroke="currentColor" strokeWidth="1.3"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-ink tracking-tight">Payroll Runs</h3>
+                  <p className="text-xs text-ink-4 mt-0.5">Auto-calculate from rates, full run history</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-ink tracking-tight">Payroll Runs</h3>
-                <p className="text-sm text-ink-3 mt-2 leading-relaxed">
-                  Process payroll by period. Set days worked, gross pay auto-calculates from rate, add
-                  deductions, and Tenda Pro keeps the full history of every run.
-                </p>
-              </div>
-              <div className="bg-surface-2 rounded-xl p-4 space-y-2.5">
-                <p className="text-[9px] text-ink-4 uppercase tracking-widest">Latest Payroll Run</p>
-                <p className="text-[11px] text-ink-3">May 1–15, 2026 · 3 employees</p>
-                {[
-                  { label: 'Gross',      value: '₱28,450', color: 'text-ink' },
-                  { label: 'Deductions', value: '−₱1,200', color: 'text-danger' },
-                  { label: 'Net Pay',    value: '₱27,250', color: 'text-success' },
-                ].map(r => (
-                  <div key={r.label} className="flex justify-between items-center">
-                    <span className="text-[11px] text-ink-4">{r.label}</span>
-                    <span className={`text-[12px] font-semibold tabular ${r.color}`}>{r.value}</span>
-                  </div>
-                ))}
-              </div>
+              <AppFrame url="tenda.ph/payroll" height={260} src="/landing/screenshots/payroll.png" />
             </div>
 
           </div>
@@ -1134,7 +1041,7 @@ export default function LandingClient() {
               </h2>
             </div>
             <p className="text-sm text-ink-4 max-w-[40ch] leading-relaxed">
-              Live previews of every module — these update with your selected theme.
+              Real screenshots from a live account — actual data, actual design.
               Every feature you see is working today.
             </p>
           </div>
@@ -1142,28 +1049,22 @@ export default function LandingClient() {
           {/* Row 1: Sales (large) + Menu */}
           <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none lg:grid lg:grid-cols-[1.6fr_1fr] lg:overflow-x-visible lg:pb-0">
             <div className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] lg:w-auto" style={{ opacity: 0 }}>
-              <AppFrame url="tenda.ph/sales" height={320} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
-                <SalesMock />
-              </AppFrame>
+              <AppFrame url="tenda.ph/sales" height={320} src="/landing/screenshots/sales.png" className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500" />
             </div>
             <div className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] lg:w-auto" style={{ opacity: 0 }}>
-              <AppFrame url="tenda.ph/menu" height={320} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
-                <MenuMock />
-              </AppFrame>
+              <AppFrame url="tenda.ph/menu" height={320} src="/landing/screenshots/menu.png" className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500" />
             </div>
           </div>
 
           {/* Row 2: Expenses · Reports · Employees */}
           <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0">
             {([
-              ['tenda.ph/expenses',  <ExpensesMock key="exp" />],
-              ['tenda.ph/reports',   <ReportsMock  key="rep" />],
-              ['tenda.ph/employees', <EmployeesMock key="emp" />],
-            ] as [string, React.ReactNode][]).map(([url, mock]) => (
+              ['tenda.ph/expenses',  '/landing/screenshots/expenses.png'],
+              ['tenda.ph/reports',   '/landing/screenshots/reports.png'],
+              ['tenda.ph/employees', '/landing/screenshots/employees.png'],
+            ] as [string, string][]).map(([url, src]) => (
               <div key={url} className="ss-card group snap-start shrink-0 w-[72vw] sm:w-[50vw] md:w-auto" style={{ opacity: 0 }}>
-                <AppFrame url={url} height={220} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
-                  {mock}
-                </AppFrame>
+                <AppFrame url={url} height={220} src={src} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500" />
               </div>
             ))}
           </div>
@@ -1171,13 +1072,11 @@ export default function LandingClient() {
           {/* Row 3: Waste · Payroll */}
           <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none md:grid md:grid-cols-2 md:overflow-x-visible md:pb-0">
             {([
-              ['tenda.ph/waste',   <WasteMock   key="waste"   />],
-              ['tenda.ph/payroll', <PayrollMock key="payroll" />],
-            ] as [string, React.ReactNode][]).map(([url, mock]) => (
+              ['tenda.ph/waste',   '/landing/screenshots/waste.png'],
+              ['tenda.ph/payroll', '/landing/screenshots/payroll.png'],
+            ] as [string, string][]).map(([url, src]) => (
               <div key={url} className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] md:w-auto" style={{ opacity: 0 }}>
-                <AppFrame url={url} height={260} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
-                  {mock}
-                </AppFrame>
+                <AppFrame url={url} height={260} src={src} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500" />
               </div>
             ))}
           </div>
@@ -1185,13 +1084,11 @@ export default function LandingClient() {
           {/* Row 4: POS · QR Menu */}
           <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none md:grid md:grid-cols-2 md:overflow-x-visible md:pb-0">
             {([
-              ['tenda.ph/pos',          <POSMock   key="pos" />],
-              ['tenda.ph/m/your-venue', <QRMenuMock key="qr" />],
-            ] as [string, React.ReactNode][]).map(([url, mock]) => (
+              ['tenda.ph/pos',          '/landing/screenshots/pos.png'],
+              ['tenda.ph/m/cafe-lina',  '/landing/screenshots/qr-menu.png'],
+            ] as [string, string][]).map(([url, src]) => (
               <div key={url} className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] md:w-auto" style={{ opacity: 0 }}>
-                <AppFrame url={url} height={260} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500">
-                  {mock}
-                </AppFrame>
+                <AppFrame url={url} height={260} src={src} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500" />
               </div>
             ))}
           </div>
@@ -1206,9 +1103,7 @@ export default function LandingClient() {
           {/* Left: Report mock */}
           <div className="relative order-2 lg:order-1 lp-fade-up">
             <div className="absolute -inset-6 bg-accent/6 rounded-3xl blur-3xl pointer-events-none" />
-            <AppFrame url="tenda.ph/reports" height={400}>
-              <ReportsMock />
-            </AppFrame>
+            <AppFrame url="tenda.ph/reports" height={400} src="/landing/screenshots/reports.png" />
           </div>
 
           {/* Right: Copy */}

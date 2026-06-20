@@ -1,11 +1,14 @@
+import Image from 'next/image'
+
 interface AppFrameProps {
-  children: React.ReactNode
+  children?: React.ReactNode
+  src?: string
   url: string
   height?: number
   className?: string
 }
 
-export default function AppFrame({ children, url, height = 320, className = '' }: AppFrameProps) {
+export default function AppFrame({ children, src, url, height = 320, className = '' }: AppFrameProps) {
   return (
     <div className={`rounded-2xl overflow-hidden border border-white/[0.07] shadow-[0_20px_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.08)] ${className}`}>
       <div className="bg-[#161a1d] border-b border-white/[0.06]">
@@ -34,8 +37,16 @@ export default function AppFrame({ children, url, height = 320, className = '' }
           </div>
         </div>
       </div>
-      <div style={{ height, overflow: 'hidden' }}>
-        {children}
+      <div style={{ height, overflow: 'hidden', position: 'relative' }}>
+        {src ? (
+          <Image
+            src={src}
+            alt={`Tenda Pro — ${url}`}
+            width={1440}
+            height={900}
+            style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover', objectPosition: 'top left' }}
+          />
+        ) : children}
       </div>
     </div>
   )

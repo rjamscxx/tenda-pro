@@ -1,16 +1,15 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 /**
  * OwnerScene — "A day with Tenda Pro" section.
- * Tablet mockup built from CSS-themed primitives (so theme switching propagates
- * through it correctly) + floating POS phone + scroll-synced day timeline.
+ * Tablet shows a real dashboard screenshot captured from the smoke-test account.
+ * Floating POS phone + scroll-synced day timeline kept as CSS mock.
  */
-
-const EXPENSE_BAR_HEIGHTS = Array.from({ length: 30 }, (_, i) => 6 + Math.abs(Math.sin(i * 1.7) * 12) + (i * 0.3 % 3))
 
 const TAPS = [
   { x: 79, y: 67, label: 'Ask the assistant' },
@@ -20,7 +19,7 @@ const DAY_STEPS = [
   {
     time: '7:45 AM',
     title: 'Opening prep',
-    detail: 'Glance at yesterday’s recap before staff arrives. Margins, top sellers, anything 86’d.',
+    detail: "Glance at yesterday's recap before staff arrives. Margins, top sellers, anything 86'd.",
     accent: 'text-accent',
   },
   {
@@ -250,137 +249,22 @@ export default function OwnerScene() {
                 {/* tablet front camera dot */}
                 <span className="absolute top-1/2 -translate-y-1/2 left-2.5 w-1.5 h-1.5 rounded-full bg-white/20" aria-hidden="true" />
 
-                {/* screen — CSS-themed mock dashboard (no static image, so it
-                    follows the active theme: --canvas / --accent / --ink etc.) */}
+                {/* screen — real dashboard screenshot from smoke-test account */}
                 <div
-                  className="relative rounded-[1.3rem] overflow-hidden bg-canvas aspect-[16/10] flex"
+                  className="relative rounded-[1.3rem] overflow-hidden aspect-[16/10]"
                   role="img"
-                  aria-label="Tenda Pro dashboard mock — KPIs, 30-day cashflow chart, top sellers, low-stock alerts, AI assistant"
+                  aria-label="Tenda Pro dashboard — KPIs, 30-day cashflow chart, top sellers, low-stock alerts"
                 >
-                  {/* sidebar */}
-                  <aside className="hidden sm:flex w-[16%] shrink-0 flex-col gap-1 px-2 py-3 border-r border-hair bg-surface/60">
-                    <div className="flex items-center gap-1 px-1 mb-1">
-                      <span className="w-2 h-2 rounded-sm bg-accent" aria-hidden />
-                      <span className="text-[7px] font-semibold tracking-widest text-ink-3 uppercase">Tenda Pro</span>
-                    </div>
-                    {['Dashboard','Sales','POS','Menu','Inventory','Reports','Settings'].map((l, i) => (
-                      <div key={l} className={`flex items-center gap-1.5 px-1.5 py-1 rounded ${i===0 ? 'bg-accent/12 text-accent' : 'text-ink-4'}`}>
-                        <span className={`w-1 h-1 rounded-sm ${i===0 ? 'bg-accent' : 'bg-ink-4/40'}`} aria-hidden />
-                        <span className="text-[7px] font-medium">{l}</span>
-                      </div>
-                    ))}
-                  </aside>
-
-                  {/* main */}
-                  <div className="flex-1 flex flex-col min-w-0 p-2.5 gap-2">
-
-                    {/* header strip */}
-                    <div className="flex items-center justify-between">
-                      <p className="text-[9px] font-semibold text-ink tracking-tight">Good morning, Lina</p>
-                      <span className="text-[6.5px] text-ink-4 tabular">Today, May 30</span>
-                    </div>
-
-                    {/* KPI row — two cards (Food Cost % + low-stock) deliberately
-                        chosen instead of Revenue / Margin per spec */}
-                    <div className="grid grid-cols-2 gap-1.5">
-                      <div className="rounded-md border border-hair bg-surface px-1.5 py-1">
-                        <p className="text-[6px] uppercase tracking-widest text-ink-4">Food cost %</p>
-                        <p className="text-[12px] font-bold text-accent tabular leading-none mt-0.5">25.4<span className="text-[8px]">%</span></p>
-                        <p className="text-[6px] text-ink-4 mt-0.5">on target · 32% goal</p>
-                      </div>
-                      <div className="rounded-md border border-hair bg-surface px-1.5 py-1">
-                        <p className="text-[6px] uppercase tracking-widest text-ink-4">Needs restock</p>
-                        <p className="text-[12px] font-bold text-warn tabular leading-none mt-0.5">5</p>
-                        <p className="text-[6px] text-ink-4 mt-0.5">items below threshold</p>
-                      </div>
-                    </div>
-
-                    {/* 30-day chart — themed bars + smooth line */}
-                    <div className="rounded-md border border-hair bg-surface px-1.5 py-1 flex-1 flex flex-col">
-                      <div className="flex items-center justify-between">
-                        <p className="text-[6px] uppercase tracking-widest text-ink-4">30-day cashflow</p>
-                        <div className="flex items-center gap-1.5 text-[5.5px] text-ink-4">
-                          <span className="flex items-center gap-0.5"><span className="w-1.5 h-1.5 rounded-sm bg-accent" aria-hidden />Rev</span>
-                          <span className="flex items-center gap-0.5"><span className="w-1.5 h-1.5 rounded-sm bg-warn" aria-hidden />Exp</span>
-                        </div>
-                      </div>
-                      <svg viewBox="0 0 200 60" className="flex-1 w-full mt-1" preserveAspectRatio="none" aria-hidden>
-                        {/* grid */}
-                        {[0,1,2,3].map(i => (
-                          <line key={i} x1="0" x2="200" y1={15 + i*12} y2={15 + i*12} stroke="var(--hair)" strokeWidth="0.4" />
-                        ))}
-                        {/* expense bars (faint warn) */}
-                        {EXPENSE_BAR_HEIGHTS.map((h, i) => (
-                          <rect key={`e${i}`} x={i*6.5+1} y={60-h} width="3" height={h} fill="var(--warn)" opacity="0.45" />
-                        ))}
-                        {/* revenue area + line */}
-                        <path
-                          d={(() => {
-                            let d = 'M0,55'
-                            for (let i=0; i<30; i++) {
-                              const x = i*6.5+2.5
-                              const y = 50 - (15 + Math.sin(i*0.7)*8 + Math.cos(i*0.4)*5 + i*0.4)
-                              d += ` L${x},${y}`
-                            }
-                            d += ' L200,55 Z'
-                            return d
-                          })()}
-                          fill="var(--accent)"
-                          opacity="0.18"
-                        />
-                        <path
-                          d={(() => {
-                            let d = ''
-                            for (let i=0; i<30; i++) {
-                              const x = i*6.5+2.5
-                              const y = 50 - (15 + Math.sin(i*0.7)*8 + Math.cos(i*0.4)*5 + i*0.4)
-                              d += (i === 0 ? `M${x},${y}` : ` L${x},${y}`)
-                            }
-                            return d
-                          })()}
-                          fill="none"
-                          stroke="var(--accent)"
-                          strokeWidth="1.2"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-
-                    {/* bottom: top sellers + AI bubble */}
-                    <div className="grid grid-cols-[1.4fr_1fr] gap-1.5">
-                      <div className="rounded-md border border-hair bg-surface px-1.5 py-1">
-                        <p className="text-[6px] uppercase tracking-widest text-ink-4 mb-0.5">Today’s top sellers</p>
-                        {[
-                          { n: 'Café Latte',     q: 18 },
-                          { n: 'Grilled Cheese', q: 14 },
-                          { n: 'Croissant',      q: 12 },
-                        ].map(s => (
-                          <div key={s.n} className="flex items-center justify-between gap-1">
-                            <span className="text-[6.5px] text-ink truncate">{s.n}</span>
-                            <span className="text-[6.5px] tabular text-accent font-semibold">{s.q}×</span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="rounded-md border border-accent/40 bg-accent/5 px-1.5 py-1 flex flex-col gap-0.5">
-                        <p className="text-[6px] uppercase tracking-widest text-accent/80">Tenda Pro AI</p>
-                        <p className="text-[6.5px] text-ink leading-snug">
-                          “Tuna sandwich margin dropped 4% — tomatoes up to ₱85/kg.”
-                        </p>
-                      </div>
-                    </div>
-
-                  </div>
-
-                  {/* live-data overlay shimmer */}
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)',
-                      animation: 'tenda-shimmer 6s ease-in-out infinite',
-                    }}
+                  <Image
+                    src="/landing/screenshots/dashboard.png"
+                    alt="Tenda Pro dashboard with real café data"
+                    width={1440}
+                    height={900}
+                    className="w-full h-auto object-cover object-top"
+                    priority
                   />
 
-                  {/* Touch dots — 1 interactive point (Ask the assistant) */}
+                  {/* Touch dots overlay */}
                   {TAPS.map((tap, i) => (
                     <div
                       key={i}
@@ -392,9 +276,8 @@ export default function OwnerScene() {
                           className="absolute w-6 h-6 rounded-full bg-accent/30"
                           style={{ animation: `tenda-ping 2.4s ease-out infinite ${i * 0.6}s` }}
                         />
-                        <span className="relative block w-3 h-3 rounded-full bg-accent shadow-[0_0_14px_rgba(88,192,152,0.75)]" />
-                        {/* label tooltip */}
-                        <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-semibold uppercase tracking-widest text-ink bg-canvas/95 border border-accent/40 rounded-full px-2 py-1 shadow-sm">
+                        <span className="relative block w-3 h-3 rounded-full bg-accent shadow-[0_0_14px_rgba(249,115,22,0.75)]" />
+                        <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-semibold uppercase tracking-widest text-white bg-black/70 border border-white/20 rounded-full px-2 py-1 shadow-sm">
                           {tap.label}
                         </span>
                       </div>
