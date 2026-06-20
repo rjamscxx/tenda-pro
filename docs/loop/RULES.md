@@ -1,52 +1,87 @@
 # Loop Rules (authoritative during a loop run)
 
-Re-read this file at the start of every iteration. If anything here conflicts
-with a backlog item, **these rules win** — except a backlog item may narrow the
-gates (never widen the boundaries).
+Re-read this file at the start of every iteration. These rules win over a backlog
+item, except an item may narrow scope (never widen the hard boundaries).
 
-## Each iteration
-1. Take the **top unchecked** `- [ ]` item under `## Queue` in `BACKLOG.md`.
-   Work exactly one item — no batching, no scope creep.
-2. Implement the smallest change that satisfies the item's `done =` line.
-3. Run the gates in order (stop at first failure, fix, re-run):
-   - `npx tsc --noEmit`
-   - `npm run lint`
-   - If `src/lib/db/schema.ts` changed: `npm run db:generate` and commit the
-     generated migration; the tree under `supabase/migrations/` must be clean.
-   - `npm run build`
-   - `npm run test`
-4. Only when **all gates are green**: mark the item `[x]`, move it to `## Done`,
-   and commit (see Commit rules).
-5. Continue to the next item. When no unchecked items remain, **stop** and post a
-   summary of what changed.
+## The attitude — practice this on every item
+Don't jump straight to code. Treat each item the way a thoughtful engineer would:
+**brainstorm it → dig into the real code → write down suggestions → then act.**
+The thinking is recorded in `docs/loop/notes/`, so every change has a paper trail
+of *why*, not just *what*.
+
+## Each iteration — five phases
+
+### 1. Brainstorm the item
+- Restate it in your own words: the real intent, and who benefits.
+- Define what "good" looks like beyond the `done =` line — acceptance criteria.
+- List constraints to respect (conventions, perf, security, the hard boundaries).
+- Sketch 2–3 approaches at a high level.
+
+### 2. Dig deeper — ground it in the actual code
+- Investigate before deciding: grep/read the real files this item touches.
+- Note existing patterns to follow (e.g. `EmptyState.tsx`, module `actions.ts`,
+  existing `*.test.ts`).
+- Surface gotchas, edge cases, and anything that changes the approach.
+
+### 3. Write suggestions
+- Create `docs/loop/notes/NNN-<slug>.md` from `_TEMPLATE.md` (NNN = item number).
+- Record: intent, findings, 2–3 options with honest tradeoffs, and a clear
+  **recommendation with reasoning** (lead with the recommended option).
+
+### 4. Risk gate — auto vs. pause
+Classify the item (see "Risk classification"):
+- **Low-risk** → implement your recommended option (smallest change that meets
+  acceptance). Keep going.
+- **Needs-decision** → do NOT implement. Mark the item `[needs-decision]`, move it
+  to `## Needs decision` in `BACKLOG.md`, leave the note with options laid out,
+  and continue to the next `Queue` item. These wait for RJ.
+
+### 5. Verify, record, commit (implemented items only)
+- Run the gates in order; fix; re-run:
+  `npx tsc --noEmit` → `npm run lint` → migration drift (if `schema.ts` changed,
+  `npm run db:generate` + commit the migration; `supabase/migrations/` must be
+  clean) → `npm run build` → `npm run test`.
+- When all green: fill the note's **Outcome** section, mark the item `[x]` and move
+  it to `## Done`, then commit (note + implementation together, one commit/item).
+
+When no `Queue` items remain: **stop** and post a summary, listing every
+`needs-decision` item with a one-line pointer to its note so RJ can weigh in.
+
+## Risk classification
+**Low-risk (auto-implement the recommendation):** additive, reversible work with one
+clearly-best approach — adding tests; lint/type fixes; docs (`.env.example`,
+`CHANGELOG`, README); empty/loading-state polish following an existing pattern; a
+new isolated read-only endpoint; additive config that can't break prod.
+
+**Needs-decision (write suggestions, then pause):** anything with real tradeoffs or
+blast radius — new product features; DB schema changes / migrations; deleting or
+destructively mutating data; auth / permissions / security; billing logic; touching
+`.env`/secrets; adding or major-upgrading a dependency; changing a public API
+contract; or any item where two viable approaches carry a user-facing tradeoff.
+**When in doubt, treat it as needs-decision.**
 
 ## Commit rules
-- **One commit per backlog item.** Stage only the files for that item plus the
-  `BACKLOG.md` update — do **not** `git add -A`.
-- Message: concise, imperative, human-style. **No AI/Claude attribution**, no
-  "Co-Authored-By". Example: `add unit tests for permissions role checks`.
-- Never `git commit -a` blindly; there may be unrelated user changes in the tree.
+- One commit per item; stage only that item's files + its note + the `BACKLOG.md`
+  update. Never `git add -A` / `git commit -a`.
+- Concise, imperative, human-style messages. **No AI/Claude attribution.**
 
 ## Hard boundaries (never cross)
-- **Never push.** Never `git push`, never open PRs, never deploy. Local commits
-  only. The user reviews and pushes manually.
+- **Never push, never deploy.** Local commits only.
 - **Stay on `loop/backlog-run`.** Never switch or merge branches.
 - **Never edit** `.env*`, secrets, CI credentials, or `package-lock.json` by hand
-  (lockfile changes only via `npm install` when an item requires a dependency).
-- **No net-new product features** unless a backlog item explicitly specifies one
-  with clear acceptance criteria. Default work = hardening, tests, polish.
+  (lockfile changes only via `npm install` when an approved item needs a dep).
+- **No net-new product features** unless an item explicitly specifies one with
+  acceptance criteria — and those are always `needs-decision`.
 - Respect `AGENTS.md`: no PayMongo-specific or AI-chat-widget work unasked.
 
 ## When something goes wrong
-- **Gate won't go green** after a few honest attempts: `git restore`/revert this
-  item's changes so the tree returns to green, then in `BACKLOG.md` move the item
-  to a `## Blocked` section with a one-line reason. Move on.
-- **Item is ambiguous, too big, or feature-shaped:** don't guess. Leave it
-  unchecked, add a `> note:` under it explaining what's needed, skip to the next.
-- **Tree is dirty with unrelated changes at start:** stop and ask the user to
-  commit/stash first. Do not absorb their work into a loop commit.
+- **Gate won't go green** after a few honest attempts: revert this item's changes so
+  the tree is green again, move the item to `## Blocked` with a one-line reason (keep
+  its note). Move on.
+- **Item is ambiguous or bigger than one iteration:** split it into sub-items, or
+  mark `needs-decision` with a note. Don't guess.
+- **Tree is dirty with unrelated changes at start:** stop and ask RJ to commit/stash
+  first. Never absorb his work into a loop commit.
 
 ## Scope discipline
-- Prefer small, verifiable diffs. If an item is bigger than one iteration, split
-  it into sub-items in the backlog instead of doing it all at once.
-- Don't refactor unrelated code "while you're in there."
+- Small, verifiable diffs. Don't refactor unrelated code "while you're in there."
