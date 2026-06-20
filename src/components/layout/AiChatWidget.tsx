@@ -14,7 +14,7 @@ const QUICK_PROMPTS = [
   'Profit this month so far?',
 ]
 
-const POSITION_KEY = 'sizzle-ai-widget-pos'
+const POSITION_KEY = 'tenda-ai-widget-pos'
 const BUTTON_SIZE = 48
 
 interface Position { x: number; y: number }

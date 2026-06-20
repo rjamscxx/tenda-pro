@@ -81,6 +81,7 @@ function SubscriptionCountdown({
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mounted-gate intentionally defers the live countdown to post-mount to avoid an SSR hydration mismatch
     setMounted(true)
     setNowMs(Date.now())
     const intervalMs = isTrial ? 60_000 : 1000
@@ -567,7 +568,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', active)
     const secondsPerYear = 31_536_000
-    document.cookie = `sizzle-theme=${active}; path=/; max-age=${secondsPerYear}; SameSite=Lax`
+    document.cookie = `tenda-theme=${active}; path=/; max-age=${secondsPerYear}; SameSite=Lax`
   }, [active])
 
   function applyTheme(id: string) {

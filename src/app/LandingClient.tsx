@@ -411,7 +411,7 @@ export default function LandingClient() {
           maxWidth: 860, maxHeight: 860,
           borderRadius: '50%',
           background: `radial-gradient(circle, ${currentTheme.accent}1E 0%, transparent 70%)`,
-          animation: 'sizzle-blob-1 14s ease-in-out infinite',
+          animation: 'tenda-blob-1 14s ease-in-out infinite',
           transition: 'background 0.85s ease',
           filter: 'blur(48px)',
         }} />
@@ -422,7 +422,7 @@ export default function LandingClient() {
           maxWidth: 680, maxHeight: 680,
           borderRadius: '50%',
           background: `radial-gradient(circle, ${currentTheme.accent}14 0%, transparent 70%)`,
-          animation: 'sizzle-blob-2 18s ease-in-out infinite',
+          animation: 'tenda-blob-2 18s ease-in-out infinite',
           transition: 'background 0.85s ease',
           filter: 'blur(56px)',
         }} />
@@ -433,7 +433,7 @@ export default function LandingClient() {
           maxWidth: 580, maxHeight: 580,
           borderRadius: '50%',
           background: `radial-gradient(circle, ${currentTheme.accent}0C 0%, transparent 70%)`,
-          animation: 'sizzle-blob-3 22s ease-in-out infinite',
+          animation: 'tenda-blob-3 22s ease-in-out infinite',
           transition: 'background 0.85s ease',
           filter: 'blur(64px)',
         }} />
@@ -494,7 +494,7 @@ export default function LandingClient() {
           aria-hidden="true"
           style={{
             background: `radial-gradient(circle, ${currentTheme.accent}28 0%, transparent 70%)`,
-            animation: 'sizzle-blob-1 9s ease-in-out infinite',
+            animation: 'tenda-blob-1 9s ease-in-out infinite',
             transition: 'background 0.8s ease',
           }}
         />
@@ -503,7 +503,7 @@ export default function LandingClient() {
           aria-hidden="true"
           style={{
             background: `radial-gradient(circle, ${currentTheme.accent}1C 0%, transparent 70%)`,
-            animation: 'sizzle-blob-2 12s ease-in-out infinite',
+            animation: 'tenda-blob-2 12s ease-in-out infinite',
             transition: 'background 0.8s ease',
           }}
         />
@@ -512,7 +512,7 @@ export default function LandingClient() {
           aria-hidden="true"
           style={{
             background: `radial-gradient(ellipse, ${currentTheme.accent}10 0%, transparent 70%)`,
-            animation: 'sizzle-blob-3 16s ease-in-out infinite',
+            animation: 'tenda-blob-3 16s ease-in-out infinite',
             transition: 'background 0.8s ease',
           }}
         />

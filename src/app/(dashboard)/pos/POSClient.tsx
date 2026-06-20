@@ -167,9 +167,9 @@ export default function POSClient({
       <style>{`
         @media print {
           * { visibility: hidden !important; }
-          #sizzle-receipt-print,
-          #sizzle-receipt-print * { visibility: visible !important; }
-          #sizzle-receipt-print {
+          #tenda-receipt-print,
+          #tenda-receipt-print * { visibility: visible !important; }
+          #tenda-receipt-print {
             position: fixed !important;
             inset: 0 !important;
             background: #fff !important;
@@ -605,7 +605,7 @@ export default function POSClient({
           <>
             {/* Receipt — white card, solid black text, clean paper style */}
             <div
-              id="sizzle-receipt-print"
+              id="tenda-receipt-print"
               className="rounded-xl overflow-hidden"
               style={{ background: '#fff', color: '#111', fontFamily: 'inherit' }}
             >

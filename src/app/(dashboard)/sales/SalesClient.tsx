@@ -243,7 +243,7 @@ export default function SalesClient({
   const [period, setPeriod]           = useState<Period>(() => {
     if (typeof window === 'undefined') return 'all'
     try {
-      const saved = localStorage.getItem('sizzle-sales-period') as Period | null
+      const saved = localStorage.getItem('tenda-sales-period') as Period | null
       if (saved && PERIODS.some(p => p.value === saved)) return saved
     } catch {}
     return 'all'
@@ -444,7 +444,7 @@ export default function SalesClient({
         {PERIODS.map(p => (
           <button
             key={p.value}
-            onClick={() => { setPeriod(p.value); try { localStorage.setItem('sizzle-sales-period', p.value) } catch {} }}
+            onClick={() => { setPeriod(p.value); try { localStorage.setItem('tenda-sales-period', p.value) } catch {} }}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               period === p.value
                 ? 'bg-accent text-canvas'

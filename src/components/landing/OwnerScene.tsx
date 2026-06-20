@@ -376,7 +376,7 @@ export default function OwnerScene() {
                     className="absolute inset-0 pointer-events-none"
                     style={{
                       background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%)',
-                      animation: 'sizzle-shimmer 6s ease-in-out infinite',
+                      animation: 'tenda-shimmer 6s ease-in-out infinite',
                     }}
                   />
 
@@ -390,7 +390,7 @@ export default function OwnerScene() {
                       <div className="relative flex items-center justify-center">
                         <span
                           className="absolute w-6 h-6 rounded-full bg-accent/30"
-                          style={{ animation: `sizzle-ping 2.4s ease-out infinite ${i * 0.6}s` }}
+                          style={{ animation: `tenda-ping 2.4s ease-out infinite ${i * 0.6}s` }}
                         />
                         <span className="relative block w-3 h-3 rounded-full bg-accent shadow-[0_0_14px_rgba(88,192,152,0.75)]" />
                         {/* label tooltip */}

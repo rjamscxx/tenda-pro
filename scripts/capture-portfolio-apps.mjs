@@ -1,11 +1,11 @@
 // Capture screenshots of every single-file HTML SaaS app in E:\SAAS\
 // for use in the RJ-PORTFOLIO-v3 showcase.
 //
-// Usage:  cd "E:/SAAS/SIZZLE/sizzle-app" && node scripts/capture-portfolio-apps.mjs
+// Usage:  cd "E:/SaaS/TENDA PRO/tenda-pro" && node scripts/capture-portfolio-apps.mjs
 
 import { chromium } from "playwright";
 import { mkdir } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 
 const ROOT = "E:/SAAS";
 const OUT  = `${ROOT}/screenshots`;

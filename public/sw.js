@@ -1,4 +1,4 @@
-const CACHE = 'sizzle-v1'
+const CACHE = 'tenda-v1'
 
 self.addEventListener('install', () => self.skipWaiting())
 
@@ -17,7 +17,7 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request).catch(() =>
       new Response(
-        `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline — Sizzle</title>
+        `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline — Tenda Pro</title>
         <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;background:#0E1714;color:#ECE6D5;display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:1.5rem}
         .wrap{text-align:center;max-width:320px}.icon{width:52px;height:52px;border-radius:14px;background:#18231F;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
         h1{font-size:1.25rem;font-weight:600;margin-bottom:.5rem}p{font-size:.875rem;color:#929B93;line-height:1.6}

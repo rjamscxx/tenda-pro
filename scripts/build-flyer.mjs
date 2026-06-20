@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// Renders marketing/sizzle-flyer.html to a 1080×2400 PNG, optionally pulling
-// a fresh hero screenshot from sizzle.app first.
+// Renders marketing/tenda-flyer.html to a 1080×2400 PNG, optionally pulling
+// a fresh hero screenshot from tenda.ph first.
 //
 // Run: node scripts/build-flyer.mjs
 //   --no-hero       skip the live-site screenshot, use existing marketing/hero.png
-//   --url=<url>     override sizzle.app (e.g. http://localhost:3000)
+//   --url=<url>     override tenda.ph (e.g. http://localhost:3000)
 
 import { chromium } from 'playwright'
 import { mkdir } from 'node:fs/promises'
@@ -12,14 +12,14 @@ import { existsSync } from 'node:fs'
 import path from 'node:path'
 
 const ROOT       = process.cwd()
-const FLYER_HTML = path.join(ROOT, 'marketing', 'sizzle-flyer.html')
-const FLYER_PNG  = path.join(ROOT, 'marketing', 'sizzle-flyer.png')
+const FLYER_HTML = path.join(ROOT, 'marketing', 'tenda-flyer.html')
+const FLYER_PNG  = path.join(ROOT, 'marketing', 'tenda-flyer.png')
 const HERO_PNG   = path.join(ROOT, 'marketing', 'hero.png')
 
 const args = new Set(process.argv.slice(2))
 const noHero = args.has('--no-hero')
 const urlArg = process.argv.find(a => a.startsWith('--url='))
-const SITE_URL = urlArg ? urlArg.slice(6) : 'https://sizzle.app'
+const SITE_URL = urlArg ? urlArg.slice(6) : 'https://tenda.ph'
 
 await mkdir(path.join(ROOT, 'marketing'), { recursive: true })
 const browser = await chromium.launch()
@@ -72,7 +72,7 @@ try {
       const visual = document.getElementById('visual')
       if (!visual) return
       visual.classList.remove('placeholder')
-      visual.innerHTML = '<img src="hero.png" alt="Sizzle dashboard" />'
+      visual.innerHTML = '<img src="hero.png" alt="Tenda Pro dashboard" />'
     })
     // Give the image a moment to decode.
     await flyerPage.waitForLoadState('networkidle')
@@ -87,7 +87,7 @@ try {
     clip: { x: 0, y: 0, width: 1080, height: 2400 },
   })
   console.log('ok')
-  console.log(`\n  marketing/sizzle-flyer.png  (1080 × 2400)`)
+  console.log(`\n  marketing/tenda-flyer.png  (1080 × 2400)`)
 } finally {
   await browser.close()
 }

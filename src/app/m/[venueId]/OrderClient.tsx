@@ -267,7 +267,7 @@ export default function OrderClient({
           </p>
           <p className="text-[10px] text-ink-4">
             powered by{' '}
-            <a href="https://sizzle-app-v1.vercel.app" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline underline-offset-2">
+            <a href="https://tenda.ph" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline underline-offset-2">
               Tenda Pro
             </a>
           </p>

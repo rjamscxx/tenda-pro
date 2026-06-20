@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Modal from '@/components/ui/Modal'
 import { createExpense, updateExpense, deleteExpense } from './actions'
 import { formatCurrency, formatDate, parseCents, todayISO } from '@/lib/utils'
@@ -74,7 +75,8 @@ function downloadCSV(filename: string, content: string) {
 
 export default function ExpensesClient({ expenses, vendors }: { expenses: Expense[]; vendors: string[] }) {
   const toast = useToast()
-  const [open, setOpen]           = useState(false)
+  const searchParams = useSearchParams()
+  const [open, setOpen]           = useState(() => searchParams.get('add') === '1')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [loading, setLoading]     = useState(false)
   const [error, setError]         = useState('')
