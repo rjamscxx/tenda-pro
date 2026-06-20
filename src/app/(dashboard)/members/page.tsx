@@ -114,7 +114,7 @@ export default async function MembersPage() {
                        : tone === 'warn'   ? 'text-warn'
                        : 'text-ink'
           return (
-            <div key={label} className="glass rounded-xl p-4 relative overflow-hidden">
+            <div key={label} className="glass card-glow lift rounded-xl p-4 relative overflow-hidden">
               <div className={`absolute inset-x-0 top-0 h-[2px] ${barCls}`} />
               <p className="text-[10px] font-semibold uppercase tracking-widest text-ink-4 mb-1">{label}</p>
               <p className={`text-2xl font-bold tabular ${valCls}`}>{value}</p>
@@ -124,7 +124,7 @@ export default async function MembersPage() {
       </div>
 
       {/* Members table */}
-      <div className="card-enter card-d2 glass rounded-xl overflow-hidden">
+      <div className="card-enter card-d2 glass card-glow rounded-xl overflow-hidden">
         <div className="px-5 py-3 border-b border-hair flex items-center justify-between">
           <p className="text-sm font-semibold text-ink">All accounts</p>
           <p className="text-xs text-ink-4">{totalMembers} total</p>

@@ -11,6 +11,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `GET /api/health` liveness endpoint — returns `{ status, time }` for uptime monitors
 - Loading skeleton (`loading.tsx`) for all dashboard modules — eliminates blank-screen flashes on navigation
 
+### Changed
+
+**UI Polish — Phase 1 (design tokens)**
+- Global CSS custom properties: `--ease-out`, `--ease-spring`, `--dur-fast/base/slow`, `--elev-1/2/3`, spacing tokens
+- Utility classes: `.lift` (card hover elevation), `.press` (scale 0.97 active), `.content-in` (opacity fade-in), `.live-dot` (ember breathe pulse), `.card-glow`, `.glass`
+
+**UI Polish — Phase 2 (motion & feedback)**
+- Dashboard KPI cards, target/budget bars, and channel breakdown bars animate in with GPU-accelerated `bar-enter` keyframe
+- POS category tabs, dish tiles, qty buttons, channel/discount/service buttons all have `active:scale` press feel
+- Reports month pills, sort toggles, bar charts, and donut chart have `bar-enter` + `content-in` on month switch (React key re-mount)
+- All `btn-primary` elements app-wide gain press feel via `:active` CSS (no JS required)
+
+**UI Polish — Phase 3 (all pages)**
+- `active:scale-[0.97/0.95/0.9]` applied to every interactive button across KDS, Sales, Expenses, Inventory, Checklists, Shifts, Waste, Payroll, Employees, Menu, Suppliers, Settings, Close-Day, and Analytics
+- KDS kanban bump buttons (Start / Ready / Served / Reopen) have tactile press on tap
+- `lift` hover elevation added to all `glass card-glow` card components sitewide (37 instances)
+
+**Landing page**
+- Replaced all CSS/JSX mock app showcases with 18 real Playwright screenshots captured from the smoke account (Café Lina, ember theme, 1440×900 @2x)
+- Screenshots show real smoke-test data across every module — "actual data, actual design"
+- Gallery description updated to reflect real-screenshot sourcing
+
 ---
 
 ## [0.1.0] - 2026-06-01
