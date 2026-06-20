@@ -8,10 +8,6 @@ Edit freely to steer: add items, reorder, or retag.
 
 ## Queue
 
-- [ ] `[low-risk]` Establish a green baseline
-      done = `tsc --noEmit`, `lint`, `build`, and `test` all pass on the current
-      tree with zero errors; commit any fixes needed. No feature changes.
-
 - [ ] `[low-risk]` Add `.env.example` documenting required env vars
       done = `.env.example` lists `NEXT_PUBLIC_SUPABASE_URL`,
       `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `DATABASE_URL`, `CRON_SECRET` (and any
@@ -71,4 +67,4 @@ _(items that couldn't go green — with a one-line reason; note kept)_
 
 ## Done
 
-_(completed items land here)_
+- [x] `[low-risk]` Establish a green baseline — tsc/lint/build/test/db-drift all green (2026-06-20)
