@@ -8,10 +8,6 @@ Edit freely to steer: add items, reorder, or retag.
 
 ## Queue
 
-- [ ] `[low-risk]` Run unit tests in CI
-      done = `.github/workflows/ci.yml` gains a `npm run test` step after build;
-      gates green.
-
 - [ ] `[low-risk]` Unit tests for `src/lib/permissions.ts`
       done = Vitest covers each role/permission branch; `npm run test` green.
 
@@ -63,3 +59,4 @@ _(items that couldn't go green — with a one-line reason; note kept)_
 
 - [x] `[low-risk]` Establish a green baseline — tsc/lint/build/test/db-drift all green (2026-06-20)
 - [x] `[low-risk]` Add `.env.example` — all env vars documented, !gitignore exception added (2026-06-20)
+- [x] `[low-risk]` Run unit tests in CI — test step already present in ci.yml (2026-06-20)
