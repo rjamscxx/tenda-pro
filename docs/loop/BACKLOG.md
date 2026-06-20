@@ -8,11 +8,6 @@ Edit freely to steer: add items, reorder, or retag.
 
 ## Queue
 
-- [ ] `[low-risk]` Standardize empty + loading states across dashboard modules
-      done = each `(dashboard)` module uses the shared `EmptyState` and a
-      `loading.tsx`; one module per iteration — split into sub-items; gates green
-      per module. (If a module needs a real design choice, retag `needs-decision`.)
-
 - [ ] `[low-risk]` Add `CHANGELOG.md` (Keep a Changelog format) with `Unreleased`
       done = file exists, references the current version from `package.json`;
       gates green.
@@ -36,6 +31,7 @@ _(items that couldn't go green — with a one-line reason; note kept)_
 
 ## Done
 
+- [x] `[low-risk]` Standardize loading states across dashboard modules — 6 missing `loading.tsx` shimmer skeletons added (checklists, kds, shifts, close-day, members, suppliers); EmptyState already adopted everywhere applicable (2026-06-20) → [note](notes/010-empty-loading-states.md)
 - [x] `[low-risk]` Add `/api/health` endpoint — `GET /api/health` returns 200 `{ status, time }`, 3-test suite, all gates green (2026-06-20) → [note](notes/009-health-endpoint.md)
 - [x] `[low-risk]` Establish a green baseline — tsc/lint/build/test/db-drift all green (2026-06-20)
 - [x] `[low-risk]` Add `.env.example` — all env vars documented, !gitignore exception added (2026-06-20)
