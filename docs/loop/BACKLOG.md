@@ -8,12 +8,6 @@ Edit freely to steer: add items, reorder, or retag.
 
 ## Queue
 
-- [ ] `[low-risk]` Add `.env.example` documenting required env vars
-      done = `.env.example` lists `NEXT_PUBLIC_SUPABASE_URL`,
-      `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `DATABASE_URL`, `CRON_SECRET` (and any
-      others referenced via `process.env`) with placeholder values + short
-      comments; no real secrets; gates green.
-
 - [ ] `[low-risk]` Run unit tests in CI
       done = `.github/workflows/ci.yml` gains a `npm run test` step after build;
       gates green.
@@ -68,3 +62,4 @@ _(items that couldn't go green — with a one-line reason; note kept)_
 ## Done
 
 - [x] `[low-risk]` Establish a green baseline — tsc/lint/build/test/db-drift all green (2026-06-20)
+- [x] `[low-risk]` Add `.env.example` — all env vars documented, !gitignore exception added (2026-06-20)

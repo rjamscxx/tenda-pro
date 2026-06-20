@@ -52,3 +52,6 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
           DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://placeholder' }}
           CRON_SECRET: placeholder
+
+      - name: test
+        run: npm run test
