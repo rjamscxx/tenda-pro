@@ -5,12 +5,22 @@ interface AppFrameProps {
   src?: string
   url: string
   height?: number
+  /** When true, frame height auto-sizes to the screenshot's native 1440×900 ratio (no vertical cropping) */
+  natural?: boolean
+  onClick?: () => void
   className?: string
 }
 
-export default function AppFrame({ children, src, url, height = 320, className = '' }: AppFrameProps) {
+export default function AppFrame({ children, src, url, height = 320, natural = false, onClick, className = '' }: AppFrameProps) {
+  const clickable = !!onClick
   return (
-    <div className={`rounded-2xl overflow-hidden border border-white/[0.07] shadow-[0_20px_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.08)] ${className}`}>
+    <div
+      className={`rounded-2xl overflow-hidden border border-white/[0.07] shadow-[0_20px_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.08)] ${clickable ? 'cursor-zoom-in' : ''} ${className}`}
+      onClick={onClick}
+      role={clickable ? 'button' : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onKeyDown={clickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') onClick() } : undefined}
+    >
       <div className="bg-[#161a1d] border-b border-white/[0.06]">
         <div className="flex items-center gap-0 px-3 pt-2.5">
           <div className="flex items-center gap-1.5 mr-3 shrink-0">
@@ -37,7 +47,7 @@ export default function AppFrame({ children, src, url, height = 320, className =
           </div>
         </div>
       </div>
-      <div style={{ height, overflow: 'hidden', position: 'relative' }}>
+      <div style={natural ? { position: 'relative', aspectRatio: '1440/900', overflow: 'hidden' } : { height, overflow: 'hidden', position: 'relative' }}>
         {src ? (
           <Image
             src={src}

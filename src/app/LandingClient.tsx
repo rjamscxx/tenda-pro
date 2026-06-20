@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -200,6 +201,9 @@ function readInitialTheme(): string {
 export default function LandingClient() {
   const [scrolled, setScrolled]       = useState(false)
   const [activeTheme, setActiveTheme] = useState(readInitialTheme)
+  const [lightbox, setLightbox]       = useState<{ src: string; url: string } | null>(null)
+  const openLightbox = (src: string, url: string) => setLightbox({ src, url })
+  const closeLightbox = () => setLightbox(null)
   const currentTheme = THEMES.find(t => t.id === activeTheme) ?? THEMES[0]
   const { ref: themeCountRef, count: themeCountVal } = useCountUp(20)
   // Landing always renders as logged-out. The rare logged-in visitor who hits
@@ -215,6 +219,14 @@ export default function LandingClient() {
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
   }, [])
+
+  // Lightbox ESC to close
+  useEffect(() => {
+    if (!lightbox) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeLightbox() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [lightbox])
 
   // GSAP animations
   useEffect(() => {
@@ -363,6 +375,7 @@ export default function LandingClient() {
   }, [])
 
   return (
+    <>
     <main className="min-h-[100dvh] bg-canvas overflow-x-hidden" data-theme={activeTheme} suppressHydrationWarning>
 
       {/* ── Ambient theme gradient — fixed, full-page ──────────────────────── */}
@@ -556,9 +569,9 @@ export default function LandingClient() {
             </p>
           </div>
 
-          {/* Right: Real dashboard screenshot */}
-          <div className="hero-mock relative h-[340px] sm:h-[420px] lg:h-[520px]" style={{ opacity: 0 }}>
-            <AppFrame url="tenda.ph/dashboard" src="/landing/screenshots/dashboard.png" height={440} className="shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.1)]" />
+          {/* Right: Real dashboard screenshot — full view, no crop */}
+          <div className="hero-mock relative" style={{ opacity: 0 }}>
+            <AppFrame url="tenda.ph/dashboard" src="/landing/screenshots/dashboard.png" natural onClick={() => openLightbox('/landing/screenshots/dashboard.png', 'tenda.ph/dashboard')} className="shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.1)]" />
           </div>
         </div>
       </section>
@@ -867,7 +880,7 @@ export default function LandingClient() {
 
           <div className="inventory-mock relative" style={{ opacity: 0 }}>
             <div className="absolute -inset-6 bg-warn/6 rounded-3xl blur-3xl pointer-events-none" />
-            <AppFrame url="tenda.ph/inventory" height={380} src="/landing/screenshots/inventory.png" />
+            <AppFrame url="tenda.ph/inventory" height={380} src="/landing/screenshots/inventory.png" onClick={() => openLightbox('/landing/screenshots/inventory.png', 'tenda.ph/inventory')} />
           </div>
 
         </div>
@@ -917,7 +930,7 @@ export default function LandingClient() {
               </ul>
               <div className="relative">
                 <div className="absolute -inset-4 bg-accent/5 rounded-2xl blur-2xl pointer-events-none" />
-                <AppFrame url="tenda.ph/pos" height={280} src="/landing/screenshots/pos.png" />
+                <AppFrame url="tenda.ph/pos" height={280} src="/landing/screenshots/pos.png" onClick={() => openLightbox('/landing/screenshots/pos.png', 'tenda.ph/pos')} />
               </div>
             </div>
 
@@ -955,7 +968,7 @@ export default function LandingClient() {
               </ul>
               <div className="relative">
                 <div className="absolute -inset-4 bg-accent/5 rounded-2xl blur-2xl pointer-events-none" />
-                <AppFrame url="tenda.ph/m/cafe-lina" height={280} src="/landing/screenshots/qr-menu.png" />
+                <AppFrame url="tenda.ph/m/cafe-lina" height={280} src="/landing/screenshots/qr-menu.png" onClick={() => openLightbox('/landing/screenshots/qr-menu.png', 'tenda.ph/m/cafe-lina')} />
               </div>
             </div>
 
@@ -987,7 +1000,7 @@ export default function LandingClient() {
                   <p className="text-xs text-ink-4 mt-0.5">Track spoilage by ingredient, cut losses</p>
                 </div>
               </div>
-              <AppFrame url="tenda.ph/waste" height={260} src="/landing/screenshots/waste.png" />
+              <AppFrame url="tenda.ph/waste" height={260} src="/landing/screenshots/waste.png" onClick={() => openLightbox('/landing/screenshots/waste.png', 'tenda.ph/waste')} />
             </div>
 
             {/* Employees */}
@@ -1005,7 +1018,7 @@ export default function LandingClient() {
                   <p className="text-xs text-ink-4 mt-0.5">Daily, monthly or hourly staff rates</p>
                 </div>
               </div>
-              <AppFrame url="tenda.ph/employees" height={260} src="/landing/screenshots/employees.png" />
+              <AppFrame url="tenda.ph/employees" height={260} src="/landing/screenshots/employees.png" onClick={() => openLightbox('/landing/screenshots/employees.png', 'tenda.ph/employees')} />
             </div>
 
             {/* Payroll */}
@@ -1023,7 +1036,7 @@ export default function LandingClient() {
                   <p className="text-xs text-ink-4 mt-0.5">Auto-calculate from rates, full run history</p>
                 </div>
               </div>
-              <AppFrame url="tenda.ph/payroll" height={260} src="/landing/screenshots/payroll.png" />
+              <AppFrame url="tenda.ph/payroll" height={260} src="/landing/screenshots/payroll.png" onClick={() => openLightbox('/landing/screenshots/payroll.png', 'tenda.ph/payroll')} />
             </div>
 
           </div>
@@ -1048,11 +1061,11 @@ export default function LandingClient() {
 
           {/* Row 1: Sales (large) + Menu */}
           <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-none lg:grid lg:grid-cols-[1.6fr_1fr] lg:overflow-x-visible lg:pb-0">
-            <div className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] lg:w-auto" style={{ opacity: 0 }}>
-              <AppFrame url="tenda.ph/sales" height={320} src="/landing/screenshots/sales.png" className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500" />
+            <div className="ss-card snap-start shrink-0 w-[82vw] sm:w-[65vw] lg:w-auto" style={{ opacity: 0 }}>
+              <AppFrame url="tenda.ph/sales" height={320} src="/landing/screenshots/sales.png" onClick={() => openLightbox('/landing/screenshots/sales.png', 'tenda.ph/sales')} />
             </div>
-            <div className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] lg:w-auto" style={{ opacity: 0 }}>
-              <AppFrame url="tenda.ph/menu" height={320} src="/landing/screenshots/menu.png" className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500" />
+            <div className="ss-card snap-start shrink-0 w-[82vw] sm:w-[65vw] lg:w-auto" style={{ opacity: 0 }}>
+              <AppFrame url="tenda.ph/menu" height={320} src="/landing/screenshots/menu.png" onClick={() => openLightbox('/landing/screenshots/menu.png', 'tenda.ph/menu')} />
             </div>
           </div>
 
@@ -1063,8 +1076,8 @@ export default function LandingClient() {
               ['tenda.ph/reports',   '/landing/screenshots/reports.png'],
               ['tenda.ph/employees', '/landing/screenshots/employees.png'],
             ] as [string, string][]).map(([url, src]) => (
-              <div key={url} className="ss-card group snap-start shrink-0 w-[72vw] sm:w-[50vw] md:w-auto" style={{ opacity: 0 }}>
-                <AppFrame url={url} height={220} src={src} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500" />
+              <div key={url} className="ss-card snap-start shrink-0 w-[72vw] sm:w-[50vw] md:w-auto" style={{ opacity: 0 }}>
+                <AppFrame url={url} height={220} src={src} onClick={() => openLightbox(src, url)} />
               </div>
             ))}
           </div>
@@ -1075,8 +1088,8 @@ export default function LandingClient() {
               ['tenda.ph/waste',   '/landing/screenshots/waste.png'],
               ['tenda.ph/payroll', '/landing/screenshots/payroll.png'],
             ] as [string, string][]).map(([url, src]) => (
-              <div key={url} className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] md:w-auto" style={{ opacity: 0 }}>
-                <AppFrame url={url} height={260} src={src} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500" />
+              <div key={url} className="ss-card snap-start shrink-0 w-[82vw] sm:w-[65vw] md:w-auto" style={{ opacity: 0 }}>
+                <AppFrame url={url} height={260} src={src} onClick={() => openLightbox(src, url)} />
               </div>
             ))}
           </div>
@@ -1087,8 +1100,8 @@ export default function LandingClient() {
               ['tenda.ph/pos',          '/landing/screenshots/pos.png'],
               ['tenda.ph/m/cafe-lina',  '/landing/screenshots/qr-menu.png'],
             ] as [string, string][]).map(([url, src]) => (
-              <div key={url} className="ss-card group snap-start shrink-0 w-[82vw] sm:w-[65vw] md:w-auto" style={{ opacity: 0 }}>
-                <AppFrame url={url} height={260} src={src} className="group-hover:shadow-[0_24px_72px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.1)] transition-shadow duration-500" />
+              <div key={url} className="ss-card snap-start shrink-0 w-[82vw] sm:w-[65vw] md:w-auto" style={{ opacity: 0 }}>
+                <AppFrame url={url} height={260} src={src} onClick={() => openLightbox(src, url)} />
               </div>
             ))}
           </div>
@@ -1103,7 +1116,7 @@ export default function LandingClient() {
           {/* Left: Report mock */}
           <div className="relative order-2 lg:order-1 lp-fade-up">
             <div className="absolute -inset-6 bg-accent/6 rounded-3xl blur-3xl pointer-events-none" />
-            <AppFrame url="tenda.ph/reports" height={400} src="/landing/screenshots/reports.png" />
+            <AppFrame url="tenda.ph/reports" height={400} src="/landing/screenshots/reports.png" onClick={() => openLightbox('/landing/screenshots/reports.png', 'tenda.ph/reports')} />
           </div>
 
           {/* Right: Copy */}
@@ -1431,6 +1444,32 @@ export default function LandingClient() {
       </footer>
 
     </main>
+
+    {/* ── Screenshot lightbox ──────────────────────────────────────────────── */}
+    {lightbox && (
+      <div
+        className="fixed inset-0 z-[200] flex items-center justify-center bg-black/92 backdrop-blur-md p-4"
+        onClick={closeLightbox}
+      >
+        <div className="relative w-full max-w-6xl" onClick={e => e.stopPropagation()}>
+          {/* Close */}
+          <button
+            onClick={closeLightbox}
+            className="absolute -top-10 right-0 text-white/50 hover:text-white text-xs flex items-center gap-1.5 transition-colors"
+          >
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
+            Close (ESC)
+          </button>
+          {/* Frame */}
+          <div className="rounded-2xl overflow-hidden border border-white/[0.08] shadow-[0_40px_120px_rgba(0,0,0,0.9)]" style={{ position: 'relative', aspectRatio: '1440/900' }}>
+            <Image src={lightbox.src} alt={lightbox.url} fill style={{ objectFit: 'contain', objectPosition: 'top left' }} />
+          </div>
+          {/* URL label */}
+          <p className="text-center text-white/30 text-[11px] font-mono mt-3">{lightbox.url}</p>
+        </div>
+      </div>
+    )}
+    </>
   )
 }
 
