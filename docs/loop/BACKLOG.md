@@ -8,10 +8,6 @@ Edit freely to steer: add items, reorder, or retag.
 
 ## Queue
 
-- [ ] `[low-risk]` Unit tests for `src/lib/plan.ts` edge cases
-      done = trial-expiry, plan-gating, and boundary cases covered beyond the
-      existing `plan.test.ts`; tests green.
-
 - [ ] `[low-risk]` Add Playwright config + auth smoke test
       done = `playwright.config.ts` exists; one spec drives login → dashboard
       renders a known element; documented run command; build + lint green.
@@ -56,3 +52,4 @@ _(items that couldn't go green — with a one-line reason; note kept)_
 - [x] `[low-risk]` Run unit tests in CI — added `npm run test` step to ci.yml (2026-06-20)
 - [x] `[low-risk]` Unit tests for `src/lib/permissions.ts` — 4 tests, all roles covered (2026-06-20)
 - [x] `[low-risk]` Unit tests for `src/lib/utils.ts` — 17 tests: formatCurrency, parseCents, formatDate, cn (2026-06-20)
+- [x] `[low-risk]` Unit tests for `src/lib/plan.ts` edge cases — 64 tests total; isPremium, isTrialActive, isTrial, getTrialDaysLeft, isTrialExpired, hasUsedTrial, getEffectivePlan, isAtLeast all covered (2026-06-20)

@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import {
   isPro,
+  isPremium,
   getEffectivePlan,
   isAtLeast,
   isTrial,
+  isTrialActive,
   getTrialDaysLeft,
   isTrialExpired,
   hasUsedTrial,
@@ -158,5 +160,37 @@ describe('hasUsedTrial', () => {
 
   it('returns true when trialStartedAt is set', () => {
     expect(hasUsedTrial({ ...base, plan: 'free', planExpiresAt: null, trialStartedAt: new Date() })).toBe(true)
+  })
+})
+
+describe('isPremium', () => {
+  it('returns true for active premium plan', () => {
+    expect(isPremium({ ...base, plan: 'premium', planExpiresAt: null })).toBe(true)
+  })
+
+  it('returns true for active pro plan (premium = pro tier)', () => {
+    expect(isPremium({ ...base, plan: 'pro', planExpiresAt: null })).toBe(true)
+  })
+
+  it('returns false for free plan', () => {
+    expect(isPremium({ ...base, plan: 'free', planExpiresAt: null })).toBe(false)
+  })
+
+  it('returns false for expired pro plan', () => {
+    expect(isPremium({ ...base, plan: 'pro', planExpiresAt: past })).toBe(false)
+  })
+})
+
+describe('isTrialActive', () => {
+  it('returns true for active trial (alias for isTrial)', () => {
+    expect(isTrialActive({ ...base, plan: 'pro', planExpiresAt: future, trialStartedAt: new Date() })).toBe(true)
+  })
+
+  it('returns false for expired trial', () => {
+    expect(isTrialActive({ ...base, plan: 'pro', planExpiresAt: past, trialStartedAt: new Date() })).toBe(false)
+  })
+
+  it('returns false for account with no trial', () => {
+    expect(isTrialActive({ ...base, plan: 'pro', planExpiresAt: future, trialStartedAt: null })).toBe(false)
   })
 })
