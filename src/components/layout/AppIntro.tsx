@@ -24,6 +24,7 @@ export default function AppIntro() {
     } catch { /* private mode — just play it */ }
     if (seen) return
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time intro is gated on a client-only sessionStorage read, which cannot run during render
     setShow(true)
     const reduce = typeof window !== 'undefined'
       && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
