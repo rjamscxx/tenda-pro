@@ -8,9 +8,7 @@ Edit freely to steer: add items, reorder, or retag.
 
 ## Queue
 
-- [ ] `[low-risk]` Add `CHANGELOG.md` (Keep a Changelog format) with `Unreleased`
-      done = file exists, references the current version from `package.json`;
-      gates green.
+_(all items done — add new items here to continue the loop)_
 
 > New **features** or schema changes belong here too — tag them `[needs-decision]`
 > and give acceptance criteria. The loop will brainstorm + write suggestions, then
@@ -31,6 +29,7 @@ _(items that couldn't go green — with a one-line reason; note kept)_
 
 ## Done
 
+- [x] `[low-risk]` Add `CHANGELOG.md` (Keep a Changelog format) — 0.1.0 section + Unreleased stub; comparison links to GitHub (2026-06-20) → [note](notes/011-changelog.md)
 - [x] `[low-risk]` Standardize loading states across dashboard modules — 6 missing `loading.tsx` shimmer skeletons added (checklists, kds, shifts, close-day, members, suppliers); EmptyState already adopted everywhere applicable (2026-06-20) → [note](notes/010-empty-loading-states.md)
 - [x] `[low-risk]` Add `/api/health` endpoint — `GET /api/health` returns 200 `{ status, time }`, 3-test suite, all gates green (2026-06-20) → [note](notes/009-health-endpoint.md)
 - [x] `[low-risk]` Establish a green baseline — tsc/lint/build/test/db-drift all green (2026-06-20)
