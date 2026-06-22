@@ -163,8 +163,18 @@ function NavItem({
       }`}>{icon}</span>
       {label}
       {locked && (
-        <span className="ml-auto shrink-0 text-[10px] text-ink-4 opacity-60">
-          {premiumOnly ? '💎' : '🔒'}
+        <span className="ml-auto shrink-0 text-ink-4 opacity-60" aria-label={premiumOnly ? 'Premium feature' : 'Pro feature'}>
+          {premiumOnly ? (
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+              <path d="M2 4.5L4 1.5h4L10 4.5 6 10.5 2 4.5z" stroke="currentColor" strokeWidth="1" strokeLinejoin="round"/>
+              <path d="M2 4.5h8M4 1.5l2 3 2-3M6 4.5v6" stroke="currentColor" strokeWidth="0.8" strokeLinejoin="round" opacity="0.6"/>
+            </svg>
+          ) : (
+            <svg width="10" height="11" viewBox="0 0 10 11" fill="none">
+              <rect x="1" y="4.5" width="8" height="5.5" rx="1.2" stroke="currentColor" strokeWidth="1"/>
+              <path d="M2.75 4.5V3a2.25 2.25 0 014.5 0v1.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+            </svg>
+          )}
         </span>
       )}
       {badge && !locked && !isPending && (
@@ -248,6 +258,23 @@ export default function Sidebar({ venueName, venues, activeVenueId, fullName, ro
         ) : (
           <p className="text-[11px] text-ink-4 truncate leading-none pl-[34px]">{venueName}</p>
         )}
+      </div>
+
+      {/* Command palette trigger — keyboard-first launcher (⌘K) */}
+      <div className="relative z-10 px-2 pt-2.5">
+        <button
+          type="button"
+          onClick={() => { window.dispatchEvent(new CustomEvent('tenda:command-palette')) }}
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] text-ink-4 bg-surface/60 border border-hair hover:text-ink-3 hover:border-accent/40 transition-colors"
+          aria-label="Open command palette"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="shrink-0">
+            <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.4"/>
+            <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+          </svg>
+          <span className="flex-1 text-left">Search…</span>
+          <kbd className="shrink-0 text-[10px] font-medium tabular px-1.5 py-0.5 rounded-md border border-hair bg-surface-2">⌘K</kbd>
+        </button>
       </div>
 
       {/* Main nav — staff role doesn't see ownerOnly items (Reports, Analytics) */}

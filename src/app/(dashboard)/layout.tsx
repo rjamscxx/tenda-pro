@@ -8,6 +8,7 @@ import TrialBanner from '@/components/layout/TrialBanner'
 import TrialExpiredModal from '@/components/layout/TrialExpiredModal'
 import TodayTicker from '@/components/layout/TodayTicker'
 import AiChatWidget from '@/components/layout/AiChatWidget'
+import CommandPalette from '@/components/layout/CommandPalette'
 import { ToastProvider } from '@/components/ui/Toast'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -42,6 +43,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </main>
       </div>
       <TrialExpiredModal trialExpired={trialExpired} userEmail={dbUser.email ?? ''} userFullName={dbUser.fullName ?? ''} />
+      <CommandPalette isPro={pro} isPremium={premium} role={dbUser.role} isAdmin={isAdmin(authUser)} />
       {/* Widget only mounts when both: account is Premium AND ANTHROPIC_API_KEY is
           configured on the server. Lets us ship the code without lighting the
           feature up until Anthropic credits are loaded. */}

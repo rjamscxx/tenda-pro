@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Renders marketing/sizzle-brochure.html → marketing/sizzle-brochure.pdf
+// Renders marketing/tenda-brochure.html → marketing/tenda-brochure.pdf
 // using Playwright's built-in PDF engine. A4 portrait, 8 pages, print
 // backgrounds enabled so brand color sections render.
 //
@@ -10,8 +10,8 @@ import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 
 const ROOT       = process.cwd()
-const HTML_PATH  = path.join(ROOT, 'marketing', 'sizzle-brochure.html')
-const PDF_PATH   = path.join(ROOT, 'marketing', 'sizzle-brochure.pdf')
+const HTML_PATH  = path.join(ROOT, 'marketing', 'tenda-brochure.html')
+const PDF_PATH   = path.join(ROOT, 'marketing', 'tenda-brochure.pdf')
 const PREVIEW_DIR = path.join(ROOT, 'marketing', 'brochure-preview')
 
 const browser = await chromium.launch()
@@ -46,7 +46,7 @@ try {
   }
   console.log('ok')
 
-  console.log(`\n  marketing/sizzle-brochure.pdf       (A4 portrait, ${count} pages)`)
+  console.log(`\n  marketing/tenda-brochure.pdf       (A4 portrait, ${count} pages)`)
   console.log(`  marketing/brochure-preview/*.png    (page-by-page previews)`)
 } finally {
   await browser.close()

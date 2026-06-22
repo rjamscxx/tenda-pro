@@ -14,7 +14,7 @@ if (themeArg && !themes[themeArg]) {
 }
 
 const targets = themeArg ? [getTheme(themeArg)] : themeSlugs.map(getTheme)
-const emailFor = (suffix) => `smoketest+${suffix}@sizzle.local`
+const emailFor = (suffix) => `smoketest+${suffix}@tenda.local`
 
 const sql = postgres(process.env.DATABASE_URL, { prepare: false })
 const supabase = createClient(

@@ -81,6 +81,7 @@ function SubscriptionCountdown({
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mounted-gate intentionally defers the live countdown to post-mount to avoid an SSR hydration mismatch
     setMounted(true)
     setNowMs(Date.now())
     const intervalMs = isTrial ? 60_000 : 1000
@@ -280,7 +281,7 @@ function SubscribedAccountCard({ acct }: { acct: SubscribedAccount }) {
           {!editing && (
             <button
               onClick={() => { setEditing(true); setDaysInput(String(daysLeft)); setSaveError(null) }}
-              className="text-[11px] text-ink-4 hover:text-accent transition-colors px-2 py-0.5 rounded border border-hair hover:border-accent/40"
+              className="text-[11px] text-ink-4 hover:text-accent transition-colors active:scale-[0.97] px-2 py-0.5 rounded border border-hair hover:border-accent/40"
             >
               Edit days
             </button>
@@ -335,7 +336,7 @@ function SubscribedAccountCard({ acct }: { acct: SubscribedAccount }) {
             <button
               onClick={() => setEditing(false)}
               disabled={saving}
-              className="flex-1 py-1.5 rounded-lg text-xs font-medium border border-hair text-ink-4 hover:text-ink transition-colors disabled:opacity-50"
+              className="flex-1 py-1.5 rounded-lg text-xs font-medium border border-hair text-ink-4 hover:text-ink transition-colors active:scale-[0.97] disabled:opacity-50"
             >
               Cancel
             </button>
@@ -410,7 +411,7 @@ function AdminSubRequestRow({ req }: { req: SubRequest }) {
               try { await rejectSubscriptionRequest(req.id); setState('done') }
               catch { setState('error') }
             }}
-            className="flex-1 py-1.5 rounded-lg text-xs font-medium border border-hair text-ink-4 hover:border-danger hover:text-danger transition-colors disabled:opacity-50"
+            className="flex-1 py-1.5 rounded-lg text-xs font-medium border border-hair text-ink-4 hover:border-danger hover:text-danger transition-colors active:scale-[0.97] disabled:opacity-50"
           >
             {state === 'rejecting' ? 'Rejecting…' : 'Reject'}
           </button>
@@ -436,13 +437,13 @@ function AdminSubRequestRow({ req }: { req: SubRequest }) {
                 href={req.receiptUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-white/70 hover:text-white border border-white/20 hover:border-white/50 px-3 py-1.5 rounded-lg transition-colors"
+                className="text-xs text-white/70 hover:text-white border border-white/20 hover:border-white/50 px-3 py-1.5 rounded-lg transition-colors active:scale-[0.97]"
               >
                 Open original ↗
               </a>
               <button
                 onClick={() => setLightbox(false)}
-                className="text-white/70 hover:text-white p-1.5 rounded-lg border border-white/20 hover:border-white/50 transition-colors"
+                className="text-white/70 hover:text-white p-1.5 rounded-lg border border-white/20 hover:border-white/50 transition-colors active:scale-[0.9]"
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -567,7 +568,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', active)
     const secondsPerYear = 31_536_000
-    document.cookie = `sizzle-theme=${active}; path=/; max-age=${secondsPerYear}; SameSite=Lax`
+    document.cookie = `tenda-theme=${active}; path=/; max-age=${secondsPerYear}; SameSite=Lax`
   }, [active])
 
   function applyTheme(id: string) {
@@ -641,7 +642,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
     <div className="space-y-5">
 
       {/* ── Venue ────────────────────────────────────────────────────── */}
-      <section className="card-enter card-d1 glass card-glow rounded-xl p-6 space-y-5">
+      <section className="card-enter card-d1 glass card-glow lift rounded-xl p-6 space-y-5">
         <div className="flex items-center gap-2.5">
           <div className="w-6 h-6 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -781,7 +782,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
       </section>
 
       {/* ── Online Ordering ──────────────────────────────────────────── */}
-      <section className="card-enter card-d2 glass card-glow rounded-xl p-6 space-y-5">
+      <section className="card-enter card-d2 glass card-glow lift rounded-xl p-6 space-y-5">
         <div className="flex items-center gap-2.5">
           <div className="w-6 h-6 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -866,7 +867,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
               <button
                 type="button"
                 onClick={() => setQrOpen(true)}
-                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hair text-xs font-medium text-ink-3 hover:border-accent hover:text-accent transition-colors"
+                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hair text-xs font-medium text-ink-3 hover:border-accent hover:text-accent transition-colors active:scale-[0.97]"
               >
                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                   <rect x="1" y="1" width="4.5" height="4.5" rx="0.8" stroke="currentColor" strokeWidth="1.2"/>
@@ -889,7 +890,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
       <QRModal open={qrOpen} onClose={() => setQrOpen(false)} venueId={venue.id} venueName={venue.name} />
 
       {/* ── Account ──────────────────────────────────────────────────── */}
-      <section className="card-enter card-d2 glass card-glow rounded-xl p-6 space-y-5">
+      <section className="card-enter card-d2 glass card-glow lift rounded-xl p-6 space-y-5">
         <div className="flex items-center gap-2.5">
           <div className="w-6 h-6 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -928,7 +929,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
       </section>
 
       {/* ── Subscription ─────────────────────────────────────────────── */}
-      <section id="plan" className="glass card-glow rounded-xl p-6 space-y-5">
+      <section id="plan" className="glass card-glow lift rounded-xl p-6 space-y-5">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold text-ink">Subscription</h2>
@@ -977,7 +978,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
               <button
                 disabled={isPending}
                 onClick={() => startTransition(() => downgradeTofree())}
-                className="text-xs text-ink-4 hover:text-danger transition-colors disabled:opacity-60"
+                className="text-xs text-ink-4 hover:text-danger transition-colors active:scale-[0.9] disabled:opacity-60"
               >
                 {isPending ? 'Updating…' : 'Downgrade to Basic'}
               </button>
@@ -1027,7 +1028,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 </button>
                 <button
                   onClick={() => { setContactForm({ billing: 'annual' }); setContactSent(false); setContactFields({ fullName: profile.fullName || '', phone: '', email: profile.email || '' }); setReceiptFile(null); setReceiptPreview(null); setReceiptUrl(null); setReceiptError(null); setContactSubmitting(false); setContactSubmitError(null) }}
-                  className="w-full py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors"
+                  className="w-full py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors active:scale-[0.97]"
                 >
                   Subscribe annually — ₱4,000/yr (save ₱788) →
                 </button>
@@ -1040,7 +1041,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
 
       {/* ── Admin: Subscribed Accounts ───────────────────────────────── */}
       {isAdmin && subscribedAccounts && (
-        <section className="glass card-glow rounded-xl p-6 space-y-4 border border-accent/20">
+        <section className="glass card-glow lift rounded-xl p-6 space-y-4 border border-accent/20">
           <div>
             <h2 className="text-base font-semibold text-ink">Subscribed Accounts</h2>
             <p className="text-sm text-ink-4 mt-0.5">
@@ -1061,7 +1062,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
 
       {/* ── Admin: Subscription Requests ─────────────────────────────── */}
       {isAdmin && subscriptionRequests && (
-        <section className="glass card-glow rounded-xl p-6 space-y-4 border border-accent/20">
+        <section className="glass card-glow lift rounded-xl p-6 space-y-4 border border-accent/20">
           <div>
             <h2 className="text-base font-semibold text-ink">Subscription Requests</h2>
             <p className="text-sm text-ink-4 mt-0.5">Admin only — activate or reject pending upgrade requests.</p>
@@ -1208,7 +1209,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                   </button>
                   <button
                     onClick={() => setContactForm(null)}
-                    className="w-full text-xs text-ink-4 hover:text-ink transition-colors py-1"
+                    className="w-full text-xs text-ink-4 hover:text-ink transition-colors active:scale-[0.97] py-1"
                   >
                     Cancel
                   </button>
@@ -1223,7 +1224,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
                 </div>
                 <button
                   onClick={() => setContactForm(null)}
-                  className="px-6 py-2 rounded-lg text-sm font-medium border border-hair text-ink-3 hover:border-accent hover:text-accent transition-colors"
+                  className="px-6 py-2 rounded-lg text-sm font-medium border border-hair text-ink-3 hover:border-accent hover:text-accent transition-colors active:scale-[0.97]"
                 >
                   Close
                 </button>
@@ -1234,7 +1235,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
       )}
 
       {/* ── Appearance ───────────────────────────────────────────────── */}
-      <section className="card-enter card-d3 glass card-glow rounded-xl p-6 space-y-5">
+      <section className="card-enter card-d3 glass card-glow lift rounded-xl p-6 space-y-5">
         <div className="flex items-center gap-2.5">
           <div className="w-6 h-6 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -1293,7 +1294,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
       </section>
 
       {/* ── Activity Feed ────────────────────────────────────────── */}
-      <section className="glass card-glow rounded-xl p-6 space-y-4">
+      <section className="glass card-glow lift rounded-xl p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-ink">Recent Activity</h2>
           <p className="text-sm text-ink-4 mt-0.5">Last 20 actions logged in your account.</p>
@@ -1323,7 +1324,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
       </section>
 
       {/* ── Install App ──────────────────────────────────────────────── */}
-      <section className="glass card-glow rounded-xl p-6 space-y-4">
+      <section className="glass card-glow lift rounded-xl p-6 space-y-4">
         <div>
           <h2 className="text-base font-semibold text-ink">Install App</h2>
           <p className="text-sm text-ink-4 mt-0.5">Add Tenda Pro to your home screen for fast access — no app store needed.</p>
@@ -1346,7 +1347,7 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
           </div>
           <button
             onClick={() => { setShowDeleteModal(true); setDeleteConfirmText(''); setDeleteError('') }}
-            className="shrink-0 px-4 py-2 rounded-lg text-sm font-semibold text-red-500 border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 transition-colors"
+            className="shrink-0 px-4 py-2 rounded-lg text-sm font-semibold text-red-500 border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 transition-colors active:scale-[0.97]"
           >
             Delete Account
           </button>
@@ -1388,14 +1389,14 @@ export default function SettingsClient({ initialTheme, plan, planExpiresAt, tria
               <button
                 onClick={() => setShowDeleteModal(false)}
                 disabled={isDeleting}
-                className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-hair text-ink-3 hover:text-ink hover:border-hair/80 transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium border border-hair text-ink-3 hover:text-ink hover:border-hair/80 transition-colors active:scale-[0.97] disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteAccount}
                 disabled={deleteConfirmText !== 'DELETE' || isDeleting}
-                className="flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {isDeleting ? 'Deleting…' : 'Delete My Account'}
               </button>

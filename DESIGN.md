@@ -1,13 +1,13 @@
-# Design System: Sizzle — Restaurant & Café Owner Dashboard
+# Design System: Tenda Pro — Restaurant & Café Owner Dashboard
 
-> **Stitch prompt source of truth.** Use this document when generating any new screen, component, or section for Sizzle. Every rule is deliberate — do not revert to generic dashboard conventions.
+> **Stitch prompt source of truth.** Use this document when generating any new screen, component, or section for Tenda Pro. Every rule is deliberate — do not revert to generic dashboard conventions.
 > Stack: Next.js 16 · Tailwind CSS 4 · React 19 · Supabase · Drizzle ORM
 
 ---
 
 ## 1. Visual Theme & Atmosphere
 
-Sizzle is a **financial operating dashboard** for small restaurant and café owners — non-technical people who open it late at night to see if they made money today. The aesthetic is **calm, clean, and professional**: a warm-dark console where every peso reads clearly and nothing screams for attention. It should feel like a steady hand, not a casino. Trust and legibility beat spectacle at every turn.
+Tenda Pro is a **financial operating dashboard** for small restaurant and café owners — non-technical people who open it late at night to see if they made money today. The aesthetic is **calm, clean, and professional**: a warm-dark console where every peso reads clearly and nothing screams for attention. It should feel like a steady hand, not a casino. Trust and legibility beat spectacle at every turn.
 
 - **Dark-first, warm-neutral base** — deep warm near-black backgrounds (ember/espresso undertone) that feel grounded and easy on the eyes at night. Never harsh, never pure black.
 - **Density: 7/10 (Cockpit, breathing)** — real data lives here (KPIs, tables, charts), but generous gutters and clear grouping keep every screen scannable. When in doubt, add whitespace and remove a card. Density rises as the user goes deeper (dashboard → POS → reports).
@@ -16,7 +16,7 @@ Sizzle is a **financial operating dashboard** for small restaurant and café own
 
 The overall impression: **a well-run kitchen pass at night** — focused, unhurried, everything in its place. Confident. Operational. Minimal without feeling empty.
 
-**Theme system:** Sizzle ships **20 curated food-named palettes** (`ember`, `bourbon`, `truffle`, `fig-jam`, `velvet-cake`, `forest-floor`, `carbon-steel`, `smoke-blue`, `streetlight`, `kimchi`, `tangerine`, `cardamom`, `mint-leaf` — plus light palettes `almond-milk`, `chiffon`, `coconut-cream`, `porcelain`, `macaron`, `iced-matcha`, `lavender-honey`). All themes share identical token names — only the hex values change. **Design against `ember` (the default) unless specified.**
+**Theme system:** Tenda Pro ships **20 curated food-named palettes** (`ember`, `bourbon`, `truffle`, `fig-jam`, `velvet-cake`, `forest-floor`, `carbon-steel`, `smoke-blue`, `streetlight`, `kimchi`, `tangerine`, `cardamom`, `mint-leaf` — plus light palettes `almond-milk`, `chiffon`, `coconut-cream`, `porcelain`, `macaron`, `iced-matcha`, `lavender-honey`). All themes share identical token names — only the hex values change. **Design against `ember` (the default) unless specified.**
 
 ---
 
@@ -84,7 +84,7 @@ Always describe colors by **role and descriptive name** — never just a hex. Ex
 - Max line width for any paragraph body text: **65 characters**.
 - `tracking-tight` (`-0.025em`) on all headings 16px and above.
 - Financial figures, all quantities, all dates: **must use `.tabular` class**.
-- Gradient text (`.gradient-text`): accent → accent-2 diagonal sweep. Reserved for the Sizzle wordmark in the sidebar and hero headings on the marketing page only. **Never on buttons or interactive elements.**
+- Gradient text (`.gradient-text`): accent → accent-2 diagonal sweep. Reserved for the Tenda Pro wordmark in the sidebar and hero headings on the marketing page only. **Never on buttons or interactive elements.**
 - **No serif fonts in this dashboard.** Sans-serif everywhere (system stack or Geist). No Times, Georgia, Garamond.
 
 ---
@@ -169,7 +169,7 @@ Not a modal. Occupies the full dashboard content area as its own route (`/pos`).
 - **Cart footer:** Channel selector → Table # + Note → Discount → Service Charge → Total row → Charge button.
 
 ### Receipt (Modal)
-Triggered after a successful POS charge. Monospace receipt number header. Dashed `border-dashed` dividers for the thermal-receipt aesthetic. Accent-colored total figure. Print button targets `#sizzle-receipt-print` div.
+Triggered after a successful POS charge. Monospace receipt number header. Dashed `border-dashed` dividers for the thermal-receipt aesthetic. Accent-colored total figure. Print button targets `#tenda-receipt-print` div.
 
 ---
 
@@ -249,12 +249,12 @@ These are hard bans. If any appear in a generated screen, regenerate:
 
 | Banned | Reason |
 |---|---|
-| `Inter` font | Generic AI tell. Sizzle uses the system sans stack (or Geist). Never Inter. |
+| `Inter` font | Generic AI tell. Tenda Pro uses the system sans stack (or Geist). Never Inter. |
 | Pure black `#000000` | Minimum darkness: `#130A04` (Deep Ember Canvas). Warm near-blacks only. |
 | Neon outer glow | Glows must use `var(--accent-glow)` (18% opacity max). No full-saturation color shadows. |
 | Oversaturated accent | Accent saturation stays below 80%. No electric teal, hot green, or neon pink. |
 | AI purple/blue neon aesthetic | Except the intentional Midnight theme (indigo). Never as default. |
-| Gradient text on interactive elements | Gradient text only for the Sizzle wordmark and hero headlines. |
+| Gradient text on interactive elements | Gradient text only for the Tenda Pro wordmark and hero headlines. |
 | Centered page headers | Dashboard headers: left-aligned title, right-aligned actions. Always. |
 | 3-equal-column card grids | Use 2-column, asymmetric, or 4-column responsive POS grid instead. |
 | Custom mouse cursor | `cursor: pointer` and `cursor: not-allowed` only. Nothing else. |
@@ -320,7 +320,7 @@ Button row: flex gap-2 mt-6. btn-secondary left, btn-primary right.
 ### Sidebar Navigation
 ```
 Width: w-56. Background: bg-sidebar. Right border: color-mix(hair 60%, accent 40%).
-Logo row: h-[60px] — SizzleLogo (20px) + "Sizzle" in gradient-text + venue name below in ink-4.
+Logo row: h-[60px] — TendaLogo (20px) + "Tenda Pro" in gradient-text + venue name below in ink-4.
 Section headers: 10px, semibold, ink-4, uppercase, wider tracking.
 Nav items: rounded-lg, 13px, 0.18s transitions.
 Active: 2px left accent border, gradient fill, accent text, inset glow.

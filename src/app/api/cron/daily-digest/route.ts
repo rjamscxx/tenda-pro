@@ -102,7 +102,7 @@ function renderDigestHtml(d: DigestData): string {
         </td></tr>
 
         <tr><td style="padding:20px 28px;background:#0a0a0a;border-top:1px solid #262626;text-align:center">
-          <a href="https://sizzle-app-v1.vercel.app/dashboard" style="display:inline-block;background:#fafafa;color:#0a0a0a;padding:10px 20px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:600">Open dashboard →</a>
+          <a href="https://tenda.ph/dashboard" style="display:inline-block;background:#fafafa;color:#0a0a0a;padding:10px 20px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:600">Open dashboard →</a>
           <p style="margin:14px 0 0;color:#525252;font-size:11px">Premium digest · Tenda Pro</p>
         </td></tr>
       </table>

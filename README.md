@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tenda Pro
 
-## Getting Started
+The app I wish every small restaurant owner here had. It's the back-office for a café or restaurant — point of sale, what's in stock, what sold, what it cost, and who's working — in one place instead of five notebooks and a group chat.
 
-First, run the development server:
+Live: **[tenda.ph](https://tenda.ph)**
+
+![Dashboard](demo-1-dashboard.png)
+
+## Why I built it
+
+I kept seeing the same thing with the food businesses I worked with: sales tracked on paper, inventory guessed at, payroll done in a notebook, and no real idea at the end of the month where the money went. The existing POS systems were either too expensive or built for big chains. So I built the thing I'd actually want to hand a small owner — something they can open on a tablet and just use.
+
+## What's inside
+
+The dashboard is split into the parts an owner actually deals with day to day:
+
+- **POS** — ring up orders, split by category, handle paid vs. unpaid tabs
+- **Kitchen display (KDS)** — orders show up in the kitchen as they come in
+- **Menu & ingredients** — recipes tied to stock, so selling a dish draws down what it uses
+- **Inventory** — stock levels with cost tracking (COGS), plus a waste log for spoilage
+- **Sales & reports** — daily sales, unpaid tabs, and reports you can actually read
+- **Close day** — end-of-day reconciliation so the numbers tie out
+- **People** — employees, shifts, payroll, and a members/roles system
+- **Suppliers & expenses** — track who you buy from and where money goes
+- **QR menu** — generates a scannable menu customers open on their phone
+
+There's an onboarding flow for first-time setup and a checklist section for opening/closing routines.
+
+## Stack
+
+- **Next.js 16** (App Router) + **React 19**, TypeScript throughout
+- **Postgres** via **Drizzle ORM**, hosted on **Supabase**
+- **Supabase Auth** with SSR for the login/session side
+- **Tailwind v4** for styling, **GSAP** for the landing animations
+- `qrcode` for the menu QR, `nodemailer` for transactional email
+- Tested with **Vitest** (unit) and **Playwright** (end-to-end)
+- Deployed on **Vercel**
+
+## Running it locally
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in your Supabase + Postgres details
+npm run db:migrate           # set up the schema
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Database commands I use a lot:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run db:studio     # browse the data
+npm run db:generate   # generate a migration after a schema change
+```
 
-## Learn More
+## A note
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This is a real product I'm actively working on, not a tutorial project — so some folders are messier than others and a few features are still being rounded out. The schema and the dashboard routes are the parts I'm most proud of.

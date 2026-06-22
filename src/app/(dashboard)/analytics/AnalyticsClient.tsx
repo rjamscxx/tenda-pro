@@ -260,7 +260,7 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
 
       {/* KPI cards */}
       <div className="card-enter card-d1 grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+        <div className="glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent via-accent-2 to-accent" />
           <div className="flex items-center justify-between">
             <p className="text-[11px] text-ink-4 uppercase tracking-widest font-medium">90-Day Revenue</p>
@@ -273,7 +273,7 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
           <p className="text-[1.5rem] font-bold tabular tracking-tight leading-none text-ink">{fmt(totalRevenue90)}</p>
           <p className="text-[11px] text-ink-4">{daysWithSales} trading day{daysWithSales !== 1 ? 's' : ''}</p>
         </div>
-        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+        <div className="glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent via-accent-2 to-accent" />
           <div className="flex items-center justify-between">
             <p className="text-[11px] text-ink-4 uppercase tracking-widest font-medium">Avg / Day</p>
@@ -286,7 +286,7 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
           <p className="text-[1.5rem] font-bold tabular tracking-tight leading-none text-ink">{avgDaily > 0 ? fmt(avgDaily) : '—'}</p>
           <p className="text-[11px] text-ink-4">per trading day</p>
         </div>
-        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+        <div className="glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-success to-success/60" />
           <div className="flex items-center justify-between">
             <p className="text-[11px] text-ink-4 uppercase tracking-widest font-medium">Best Day</p>
@@ -301,7 +301,7 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
             <p className="text-[11px] tabular text-accent">{fmt(revenueByDow[bestDowIdx])} avg</p>
           )}
         </div>
-        <div className="glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden">
+        <div className="glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent-2 to-accent" />
           <div className="flex items-center justify-between">
             <p className="text-[11px] text-ink-4 uppercase tracking-widest font-medium">7-Day Forecast</p>
@@ -318,7 +318,7 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
       </div>
 
       {/* Revenue Trend */}
-      <section className="card-enter card-d2 glass card-glow rounded-xl p-5 space-y-4">
+      <section className="card-enter card-d2 glass card-glow lift rounded-xl p-5 space-y-4">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -335,7 +335,7 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
 
       {/* Day of Week + Forecast */}
       <div className="card-enter card-d3 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <section className="glass card-glow rounded-xl p-5 space-y-4">
+        <section className="glass card-glow lift rounded-xl p-5 space-y-4">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
               <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -351,7 +351,7 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
           <DowChart revenueByDow={revenueByDow} />
         </section>
 
-        <section className="glass card-glow rounded-xl p-5 space-y-4">
+        <section className="glass card-glow lift rounded-xl p-5 space-y-4">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
               <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -368,7 +368,7 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
       </div>
 
       {/* Expense Breakdown */}
-      <section className="card-enter card-d4 glass card-glow rounded-xl p-5 space-y-4">
+      <section className="card-enter card-d4 glass card-glow lift rounded-xl p-5 space-y-4">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -385,7 +385,7 @@ export default function AnalyticsClient({ dailyRevenue, revenueByDow, expensesBy
       </section>
 
       {/* Monthly P&L */}
-      <section className="card-enter card-d5 glass card-glow rounded-xl overflow-hidden">
+      <section className="card-enter card-d5 glass card-glow lift rounded-xl overflow-hidden">
         <div className="px-5 py-3.5 border-b border-hair flex items-center gap-2">
           <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none">

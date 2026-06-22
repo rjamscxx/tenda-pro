@@ -352,7 +352,7 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
                     <button
                       onClick={e => { e.stopPropagation(); handleLogExpense(run) }}
                       disabled={loggingExpense === run.id}
-                      className={`text-[10px] font-medium px-2 py-1 rounded-md transition-colors disabled:opacity-40 ml-1 ${
+                      className={`text-[10px] font-medium px-2 py-1 rounded-md transition-colors disabled:opacity-40 active:scale-[0.95] ml-1 ${
                         pendingLogExpenseId === run.id
                           ? 'bg-warn/15 text-warn border border-warn/20'
                           : 'bg-surface-3 text-ink-4 hover:bg-accent/15 hover:text-accent'
@@ -364,7 +364,7 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
                     <button
                       onClick={e => { e.stopPropagation(); handleDelete(run.id) }}
                       disabled={deleting === run.id}
-                      className="text-ink-4 hover:text-danger transition-colors disabled:opacity-40 p-1"
+                      className="text-ink-4 hover:text-danger transition-colors active:scale-[0.9] disabled:opacity-40 p-1"
                       aria-label="Delete run"
                     >
                       <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
@@ -457,7 +457,7 @@ export default function PayrollClient({ runs, activeEmployees }: Props) {
             type="button"
             onClick={handlePullFromShifts}
             disabled={pullingShifts}
-            className="w-full px-3 py-2.5 rounded-lg border border-accent/40 bg-accent/5 hover:bg-accent/10 text-accent text-xs font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
+            className="w-full px-3 py-2.5 rounded-lg border border-accent/40 bg-accent/5 hover:bg-accent/10 text-accent text-xs font-semibold flex items-center justify-center gap-2 transition-colors active:scale-[0.97] disabled:opacity-60"
           >
             <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.3"/>

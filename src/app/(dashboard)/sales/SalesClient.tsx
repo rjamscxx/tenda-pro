@@ -207,7 +207,7 @@ function OnlineOrderCard({
           type="button"
           onClick={handleReject}
           disabled={busy !== null}
-          className="flex-1 py-2 rounded-lg text-xs font-medium border border-hair text-ink-4 hover:border-danger hover:text-danger transition-colors disabled:opacity-50"
+          className="flex-1 py-2 rounded-lg text-xs font-medium border border-hair text-ink-4 hover:border-danger hover:text-danger transition-colors active:scale-[0.97] disabled:opacity-50"
         >
           {busy === 'reject' ? 'Rejecting…' : 'Reject'}
         </button>
@@ -243,7 +243,7 @@ export default function SalesClient({
   const [period, setPeriod]           = useState<Period>(() => {
     if (typeof window === 'undefined') return 'all'
     try {
-      const saved = localStorage.getItem('sizzle-sales-period') as Period | null
+      const saved = localStorage.getItem('tenda-sales-period') as Period | null
       if (saved && PERIODS.some(p => p.value === saved)) return saved
     } catch {}
     return 'all'
@@ -415,7 +415,7 @@ export default function SalesClient({
           {unpaidTotal > 0 && (
             <button
               onClick={() => handleSettleAll()}
-              className="px-3 py-2 rounded-lg bg-warn/15 border border-warn/40 text-warn hover:bg-warn/25 text-xs font-semibold transition-colors flex items-center gap-1.5"
+              className="px-3 py-2 rounded-lg bg-warn/15 border border-warn/40 text-warn hover:bg-warn/25 text-xs font-semibold transition-colors active:scale-[0.97] flex items-center gap-1.5"
               title="Mark every unpaid sale as paid"
             >
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
@@ -426,7 +426,7 @@ export default function SalesClient({
           )}
           <button
             onClick={() => exportCSV(displayed)}
-            className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors flex items-center gap-1.5"
+            className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors active:scale-[0.97] flex items-center gap-1.5"
           >
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
               <path d="M2 9v2.5h9V9M6.5 1v7M4 6l2.5 2.5L9 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
@@ -444,8 +444,8 @@ export default function SalesClient({
         {PERIODS.map(p => (
           <button
             key={p.value}
-            onClick={() => { setPeriod(p.value); try { localStorage.setItem('sizzle-sales-period', p.value) } catch {} }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            onClick={() => { setPeriod(p.value); try { localStorage.setItem('tenda-sales-period', p.value) } catch {} }}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-[0.97] ${
               period === p.value
                 ? 'bg-accent text-canvas'
                 : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink-2'
@@ -457,7 +457,7 @@ export default function SalesClient({
         <span className="w-px h-4 bg-hair mx-0.5 shrink-0" />
         <button
           onClick={() => setChanFilter('all')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-[0.97] ${
             chanFilter === 'all'
               ? 'bg-accent text-canvas'
               : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink-2'
@@ -469,7 +469,7 @@ export default function SalesClient({
           <button
             key={c.value}
             onClick={() => setChanFilter(c.value)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-[0.97] ${
               chanFilter === c.value
                 ? 'bg-accent text-canvas'
                 : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink-2'
@@ -483,7 +483,7 @@ export default function SalesClient({
           <button
             key={pf}
             onClick={() => setPaidFilter(pf)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-[0.97] ${
               paidFilter === pf
                 ? (pf === 'unpaid' ? 'bg-warn text-canvas' : 'bg-accent text-canvas')
                 : 'bg-surface-2 text-ink-3 hover:bg-surface-3 hover:text-ink-2'
@@ -677,14 +677,14 @@ export default function SalesClient({
             <button
               type="button"
               onClick={() => { setMode('items'); setError('') }}
-              className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === 'items' ? 'bg-surface text-ink' : 'text-ink-3 hover:text-ink'}`}
+              className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors active:scale-[0.97] ${mode === 'items' ? 'bg-surface text-ink' : 'text-ink-3 hover:text-ink'}`}
             >
               Add items
             </button>
             <button
               type="button"
               onClick={() => { setMode('manual'); setError('') }}
-              className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === 'manual' ? 'bg-surface text-ink' : 'text-ink-3 hover:text-ink'}`}
+              className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors active:scale-[0.97] ${mode === 'manual' ? 'bg-surface text-ink' : 'text-ink-3 hover:text-ink'}`}
             >
               Enter total
             </button>
@@ -714,18 +714,18 @@ export default function SalesClient({
                               {inOrder ? (
                                 <div className="flex items-center gap-1 shrink-0">
                                   <button type="button" onClick={() => changeQty(dish.id, -1)}
-                                    className="w-6 h-6 rounded flex items-center justify-center bg-surface-3 hover:bg-danger/20 text-ink hover:text-danger text-sm transition-colors">
+                                    className="w-6 h-6 rounded flex items-center justify-center bg-surface-3 hover:bg-danger/20 text-ink hover:text-danger text-sm transition-colors active:scale-[0.9]">
                                     −
                                   </button>
                                   <span className="w-5 text-center text-sm font-medium tabular text-ink">{inOrder.qty}</span>
                                   <button type="button" onClick={() => changeQty(dish.id, 1)}
-                                    className="w-6 h-6 rounded flex items-center justify-center bg-surface-3 hover:bg-accent/20 text-ink hover:text-accent text-sm transition-colors">
+                                    className="w-6 h-6 rounded flex items-center justify-center bg-surface-3 hover:bg-accent/20 text-ink hover:text-accent text-sm transition-colors active:scale-[0.9]">
                                     +
                                   </button>
                                 </div>
                               ) : (
                                 <button type="button" onClick={() => addItem(dish)}
-                                  className="shrink-0 w-6 h-6 rounded flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 text-sm font-bold transition-colors">
+                                  className="shrink-0 w-6 h-6 rounded flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 text-sm font-bold transition-colors active:scale-[0.9]">
                                   +
                                 </button>
                               )}

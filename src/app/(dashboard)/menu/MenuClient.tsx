@@ -196,7 +196,7 @@ export default function MenuClient({
             {isBasic && ingredients.length >= ingredientLimit ? (
               <a
                 href="/settings#plan"
-                className="px-4 py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors flex items-center gap-1.5"
+                className="px-4 py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors active:scale-[0.97] flex items-center gap-1.5"
               >
                 🔒 Upgrade for more
               </a>
@@ -286,7 +286,8 @@ export default function MenuClient({
                           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
                             <button
                               onClick={() => openEdit(ing)}
-                              className="text-ink-4 hover:text-accent transition-colors p-1 rounded"
+                              className="text-ink-4 hover:text-accent transition-colors active:scale-[0.9] p-1 rounded"
+                              aria-label="Edit"
                             >
                               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                                 <path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
@@ -294,7 +295,8 @@ export default function MenuClient({
                             </button>
                             <button
                               onClick={() => handleDelete(ing.id, ing.name)}
-                              className="text-ink-4 hover:text-danger transition-colors p-1 rounded"
+                              className="text-ink-4 hover:text-danger transition-colors active:scale-[0.9] p-1 rounded"
+                              aria-label="Delete"
                             >
                               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                                 <path d="M2 3.5h10M5.5 3.5V2.5a.5.5 0 01.5-.5h2a.5.5 0 01.5.5v1M5.5 6v4M8.5 6v4M3 3.5l.7 7.2A1 1 0 004.7 12h4.6a1 1 0 001-.9L11 3.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>

@@ -4,21 +4,21 @@ interface Row {
   feature: string
   square: 'yes' | 'no' | 'partial' | string
   stitched: 'yes' | 'no' | 'partial' | string
-  sizzle: 'yes' | 'no' | 'partial' | string
+  tenda: 'yes' | 'no' | 'partial' | string
 }
 
 const ROWS: Row[] = [
-  { feature: 'Log sales by channel (dine-in / takeout / delivery)', square: 'yes',     stitched: 'partial', sizzle: 'yes' },
-  { feature: 'Real food cost per dish from recipes',                 square: 'no',      stitched: 'partial', sizzle: 'yes' },
-  { feature: 'Auto inventory deduction when a dish sells',           square: 'no',      stitched: 'no',      sizzle: 'yes' },
-  { feature: 'Low-stock + out-of-stock alerts',                      square: 'partial', stitched: 'no',      sizzle: 'yes' },
-  { feature: 'Recurring expense automation',                         square: 'no',      stitched: 'partial', sizzle: 'yes' },
-  { feature: 'Employee records + payroll runs',                      square: 'no',      stitched: 'partial', sizzle: 'yes' },
-  { feature: 'Waste &amp; spoilage tracking with cost impact',       square: 'no',      stitched: 'no',      sizzle: 'yes' },
-  { feature: 'Monthly P&amp;L without an accountant',                 square: 'no',      stitched: 'yes',     sizzle: 'yes' },
-  { feature: 'Public QR menu for customers',                          square: 'partial', stitched: 'no',      sizzle: 'yes' },
-  { feature: 'Priced in ₱, built for PH workflows',                    square: 'no',      stitched: 'no',      sizzle: 'yes' },
-  { feature: 'All-in monthly cost',                                    square: '~₱1,500+', stitched: '~₱2,500+', sizzle: '₱399' },
+  { feature: 'Log sales by channel (dine-in / takeout / delivery)', square: 'yes',     stitched: 'partial', tenda: 'yes' },
+  { feature: 'Real food cost per dish from recipes',                 square: 'no',      stitched: 'partial', tenda: 'yes' },
+  { feature: 'Auto inventory deduction when a dish sells',           square: 'no',      stitched: 'no',      tenda: 'yes' },
+  { feature: 'Low-stock + out-of-stock alerts',                      square: 'partial', stitched: 'no',      tenda: 'yes' },
+  { feature: 'Recurring expense automation',                         square: 'no',      stitched: 'partial', tenda: 'yes' },
+  { feature: 'Employee records + payroll runs',                      square: 'no',      stitched: 'partial', tenda: 'yes' },
+  { feature: 'Waste &amp; spoilage tracking with cost impact',       square: 'no',      stitched: 'no',      tenda: 'yes' },
+  { feature: 'Monthly P&amp;L without an accountant',                 square: 'no',      stitched: 'yes',     tenda: 'yes' },
+  { feature: 'Public QR menu for customers',                          square: 'partial', stitched: 'no',      tenda: 'yes' },
+  { feature: 'Priced in ₱, built for PH workflows',                    square: 'no',      stitched: 'no',      tenda: 'yes' },
+  { feature: 'All-in monthly cost',                                    square: '~₱1,500+', stitched: '~₱2,500+', tenda: '₱399' },
 ]
 
 function Cell({ value, highlight }: { value: string; highlight?: boolean }) {
@@ -123,7 +123,7 @@ export default function ComparisonTable() {
                 />
                 <div className="flex justify-center"><Cell value={row.square} /></div>
                 <div className="flex justify-center"><Cell value={row.stitched} /></div>
-                <div className="flex justify-center"><Cell value={row.sizzle} highlight /></div>
+                <div className="flex justify-center"><Cell value={row.tenda} highlight /></div>
               </div>
             ))}
           </div>

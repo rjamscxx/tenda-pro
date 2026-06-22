@@ -6,7 +6,7 @@ import { accounts, users, venues } from '@/lib/db/schema'
 import { asc, eq } from 'drizzle-orm'
 import { redirect } from 'next/navigation'
 
-const ACTIVE_VENUE_COOKIE = 'sizzle-active-venue'
+const ACTIVE_VENUE_COOKIE = 'tenda-active-venue'
 
 const getUserCached = cache(async () => {
   const supabase = await createClient()

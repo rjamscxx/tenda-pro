@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files — ignore secrets, track the example template
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -45,7 +46,7 @@ dev_output.txt
 install_r3f.bat
 run_push.bat
 screenshot-app.mjs
-sizzle-design/
+tenda-design/
 public/screenshots/
 
 # Local-only smoke artefacts (regenerable via scratch-simulate-day.mjs + Playwright)
@@ -58,11 +59,19 @@ sim.out
 
 # Marketing flyer build artifacts (re-generate with: npm run build:flyer)
 marketing/hero.png
-marketing/sizzle-flyer.png
-marketing/sizzle-brochure.pdf
+marketing/tenda-flyer.png
+marketing/tenda-brochure.pdf
 marketing/brochure-preview/
 marketing/landing/
 
 # Personal/local files
 payment qrs/
 returns
+
+# AI-assist tooling & local clutter (kept locally, not published)
+CLAUDE.md
+AGENTS.md
+/docs/
+*.bat
+dev_output.txt
+/.claude/
