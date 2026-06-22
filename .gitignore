@@ -67,3 +67,11 @@ marketing/landing/
 # Personal/local files
 payment qrs/
 returns
+
+# AI-assist tooling & local clutter (kept locally, not published)
+CLAUDE.md
+AGENTS.md
+/docs/
+*.bat
+dev_output.txt
+/.claude/

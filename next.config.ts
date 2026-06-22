@@ -10,8 +10,9 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['gsap'],
   },
 
-  // Turbopack is the default bundler in Next.js 16
-  turbopack: {},
+  turbopack: {
+    root: __dirname,
+  },
 };
 
 export default nextConfig;

@@ -130,17 +130,24 @@ export default function POSClient({
   async function handleCharge() {
     if (order.length === 0) { setError('Add at least one item.'); return }
     setLoading(true); setError('')
-    const result = await logSale({
-      channel: channel as 'dine_in' | 'takeout' | 'delivery' | 'other',
-      total,
-      note,
-      items: order,
-      customerName: customerName.trim() || undefined,
-      // Dine-in & takeout flow through the kitchen; delivery/other skip it
-      // because those usually arrive via aggregator apps that confirm prep
-      // elsewhere. Owner can still bump them from the Sales page later.
-      sendToKitchen: channel === 'dine_in' || channel === 'takeout',
-    })
+    let result: { error?: string } | undefined
+    try {
+      result = await logSale({
+        channel: channel as 'dine_in' | 'takeout' | 'delivery' | 'other',
+        total,
+        note,
+        items: order,
+        customerName: customerName.trim() || undefined,
+        // Dine-in & takeout flow through the kitchen; delivery/other skip it
+        // because those usually arrive via aggregator apps that confirm prep
+        // elsewhere. Owner can still bump them from the Sales page later.
+        sendToKitchen: channel === 'dine_in' || channel === 'takeout',
+      })
+    } catch {
+      setError('Sale couldn\'t save — check your connection and try again.')
+      setLoading(false)
+      return
+    }
     if (result?.error) { setError(result.error); setLoading(false); return }
     const receiptData: ReceiptData = {
       receiptNumber: generateReceiptNum(),

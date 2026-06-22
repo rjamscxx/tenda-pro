@@ -2,12 +2,23 @@
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#FB923C"/>
-      <stop offset="100%" stop-color="#F97316"/>
+      <stop offset="55%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#EA580C"/>
     </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="7" fill="url(#g)"/>
-  <g transform="translate(4 0)">
-    <path d="M17 5 C22 5 22 14 12 16 C2 18 2 27 7 27" stroke="white" stroke-width="3.2" stroke-linecap="round" fill="none"/>
-    <circle cx="7" cy="27" r="2.8" fill="white"/>
+  <rect width="32" height="32" rx="7.5" fill="url(#g)"/>
+  <rect x="0.5" y="0.5" width="31" height="31" rx="7" fill="none" stroke="#FFFFFF" stroke-opacity="0.18"/>
+  <!-- shopping cart mark, scaled/padded to match TendaLogo badge variant -->
+  <g transform="translate(16 16.2) scale(0.86) translate(-16 -16.2)">
+    <!-- handle grip → diagonal → base rail -->
+    <path d="M4 7.5 H7 L10 18 H24" stroke="#FFF8F0" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- basket -->
+    <path d="M8.4 10 H27 L24.4 18 H10.6" stroke="#FFF8F0" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- groceries peeking above rim -->
+    <circle cx="14" cy="8.8" r="2.1" fill="#FFF8F0"/>
+    <circle cx="19.8" cy="8.1" r="2.5" fill="#FFF8F0"/>
+    <!-- wheels -->
+    <circle cx="13" cy="22.5" r="2.4" fill="#FFF8F0"/>
+    <circle cx="22" cy="22.5" r="2.4" fill="#FFF8F0"/>
   </g>
 </svg>
