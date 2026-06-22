@@ -74,7 +74,7 @@ export const viewport: Viewport = {
 // • Landing (`/`): default to ember — brand-aligned warm tone. The on-page
 //   theme picker still lets visitors browse other themes for the session,
 //   but no cookie write happens so we never persist a landing pick.
-// • App (everywhere else): respect the sizzle-theme cookie set in Settings.
+// • App (everywhere else): respect the tenda-theme cookie set in Settings.
 //   The owner's choice persists across sessions; default is ember.
 // Runs before the body paints; layout stays static + bf-cache friendly.
 const THEME_INIT = `(function(){try{
@@ -83,7 +83,7 @@ const THEME_INIT = `(function(){try{
     document.documentElement.setAttribute('data-theme','ember');
     return;
   }
-  var m=document.cookie.match(/(?:^|; )sizzle-theme=([^;]+)/);
+  var m=document.cookie.match(/(?:^|; )tenda-theme=([^;]+)/);
   if(m){var v=decodeURIComponent(m[1]);if(/^[a-z][a-z0-9-]{0,30}$/.test(v))document.documentElement.setAttribute('data-theme',v);}else{document.documentElement.setAttribute('data-theme','ember');}
 }catch(e){}})();`
 

@@ -190,7 +190,7 @@ export default function EmployeesClient({ employees }: Props) {
         {inactive.length > 0 && (
           <button
             onClick={() => setShowInactive(v => !v)}
-            className="text-[12px] text-ink-4 hover:text-ink transition-colors px-2.5 py-1 rounded-lg hover:bg-surface-2"
+            className="text-[12px] text-ink-4 hover:text-ink transition-colors active:scale-[0.97] px-2.5 py-1 rounded-lg hover:bg-surface-2"
           >
             {showInactive ? 'Hide inactive' : `Show ${inactive.length} inactive`}
           </button>
@@ -268,7 +268,7 @@ export default function EmployeesClient({ employees }: Props) {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => openEdit(emp)}
-                        className="text-ink-4 hover:text-ink transition-colors p-1"
+                        className="text-ink-4 hover:text-ink transition-colors active:scale-[0.9] p-1"
                         aria-label="Edit"
                       >
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

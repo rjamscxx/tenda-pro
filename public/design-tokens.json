@@ -1,5 +1,5 @@
 {
-  "$description": "Sizzle Design System — v1.0 — Reference values from sage-dark theme",
+  "$description": "Tenda Pro Design System — v1.0 — Reference values from sage-dark theme",
   "$schema": "https://design-tokens.example/schema/v1",
 
   "colors": {
@@ -209,7 +209,7 @@
     },
     "gradient-text": {
       "$description": "Accent color gradient applied to text (webkit clip)",
-      "usage": "<span class=\"gradient-text font-bold\">Sizzle</span>"
+      "usage": "<span class=\"gradient-text font-bold\">Tenda Pro</span>"
     },
     "shimmer": {
       "$description": "Animated skeleton loader — replaces animate-pulse",

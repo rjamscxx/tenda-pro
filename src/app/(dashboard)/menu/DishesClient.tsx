@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Modal from '@/components/ui/Modal'
 import { createDish, updateDish, deleteDish, saveRecipe, toggleDishActive, toggleSoldOut } from './dishActions'
 import { formatCurrency, parseCents } from '@/lib/utils'
@@ -78,7 +79,8 @@ export default function DishesClient({
   dishLimit?: number
 }) {
   const toast = useToast()
-  const [dishOpen, setDishOpen] = useState(false)
+  const searchParams = useSearchParams()
+  const [dishOpen, setDishOpen] = useState(() => searchParams.get('add') === '1')
   const [editingDish, setEditingDish] = useState<DishData | null>(null)
   const [dishForm, setDishForm] = useState(EMPTY_DISH_FORM)
   const [dishLoading, setDishLoading] = useState(false)

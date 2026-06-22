@@ -238,7 +238,7 @@ export default async function PublicMenuPage({ params }: { params: Promise<{ ven
           <p className="text-[10px] text-ink-4">
             powered by{' '}
             <a
-              href="https://sizzle-app-v1.vercel.app"
+              href="https://tenda.ph"
               target="_blank"
               rel="noopener noreferrer"
               className="text-accent hover:underline underline-offset-2"

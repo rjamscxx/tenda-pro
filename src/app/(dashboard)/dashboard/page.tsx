@@ -8,6 +8,7 @@ import { formatCurrency } from '@/lib/utils'
 import CashflowChart, { type ChartPoint } from './CashflowChart'
 import EodSummary from './EodSummary'
 import AiTodayPush from '@/components/layout/AiTodayPush'
+import Figure from '@/components/ui/Figure'
 import { getOrGenerateTodayPush } from '@/lib/ai/todayPush'
 import { refreshTodayPush } from './ai-actions'
 import { getTodayChecklistSummary } from '../checklists/actions'
@@ -280,6 +281,8 @@ export default async function DashboardPage() {
     {
       label: 'Revenue Today',
       value: formatCurrency(revenueToday),
+      raw: revenueToday as number | null,
+      fmt: 'currency' as const,
       sub: revenueMonth > 0 ? `${formatCurrency(revenueMonth)} this month` : 'no sales yet this month',
       delta: todayDelta,
       deltaLabel: 'vs yesterday',
@@ -294,6 +297,8 @@ export default async function DashboardPage() {
     {
       label: 'Month Revenue',
       value: formatCurrency(revenueMonth),
+      raw: revenueMonth as number | null,
+      fmt: 'currency' as const,
       sub: revenueLastMonth > 0 ? `${formatCurrency(revenueLastMonth)} last month` : 'first month tracked',
       delta: monthDelta,
       deltaLabel: 'vs last month',
@@ -309,6 +314,8 @@ export default async function DashboardPage() {
       {
         label: 'Food Cost %',
         value: foodCostPct !== null ? `${foodCostPct.toFixed(1)}%` : '—',
+        raw: foodCostPct as number | null,
+        fmt: 'percent' as const,
         sub: foodCostTodayPct !== null
           ? `${foodCostTodayPct.toFixed(1)}% today · recipe COGS MTD`
           : 'recipe COGS vs revenue MTD',
@@ -327,6 +334,8 @@ export default async function DashboardPage() {
       {
         label: 'Gross Margin',
         value: grossMarginPct !== null ? `${grossMarginPct.toFixed(1)}%` : '—',
+        raw: grossMarginPct as number | null,
+        fmt: 'percent' as const,
         sub: 'after recipe COGS MTD',
         delta: null,
         deltaLabel: '',
@@ -402,7 +411,7 @@ export default async function DashboardPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-semibold text-ink tracking-tight">{greet(tz)}</h1>
-              <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse shrink-0" title="Live" />
+              <span className="live-dot shrink-0" title="Live" />
             </div>
             <p className="text-sm text-ink-4 mt-0.5">{todayStr}</p>
           </div>
@@ -450,7 +459,7 @@ export default async function DashboardPage() {
             </div>
             <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-700 ${dailyTargetMet ? 'bg-success' : 'bg-gradient-to-r from-accent to-accent-2'}`}
+                className={`h-full rounded-full bar-enter ${dailyTargetMet ? 'bg-success' : 'bg-gradient-to-r from-accent to-accent-2'}`}
                 style={{ width: `${dailyTargetPct}%` }}
               />
             </div>
@@ -558,7 +567,13 @@ export default async function DashboardPage() {
         className="card-enter card-d2 glass rounded-xl border border-hair flex flex-wrap items-center gap-3 px-4 py-3 hover:border-accent/40 transition-colors"
       >
         <div className="flex items-center gap-2 shrink-0">
-          <span className="w-6 h-6 rounded-lg bg-accent-dim flex items-center justify-center text-[12px]" aria-hidden>📋</span>
+          <span className="w-6 h-6 rounded-lg bg-accent-dim flex items-center justify-center text-accent" aria-hidden>
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+              <rect x="2.5" y="1.5" width="9" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
+              <path d="M5 1.5h4v1.5H5z" fill="currentColor"/>
+              <path d="M4.75 6.5l1 1 1.75-2M9.25 6.25H8M4.75 9.5l1 1 1.75-2M9.25 9.25H8" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </span>
           <span className="text-[12px] font-semibold text-ink uppercase tracking-widest">Daily Routine</span>
         </div>
         {(['opening', 'closing'] as const).map(kind => {
@@ -570,7 +585,19 @@ export default async function DashboardPage() {
             'text-ink-4 bg-surface-2 border-hair'
           return (
             <div key={kind} className={`flex-1 min-w-[160px] flex items-center gap-2.5 px-3 py-1.5 rounded-lg border ${tone}`}>
-              <span className="text-[14px]" aria-hidden>{kind === 'opening' ? '🌅' : '🌙'}</span>
+              <span className="shrink-0" aria-hidden>
+                {kind === 'opening' ? (
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 1.5v2M2.5 8h-1M14.5 8h-1M3.8 3.8l-.7-.7M12.9 3.1l-.7.7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                    <path d="M4.5 8a3.5 3.5 0 017 0" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                    <path d="M1.5 11.5h13M3.5 14h9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M13.5 9.5A5.5 5.5 0 016.5 2.5a5.5 5.5 0 107 7z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </span>
               <div className="flex-1 min-w-0">
                 <p className="text-[11px] font-semibold uppercase tracking-wide leading-tight">
                   {kind === 'opening' ? 'Opening' : 'Closing'}
@@ -593,7 +620,7 @@ export default async function DashboardPage() {
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {kpis.map((kpi, idx) => (
-          <div key={kpi.label} className={`card-enter card-d${idx + 1} glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden`}>
+          <div key={kpi.label} className={`card-enter card-d${idx + 1} glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden`}>
             {/* Status edge only where it carries real meaning (over-target /
                 healthy) — softened. Neutral cards stay clean: no decoration. */}
             {kpi.status !== 'neutral' && (
@@ -612,7 +639,9 @@ export default async function DashboardPage() {
             <p className={`text-[1.65rem] font-bold tabular tracking-tight leading-none ${
               kpi.status === 'warn' ? 'text-warn' : 'text-ink'
             }`}>
-              {kpi.value}
+              {kpi.raw != null
+                ? <Figure value={kpi.raw} format={kpi.fmt} decimals={1} />
+                : kpi.value}
             </p>
             <div className="flex items-center justify-between gap-1 min-h-[16px]">
               <p className="text-[11px] text-ink-4 leading-snug">{kpi.sub}</p>
@@ -630,7 +659,7 @@ export default async function DashboardPage() {
         {/* Stock alerts card — always visible so owners know stock health at a glance */}
         <Link
           href="/inventory"
-          className="card-enter glass card-glow rounded-xl p-4 space-y-2.5 relative overflow-hidden hover:ring-1 hover:ring-accent/30 transition-all"
+          className="card-enter glass card-glow lift rounded-xl p-4 space-y-2.5 relative overflow-hidden hover:ring-1 hover:ring-accent/30 transition-all"
         >
           <div className={`absolute inset-x-0 top-0 h-[2px] ${
             outOfStock.length > 0 ? 'bg-danger' : lowStockCount > 0 ? 'bg-warn' : 'bg-success'
@@ -660,7 +689,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Monthly P&L summary */}
-      <div className="card-enter card-d2 glass card-glow rounded-xl overflow-hidden">
+      <div className="card-enter card-d2 glass card-glow lift rounded-xl overflow-hidden">
         <div className="px-5 py-3 border-b border-hair flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
@@ -676,7 +705,7 @@ export default async function DashboardPage() {
           {/* Revenue */}
           <div className="px-4 py-4 space-y-1.5">
             <p className="text-[10px] font-medium text-ink-4 uppercase tracking-widest">Revenue</p>
-            <p className="text-xl font-bold tabular text-ink">{formatCurrency(revenueMonth)}</p>
+            <p className="text-xl font-bold tabular text-ink"><Figure value={revenueMonth} format="currency" /></p>
             {monthDelta && (
               <span className={`inline-flex text-[10px] font-semibold tabular px-1.5 py-0.5 rounded-md ${monthDelta.up ? 'text-success bg-success/12' : 'text-danger bg-danger/12'}`}>
                 {monthDelta.up ? '↑' : '↓'}{Math.abs(monthDelta.pct).toFixed(0)}% vs last mo
@@ -686,7 +715,7 @@ export default async function DashboardPage() {
           {/* Expenses */}
           <div className="px-4 py-4 space-y-1.5">
             <p className="text-[10px] font-medium text-ink-4 uppercase tracking-widest">Expenses</p>
-            <p className="text-xl font-bold tabular text-ink">{formatCurrency(totalExpensesMonth)}</p>
+            <p className="text-xl font-bold tabular text-ink"><Figure value={totalExpensesMonth} format="currency" /></p>
             {expensesDelta && (
               <span className={`inline-flex text-[10px] font-semibold tabular px-1.5 py-0.5 rounded-md ${!expensesDelta.up ? 'text-success bg-success/12' : 'text-danger bg-danger/12'}`}>
                 {expensesDelta.up ? '↑' : '↓'}{Math.abs(expensesDelta.pct).toFixed(0)}% vs last mo
@@ -697,7 +726,7 @@ export default async function DashboardPage() {
           <div className="px-4 py-4 space-y-1.5">
             <p className="text-[10px] font-medium text-ink-4 uppercase tracking-widest">Net Profit</p>
             <p className={`text-xl font-bold tabular ${netProfit >= 0 ? 'text-success' : 'text-danger'}`}>
-              {netProfit < 0 ? '−' : ''}{formatCurrency(Math.abs(netProfit))}
+              {netProfit < 0 ? '−' : ''}<Figure value={Math.abs(netProfit)} format="currency" />
             </p>
             {netDelta && (
               <span className={`inline-flex text-[10px] font-semibold tabular px-1.5 py-0.5 rounded-md ${netDelta.up ? 'text-success bg-success/12' : 'text-danger bg-danger/12'}`}>
@@ -710,7 +739,7 @@ export default async function DashboardPage() {
             <div className="px-4 py-4 space-y-1.5">
               <p className="text-[10px] font-medium text-ink-4 uppercase tracking-widest">Labor %</p>
               <p className={`text-xl font-bold tabular ${laborPct !== null && laborPct > 35 ? 'text-warn' : 'text-ink'}`}>
-                {laborPct !== null ? `${laborPct.toFixed(1)}%` : '—'}
+                {laborPct !== null ? <Figure value={laborPct} format="percent" /> : '—'}
               </p>
               <span className="text-[10px] text-ink-4">
                 {laborCost > 0 ? `${formatCurrency(laborCost)} MTD` : 'no labor logged'}
@@ -721,7 +750,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Week over Week */}
-      <div className="card-enter card-d3 glass card-glow rounded-xl overflow-hidden">
+      <div className="card-enter card-d3 glass card-glow lift rounded-xl overflow-hidden">
         <div className="px-5 py-3 border-b border-hair">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
@@ -735,7 +764,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-3 divide-x divide-hair">
           <div className="px-4 py-4 space-y-1.5">
             <p className="text-[10px] font-medium text-ink-4 uppercase tracking-widest">Revenue</p>
-            <p className="text-xl font-bold tabular text-ink">{formatCurrency(thisWeekRevenue)}</p>
+            <p className="text-xl font-bold tabular text-ink"><Figure value={thisWeekRevenue} format="currency" /></p>
             {weekRevDelta ? (
               <span className={`inline-flex text-[10px] font-semibold tabular px-1.5 py-0.5 rounded-md ${weekRevDelta.up ? 'text-success bg-success/12' : 'text-danger bg-danger/12'}`}>
                 {weekRevDelta.up ? '↑' : '↓'}{Math.abs(weekRevDelta.pct).toFixed(0)}% vs last wk
@@ -744,7 +773,7 @@ export default async function DashboardPage() {
           </div>
           <div className="px-4 py-4 space-y-1.5">
             <p className="text-[10px] font-medium text-ink-4 uppercase tracking-widest">Transactions</p>
-            <p className="text-xl font-bold tabular text-ink">{thisWeekCount.toLocaleString()}</p>
+            <p className="text-xl font-bold tabular text-ink"><Figure value={thisWeekCount} format="number" /></p>
             {weekCountDelta ? (
               <span className={`inline-flex text-[10px] font-semibold tabular px-1.5 py-0.5 rounded-md ${weekCountDelta.up ? 'text-success bg-success/12' : 'text-danger bg-danger/12'}`}>
                 {weekCountDelta.up ? '↑' : '↓'}{Math.abs(weekCountDelta.pct).toFixed(0)}% vs last wk
@@ -753,7 +782,7 @@ export default async function DashboardPage() {
           </div>
           <div className="px-4 py-4 space-y-1.5">
             <p className="text-[10px] font-medium text-ink-4 uppercase tracking-widest">Avg Order</p>
-            <p className="text-xl font-bold tabular text-ink">{thisWeekCount > 0 ? formatCurrency(Math.round(thisWeekAOV)) : '—'}</p>
+            <p className="text-xl font-bold tabular text-ink">{thisWeekCount > 0 ? <Figure value={Math.round(thisWeekAOV)} format="currency" /> : '—'}</p>
             {weekAOVDelta ? (
               <span className={`inline-flex text-[10px] font-semibold tabular px-1.5 py-0.5 rounded-md ${weekAOVDelta.up ? 'text-success bg-success/12' : 'text-danger bg-danger/12'}`}>
                 {weekAOVDelta.up ? '↑' : '↓'}{Math.abs(weekAOVDelta.pct).toFixed(0)}% vs last wk
@@ -776,7 +805,7 @@ export default async function DashboardPage() {
               </div>
               <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-accent transition-all duration-500"
+                  className="h-full rounded-full bg-accent bar-enter"
                   style={{ width: `${revGoalPct}%` }}
                 />
               </div>
@@ -795,7 +824,7 @@ export default async function DashboardPage() {
               </div>
               <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all duration-500 ${overBudget ? 'bg-danger' : 'bg-success'}`}
+                  className={`h-full rounded-full bar-enter ${overBudget ? 'bg-danger' : 'bg-success'}`}
                   style={{ width: `${expBudgetPct}%` }}
                 />
               </div>
@@ -847,7 +876,7 @@ export default async function DashboardPage() {
       <div className="card-enter card-d5 grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {/* Cashflow chart */}
-        <div className="lg:col-span-2 glass card-glow rounded-xl p-5 flex flex-col gap-4">
+        <div className="lg:col-span-2 glass card-glow lift rounded-xl p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2">
@@ -880,7 +909,7 @@ export default async function DashboardPage() {
         <div className="flex flex-col gap-4">
 
           {/* Top sellers by gross profit */}
-          <div className="glass card-glow rounded-xl p-4 space-y-3 flex-1">
+          <div className="glass card-glow lift rounded-xl p-4 space-y-3 flex-1">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
@@ -922,7 +951,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Channel breakdown */}
-          <div className="glass card-glow rounded-xl p-4 space-y-3">
+          <div className="glass card-glow lift rounded-xl p-4 space-y-3">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
                 <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
@@ -948,7 +977,7 @@ export default async function DashboardPage() {
                       </div>
                       <div className="h-1 bg-surface-3 rounded-full overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-accent transition-all duration-700"
+                          className="h-full rounded-full bg-accent bar-enter"
                           style={{ width: `${pct}%`, opacity: 0.4 + (pct / 100) * 0.6 }}
                         />
                       </div>
@@ -970,7 +999,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Waste tracker */}
-      <div className="card-enter card-d6 glass card-glow rounded-xl px-5 py-4 flex items-center justify-between gap-6">
+      <div className="card-enter card-d6 glass card-glow lift rounded-xl px-5 py-4 flex items-center justify-between gap-6">
         <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-md bg-warn/12 flex items-center justify-center shrink-0 text-warn">
@@ -982,7 +1011,7 @@ export default async function DashboardPage() {
           </div>
           <div className="flex items-baseline gap-2 flex-wrap">
             <p className={`text-2xl font-bold tabular ${todayWaste > 0 ? 'text-warn' : 'text-ink-4'}`}>
-              {formatCurrency(todayWaste)}
+              <Figure value={todayWaste} format="currency" />
             </p>
             {wasteDelta && (
               <span className={`text-[10px] font-semibold tabular px-1.5 py-0.5 rounded-md ${wasteDelta.up ? 'text-danger bg-danger/12' : 'text-success bg-success/12'}`}>
@@ -1013,7 +1042,7 @@ export default async function DashboardPage() {
 
       {/* Expense breakdown by category */}
       {expenseCategories.length > 0 && (
-        <div className="card-enter card-d7 glass card-glow rounded-xl p-5 space-y-4">
+        <div className="card-enter card-d7 glass card-glow lift rounded-xl p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-md bg-accent-dim flex items-center justify-center shrink-0 text-accent">
@@ -1040,7 +1069,7 @@ export default async function DashboardPage() {
                   </div>
                   <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-accent to-accent-2 transition-all duration-700"
+                      className="h-full rounded-full bg-gradient-to-r from-accent to-accent-2 bar-enter"
                       style={{ width: `${pct}%` }}
                     />
                   </div>

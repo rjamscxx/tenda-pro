@@ -197,9 +197,9 @@ export default function ShiftsClient({
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <div className="flex rounded-lg border border-hair bg-surface-2 overflow-hidden">
-              <button onClick={() => setWeekOffset(o => o - 1)} className="px-3 py-1.5 text-xs text-ink-3 hover:text-ink hover:bg-surface-3 transition-colors">‹ Prev</button>
-              <button onClick={() => setWeekOffset(0)} className={`px-3 py-1.5 text-xs font-medium border-l border-hair transition-colors ${weekOffset === 0 ? 'bg-accent text-canvas' : 'text-ink-3 hover:text-ink hover:bg-surface-3'}`}>This week</button>
-              <button onClick={() => setWeekOffset(o => o + 1)} className="px-3 py-1.5 text-xs text-ink-3 hover:text-ink hover:bg-surface-3 transition-colors border-l border-hair">Next ›</button>
+              <button onClick={() => setWeekOffset(o => o - 1)} className="px-3 py-1.5 text-xs text-ink-3 hover:text-ink hover:bg-surface-3 transition-colors active:scale-[0.97]">‹ Prev</button>
+              <button onClick={() => setWeekOffset(0)} className={`px-3 py-1.5 text-xs font-medium border-l border-hair transition-colors active:scale-[0.97] ${weekOffset === 0 ? 'bg-accent text-canvas' : 'text-ink-3 hover:text-ink hover:bg-surface-3'}`}>This week</button>
+              <button onClick={() => setWeekOffset(o => o + 1)} className="px-3 py-1.5 text-xs text-ink-3 hover:text-ink hover:bg-surface-3 transition-colors active:scale-[0.97] border-l border-hair">Next ›</button>
             </div>
             <button onClick={() => openAdd()} className="px-4 py-2 rounded-lg btn-primary text-xs font-semibold">
               + Log shift
@@ -263,7 +263,7 @@ export default function ShiftsClient({
                           {s ? <ShiftCell shift={s} paid={!!isShiftPaid(s.date)} onClick={() => openEdit(s)} /> : (
                             <button
                               onClick={() => openAdd({ employeeId: emp.id, date: iso })}
-                              className="w-7 h-7 rounded-full border border-dashed border-hair text-ink-4 text-lg hover:border-accent hover:text-accent transition-colors flex items-center justify-center"
+                              className="w-7 h-7 rounded-full border border-dashed border-hair text-ink-4 text-lg hover:border-accent hover:text-accent transition-colors active:scale-[0.9] flex items-center justify-center"
                               aria-label={`Log shift for ${emp.fullName} on ${iso}`}
                             >+</button>
                           )}
@@ -314,7 +314,7 @@ export default function ShiftsClient({
             <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
               <h2 className="text-[11px] font-semibold text-ink-3 uppercase tracking-widest">Shift log</h2>
               {isOwner && shifts.length > 0 && (
-                <button onClick={handleClearAll} className="text-[11px] text-ink-4 hover:text-danger transition-colors">Clear log</button>
+                <button onClick={handleClearAll} className="text-[11px] text-ink-4 hover:text-danger transition-colors active:scale-[0.95]">Clear log</button>
               )}
             </div>
 

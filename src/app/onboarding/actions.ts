@@ -59,7 +59,7 @@ export async function createVenue({
   }
 
   const cookieStore = await cookies()
-  cookieStore.set('sizzle-theme', theme, {
+  cookieStore.set('tenda-theme', theme, {
     path:     '/',
     maxAge:   31536000,
     sameSite: 'lax',

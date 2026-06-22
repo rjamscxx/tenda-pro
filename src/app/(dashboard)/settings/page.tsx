@@ -35,7 +35,7 @@ export default async function SettingsPage() {
     requireVenue(),
   ])
 
-  const theme = cookieStore.get('sizzle-theme')?.value ?? 'ember'
+  const theme = cookieStore.get('tenda-theme')?.value ?? 'ember'
   const isAdmin = checkIsAdmin(authUser)
 
   const [recentActivity, subRequests, subscribedAccounts] = await Promise.all([

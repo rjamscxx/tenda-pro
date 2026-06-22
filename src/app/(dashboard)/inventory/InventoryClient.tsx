@@ -280,7 +280,7 @@ export default function InventoryClient({
           {isPro ? (
             <button
               onClick={exportCSV}
-              className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors flex items-center gap-1.5"
+              className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors active:scale-[0.97] flex items-center gap-1.5"
             >
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                 <path d="M2 9v2.5h9V9M6.5 1v7M4 6l2.5 2.5L9 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
@@ -296,13 +296,13 @@ export default function InventoryClient({
               🔒 CSV
             </a>
           )}
-          <button onClick={openReceive} className="px-4 py-2 rounded-lg bg-surface-2 border border-hair text-ink-2 text-sm font-medium hover:bg-surface-3 transition-colors">
+          <button onClick={openReceive} className="px-4 py-2 rounded-lg bg-surface-2 border border-hair text-ink-2 text-sm font-medium hover:bg-surface-3 transition-colors active:scale-[0.97]">
             Receive Delivery
           </button>
           {isBasic && ingredients.length >= ingredientLimit ? (
             <a
               href="/settings#plan"
-              className="px-4 py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors flex items-center gap-1.5"
+              className="px-4 py-2 rounded-lg text-sm font-semibold border border-accent/40 text-accent hover:bg-accent/10 transition-colors active:scale-[0.97] flex items-center gap-1.5"
             >
               🔒 Upgrade for more
             </a>
@@ -441,7 +441,7 @@ export default function InventoryClient({
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
                           <button
                             onClick={() => openEditIng(ing)}
-                            className="text-ink-4 hover:text-accent transition-colors p-1 rounded"
+                            className="text-ink-4 hover:text-accent transition-colors active:scale-[0.9] p-1 rounded"
                             aria-label="Edit"
                           >
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -450,13 +450,14 @@ export default function InventoryClient({
                           </button>
                           <button
                             onClick={() => openAdjust(ing)}
-                            className="text-xs px-2.5 py-1 rounded-md bg-surface-3 text-ink-3 hover:bg-accent hover:text-canvas transition-colors font-medium"
+                            className="text-xs px-2.5 py-1 rounded-md bg-surface-3 text-ink-3 hover:bg-accent hover:text-canvas transition-colors active:scale-[0.95] font-medium"
                           >
                             Adjust
                           </button>
                           <button
                             onClick={() => handleDelete(ing.id)}
-                            className="text-ink-4 hover:text-danger transition-colors p-1 rounded"
+                            className="text-ink-4 hover:text-danger transition-colors active:scale-[0.9] p-1 rounded"
+                            aria-label="Delete"
                           >
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                               <path d="M2 3.5h10M5.5 3.5V2.5a.5.5 0 01.5-.5h2a.5.5 0 01.5.5v1M5.5 6v4M8.5 6v4M3 3.5l.7 7.2A1 1 0 004.7 12h4.6a1 1 0 001-.9L11 3.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
@@ -694,7 +695,7 @@ export default function InventoryClient({
                   key={mt.value}
                   type="button"
                   onClick={() => setAdjustForm(f => ({ ...f, movementType: mt.value }))}
-                  className={`py-2 rounded-lg text-sm font-medium border transition-colors ${
+                  className={`py-2 rounded-lg text-sm font-medium border transition-colors active:scale-[0.97] ${
                     adjustForm.movementType === mt.value
                       ? 'bg-accent text-canvas border-accent'
                       : 'bg-canvas text-ink-3 border-hair hover:border-accent/50 hover:text-ink'

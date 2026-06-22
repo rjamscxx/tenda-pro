@@ -108,7 +108,7 @@ function SupplierForm({
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 py-2 rounded-lg border border-hair text-ink-3 text-sm font-medium hover:bg-surface transition-colors"
+          className="flex-1 py-2 rounded-lg border border-hair text-ink-3 text-sm font-medium hover:bg-surface transition-colors active:scale-[0.97]"
         >
           Cancel
         </button>
@@ -261,7 +261,7 @@ export default function SuppliersClient({
                   <span className="text-xs text-ink-4 shrink-0">{sup.ingredientCount} ingredient{sup.ingredientCount !== 1 ? 's' : ''}</span>
                   <button
                     onClick={() => setExpandedId(expanded ? null : sup.id)}
-                    className="p-1.5 rounded-lg text-ink-4 hover:text-ink hover:bg-surface-2 transition-colors"
+                    className="p-1.5 rounded-lg text-ink-4 hover:text-ink hover:bg-surface-2 transition-colors active:scale-[0.9]"
                     title={expanded ? 'Collapse' : 'View ingredients'}
                   >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className={`transition-transform ${expanded ? 'rotate-180' : ''}`}>
@@ -270,7 +270,7 @@ export default function SuppliersClient({
                   </button>
                   <button
                     onClick={() => { setEditTarget(sup); setFormError('') }}
-                    className="p-1.5 rounded-lg text-ink-4 hover:text-ink hover:bg-surface-2 transition-colors"
+                    className="p-1.5 rounded-lg text-ink-4 hover:text-ink hover:bg-surface-2 transition-colors active:scale-[0.9]"
                     title="Edit"
                   >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -279,7 +279,7 @@ export default function SuppliersClient({
                   </button>
                   <button
                     onClick={() => setDeleteTarget(sup)}
-                    className="p-1.5 rounded-lg text-ink-4 hover:text-danger hover:bg-danger/10 transition-colors"
+                    className="p-1.5 rounded-lg text-ink-4 hover:text-danger hover:bg-danger/10 transition-colors active:scale-[0.9]"
                     title="Delete"
                   >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -300,7 +300,7 @@ export default function SuppliersClient({
                         <button
                           disabled={assigning}
                           onClick={() => handleAssign(ing.id, null)}
-                          className="text-xs text-ink-4 hover:text-danger transition-colors"
+                          className="text-xs text-ink-4 hover:text-danger transition-colors active:scale-[0.9]"
                         >
                           Unlink
                         </button>

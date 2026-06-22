@@ -8,7 +8,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Sizzle, please report it **privately** — do not open a public GitHub issue.
+If you discover a security vulnerability in Tenda Pro, please report it **privately** — do not open a public GitHub issue.
 
 **Contact:** rjamscxx@gmail.com
 

@@ -100,12 +100,12 @@ export default function CloseDayClient({
           </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <Link href="/dashboard" className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors">
+          <Link href="/dashboard" className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors active:scale-[0.97]">
             ← Dashboard
           </Link>
           <button
             onClick={handlePrint}
-            className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors"
+            className="px-3 py-2 rounded-lg bg-surface-2 border border-hair text-ink-3 hover:text-ink hover:bg-surface-3 text-xs font-medium transition-colors active:scale-[0.97]"
           >
             Print
           </button>
@@ -178,7 +178,7 @@ export default function CloseDayClient({
               </div>
               <button
                 onClick={handleSettle}
-                className="px-4 py-2 rounded-lg bg-accent text-canvas text-xs font-bold uppercase tracking-wider hover:bg-accent-2 transition-colors no-print"
+                className="px-4 py-2 rounded-lg bg-accent text-canvas text-xs font-bold uppercase tracking-wider hover:bg-accent-2 transition-colors active:scale-[0.97] no-print"
               >
                 ✓ Settle all
               </button>

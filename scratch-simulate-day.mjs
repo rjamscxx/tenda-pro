@@ -7,7 +7,7 @@
 //   node scratch-simulate-day.mjs --all           # seed every theme
 //   node scratch-simulate-day.mjs --list          # show available themes
 //
-// Each theme creates: 1 Supabase auth user (smoketest+<suffix>@sizzle.local),
+// Each theme creates: 1 Supabase auth user (smoketest+<suffix>@tenda.local),
 // 1 premium account, 1 venue, ingredients, dishes+recipes, 8 days of sales
 // (~hundreds of rows), today's ingredient deductions, expenses, waste logs,
 // employees, a prior-week payroll run, and 14 days of shifts.
@@ -75,7 +75,7 @@ const chunk = (arr, size) => {
   return out
 }
 const TEST_PW = 'SmokeTest!123'
-const emailFor = (suffix) => `smoketest+${suffix}@sizzle.local`
+const emailFor = (suffix) => `smoketest+${suffix}@tenda.local`
 
 const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 5 })
 const supabase = createClient(
