@@ -174,14 +174,19 @@ export default function POSClient({
       <style>{`
         @media print {
           * { visibility: hidden !important; }
-          /* The modal keeps a residual transform from its entrance animation
-             (.modal-enter uses animation-fill-mode: both), which otherwise
-             becomes the containing block for the receipt's fixed positioning
-             and traps/clips it inside the small modal box. Reset it for print
-             so the receipt can escape to the full page. */
+          /* .modal-enter animates in with animation-fill-mode: both, which
+             leaves a permanent transform on the modal box. A transformed
+             ancestor (a) becomes the containing block for the receipt's fixed
+             positioning and (b) via inset:0 clamps the receipt's height so its
+             overflow-hidden clips the items + total off the printout. A plain
+             "transform: none" loses to the running animation, so we kill the
+             animation itself to revert the transform and free the receipt. */
           .modal-enter {
+            animation: none !important;
             transform: none !important;
             overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
           }
           #tenda-receipt-print,
           #tenda-receipt-print * {
@@ -193,7 +198,13 @@ export default function POSClient({
           }
           #tenda-receipt-print {
             position: fixed !important;
-            inset: 0 !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: auto !important;       /* inset:0 clamped height — don't */
+            height: auto !important;       /* size to the full receipt */
+            max-height: none !important;
+            overflow: visible !important;  /* never clip items/total */
             background: #fff !important;
             color: #000 !important;
             padding: 32px 28px !important;
