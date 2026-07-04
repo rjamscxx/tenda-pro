@@ -174,6 +174,15 @@ export default function POSClient({
       <style>{`
         @media print {
           * { visibility: hidden !important; }
+          /* The modal keeps a residual transform from its entrance animation
+             (.modal-enter uses animation-fill-mode: both), which otherwise
+             becomes the containing block for the receipt's fixed positioning
+             and traps/clips it inside the small modal box. Reset it for print
+             so the receipt can escape to the full page. */
+          .modal-enter {
+            transform: none !important;
+            overflow: visible !important;
+          }
           #tenda-receipt-print,
           #tenda-receipt-print * { visibility: visible !important; }
           #tenda-receipt-print {
