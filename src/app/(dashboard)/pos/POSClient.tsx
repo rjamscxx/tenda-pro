@@ -184,7 +184,13 @@ export default function POSClient({
             overflow: visible !important;
           }
           #tenda-receipt-print,
-          #tenda-receipt-print * { visibility: visible !important; }
+          #tenda-receipt-print * {
+            visibility: visible !important;
+            /* Browsers strip background colors from print by default; keep the
+               receipt's fills (e.g. the "Order for" chip) so it prints as designed. */
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
           #tenda-receipt-print {
             position: fixed !important;
             inset: 0 !important;
