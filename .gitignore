@@ -66,6 +66,7 @@ marketing/landing/
 
 # Personal/local files
 payment qrs/
+public/payment-qrs/
 returns
 
 # AI-assist tooling & local clutter (kept locally, not published)
